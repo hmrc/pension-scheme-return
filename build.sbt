@@ -16,3 +16,10 @@ lazy val microservice = Project("pension-scheme-return", file("."))
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
+
+lazy val scoverageSettings: Seq[Setting[_]] = Seq(
+  coverageExcludedPackages := List(
+
+  ).mkString(";"),
+  coverageMinimumStmtTotal := 95
+)
