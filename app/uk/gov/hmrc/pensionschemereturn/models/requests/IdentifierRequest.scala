@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.controllers
+package uk.gov.hmrc.pensionschemereturn.models.requests
 
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import play.api.mvc.{Request, WrappedRequest}
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject()(cc: ControllerComponents)
-    extends BackendController(cc) {
+sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request)
 
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
+object IdentifierRequest {
+
+  case class AdministratorRequest[A](
+    externalId: String,
+    request: Request[A],
+    psaId: String
+  ) extends IdentifierRequest[A](request)
+
+  case class PractitionerRequest[A](
+    externalId: String,
+    request: Request[A],
+    pspId: String
+  ) extends IdentifierRequest[A](request)
+
 }
