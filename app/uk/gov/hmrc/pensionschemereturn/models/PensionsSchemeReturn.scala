@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.pensionschemereturn.models
 
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json._
 
 case class PensionSchemeReturn(
-                                 name: DataEntry[String]
-                               )
+                                name: DataEntry[String]
+                              )
 
 case class DataEntry[A](
                          value: A,
@@ -29,24 +29,30 @@ case class DataEntry[A](
                        )
 
 case class DataEntryChanged[A](
-                           version: String,
-                           previous_value: A
-                           )
+                                version: String,
+                                previousValue: A
+                              )
 
 sealed trait DataEntryRule
 
-case object Updated extends DataEntryRule
-case object Fixed extends DataEntryRule
-case object None extends DataEntryRule
+object DataEntryRule {
+  case object Updated extends DataEntryRule
+
+  case object Fixed extends DataEntryRule
+
+  case object None extends DataEntryRule
+}
 
 object PensionSchemeReturn {
   implicit val dataEntryRuleWrites: Writes[DataEntryRule] = {
-    implicit val updatedWrites: Writes[Updated.type] = Json.writes[Updated.type]
-    implicit val fixedWrites: Writes[Fixed.type] = Json.writes[Fixed.type]
-    implicit val noneWrites: Writes[None.type] = Json.writes[None.type]
-    Json.writes[DataEntryRule]
+    case DataEntryRule.Updated => JsString("updated")
+    case DataEntryRule.Fixed => JsString("fixed")
+    case DataEntryRule.None => JsString("none")
   }
+
   implicit def dataEntryChangedWrites[A: Writes]: Writes[DataEntryChanged[A]] = Json.writes[DataEntryChanged[A]]
+
   implicit def dataEntryWrites[A: Writes]: Writes[DataEntry[A]] = Json.writes[DataEntry[A]]
+
   implicit val writes: Writes[PensionSchemeReturn] = Json.writes[PensionSchemeReturn]
 }
