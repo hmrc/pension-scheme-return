@@ -108,9 +108,9 @@ class IdentifierActionSpec extends AnyWordSpec with Matchers with MockitoSugar w
 
 
       implicit val wA: Writes[A] = Writes[A] {
-        implicit val wB = Json.writes[B.type]
-        implicit val wC = Json.writes[C.type]
-        implicit val wD = Json.writes[D.type]
+        implicit val wB: Writes[B.type] = Json.writes[B.type]
+        implicit val wC: Writes[C.type] = Json.writes[C.type]
+        implicit val wD: Writes[D.type] = Json.writes[D.type]
 
         Json.writes[A]
       }
