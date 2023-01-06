@@ -1,7 +1,13 @@
 
 # pension-scheme-return
 
-This is a placeholder README.md for a new repository
+### Running the test suite
+```
+sbt clean coverage test it:test coverageReport
+```
+
+### Useful links
+- [confluence](https://confluence.tools.tax.service.gov.uk/display/PSR/Pension+Scheme+Return+Home)
 
 ### License
 
