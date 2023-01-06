@@ -23,27 +23,33 @@ import play.api.libs.json.Json
 class PensionSchemeReturnSpec extends AnyWordSpec with Matchers {
 
   "PensionSchemeReturn" should {
-    "serialise to json correctly" in {
-      val pensionSchemeReturn = PensionSchemeReturn(
-        name = DataEntry(
-          "testName",
-          DataEntryRule.Fixed,
-          DataEntryChanged("v1", "testPreviousName")
-        )
-      )
-
-      val expectedJson = Json.obj(
-        "name" -> Json.obj(
-          "value" -> "testName",
-          "rule" -> "fixed",
-          "changed" -> Json.obj(
-            "version" -> "v1",
-            "previousValue" -> "testPreviousName"
+    List(
+      (DataEntryRule.Fixed, "fixed"),
+      (DataEntryRule.Updated, "updated"),
+      (DataEntryRule.None, "none")
+    ).foreach { case (rule, ruleSerialised) =>
+      s"serialise to json correctly for rule $rule" in {
+        val pensionSchemeReturn = PensionSchemeReturn(
+          name = DataEntry(
+            "testName",
+            rule,
+            DataEntryChanged("v1", "testPreviousName")
           )
         )
-      )
 
-      Json.toJson(pensionSchemeReturn) shouldBe expectedJson
+        val expectedJson = Json.obj(
+          "name" -> Json.obj(
+            "value" -> "testName",
+            "rule" -> ruleSerialised,
+            "changed" -> Json.obj(
+              "version" -> "v1",
+              "previousValue" -> "testPreviousName"
+            )
+          )
+        )
+
+        Json.toJson(pensionSchemeReturn) shouldBe expectedJson
+      }
     }
   }
 }
