@@ -30,65 +30,64 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowAccessAction @Inject()(
+class AllowAccessAction(
+  srn: Srn,
+  schemeDetailsConnector: SchemeDetailsConnector,
+  minimalDetailsConnector: MinimalDetailsConnector,
+)(implicit override val executionContext: ExecutionContext) extends ActionFunction[IdentifierRequest, AllowedAccessRequest] {
+
+  val validStatuses: List[SchemeStatus] = List(Open, WoundUp, Deregistered)
+
+  override def invokeBlock[A](request: IdentifierRequest[A], block: AllowedAccessRequest[A] => Future[Result]): Future[Result] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+    (for {
+      schemeDetails <- fetchSchemeDetails(request, srn)
+      isAssociated <- fetchIsAssociated(request, srn)
+      minimalDetails <- fetchMinimalDetails(request)
+    } yield {
+      if (
+        isAssociated &&
+        !minimalDetails.exists(_.rlsFlag) &&
+        !minimalDetails.exists(_.deceasedFlag) &&
+        !minimalDetails.left.exists(_ == DelimitedAdmin) &&
+        validStatuses.contains(schemeDetails.schemeStatus)
+      ) {
+        block(AllowedAccessRequest(request, schemeDetails))
+      } else {
+        Future.successful(Unauthorized)
+      }
+    }).flatten
+  }
+
+  private def fetchSchemeDetails[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[SchemeDetails] =
+    request.fold(
+      a => schemeDetailsConnector.details(a.psaId, srn),
+      p => schemeDetailsConnector.details(p.pspId, srn)
+    )
+
+  private def fetchIsAssociated[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[Boolean] =
+    request.fold(
+      a => schemeDetailsConnector.checkAssociation(a.psaId, srn),
+      p => schemeDetailsConnector.checkAssociation(p.pspId, srn)
+    )
+
+  private def fetchMinimalDetails[A](request: IdentifierRequest[A])(implicit hc: HeaderCarrier)
+  : Future[Either[MinimalDetailsError, MinimalDetails]] =
+    request.fold(
+      a => minimalDetailsConnector.fetch(a.psaId),
+      p => minimalDetailsConnector.fetch(p.pspId)
+    )
+}
+
+class AllowAccessActionProvider @Inject()(
   schemeDetailsConnector: SchemeDetailsConnector,
   minimalDetailsConnector: MinimalDetailsConnector
 )(implicit val ec: ExecutionContext) {
 
-  val validStatuses: List[SchemeStatus] = List(Open, WoundUp, Deregistered)
-
   def apply(srn: Srn): ActionFunction[IdentifierRequest, AllowedAccessRequest] =
-    new ActionFunction[IdentifierRequest, AllowedAccessRequest] {
-      override def invokeBlock[A](request: IdentifierRequest[A], block: AllowedAccessRequest[A] => Future[Result]): Future[Result] = {
+    new AllowAccessAction(srn, schemeDetailsConnector, minimalDetailsConnector)
 
-        implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
-        (for {
-          schemeDetails  <- fetchSchemeDetails(request, srn)
-          isAssociated   <- fetchIsAssociated(request, srn)
-          minimalDetails <- fetchMinimalDetails(request)
-        } yield {
-          if(
-            isAssociated &&
-            !minimalDetails.exists(_.rlsFlag) &&
-            !minimalDetails.exists(_.deceasedFlag) &&
-            !minimalDetails.left.exists(_ == DelimitedAdmin) &&
-            validStatuses.contains(schemeDetails.schemeStatus)
-          ) {
-            block(AllowedAccessRequest(request, schemeDetails))
-          } else {
-            Future.successful(Unauthorized)
-          }
-        }).flatten
-
-      }
-
-      override protected def executionContext: ExecutionContext = ec
-    }
-
-  private def fetchSchemeDetails[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[SchemeDetails] =
-    request
-      .fold(
-        a => schemeDetailsConnector.details(a.psaId, srn)
-      )(
-        p => schemeDetailsConnector.details(p.pspId, srn)
-      )
-
-  private def fetchIsAssociated[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[Boolean] =
-    request
-      .fold(
-        a => schemeDetailsConnector.checkAssociation(a.psaId, srn)
-      )(
-        p => schemeDetailsConnector.checkAssociation(p.pspId, srn)
-      )
-
-  private def fetchMinimalDetails[A](request: IdentifierRequest[A])(implicit hc: HeaderCarrier)
-    : Future[Either[MinimalDetailsError, MinimalDetails]] =
-      request
-        .fold(
-          a => minimalDetailsConnector.fetch(a.psaId)
-        )(
-          p => minimalDetailsConnector.fetch(p.pspId)
-        )
 }
 

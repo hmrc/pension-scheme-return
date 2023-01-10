@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{Admini
 
 sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request) { self =>
 
-  def fold[B](admin: AdministratorRequest[A] => B)(practitioner: PractitionerRequest[A] => B): B =
+  def fold[B](admin: AdministratorRequest[A] => B, practitioner: PractitionerRequest[A] => B): B =
     self match {
       case a: AdministratorRequest[A] => admin(a)
       case p: PractitionerRequest[A]  => practitioner(p)
