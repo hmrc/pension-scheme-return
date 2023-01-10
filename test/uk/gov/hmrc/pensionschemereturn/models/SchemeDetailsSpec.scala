@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.config
+package uk.gov.hmrc.pensionschemereturn.models
 
-import play.api.Configuration
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.libs.json.{JsObject, JsString, JsValue, Json, Writes}
+import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
 
-import javax.inject.{Inject, Singleton}
+class SchemeDetailsSpec extends BaseSpec with ScalaCheckPropertyChecks {
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+  "SchemeDetails" should {
 
-  val appName: String = config.get[String]("appName")
+    "successfully read from json" in {
 
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+      forAll(schemeDetailsGen) { details =>
+
+        Json.toJson(details).as[SchemeDetails] mustBe details
+      }
+    }
+  }
 }

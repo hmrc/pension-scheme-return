@@ -17,120 +17,170 @@
 package uk.gov.hmrc.pensionschemereturn.controllers.actions
 
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.{Json, Writes}
-import play.api.mvc.{Action, AnyContent}
+import play.api.http.Status.{OK, UNAUTHORIZED}
+import play.api.libs.json.Json
 import play.api.mvc.Results.Ok
-import play.api.http.Status.UNAUTHORIZED
-import play.api.test.Helpers.{defaultAwaitTimeout, status}
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
 import play.api.test.{FakeRequest, StubBodyParserFactory}
-import play.mvc.Controller
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier, Enrolments, NoActiveSession}
+import uk.gov.hmrc.pensionschemereturn.config.Constants
+import uk.gov.hmrc.pensionschemereturn.connectors.cache.SessionDataCacheConnector
+import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser.{Administrator, Practitioner}
+import uk.gov.hmrc.pensionschemereturn.models.cache.SessionData
 import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{AdministratorRequest, PractitionerRequest}
+import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdentifierActionSpec extends AnyWordSpec with Matchers with MockitoSugar with StubBodyParserFactory with ScalaFutures {
+class IdentifierActionSpec extends BaseSpec with StubBodyParserFactory {
 
-  // User not signed in to GG - 401 //
-  // User does not have an external id - 401
-  // User does not have a PSA or PSP enrolment - 401
-  // User has both PSA and PSP enrolment but noting in cache - 401
-  // User has both PSA and PSP enrolment with PSA enrolment in cache - 200
-  // User has both PSA and PSP enrolment with PSP enrolment in cache - 200
-  // User has only PSA enrolment - 200
-  // User has only PSP enrolment - 200
+  lazy val authAction =
+    new IdentifierAction(
+      mockAuthConnector,
+      mockSessionDataCacheConnector,
+      stubBodyParser[AnyContent]()
+    )(ExecutionContext.global)
 
-  lazy val authAction = new IdentifierAction(mockAuthConnector, stubBodyParser[AnyContent]())(ExecutionContext.global)
-
-  lazy val handler =
-    new Controller {
-      def run: Action[AnyContent] = authAction { request =>
-          request match {
-            case AdministratorRequest(externalId, _, id) =>
-              Ok(Json.obj("externalId" -> externalId, "psaId" -> id))
-            case PractitionerRequest(externalId, _, id) =>
-              Ok(Json.obj("externalId" -> externalId, "pspId" -> id))
-          }
-        }
+  class Handler {
+    def run: Action[AnyContent] = authAction { request =>
+      request match {
+        case AdministratorRequest(externalId, _, id) =>
+          Ok(Json.obj("externalId" -> externalId, "psaId" -> id.value))
+        case PractitionerRequest(externalId, _, id) =>
+          Ok(Json.obj("externalId" -> externalId, "pspId" -> id.value))
       }
+    }
+  }
 
-  val mockAuthConnector = mock[AuthConnector]
+  val handler = new Handler()
 
-  def authResult(externalId: Option[String], enrolments: Enrolment*) = new ~(externalId, Enrolments(enrolments.toSet))
+  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockSessionDataCacheConnector: SessionDataCacheConnector = mock[SessionDataCacheConnector]
+  def authResult(externalId: Option[String], enrolments: Enrolment*) =
+    new ~(externalId, Enrolments(enrolments.toSet))
 
-  val psaEnrolment = Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", "A000000")), "Activated")
-  val pspEnrolment = Enrolment("HMRC-PODSPP-ORG", Seq(EnrolmentIdentifier("PSPID", "A000001")), "Activated")
+  val psaEnrolment: Enrolment =
+    Enrolment(Constants.psaEnrolmentKey, Seq(EnrolmentIdentifier(Constants.psaIdKey, "A000000")), "Activated")
+  val pspEnrolment: Enrolment =
+    Enrolment(Constants.pspEnrolmentKey, Seq(EnrolmentIdentifier(Constants.pspIdKey, "A000001")), "Activated")
+
+  override def beforeEach: Unit = {
+    reset(mockAuthConnector, mockSessionDataCacheConnector)
+  }
+
+  def setAuthValue(value: Option[String] ~ Enrolments): Unit =
+    setAuthValue(Future.successful(value))
+
+  def setAuthValue[A](value: Future[A]): Unit = {
+    when(mockAuthConnector.authorise[A](any(), any())(any(), any()))
+      .thenReturn(value)
+  }
+
+  def setSessionValue(value: Option[SessionData]): Unit =
+    setSessionValue(Future.successful(value))
+
+  def setSessionValue(value: Future[Option[SessionData]]): Unit = {
+    when(mockSessionDataCacheConnector.fetch(any())(any(), any()))
+      .thenReturn(value)
+  }
 
   "IdentifierAction" should {
     "return an unauthorised result" when {
 
       "User is not signed in to GG" in {
 
-        when(mockAuthConnector.authorise(any(), any())(any(), any()))
-          .thenThrow(new NoActiveSession("Not signed in") {})
+        setAuthValue(Future.failed(new NoActiveSession("No user signed in") {}))
 
         val result = handler.run(FakeRequest())
+        status(result) mustBe UNAUTHORIZED
+      }
 
+      "Authorise fails to match predicate" in {
+
+        setAuthValue(Future.failed(new AuthorisationException("Authorise predicate fails") {}))
+
+        val result = handler.run(FakeRequest())
         status(result) mustBe UNAUTHORIZED
       }
 
       "User does not have an external id" in {
 
-        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
-          .thenReturn(Future.successful(authResult(None, psaEnrolment)))
+        setAuthValue(authResult(None, psaEnrolment))
 
         val result = handler.run(FakeRequest())
-
         status(result) mustBe UNAUTHORIZED
       }
 
       "User does not have a psa or psp enrolment" in {
 
-        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
-          .thenReturn(Future.successful(authResult(Some("externalId"))))
+        setAuthValue(authResult(Some("externalId")))
 
         val result = handler.run(FakeRequest())
+        status(result) mustBe UNAUTHORIZED
+      }
 
+      "User has both psa and psp enrolment but nothing is in the cache" in {
+
+        setAuthValue(authResult(Some("externalId"), psaEnrolment, pspEnrolment))
+        setSessionValue(None)
+
+        val result = handler.run(FakeRequest())
         status(result) mustBe UNAUTHORIZED
       }
     }
 
     "return an IdentifierRequest" when {
-      sealed trait A
-      case object B extends A
-      case object C extends A
-      case object D extends A
+      "User has a psa enrolment" in {
 
+        setAuthValue(authResult(Some("externalId"), psaEnrolment))
 
-      implicit val wA: Writes[A] = Writes[A] {
-        implicit val wB: Writes[B.type] = Json.writes[B.type]
-        implicit val wC: Writes[C.type] = Json.writes[C.type]
-        implicit val wD: Writes[D.type] = Json.writes[D.type]
+        val result = handler.run(FakeRequest())
 
-        Json.writes[A]
+        status(result) mustBe OK
+        (contentAsJson(result) \ "psaId").asOpt[String] mustBe Some("A000000")
+        (contentAsJson(result) \ "pspId").asOpt[String] mustBe None
+        (contentAsJson(result) \ "externalId").asOpt[String] mustBe Some("externalId")
       }
 
-      println(Json.toJson(B: A).toString())
-      println(Json.toJson(C: A).toString())
-      println(Json.toJson(D: A).toString())
+      "User has a psp enrolment" in {
 
+        setAuthValue(authResult(Some("externalId"), pspEnrolment))
+
+        val result = handler.run(FakeRequest())
+
+        status(result) mustBe OK
+        (contentAsJson(result) \ "psaId").asOpt[String] mustBe None
+        (contentAsJson(result) \ "pspId").asOpt[String] mustBe Some("A000001")
+        (contentAsJson(result) \ "externalId").asOpt[String] mustBe Some("externalId")
+      }
+
+      "User has a both psa and psp enrolment with admin stored in cache" in {
+
+        setAuthValue(authResult(Some("externalId"), psaEnrolment, pspEnrolment))
+        setSessionValue(Some(SessionData(Administrator)))
+
+        val result = handler.run(FakeRequest())
+
+        status(result) mustBe OK
+        (contentAsJson(result) \ "psaId").asOpt[String] mustBe Some("A000000")
+        (contentAsJson(result) \ "pspId").asOpt[String] mustBe None
+        (contentAsJson(result) \ "externalId").asOpt[String] mustBe Some("externalId")
+      }
+
+      "User has a both psa and psp enrolment with practitioner stored in cache" in {
+
+        setAuthValue(authResult(Some("externalId"), psaEnrolment, pspEnrolment))
+        setSessionValue(Some(SessionData(Practitioner)))
+
+        val result = handler.run(FakeRequest())
+
+        status(result) mustBe OK
+        (contentAsJson(result) \ "psaId").asOpt[String] mustBe None
+        (contentAsJson(result) \ "pspId").asOpt[String] mustBe Some("A000001")
+        (contentAsJson(result) \ "externalId").asOpt[String] mustBe Some("externalId")
+      }
     }
   }
-
-
-
-
-
-
-
-  // User has been deregistered - 401
-  // User has deceased flag - 401
-  // User has rls flag - 401
-  // User is not associated with scheme - 401
-  // Scheme does not have a valid status - 401
 }

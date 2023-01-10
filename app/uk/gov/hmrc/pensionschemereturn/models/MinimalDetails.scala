@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.config
+package uk.gov.hmrc.pensionschemereturn.models
 
-import play.api.Configuration
+import play.api.libs.json.{Json, Reads}
 
-import javax.inject.{Inject, Singleton}
+case class MinimalDetails(
+  email: String,
+  isPsaSuspended: Boolean,
+  organisationName: Option[String],
+  individualDetails: Option[IndividualDetails],
+  rlsFlag: Boolean,
+  deceasedFlag: Boolean
+)
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+object MinimalDetails {
 
-  val appName: String = config.get[String]("appName")
+  implicit val reads: Reads[MinimalDetails] = Json.reads[MinimalDetails]
+}
 
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+case class IndividualDetails(
+  firstName: String,
+  middleName: Option[String],
+  lastName: String
+)
+
+object IndividualDetails {
+
+  implicit val reads: Reads[IndividualDetails] = Json.reads[IndividualDetails]
 }

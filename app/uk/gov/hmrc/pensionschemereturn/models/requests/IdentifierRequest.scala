@@ -17,21 +17,41 @@
 package uk.gov.hmrc.pensionschemereturn.models.requests
 
 import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeId.{PsaId, PspId}
+import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{AdministratorRequest, PractitionerRequest}
 
-sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request)
+sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request) { self =>
+
+  def fold[B](admin: AdministratorRequest[A] => B)(practitioner: PractitionerRequest[A] => B): B =
+    self match {
+      case a: AdministratorRequest[A] => admin(a)
+      case p: PractitionerRequest[A]  => practitioner(p)
+    }
+}
 
 object IdentifierRequest {
 
   case class AdministratorRequest[A](
     externalId: String,
     request: Request[A],
-    psaId: String
+    psaId: PsaId
   ) extends IdentifierRequest[A](request)
+
+  object AdministratorRequest {
+    def apply[A](externalId: String, request: Request[A], psaId: String): IdentifierRequest[A] =
+      AdministratorRequest(externalId, request, PsaId(psaId))
+  }
 
   case class PractitionerRequest[A](
     externalId: String,
     request: Request[A],
-    pspId: String
+    pspId: PspId
   ) extends IdentifierRequest[A](request)
+
+  object PractitionerRequest {
+
+    def apply[A](externalId: String, request: Request[A], pspId: String): IdentifierRequest[A] =
+      PractitionerRequest(externalId, request, PspId(pspId))
+  }
 
 }
