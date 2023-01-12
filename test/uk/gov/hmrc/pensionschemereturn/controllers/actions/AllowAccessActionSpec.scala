@@ -84,7 +84,7 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
     setupSchemeDetails(psaId, srn, Future.successful(schemeDetails))
     setupCheckAssociation(psaId, srn, Future.successful(true))
     setupMinimalDetails(psaId, Future.successful(Right(minimalDetails)))
-1
+
     setupSchemeDetails(pspId, srn, Future.successful(schemeDetails))
     setupCheckAssociation(pspId, srn, Future.successful(true))
     setupMinimalDetails(pspId, Future.successful(Right(minimalDetails)))
