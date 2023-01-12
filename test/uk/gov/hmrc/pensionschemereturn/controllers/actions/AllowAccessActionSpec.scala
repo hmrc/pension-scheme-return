@@ -100,26 +100,6 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
 
   "AllowAccessAction" should {
 
-    // return ok when isAssociated true for psa
-    // return ok when isAssociated true for psp
-
-    // return unauth for isAssociated false for psa
-    // return unauth for isAssociated false for psp
-
-    // return unauth for rls true for psa
-    // return unauth for rls true for psp
-
-    // return unauth for deceased true for psa
-    // return unauth for deceased true for psp
-
-    // return unauth for delim for psa
-    // return unauth for delim for psp
-
-    // return unauth for not found for psa
-    // return unauth for not found for psp
-
-    // return unauth when scheme status is not valid
-
     "return ok" when {
 
       "psa is associated, no rls flag, no deceased flag, no DelimitedAdmin and a valid status" in {
