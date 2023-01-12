@@ -43,17 +43,24 @@ trait ModelGenerators extends BasicGenerators {
       lastName   <- nonEmptyString
     } yield IndividualDetails(firstName, middleName, lastName)
 
-  val schemeStatusGen: Gen[SchemeStatus] =
+  val validSchemeStatusGen: Gen[SchemeStatus] =
+    Gen.oneOf(
+      Open,
+      WoundUp,
+      Deregistered
+    )
+
+  val invalidSchemeStatusGen: Gen[SchemeStatus] =
     Gen.oneOf(
       Pending,
       PendingInfoRequired,
       PendingInfoReceived,
       Rejected,
-      Open,
-      Deregistered,
-      WoundUp,
       RejectedUnderAppeal
     )
+
+  val schemeStatusGen: Gen[SchemeStatus] =
+    Gen.oneOf(validSchemeStatusGen, invalidSchemeStatusGen)
 
   val schemeDetailsGen: Gen[SchemeDetails] =
     for {

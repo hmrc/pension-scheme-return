@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers.running
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.connectors.BaseConnectorSpec
 import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser.{Administrator, Practitioner}
@@ -32,9 +33,7 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val applicationBuilder: GuiceApplicationBuilder =
-    super.applicationBuilder.configure("microservice.services.pensionAdministrator.port" -> wireMockServer.port())
-
-  lazy val connector: SessionDataCacheConnector = injected[SessionDataCacheConnector]
+    super.applicationBuilder.configure("microservice.services.pensionAdministrator.port" -> wireMockPort)
 
   val externalId = "test-id"
   lazy val url = s"/pension-administrator/journey-cache/session-data/$externalId"
@@ -51,64 +50,68 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
   def okResponse(pensionSchemeUser: PensionSchemeUser): ResponseDefinitionBuilder =
     ok(response(pensionSchemeUser)).withHeader("Content-Type", "application/json")
 
-  "fetch" should {
+  running(_ => applicationBuilder) { implicit app =>
 
-    "return an administrator" in {
-      stubGet(okResponse(Administrator))
+    lazy val connector: SessionDataCacheConnector = injected[SessionDataCacheConnector]
 
-      connector.fetch(externalId).futureValue mustBe Some(SessionData(Administrator))
+    "fetch" should {
+
+      "return an administrator" in {
+        stubGet(okResponse(Administrator))
+
+        connector.fetch(externalId).futureValue mustBe Some(SessionData(Administrator))
+      }
+
+      "return a practitioner" in {
+        stubGet(okResponse(Practitioner))
+
+        connector.fetch(externalId).futureValue mustBe Some(SessionData(Practitioner))
+      }
+
+      "return none" in {
+        stubGet(notFound)
+
+        connector.fetch(externalId).futureValue mustBe None
+      }
+
+      "return none for wrong externalId" in {
+        stubGet(okResponse(Administrator))
+
+        connector.fetch("unknown-id").futureValue mustBe None
+      }
+
+      "return a failed future for bad request" in {
+        stubGet(badRequest)
+
+        connector.fetch(externalId).failed.futureValue
+      }
     }
 
-    "return a practitioner" in {
-      stubGet(okResponse(Practitioner))
+    "delete" should {
 
-      connector.fetch(externalId).futureValue mustBe Some(SessionData(Practitioner))
-    }
+      "return unit for an ok response" in {
+        stubDelete(ok())
 
-    "return none" in {
-      stubGet(notFound)
+        connector.remove(externalId).futureValue mustBe()
+      }
 
-      connector.fetch(externalId).futureValue mustBe None
-    }
+      "return unit for a not found response" in {
+        stubDelete(notFound)
 
-    "return none for wrong externalId" in {
-      stubGet(okResponse(Administrator))
+        connector.remove(externalId).futureValue mustBe()
+      }
 
-      connector.fetch("unknown-id").futureValue mustBe None
-    }
+      "return unit for external id that doesn't exist" in {
+        stubDelete(ok())
 
-    "return a failed future for bad request" in {
-      stubGet(badRequest)
+        connector.remove("unknown-id").futureValue mustBe()
+      }
 
-      connector.fetch(externalId).failed.futureValue
+      "return a failed future for a bad request" in {
+        stubDelete(badRequest)
+
+        connector.remove(externalId).failed.futureValue
+      }
     }
   }
-
-  "delete" should {
-
-    "return unit for an ok response" in {
-      stubDelete(ok())
-
-      connector.remove(externalId).futureValue mustBe ()
-    }
-
-    "return unit for a not found response" in {
-      stubDelete(notFound)
-
-      connector.remove(externalId).futureValue mustBe ()
-    }
-
-    "return unit for external id that doesn't exist" in {
-      stubDelete(ok())
-
-      connector.remove("unknown-id").futureValue mustBe ()
-    }
-
-    "return a failed future for a bad request" in {
-      stubDelete(badRequest)
-
-      connector.remove(externalId).failed.futureValue
-    }
-  }
-
 }

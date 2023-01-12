@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.controllers.actions
 import play.api.mvc.Results.Unauthorized
 import play.api.mvc.{ActionFunction, Result}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.pensionschemereturn.connectors.MinimalDetailsError.DelimitedAdmin
+import uk.gov.hmrc.pensionschemereturn.connectors.MinimalDetailsError.{DelimitedAdmin, DetailsNotFound}
 import uk.gov.hmrc.pensionschemereturn.connectors.{MinimalDetailsConnector, MinimalDetailsError, SchemeDetailsConnector}
 import uk.gov.hmrc.pensionschemereturn.models.SchemeId.Srn
 import uk.gov.hmrc.pensionschemereturn.models.{MinimalDetails, SchemeDetails, SchemeStatus}
@@ -43,8 +43,8 @@ class AllowAccessAction(
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     (for {
-      schemeDetails <- fetchSchemeDetails(request, srn)
-      isAssociated <- fetchIsAssociated(request, srn)
+      schemeDetails  <- fetchSchemeDetails(request, srn)
+      isAssociated   <- fetchIsAssociated(request, srn)
       minimalDetails <- fetchMinimalDetails(request)
     } yield {
       if (
@@ -52,6 +52,7 @@ class AllowAccessAction(
         !minimalDetails.exists(_.rlsFlag) &&
         !minimalDetails.exists(_.deceasedFlag) &&
         !minimalDetails.left.exists(_ == DelimitedAdmin) &&
+        !minimalDetails.left.exists(_ == DetailsNotFound) &&
         validStatuses.contains(schemeDetails.schemeStatus)
       ) {
         block(AllowedAccessRequest(request, schemeDetails))

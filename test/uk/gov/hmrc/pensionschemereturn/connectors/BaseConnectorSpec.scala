@@ -29,9 +29,7 @@ import scala.reflect.ClassTag
 
 abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
 
-  protected lazy val app: Application = applicationBuilder.build()
-
-  implicit override val patienceConfig =
+  implicit override val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(500, Millis)), interval = scaled(Span(50, Millis)))
 
   protected def applicationBuilder: GuiceApplicationBuilder =
@@ -41,7 +39,7 @@ abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
         "metric.enabled" -> false
       )
 
-  protected def injected[A: ClassTag]: A = app.injector.instanceOf[A]
+  protected def injected[A: ClassTag](implicit app: Application): A = app.injector.instanceOf[A]
 
   def stubGet(url: String, response: ResponseDefinitionBuilder): StubMapping = {
     wireMockServer.stubFor(

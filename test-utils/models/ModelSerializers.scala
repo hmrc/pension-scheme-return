@@ -18,12 +18,13 @@ package models
 
 import play.api.libs.json.{JsObject, JsString, JsValue, Json, Writes}
 import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser
-import uk.gov.hmrc.pensionschemereturn.models.{SchemeDetails, SchemeStatus}
+import uk.gov.hmrc.pensionschemereturn.models.{IndividualDetails, MinimalDetails, SchemeDetails, SchemeStatus}
 
 trait ModelSerializers {
 
+  implicit val writesIndividualDetails: Writes[IndividualDetails] = Json.writes[IndividualDetails]
+  implicit val writesMinimalDetails: Writes[MinimalDetails] = Json.writes[MinimalDetails]
   implicit val writesPensionSchemeUser: Writes[PensionSchemeUser] = s => JsString(s.toString)
-
   implicit val writesSchemeStatus: Writes[SchemeStatus] = s => JsString(s.toString)
 
   implicit val writeSchemeDetails: Writes[SchemeDetails] = { details =>
