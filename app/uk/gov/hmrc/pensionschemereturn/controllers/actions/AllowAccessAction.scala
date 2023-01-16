@@ -40,7 +40,7 @@ class AllowAccessAction(
 
   override def invokeBlock[A](request: IdentifierRequest[A], block: AllowedAccessRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     (for {
       schemeDetails  <- fetchSchemeDetails(request, srn)

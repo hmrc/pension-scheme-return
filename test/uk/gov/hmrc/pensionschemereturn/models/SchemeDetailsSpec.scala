@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models
 
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsObject, JsString, JsValue, Json, Writes}
+import play.api.libs.json.{JsString, Json}
 import utils.BaseSpec
 
 class SchemeDetailsSpec extends BaseSpec with ScalaCheckPropertyChecks {
@@ -29,6 +29,23 @@ class SchemeDetailsSpec extends BaseSpec with ScalaCheckPropertyChecks {
       forAll(schemeDetailsGen) { details =>
 
         Json.toJson(details).as[SchemeDetails] mustBe details
+      }
+    }
+  }
+
+  "SchemeStatus" should {
+
+    "successfully read from json" in {
+      forAll(schemeStatusGen) { status =>
+        Json.toJson(status).as[SchemeStatus] mustBe status
+      }
+    }
+
+    "return a JsError" when {
+      "Scheme status is unknown" in {
+        forAll(nonEmptyString) { status =>
+          JsString(status).asOpt[SchemeStatus] mustBe None
+        }
       }
     }
   }

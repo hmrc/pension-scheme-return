@@ -19,7 +19,9 @@ package uk.gov.hmrc.pensionschemereturn.config
 import com.typesafe.config.Config
 import play.api.ConfigLoader
 
-case class Service(protocol: String, host: String, port: String) {
+import scala.util.Try
+
+case class Service(protocol: String, host: String, port: Int) {
   val url = s"$protocol://$host:$port"
 
   override def toString: String = url
@@ -28,9 +30,9 @@ case class Service(protocol: String, host: String, port: String) {
 object Service {
 
   implicit val configLoader: ConfigLoader[Service] = (config: Config, path: String) => {
-    val protocol = config.getString(s"$path.protocol")
+    val protocol = Try(config.getString(s"$path.protocol")).getOrElse("")
     val host = config.getString(s"$path.host")
-    val port = config.getString(s"$path.port")
+    val port = config.getInt(s"$path.port")
     Service(if(protocol.nonEmpty) protocol else "https", host, port)
   }
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.cache
 
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsString, Json, Writes}
+import play.api.libs.json.{JsString, Json}
 import utils.BaseSpec
 
 class SessionDataSpec extends BaseSpec with ScalaCheckPropertyChecks {
@@ -29,6 +29,13 @@ class SessionDataSpec extends BaseSpec with ScalaCheckPropertyChecks {
       forAll(pensionSchemeUserGen) { user =>
 
         Json.toJson(user).as[PensionSchemeUser] mustBe user
+      }
+    }
+
+    "fail to read unknown json" in {
+      forAll(nonEmptyString) { user =>
+
+        JsString(user).asOpt[PensionSchemeUser] mustBe None
       }
     }
 

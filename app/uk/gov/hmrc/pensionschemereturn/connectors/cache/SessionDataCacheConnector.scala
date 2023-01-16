@@ -18,7 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.connectors.cache
 
 import com.google.inject.ImplementedBy
 import play.api.Logger
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readOptionOfNotFound, readUnit}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.models.cache.SessionData
 import uk.gov.hmrc.pensionschemereturn.utils.FutureUtils._
@@ -33,18 +34,11 @@ class SessionDataCacheConnectorImpl @Inject()(config: AppConfig, http: HttpClien
   override def fetch(cacheId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SessionData]] =
     http
       .GET[Option[SessionData]](url(cacheId))
-      .recover {
-        case _: NotFoundException => None
-      }
       .tapError(t => Future.successful(logger.error(s"Failed to fetch $cacheId with message ${t.getMessage}")))
 
   override def remove(cacheId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     http
-      .DELETE(url(cacheId))
-      .as(())
-      .recover {
-        case _: NotFoundException => ()
-      }
+      .DELETE[Unit](url(cacheId))
       .tapError(t => Future.successful(logger.error(s"Failed to delete $cacheId with message ${t.getMessage}")))
 }
 

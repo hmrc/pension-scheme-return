@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers.actions
 
-import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.config.Constants
 import uk.gov.hmrc.pensionschemereturn.connectors.cache.SessionDataCacheConnector
@@ -40,11 +39,9 @@ class IdentifierAction @Inject()(
   override val parser: BodyParser[AnyContent]
 )(implicit override val executionContext: ExecutionContext) extends ActionBuilder[IdentifierRequest, AnyContent] with AuthorisedFunctions {
 
-  private val logger = Logger(classOf[IdentifierAction])
-
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     authorised(Enrolment(Constants.psaEnrolmentKey) or Enrolment(Constants.pspEnrolmentKey))
       .retrieve(Retrievals.externalId and Retrievals.allEnrolments) {

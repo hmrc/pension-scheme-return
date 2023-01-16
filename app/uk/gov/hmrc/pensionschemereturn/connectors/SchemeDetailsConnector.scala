@@ -18,7 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.google.inject.ImplementedBy
 import play.api.Logger
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readOptionOfNotFound}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeId.{PsaId, PspId}
 import uk.gov.hmrc.pensionschemereturn.models.SchemeId.Srn
@@ -41,11 +42,7 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
     )
 
     http
-      .GET[SchemeDetails](url("/pensions-scheme/scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
-      .map(Some(_))
-      .recover {
-        case _: NotFoundException => None
-      }
+      .GET[Option[SchemeDetails]](url("/pensions-scheme/scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
       .tapError { t =>
         Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psa $psaId with message ${t.getMessage}"))
       }
@@ -59,11 +56,7 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
     )
 
     http
-      .GET[SchemeDetails](url("/pensions-scheme/psp-scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
-      .map(Some(_))
-      .recover {
-        case _: NotFoundException => None
-      }
+      .GET[Option[SchemeDetails]](url("/pensions-scheme/psp-scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
       .tapError { t =>
         Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psp $pspId with message ${t.getMessage}"))
       }

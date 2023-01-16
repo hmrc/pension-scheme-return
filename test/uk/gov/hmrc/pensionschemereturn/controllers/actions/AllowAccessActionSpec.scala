@@ -77,7 +77,7 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
     when(mockMinimalDetailsConnector.fetch(meq(pspId))(any(), any()))
       .thenReturn(result)
 
-  override def beforeEach = {
+  override def beforeEach() = {
     reset(mockSchemeDetailsConnector, mockMinimalDetailsConnector)
 
     // setup green path

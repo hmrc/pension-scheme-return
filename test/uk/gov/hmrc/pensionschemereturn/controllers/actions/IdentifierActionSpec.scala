@@ -66,7 +66,7 @@ class IdentifierActionSpec extends BaseSpec with StubBodyParserFactory {
   val pspEnrolment: Enrolment =
     Enrolment(Constants.pspEnrolmentKey, Seq(EnrolmentIdentifier(Constants.pspIdKey, "A000001")), "Activated")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     reset(mockAuthConnector, mockSessionDataCacheConnector)
   }
 

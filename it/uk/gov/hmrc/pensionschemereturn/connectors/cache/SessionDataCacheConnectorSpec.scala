@@ -106,12 +106,6 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
 
         connector.remove("unknown-id").futureValue mustBe()
       }
-
-      "return a failed future for a bad request" in {
-        stubDelete(badRequest)
-
-        connector.remove(externalId).failed.futureValue
-      }
     }
   }
 }

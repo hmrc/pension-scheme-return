@@ -18,9 +18,10 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.google.inject.ImplementedBy
 import play.api.Logger
-import play.api.http.Status.FORBIDDEN
+import play.api.http.Status.{FORBIDDEN, NOT_FOUND}
+import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.pensionschemereturn.config.{AppConfig, Constants}
 import uk.gov.hmrc.pensionschemereturn.connectors.MinimalDetailsError.{DelimitedAdmin, DetailsNotFound}
 import uk.gov.hmrc.pensionschemereturn.models.MinimalDetails
@@ -44,7 +45,7 @@ class MinimalDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClie
     http.GET[MinimalDetails](url)(implicitly, hc, implicitly)
       .map(Right(_))
       .recover {
-        case e: NotFoundException if e.message.contains(Constants.detailsNotFound) =>
+        case e@WithStatusCode(NOT_FOUND) if e.message.contains(Constants.detailsNotFound) =>
           Left(DetailsNotFound)
         case e@WithStatusCode(FORBIDDEN) if e.message.contains(Constants.delimitedPSA) =>
           Left(DelimitedAdmin)
