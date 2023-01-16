@@ -47,22 +47,28 @@ class AllowAccessAction(
       isAssociated   <- fetchIsAssociated(request, srn)
       minimalDetails <- fetchMinimalDetails(request)
     } yield {
-      if (
-        isAssociated &&
-        !minimalDetails.exists(_.rlsFlag) &&
-        !minimalDetails.exists(_.deceasedFlag) &&
-        !minimalDetails.left.exists(_ == DelimitedAdmin) &&
-        !minimalDetails.left.exists(_ == DetailsNotFound) &&
-        validStatuses.contains(schemeDetails.schemeStatus)
-      ) {
-        block(AllowedAccessRequest(request, schemeDetails))
-      } else {
-        Future.successful(Unauthorized)
+
+      schemeDetails match {
+        case Some(schemeDetails) =>
+          if (
+            isAssociated &&
+              !minimalDetails.exists(_.rlsFlag) &&
+              !minimalDetails.exists(_.deceasedFlag) &&
+              !minimalDetails.left.exists(_ == DelimitedAdmin) &&
+              !minimalDetails.left.exists(_ == DetailsNotFound) &&
+              validStatuses.contains(schemeDetails.schemeStatus)
+          ) {
+            block(AllowedAccessRequest(request, schemeDetails))
+          } else {
+            Future.successful(Unauthorized)
+          }
+        case None =>
+          Future.successful(Unauthorized)
       }
     }).flatten
   }
 
-  private def fetchSchemeDetails[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[SchemeDetails] =
+  private def fetchSchemeDetails[A](request: IdentifierRequest[A], srn: Srn)(implicit hc: HeaderCarrier): Future[Option[SchemeDetails]] =
     request.fold(
       a => schemeDetailsConnector.details(a.psaId, srn),
       p => schemeDetailsConnector.details(p.pspId, srn)

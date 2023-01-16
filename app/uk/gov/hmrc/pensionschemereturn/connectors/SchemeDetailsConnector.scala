@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.google.inject.ImplementedBy
 import play.api.Logger
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, NotFoundException}
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeId.{PsaId, PspId}
 import uk.gov.hmrc.pensionschemereturn.models.SchemeId.Srn
@@ -32,7 +32,7 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
 
   private def url(relativePath: String) = s"${appConfig.pensionsScheme}$relativePath"
 
-  override def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
+  override def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
 
     val headers = List(
       "idNumber"     -> schemeId.value,
@@ -42,12 +42,16 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
 
     http
       .GET[SchemeDetails](url("/pensions-scheme/scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
+      .map(Some(_))
+      .recover {
+        case _: NotFoundException => None
+      }
       .tapError { t =>
         Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psa $psaId with message ${t.getMessage}"))
       }
   }
 
-  override def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails] = {
+  override def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
 
     val headers = List(
       "pspId" -> pspId.value,
@@ -56,6 +60,10 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
 
     http
       .GET[SchemeDetails](url("/pensions-scheme/psp-scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
+      .map(Some(_))
+      .recover {
+        case _: NotFoundException => None
+      }
       .tapError { t =>
         Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psp $pspId with message ${t.getMessage}"))
       }
@@ -89,8 +97,8 @@ trait SchemeDetailsConnector {
 
   protected val logger: Logger = Logger(classOf[SchemeDetailsConnector])
 
-  def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails]
-  def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SchemeDetails]
+  def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]]
+  def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]]
   def checkAssociation(psaId: PsaId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
   def checkAssociation(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 }

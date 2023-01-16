@@ -53,11 +53,11 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
     }
   }
 
-  def setupSchemeDetails(psaId: PsaId, srn: Srn, result: Future[SchemeDetails]): Unit =
+  def setupSchemeDetails(psaId: PsaId, srn: Srn, result: Future[Option[SchemeDetails]]): Unit =
     when(mockSchemeDetailsConnector.details(meq(psaId), meq(srn))(any(), any()))
       .thenReturn(result)
 
-  def setupSchemeDetails(pspId: PspId, srn: Srn, result: Future[SchemeDetails]): Unit =
+  def setupSchemeDetails(pspId: PspId, srn: Srn, result: Future[Option[SchemeDetails]]): Unit =
     when(mockSchemeDetailsConnector.details(meq(pspId), meq(srn))(any(), any()))
       .thenReturn(result)
 
@@ -81,11 +81,11 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
     reset(mockSchemeDetailsConnector, mockMinimalDetailsConnector)
 
     // setup green path
-    setupSchemeDetails(psaId, srn, Future.successful(schemeDetails))
+    setupSchemeDetails(psaId, srn, Future.successful(Some(schemeDetails)))
     setupCheckAssociation(psaId, srn, Future.successful(true))
     setupMinimalDetails(psaId, Future.successful(Right(minimalDetails)))
 
-    setupSchemeDetails(pspId, srn, Future.successful(schemeDetails))
+    setupSchemeDetails(pspId, srn, Future.successful(Some(schemeDetails)))
     setupCheckAssociation(pspId, srn, Future.successful(true))
     setupMinimalDetails(pspId, Future.successful(Right(minimalDetails)))
   }
@@ -213,9 +213,27 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
         status(result) mustBe UNAUTHORIZED
       }
 
+      "psa - scheme details not found" in {
+        setupSchemeDetails(psaId, srn, Future.successful(None))
+
+        val handler = new Handler(administratorRequest)
+        val result = handler.run(srn)(FakeRequest())
+
+        status(result) mustBe UNAUTHORIZED
+      }
+
+      "psa - scheme details not found" in {
+        setupSchemeDetails(pspId, srn, Future.successful(None))
+
+        val handler = new Handler(practitionerRequest)
+        val result = handler.run(srn)(FakeRequest())
+
+        status(result) mustBe UNAUTHORIZED
+      }
+
       "psa - scheme has an invalid status" in {
         forAll(invalidSchemeStatusGen) { schemeStatus =>
-          setupSchemeDetails(psaId, srn, Future.successful(schemeDetails.copy(schemeStatus = schemeStatus)))
+          setupSchemeDetails(psaId, srn, Future.successful(Some(schemeDetails.copy(schemeStatus = schemeStatus))))
 
           val handler = new Handler(administratorRequest)
           val result = handler.run(srn)(FakeRequest())
@@ -226,7 +244,7 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
 
       "psp - scheme has an invalid status" in {
         forAll(invalidSchemeStatusGen) { schemeStatus =>
-          setupSchemeDetails(pspId, srn, Future.successful(schemeDetails.copy(schemeStatus = schemeStatus)))
+          setupSchemeDetails(pspId, srn, Future.successful(Some(schemeDetails.copy(schemeStatus = schemeStatus))))
 
           val handler = new Handler(practitionerRequest)
           val result = handler.run(srn)(FakeRequest())

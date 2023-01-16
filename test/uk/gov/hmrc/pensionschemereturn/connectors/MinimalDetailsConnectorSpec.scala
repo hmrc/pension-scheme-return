@@ -73,9 +73,9 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
         result mustBe Right(md)
       }
 
-      "return a details not found when 404 returned" in {
+      "return a details not found when 404 returned with message" in {
 
-        stubGet("psaId", psaId.value, notFound)
+        stubGet("psaId", psaId.value, notFound.withBody(Constants.detailsNotFound))
 
         val result = connector.fetch(psaId).futureValue
 
@@ -91,6 +91,14 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
         val result = connector.fetch(psaId).futureValue
 
         result mustBe Left(DelimitedAdmin)
+      }
+
+      "fail future when a 404 returned" in {
+        stubGet("psaId", psaId.value, notFound)
+
+        assertThrows[Exception] {
+          connector.fetch(psaId).futureValue
+        }
       }
 
       "fail future for any other http failure code" in {

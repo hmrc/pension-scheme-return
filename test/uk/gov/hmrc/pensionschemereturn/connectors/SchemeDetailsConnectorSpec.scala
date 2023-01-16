@@ -103,14 +103,23 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         val result = connector.details(psaId, schemeId).futureValue
 
-        result mustBe expectedResult
+        result mustBe Some(expectedResult)
+      }
+
+      "return none when 404 is sent" in {
+
+        PsaSchemeDetailsHelper.stubGet(psaId, schemeId, notFound)
+
+        val result = connector.details(psaId, schemeId).futureValue
+
+        result mustBe None
       }
 
       "throw error" when {
 
-        "404 response is sent" in {
+        "400 response is sent" in {
 
-          PsaSchemeDetailsHelper.stubGet(psaId, schemeId, notFound)
+          PsaSchemeDetailsHelper.stubGet(psaId, schemeId, badRequest)
 
           assertThrows[Exception] {
             connector.details(psaId, schemeId).futureValue
@@ -139,14 +148,23 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         val result = connector.details(pspId, srn).futureValue
 
-        result mustBe expectedResult
+        result mustBe Some(expectedResult)
+      }
+
+      "return none when 404 is sent" in {
+
+        PspSchemeDetailsHelper.stubGet(pspId, srn, notFound)
+
+        val result = connector.details(pspId, srn).futureValue
+
+        result mustBe None
       }
 
       "throw error" when {
 
-        "404 response is sent" in {
+        "400 response is sent" in {
 
-          PspSchemeDetailsHelper.stubGet(pspId, srn, notFound)
+          PspSchemeDetailsHelper.stubGet(pspId, srn, badRequest)
 
           assertThrows[Exception] {
             connector.details(pspId, srn).futureValue
@@ -194,7 +212,7 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
           CheckAssociationHelper.stubGet(psaId, srn, notFound)
 
           assertThrows[Exception] {
-            connector.details(psaId, srn).futureValue
+            connector.checkAssociation(psaId, srn).futureValue
           }
         }
 
@@ -203,7 +221,7 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
           CheckAssociationHelper.stubGet(psaId, srn, serverError)
 
           assertThrows[Exception] {
-            connector.details(psaId, srn).futureValue
+            connector.checkAssociation(psaId, srn).futureValue
           }
         }
       }
@@ -239,7 +257,7 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
           CheckAssociationHelper.stubGet(pspId, srn, notFound)
 
           assertThrows[Exception] {
-            connector.details(pspId, srn).futureValue
+            connector.checkAssociation(pspId, srn).futureValue
           }
         }
 
@@ -248,7 +266,7 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
           CheckAssociationHelper.stubGet(pspId, srn, serverError)
 
           assertThrows[Exception] {
-            connector.details(pspId, srn).futureValue
+            connector.checkAssociation(pspId, srn).futureValue
           }
         }
       }

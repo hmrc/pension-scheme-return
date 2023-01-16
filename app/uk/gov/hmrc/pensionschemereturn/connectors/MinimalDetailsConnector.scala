@@ -44,7 +44,8 @@ class MinimalDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClie
     http.GET[MinimalDetails](url)(implicitly, hc, implicitly)
       .map(Right(_))
       .recover {
-        case _: NotFoundException => Left(DetailsNotFound)
+        case e: NotFoundException if e.message.contains(Constants.detailsNotFound) =>
+          Left(DetailsNotFound)
         case e@WithStatusCode(FORBIDDEN) if e.message.contains(Constants.delimitedPSA) =>
           Left(DelimitedAdmin)
       }
