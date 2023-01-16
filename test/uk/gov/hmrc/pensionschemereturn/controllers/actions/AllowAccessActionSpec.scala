@@ -31,7 +31,7 @@ import uk.gov.hmrc.pensionschemereturn.models.SchemeId.Srn
 import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest
 import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{AdministratorRequest, PractitionerRequest}
 import uk.gov.hmrc.pensionschemereturn.models.{MinimalDetails, SchemeDetails}
-import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
+import utils.BaseSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -222,7 +222,7 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
         status(result) mustBe UNAUTHORIZED
       }
 
-      "psa - scheme details not found" in {
+      "psp - scheme details not found" in {
         setupSchemeDetails(pspId, srn, Future.successful(None))
 
         val handler = new Handler(practitionerRequest)

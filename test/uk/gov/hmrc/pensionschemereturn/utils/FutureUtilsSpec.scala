@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.utils
 
 import uk.gov.hmrc.pensionschemereturn.utils.FutureUtils._
+import utils.BaseSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future.{failed, successful}
@@ -32,8 +33,8 @@ class FutureUtilsSpec extends BaseSpec {
       successful("initial").tap(_ => successful("forget")).futureValue mustBe "initial"
     }
 
-    "fail if tap fails" in {
-      successful("initial").tap(_ => failed(Failure("failure"))).failed.futureValue mustBe Failure("failure")
+    "not change the result if tap fails" in {
+      successful("initial").tap(_ => failed(Failure("failure"))).futureValue mustBe "initial"
     }
   }
 

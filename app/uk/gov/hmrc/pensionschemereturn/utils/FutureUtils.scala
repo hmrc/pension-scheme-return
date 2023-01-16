@@ -23,7 +23,7 @@ object FutureUtils {
   implicit class FutureOps[A](val future: Future[A]) extends AnyVal {
 
     def tap[B](f: A => Future[B])(implicit ec: ExecutionContext): Future[A] =
-      future.flatMap(a => f(a).as(a))
+      future.flatMap(a => f(a).as(a).recover(_ => a))
 
     def tapError[B](f: Throwable => Future[B])(implicit ec: ExecutionContext): Future[A] =
       future.recoverWith {

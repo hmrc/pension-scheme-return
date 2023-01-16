@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models
 
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsObject, JsString, JsValue, Json, Writes}
-import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
+import utils.BaseSpec
 
 class SchemeDetailsSpec extends BaseSpec with ScalaCheckPropertyChecks {
 

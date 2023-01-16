@@ -23,7 +23,7 @@ import org.scalatest.time.{Millis, Span}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.test.WireMockSupport
-import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
+import utils.BaseSpec
 
 import scala.reflect.ClassTag
 

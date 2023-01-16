@@ -1,7 +1,7 @@
 
 # pension-scheme-return
 
-Pension scheme return is the backend service fo pension scheme return which is a feature on manage your pension. 
+Pension scheme return is the backend service for pension scheme return which is a feature on manage your pension. 
 
 ### License
 

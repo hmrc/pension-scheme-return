@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.cache
 
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsString, Json, Writes}
-import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
+import utils.BaseSpec
 
 class SessionDataSpec extends BaseSpec with ScalaCheckPropertyChecks {
 

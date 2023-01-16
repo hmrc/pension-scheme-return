@@ -30,7 +30,7 @@ import uk.gov.hmrc.pensionschemereturn.connectors.cache.SessionDataCacheConnecto
 import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser.{Administrator, Practitioner}
 import uk.gov.hmrc.pensionschemereturn.models.cache.SessionData
 import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{AdministratorRequest, PractitionerRequest}
-import uk.gov.hmrc.pensionschemereturn.utils.BaseSpec
+import utils.BaseSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 

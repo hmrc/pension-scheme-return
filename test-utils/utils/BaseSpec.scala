@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.utils
+package utils
 
 import generators.Generators
 import models.ModelSerializers
 import org.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 
 abstract class BaseSpec extends
   AnyWordSpec with
