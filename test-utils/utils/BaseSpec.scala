@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.config
+package utils
 
-import play.api.Configuration
+import generators.Generators
+import models.ModelSerializers
+import org.mockito.MockitoSugar
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
-
-  val appName: String = config.get[String]("appName")
-
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
-}
+abstract class BaseSpec extends
+  AnyWordSpec with
+  Matchers with
+  ScalaFutures with
+  MockitoSugar with
+  BeforeAndAfterEach with
+  OptionValues with
+  Generators with
+  ModelSerializers

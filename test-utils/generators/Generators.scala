@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.config
+package generators
 
-import play.api.Configuration
+import org.scalacheck.Shrink
 
-import javax.inject.{Inject, Singleton}
+trait Generators extends BasicGenerators with ModelGenerators {
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+  implicit val dontShrinkString: Shrink[String] = Shrink.shrinkAny
 
-  val appName: String = config.get[String]("appName")
-
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+  implicit def dontShrinkList[T]: Shrink[List[T]] = Shrink.shrinkAny
 }

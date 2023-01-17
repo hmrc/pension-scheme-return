@@ -16,15 +16,23 @@
 
 package uk.gov.hmrc.pensionschemereturn.config
 
-import play.api.Configuration
+import com.typesafe.config.Config
+import play.api.ConfigLoader
 
-import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+case class Service(protocol: String, host: String, port: Int) {
+  val url = s"$protocol://$host:$port"
 
-  val appName: String = config.get[String]("appName")
+  override def toString: String = url
+}
 
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+object Service {
+
+  implicit val configLoader: ConfigLoader[Service] = (config: Config, path: String) => {
+    val protocol = Try(config.getString(s"$path.protocol")).getOrElse("")
+    val host = config.getString(s"$path.host")
+    val port = config.getInt(s"$path.port")
+    Service(if(protocol.nonEmpty) protocol else "https", host, port)
+  }
 }

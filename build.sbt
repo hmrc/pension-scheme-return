@@ -12,8 +12,9 @@ lazy val microservice = Project("pension-scheme-return", file("."))
     scalacOptions += "-Wconf:src=routes/.*:s",
   )
   .settings(publishingSettings: _*)
+  .settings(inConfig(Test)(testSettings): _*)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
 
@@ -22,4 +23,21 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
 
   ).mkString(";"),
   coverageMinimumStmtTotal := 95
+)
+
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  fork := true,
+  unmanagedSourceDirectories += baseDirectory.value / "test-utils"
+)
+
+lazy val itSettings = integrationTestSettings() ++ Seq(
+  unmanagedSourceDirectories := Seq(
+    baseDirectory.value / "it",
+    baseDirectory.value / "test-utils"
+  ),
+  unmanagedResourceDirectories := Seq(
+    baseDirectory.value / "it" / "resources"
+  ),
+  parallelExecution := false,
+  fork := true
 )

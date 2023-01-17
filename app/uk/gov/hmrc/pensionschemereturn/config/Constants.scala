@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.pensionschemereturn.config
 
-import play.api.Configuration
+object Constants {
 
-import javax.inject.{Inject, Singleton}
+  val psaEnrolmentKey = "HMRC-PODS-ORG"
+  val pspEnrolmentKey = "HMRC-PODSPP-ORG"
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+  val psaIdKey = "PSAID"
+  val pspIdKey = "PSPID"
 
-  val appName: String = config.get[String]("appName")
-
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+  val delimitedPSA = "DELIMITED_PSAID"
+  val detailsNotFound = "no match found"
 }

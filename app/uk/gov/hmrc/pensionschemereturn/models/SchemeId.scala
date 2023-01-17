@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.config
+package uk.gov.hmrc.pensionschemereturn.models
 
-import play.api.Configuration
+sealed abstract class SchemeId(val idType: String) {
+  val value: String
+}
 
-import javax.inject.{Inject, Singleton}
+object SchemeId {
 
-@Singleton
-class AppConfig @Inject()(config: Configuration) {
+  case class Srn(value: String) extends SchemeId("srn")
+  case class Pstr(value: String) extends SchemeId("pstr")
 
-  val appName: String = config.get[String]("appName")
-
-  val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
-  val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
 }
