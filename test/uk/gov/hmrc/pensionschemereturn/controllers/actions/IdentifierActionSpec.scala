@@ -66,25 +66,22 @@ class IdentifierActionSpec extends BaseSpec with StubBodyParserFactory {
   val pspEnrolment: Enrolment =
     Enrolment(Constants.pspEnrolmentKey, Seq(EnrolmentIdentifier(Constants.pspIdKey, "A000001")), "Activated")
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockAuthConnector, mockSessionDataCacheConnector)
-  }
 
   def setAuthValue(value: Option[String] ~ Enrolments): Unit =
     setAuthValue(Future.successful(value))
 
-  def setAuthValue[A](value: Future[A]): Unit = {
+  def setAuthValue[A](value: Future[A]): Unit =
     when(mockAuthConnector.authorise[A](any(), any())(any(), any()))
       .thenReturn(value)
-  }
 
   def setSessionValue(value: Option[SessionData]): Unit =
     setSessionValue(Future.successful(value))
 
-  def setSessionValue(value: Future[Option[SessionData]]): Unit = {
+  def setSessionValue(value: Future[Option[SessionData]]): Unit =
     when(mockSessionDataCacheConnector.fetch(any())(any(), any()))
       .thenReturn(value)
-  }
 
   "IdentifierAction" should {
     "return an unauthorised result" when {

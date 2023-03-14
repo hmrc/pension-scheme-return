@@ -35,23 +35,29 @@ class MinimalDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClie
 
   private val url = s"${appConfig.pensionsAdministrator}/pension-administrator/get-minimal-psa"
 
-  override def fetch(psaId: PsaId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
+  override def fetch(
+    psaId: PsaId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
     fetch(hc.withExtraHeaders("psaId" -> psaId.value))
 
-  override def fetch(pspId: PspId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
+  override def fetch(
+    pspId: PspId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
     fetch(hc.withExtraHeaders("pspId" -> pspId.value))
 
-  private def fetch(hc: HeaderCarrier)(implicit ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] = {
-    http.GET[MinimalDetails](url)(implicitly, hc, implicitly)
+  private def fetch(
+    hc: HeaderCarrier
+  )(implicit ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    http
+      .GET[MinimalDetails](url)(implicitly, hc, implicitly)
       .map(Right(_))
       .recover {
-        case e@WithStatusCode(NOT_FOUND) if e.message.contains(Constants.detailsNotFound) =>
+        case e @ WithStatusCode(NOT_FOUND) if e.message.contains(Constants.detailsNotFound) =>
           Left(DetailsNotFound)
-        case e@WithStatusCode(FORBIDDEN) if e.message.contains(Constants.delimitedPSA) =>
+        case e @ WithStatusCode(FORBIDDEN) if e.message.contains(Constants.delimitedPSA) =>
           Left(DelimitedAdmin)
       }
       .tapError(t => Future.successful(logger.error(s"Failed to fetch minimal details with message ${t.getMessage}")))
-  }
 }
 
 @ImplementedBy(classOf[MinimalDetailsConnectorImpl])
@@ -59,9 +65,13 @@ trait MinimalDetailsConnector {
 
   protected val logger: Logger = Logger(classOf[MinimalDetailsConnector])
 
-  def fetch(psaId: PsaId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]]
+  def fetch(
+    psaId: PsaId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]]
 
-  def fetch(pspId: PspId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]]
+  def fetch(
+    pspId: PspId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]]
 }
 
 sealed trait MinimalDetailsError
