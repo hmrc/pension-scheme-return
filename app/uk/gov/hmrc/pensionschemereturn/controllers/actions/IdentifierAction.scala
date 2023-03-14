@@ -37,14 +37,16 @@ class IdentifierAction @Inject()(
   override val authConnector: AuthConnector,
   sessionDataCacheConnector: SessionDataCacheConnector,
   override val parser: BodyParser[AnyContent]
-)(implicit override val executionContext: ExecutionContext) extends ActionBuilder[IdentifierRequest, AnyContent] with AuthorisedFunctions {
+)(implicit override val executionContext: ExecutionContext)
+    extends ActionBuilder[IdentifierRequest, AnyContent]
+    with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
-    authorised(Enrolment(Constants.psaEnrolmentKey) or Enrolment(Constants.pspEnrolmentKey))
-      .retrieve(Retrievals.externalId and Retrievals.allEnrolments) {
+    authorised(Enrolment(Constants.psaEnrolmentKey).or(Enrolment(Constants.pspEnrolmentKey)))
+      .retrieve(Retrievals.externalId.and(Retrievals.allEnrolments)) {
 
         case Some(externalId) ~ (IsPSA(psaId) && IsPSP(pspId)) =>
           sessionDataCacheConnector.fetch(externalId).flatMap {
@@ -70,21 +72,17 @@ class IdentifierAction @Inject()(
   }
 
   case object IsPSA {
-    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] = {
-      enrolments
-        .enrolments
+    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+      enrolments.enrolments
         .find(_.key == Constants.psaEnrolmentKey)
         .flatMap(_.getIdentifier(Constants.psaIdKey))
-    }
   }
 
   case object IsPSP {
-    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] = {
-      enrolments
-        .enrolments
+    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+      enrolments.enrolments
         .find(_.key == Constants.pspEnrolmentKey)
         .flatMap(_.getIdentifier(Constants.pspIdKey))
-    }
   }
 
   case object && {

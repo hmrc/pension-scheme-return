@@ -23,15 +23,13 @@ import utils.BaseSpec
 
 class ServiceSpec extends BaseSpec with ScalaCheckPropertyChecks {
 
-  def get(config: Config, path: String)(implicit configLoader: ConfigLoader[Service]): Service = {
+  def get(config: Config, path: String)(implicit configLoader: ConfigLoader[Service]): Service =
     configLoader.load(config, path)
-  }
 
   "service" should {
 
     "populate a service from a config" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory.parseString("""
           |service {
           | protocol = http
           | host = localhost
@@ -42,8 +40,7 @@ class ServiceSpec extends BaseSpec with ScalaCheckPropertyChecks {
     }
 
     "use https when no protocol is provided" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory.parseString("""
           |service {
           | host = localhost
           | port = 8000

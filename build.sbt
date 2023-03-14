@@ -10,6 +10,7 @@ lazy val microservice = Project("pension-scheme-return", file("."))
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
+    scalafmtOnCompile := true
   )
   .settings(publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)

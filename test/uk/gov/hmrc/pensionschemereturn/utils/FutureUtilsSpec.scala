@@ -40,11 +40,15 @@ class FutureUtilsSpec extends BaseSpec {
 
   "tapError" should {
     "not change the result on successful tap" in {
-      failed[String](Failure("initial")).tapError(_ => successful("forget")).failed.futureValue mustBe Failure("initial")
+      failed[String](Failure("initial")).tapError(_ => successful("forget")).failed.futureValue mustBe Failure(
+        "initial"
+      )
     }
 
     "not change the failure on failed tap" in {
-      failed[String](Failure("initial")).tapError(_ => failed(Failure("failure"))).failed.futureValue mustBe Failure("initial")
+      failed[String](Failure("initial")).tapError(_ => failed(Failure("failure"))).failed.futureValue mustBe Failure(
+        "initial"
+      )
     }
   }
 

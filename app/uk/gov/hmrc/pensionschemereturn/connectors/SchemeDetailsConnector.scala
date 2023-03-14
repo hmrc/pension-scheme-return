@@ -33,53 +33,82 @@ class SchemeDetailsConnectorImpl @Inject()(appConfig: AppConfig, http: HttpClien
 
   private def url(relativePath: String) = s"${appConfig.pensionsScheme}$relativePath"
 
-  override def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
+  override def details(
+    psaId: PsaId,
+    schemeId: SchemeId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
 
     val headers = List(
-      "idNumber"     -> schemeId.value,
+      "idNumber" -> schemeId.value,
       "schemeIdType" -> schemeId.idType,
-      "psaId"        -> psaId.value
+      "psaId" -> psaId.value
     )
 
     http
-      .GET[Option[SchemeDetails]](url("/pensions-scheme/scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
+      .GET[Option[SchemeDetails]](url("/pensions-scheme/scheme"))(
+        implicitly,
+        hc.withExtraHeaders(headers: _*),
+        implicitly
+      )
       .tapError { t =>
-        Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psa $psaId with message ${t.getMessage}"))
+        Future.successful(
+          logger.error(s"Failed to fetch scheme details $schemeId for psa $psaId with message ${t.getMessage}")
+        )
       }
   }
 
-  override def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
+  override def details(
+    pspId: PspId,
+    schemeId: Srn
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]] = {
 
     val headers = List(
       "pspId" -> pspId.value,
-      "srn"   -> schemeId.value
+      "srn" -> schemeId.value
     )
 
     http
-      .GET[Option[SchemeDetails]](url("/pensions-scheme/psp-scheme"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
+      .GET[Option[SchemeDetails]](url("/pensions-scheme/psp-scheme"))(
+        implicitly,
+        hc.withExtraHeaders(headers: _*),
+        implicitly
+      )
       .tapError { t =>
-        Future.successful(logger.error(s"Failed to fetch scheme details $schemeId for psp $pspId with message ${t.getMessage}"))
+        Future.successful(
+          logger.error(s"Failed to fetch scheme details $schemeId for psp $pspId with message ${t.getMessage}")
+        )
       }
   }
 
-  override def checkAssociation(psaId: PsaId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+  override def checkAssociation(
+    psaId: PsaId,
+    schemeId: Srn
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     checkAssociation(psaId.value, "psaId", schemeId)
 
-  override def checkAssociation(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+  override def checkAssociation(
+    pspId: PspId,
+    schemeId: Srn
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     checkAssociation(pspId.value, "pspId", schemeId)
 
-  private def checkAssociation(idValue: String, idType: String, srn: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  private def checkAssociation(idValue: String, idType: String, srn: Srn)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Boolean] = {
 
     val headers = List(
-      idType                  -> idValue,
+      idType -> idValue,
       "schemeReferenceNumber" -> srn.value,
-      "Content-Type"          -> "application/json"
+      "Content-Type" -> "application/json"
     )
 
     http
       .GET[Boolean](url("/pensions-scheme/is-psa-associated"))(implicitly, hc.withExtraHeaders(headers: _*), implicitly)
       .tapError { t =>
-        Future.successful(logger.error(s"Failed check association for scheme $srn for $idType $idValue with message ${t.getMessage}"))
+        Future.successful(
+          logger.error(s"Failed check association for scheme $srn for $idType $idValue with message ${t.getMessage}")
+        )
       }
   }
 
@@ -90,8 +119,14 @@ trait SchemeDetailsConnector {
 
   protected val logger: Logger = Logger(classOf[SchemeDetailsConnector])
 
-  def details(psaId: PsaId, schemeId: SchemeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]]
-  def details(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[SchemeDetails]]
+  def details(psaId: PsaId, schemeId: SchemeId)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[SchemeDetails]]
+  def details(pspId: PspId, schemeId: Srn)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[SchemeDetails]]
   def checkAssociation(psaId: PsaId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
   def checkAssociation(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 }

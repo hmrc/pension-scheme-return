@@ -47,9 +47,8 @@ class AllowAccessActionSpec extends BaseSpec with ScalaCheckPropertyChecks {
 
   class Handler[A](request: IdentifierRequest[A]) {
 
-    def run(srn: Srn): Action[AnyContent] = (new FakeActionBuilder(request) andThen allowAccessAction(srn)) {
-      request =>
-        Ok(Json.toJson(request.schemeDetails))
+    def run(srn: Srn): Action[AnyContent] = new FakeActionBuilder(request).andThen(allowAccessAction(srn)) { request =>
+      Ok(Json.toJson(request.schemeDetails))
     }
   }
 

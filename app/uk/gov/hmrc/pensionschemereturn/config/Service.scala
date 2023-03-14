@@ -33,6 +33,6 @@ object Service {
     val protocol = Try(config.getString(s"$path.protocol")).getOrElse("")
     val host = config.getString(s"$path.host")
     val port = config.getInt(s"$path.port")
-    Service(if(protocol.nonEmpty) protocol else "https", host, port)
+    Service(if (protocol.nonEmpty) protocol else "https", host, port)
   }
 }

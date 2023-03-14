@@ -46,14 +46,14 @@ object SchemeStatus {
   case object RejectedUnderAppeal extends Named("Rejected Under Appeal") with SchemeStatus
 
   implicit val reads: Reads[SchemeStatus] = {
-    case JsString(Pending.name)             => JsSuccess(Pending)
+    case JsString(Pending.name) => JsSuccess(Pending)
     case JsString(PendingInfoRequired.name) => JsSuccess(PendingInfoRequired)
     case JsString(PendingInfoReceived.name) => JsSuccess(PendingInfoReceived)
-    case JsString(Rejected.name)            => JsSuccess(Rejected)
-    case JsString(Open.name)                => JsSuccess(Open)
-    case JsString(Deregistered.name)        => JsSuccess(Deregistered)
-    case JsString(WoundUp.name)             => JsSuccess(WoundUp)
+    case JsString(Rejected.name) => JsSuccess(Rejected)
+    case JsString(Open.name) => JsSuccess(Open)
+    case JsString(Deregistered.name) => JsSuccess(Deregistered)
+    case JsString(WoundUp.name) => JsSuccess(WoundUp)
     case JsString(RejectedUnderAppeal.name) => JsSuccess(RejectedUnderAppeal)
-    case _                                  => JsError("Unrecognized scheme status")
+    case _ => JsError("Unrecognized scheme status")
   }
 }

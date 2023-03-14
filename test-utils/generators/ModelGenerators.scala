@@ -28,19 +28,19 @@ trait ModelGenerators extends BasicGenerators {
 
   lazy val minimalDetailsGen: Gen[MinimalDetails] =
     for {
-      email        <- email
-      isSuspended  <- boolean
-      orgName      <- Gen.option(nonEmptyString)
-      individual   <- Gen.option(individualDetailsGen)
-      rlsFlag      <- boolean
+      email <- email
+      isSuspended <- boolean
+      orgName <- Gen.option(nonEmptyString)
+      individual <- Gen.option(individualDetailsGen)
+      rlsFlag <- boolean
       deceasedFlag <- boolean
     } yield MinimalDetails(email, isSuspended, orgName, individual, rlsFlag, deceasedFlag)
 
   lazy val individualDetailsGen: Gen[IndividualDetails] =
     for {
-      firstName  <- nonEmptyString
+      firstName <- nonEmptyString
       middleName <- Gen.option(nonEmptyString)
-      lastName   <- nonEmptyString
+      lastName <- nonEmptyString
     } yield IndividualDetails(firstName, middleName, lastName)
 
   val validSchemeStatusGen: Gen[SchemeStatus] =
@@ -64,9 +64,9 @@ trait ModelGenerators extends BasicGenerators {
 
   val schemeDetailsGen: Gen[SchemeDetails] =
     for {
-      name           <- nonEmptyString
-      pstr           <- nonEmptyString
-      status         <- schemeStatusGen
+      name <- nonEmptyString
+      pstr <- nonEmptyString
+      status <- schemeStatusGen
       authorisingPsa <- Gen.option(nonEmptyString)
     } yield SchemeDetails(name, pstr, status, authorisingPsa)
 

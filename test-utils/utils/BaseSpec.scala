@@ -24,12 +24,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 
-abstract class BaseSpec extends
-  AnyWordSpec with
-  Matchers with
-  ScalaFutures with
-  MockitoSugar with
-  BeforeAndAfterEach with
-  OptionValues with
-  Generators with
-  ModelSerializers
+abstract class BaseSpec
+    extends AnyWordSpec
+    with Matchers
+    with ScalaFutures
+    with MockitoSugar
+    with BeforeAndAfterEach
+    with OptionValues
+    with Generators
+    with ModelSerializers
