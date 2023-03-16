@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/pension-scheme-return.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -35,7 +36,7 @@
     </appender>
 
 
-    <logger name="accesslog" level="INFO" additivity="false">
+    <logger name="accesslog" level="WARN" additivity="false">
         <appender-ref ref="ACCESS_LOG_FILE" />
     </logger>
 
@@ -43,17 +44,17 @@
         <appender-ref ref="STDOUT_IGNORE_NETTY" />
     </logger>
 
-    <logger name="com.google.inject" level="INFO"/>
+    <logger name="com.google.inject" level="WARN"/>
 
-    <logger name="uk.gov" level="INFO"/>
+    <logger name="uk.gov" level="WARN"/>
 
-    <logger name="application" level="DEBUG"/>
+    <logger name="application" level="WARN"/>
 
-    <logger name="connector" level="TRACE">
+    <logger name="connector" level="WARN">
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
