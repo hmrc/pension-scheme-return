@@ -51,7 +51,6 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
     ok(response(pensionSchemeUser)).withHeader("Content-Type", "application/json")
 
   running(_ => applicationBuilder) { implicit app =>
-
     lazy val connector: SessionDataCacheConnector = injected[SessionDataCacheConnector]
 
     "fetch" should {
@@ -59,25 +58,33 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
       "return an administrator" in {
         stubGet(okResponse(Administrator))
 
-        connector.fetch(externalId).futureValue mustBe Some(SessionData(Administrator))
+        connector.fetch(externalId).map { result =>
+          result mustBe Some(SessionData(Administrator))
+        }
       }
 
       "return a practitioner" in {
         stubGet(okResponse(Practitioner))
 
-        connector.fetch(externalId).futureValue mustBe Some(SessionData(Practitioner))
+        connector.fetch(externalId).map { result =>
+          result mustBe Some(SessionData(Practitioner))
+        }
       }
 
       "return none" in {
         stubGet(notFound)
 
-        connector.fetch(externalId).futureValue mustBe None
+        connector.fetch(externalId).map { result =>
+          result mustBe None
+        }
       }
 
       "return none for wrong externalId" in {
         stubGet(okResponse(Administrator))
 
-        connector.fetch("unknown-id").futureValue mustBe None
+        connector.fetch("unknown-id").map { result =>
+          result mustBe None
+        }
       }
 
       "return a failed future for bad request" in {
@@ -92,19 +99,25 @@ class SessionDataCacheConnectorSpec extends BaseConnectorSpec {
       "return unit for an ok response" in {
         stubDelete(ok())
 
-        connector.remove(externalId).futureValue mustBe()
+        connector.remove(externalId).map { result =>
+          result mustBe ()
+        }
       }
 
       "return unit for a not found response" in {
         stubDelete(notFound)
 
-        connector.remove(externalId).futureValue mustBe()
+        connector.remove(externalId).map { result =>
+          result mustBe ()
+        }
       }
 
       "return unit for external id that doesn't exist" in {
         stubDelete(ok())
 
-        connector.remove("unknown-id").futureValue mustBe()
+        connector.remove("unknown-id").map { result =>
+          result mustBe ()
+        }
       }
     }
   }

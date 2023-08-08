@@ -29,7 +29,7 @@ import scala.reflect.ClassTag
 
 abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
 
-  implicit override val patienceConfig: PatienceConfig =
+  override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(500, Millis)), interval = scaled(Span(50, Millis)))
 
   protected def applicationBuilder: GuiceApplicationBuilder =
@@ -41,17 +41,15 @@ abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
 
   protected def injected[A: ClassTag](implicit app: Application): A = app.injector.instanceOf[A]
 
-  def stubGet(url: String, response: ResponseDefinitionBuilder): StubMapping = {
+  def stubGet(url: String, response: ResponseDefinitionBuilder): StubMapping =
     wireMockServer.stubFor(
       get(urlEqualTo(url))
         .willReturn(response)
     )
-  }
 
-  def stubDelete(url: String, response: ResponseDefinitionBuilder): StubMapping = {
+  def stubDelete(url: String, response: ResponseDefinitionBuilder): StubMapping =
     wireMockServer.stubFor(
       delete(urlEqualTo(url))
         .willReturn(response)
     )
-  }
 }
