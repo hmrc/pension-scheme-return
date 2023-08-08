@@ -35,11 +35,11 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
     val userAnswers = requiredBody
-    logger.debug(message = s"Submit Main PSR - Incoming payload: $userAnswers")
+    logger.debug(message = s"Submit standard PSR - Incoming payload: $userAnswers")
     psrSubmissionService
       .submitStandardPsr(userAnswers)
       .map(response => {
-        logger.debug(message = s"Submit Main PSR - response: ${response.status} , body: ${response.body}")
+        logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
         NoContent
       })
   }
