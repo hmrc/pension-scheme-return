@@ -16,7 +16,7 @@ lazy val microservice = Project("pension-scheme-return", file("."))
   .settings(publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
 
