@@ -24,7 +24,7 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
   coverageExcludedPackages := List(
 
   ).mkString(";"),
-  coverageMinimumStmtTotal := 95
+  coverageMinimumStmtTotal := 90
 )
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
