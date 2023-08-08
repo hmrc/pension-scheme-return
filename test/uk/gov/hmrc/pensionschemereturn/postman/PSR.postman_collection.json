@@ -148,7 +148,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - 200",
+			"name": "POST Standard PSR - Success",
 			"event": [
 				{
 					"listen": "test",
@@ -231,7 +231,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - 400",
+			"name": "POST Standard PSR - Missing body",
 			"event": [
 				{
 					"listen": "test",
@@ -305,7 +305,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - 422",
+			"name": "POST Standard PSR - Unprocessable",
 			"event": [
 				{
 					"listen": "test",
