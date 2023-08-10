@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.scalatest.RecoverMethods.recoverToExceptionIf
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
@@ -88,7 +89,6 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
   }
 
   running(_ => applicationBuilder) { implicit app =>
-
     lazy val connector: SchemeDetailsConnector = injected[SchemeDetailsConnector]
 
     ".details for psa" should {
@@ -101,18 +101,18 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         PsaSchemeDetailsHelper.stubGet(psaId, schemeId, ok(Json.toJson(expectedResult).toString))
 
-        val result = connector.details(psaId, schemeId).futureValue
-
-        result mustBe Some(expectedResult)
+        connector.details(psaId, schemeId).map { result =>
+          result mustBe Some(expectedResult)
+        }
       }
 
       "return none when 404 is sent" in {
 
         PsaSchemeDetailsHelper.stubGet(psaId, schemeId, notFound)
 
-        val result = connector.details(psaId, schemeId).futureValue
-
-        result mustBe None
+        connector.details(psaId, schemeId).map { result =>
+          result mustBe None
+        }
       }
 
       "throw error" when {
@@ -121,8 +121,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           PsaSchemeDetailsHelper.stubGet(psaId, schemeId, badRequest)
 
-          assertThrows[Exception] {
-            connector.details(psaId, schemeId).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.details(psaId, schemeId)
           }
         }
 
@@ -146,18 +146,18 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         PspSchemeDetailsHelper.stubGet(pspId, srn, ok(Json.toJson(expectedResult).toString()))
 
-        val result = connector.details(pspId, srn).futureValue
-
-        result mustBe Some(expectedResult)
+        connector.details(pspId, srn).map { result =>
+          result mustBe Some(expectedResult)
+        }
       }
 
       "return none when 404 is sent" in {
 
         PspSchemeDetailsHelper.stubGet(pspId, srn, notFound)
 
-        val result = connector.details(pspId, srn).futureValue
-
-        result mustBe None
+        connector.details(pspId, srn).map { result =>
+          result mustBe None
+        }
       }
 
       "throw error" when {
@@ -166,8 +166,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           PspSchemeDetailsHelper.stubGet(pspId, srn, badRequest)
 
-          assertThrows[Exception] {
-            connector.details(pspId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.details(pspId, srn)
           }
         }
 
@@ -175,8 +175,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           PspSchemeDetailsHelper.stubGet(pspId, srn, serverError)
 
-          assertThrows[Exception] {
-            connector.details(pspId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.details(pspId, srn)
           }
         }
       }
@@ -191,18 +191,18 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         CheckAssociationHelper.stubGet(psaId, srn, ok("true"))
 
-        val result = connector.checkAssociation(psaId, srn).futureValue
-
-        result mustBe true
+        connector.checkAssociation(psaId, srn).map { result =>
+          result mustBe true
+        }
       }
 
       "return false if psa is not associated" in {
 
         CheckAssociationHelper.stubGet(psaId, srn, ok("false"))
 
-        val result = connector.checkAssociation(psaId, srn).futureValue
-
-        result mustBe false
+        connector.checkAssociation(psaId, srn).map { result =>
+          result mustBe false
+        }
       }
 
       "throw error" when {
@@ -211,8 +211,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           CheckAssociationHelper.stubGet(psaId, srn, notFound)
 
-          assertThrows[Exception] {
-            connector.checkAssociation(psaId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.checkAssociation(psaId, srn)
           }
         }
 
@@ -220,8 +220,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           CheckAssociationHelper.stubGet(psaId, srn, serverError)
 
-          assertThrows[Exception] {
-            connector.checkAssociation(psaId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.checkAssociation(psaId, srn)
           }
         }
       }
@@ -236,18 +236,18 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
         CheckAssociationHelper.stubGet(pspId, srn, ok("true"))
 
-        val result = connector.checkAssociation(pspId, srn).futureValue
-
-        result mustBe true
+        connector.checkAssociation(pspId, srn).map { result =>
+          result mustBe true
+        }
       }
 
       "return false if psp is not associated" in {
 
         CheckAssociationHelper.stubGet(pspId, srn, ok("false"))
 
-        val result = connector.checkAssociation(pspId, srn).futureValue
-
-        result mustBe false
+        connector.checkAssociation(pspId, srn).map { result =>
+          result mustBe false
+        }
       }
 
       "throw error" when {
@@ -256,8 +256,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           CheckAssociationHelper.stubGet(pspId, srn, notFound)
 
-          assertThrows[Exception] {
-            connector.checkAssociation(pspId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.checkAssociation(pspId, srn)
           }
         }
 
@@ -265,8 +265,8 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec {
 
           CheckAssociationHelper.stubGet(pspId, srn, serverError)
 
-          assertThrows[Exception] {
-            connector.checkAssociation(pspId, srn).futureValue
+          recoverToExceptionIf[Exception] {
+            connector.checkAssociation(pspId, srn)
           }
         }
       }

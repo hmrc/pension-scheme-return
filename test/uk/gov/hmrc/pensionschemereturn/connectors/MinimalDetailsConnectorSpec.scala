@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.scalatest.RecoverMethods.recoverToExceptionIf
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
@@ -48,7 +49,6 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
   val pspId = pspIdGen.sample.value
 
   running(_ => applicationBuilder) { implicit app =>
-
     lazy val connector: MinimalDetailsConnector = injected[MinimalDetailsConnector]
 
     "fetch" should {
@@ -58,9 +58,9 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
         val md = minimalDetailsGen.sample.value
         stubGet("psaId", psaId.value, ok(Json.stringify(Json.toJson(md))))
 
-        val result = connector.fetch(psaId).futureValue
-
-        result mustBe Right(md)
+        connector.fetch(psaId).map { result =>
+          result mustBe Right(md)
+        }
       }
 
       "return psp minimal details" in {
@@ -68,18 +68,18 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
         val md = minimalDetailsGen.sample.value
         stubGet("pspId", pspId.value, ok(Json.stringify(Json.toJson(md))))
 
-        val result = connector.fetch(pspId).futureValue
-
-        result mustBe Right(md)
+        connector.fetch(pspId).map { result =>
+          result mustBe Right(md)
+        }
       }
 
       "return a details not found when 404 returned with message" in {
 
         stubGet("psaId", psaId.value, notFound.withBody(Constants.detailsNotFound))
 
-        val result = connector.fetch(psaId).futureValue
-
-        result mustBe Left(DetailsNotFound)
+        connector.fetch(psaId).map { result =>
+          result mustBe Left(DetailsNotFound)
+        }
       }
 
       "return a delimited admin error when forbidden with delimited admin error returned" in {
@@ -88,25 +88,26 @@ class MinimalDetailsConnectorSpec extends BaseConnectorSpec {
 
         stubGet("psaId", psaId.value, forbidden.withBody(body))
 
-        val result = connector.fetch(psaId).futureValue
-
-        result mustBe Left(DelimitedAdmin)
+        connector.fetch(psaId).map { result =>
+          result mustBe Left(DelimitedAdmin)
+        }
       }
 
       "fail future when a 404 returned" in {
         stubGet("psaId", psaId.value, notFound)
 
-        assertThrows[Exception] {
-          connector.fetch(psaId).futureValue
+        recoverToExceptionIf[Exception] {
+          connector.fetch(psaId)
         }
       }
 
       "fail future for any other http failure code" in {
         stubGet("psaId", psaId.value, badRequest)
 
-        assertThrows[Exception] {
-          connector.fetch(psaId).futureValue
+        recoverToExceptionIf[Exception] {
+          connector.fetch(psaId)
         }
+
       }
     }
   }

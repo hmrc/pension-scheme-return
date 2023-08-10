@@ -1,0 +1,391 @@
+{
+	"info": {
+		"_postman_id": "3a1248ef-d909-4d5e-a663-a1bb122f991b",
+		"name": "PSR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Ping",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Has valid data for Event 20A\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // processingDate",
+							"    pm.expect(jsonData.processingDate).to.eql(\"2023-12-15T12:30:46Z\");",
+							"    // schemeDetails",
+							"    pm.expect(jsonData.schemeDetails.pSTR).to.eql(\"87219363YN\");",
+							"    pm.expect(jsonData.schemeDetails.schemeName).to.eql(\"Abc Ltd\");",
+							"    // er20aDetails",
+							"    pm.expect(jsonData.er20aDetails.reportStartDate).to.eql(\"2021-04-06\");",
+							"    pm.expect(jsonData.er20aDetails.reportEndDate).to.eql(\"2022-04-05\");",
+							"    pm.expect(jsonData.er20aDetails.reportVersionNumber).to.eql(\"001\");",
+							"    pm.expect(jsonData.er20aDetails.reportSubmittedDateAndTime).to.eql(\"2023-12-13T12:12:12Z\");",
+							"    // schemeMasterTrustDetails",
+							"    pm.expect(jsonData.schemeMasterTrustDetails.startDate).to.eql(\"2021-06-08\");",
+							"    // erDeclarationDetails",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedBy).to.eql(\"PSP\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedID).to.eql(\"20000001\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedName).to.eql(\"ABCDEFGHIJKLMNOPQRSTUV\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.authorisedPSAID).to.eql(\"A4045157\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration1).to.eql(\"Selected\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration2).to.eql(\"Selected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "reportVersionNumber",
+						"value": "001",
+						"type": "default"
+					},
+					{
+						"key": "reportStartDate",
+						"value": "2021-04-06",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:10700/ping/ping",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10700",
+					"path": [
+						"ping",
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "metrics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Has valid data for Event 20A\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // processingDate",
+							"    pm.expect(jsonData.processingDate).to.eql(\"2023-12-15T12:30:46Z\");",
+							"    // schemeDetails",
+							"    pm.expect(jsonData.schemeDetails.pSTR).to.eql(\"87219363YN\");",
+							"    pm.expect(jsonData.schemeDetails.schemeName).to.eql(\"Abc Ltd\");",
+							"    // er20aDetails",
+							"    pm.expect(jsonData.er20aDetails.reportStartDate).to.eql(\"2021-04-06\");",
+							"    pm.expect(jsonData.er20aDetails.reportEndDate).to.eql(\"2022-04-05\");",
+							"    pm.expect(jsonData.er20aDetails.reportVersionNumber).to.eql(\"001\");",
+							"    pm.expect(jsonData.er20aDetails.reportSubmittedDateAndTime).to.eql(\"2023-12-13T12:12:12Z\");",
+							"    // schemeMasterTrustDetails",
+							"    pm.expect(jsonData.schemeMasterTrustDetails.startDate).to.eql(\"2021-06-08\");",
+							"    // erDeclarationDetails",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedBy).to.eql(\"PSP\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedID).to.eql(\"20000001\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedName).to.eql(\"ABCDEFGHIJKLMNOPQRSTUV\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.authorisedPSAID).to.eql(\"A4045157\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration1).to.eql(\"Selected\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration2).to.eql(\"Selected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "reportVersionNumber",
+						"value": "001",
+						"type": "default"
+					},
+					{
+						"key": "reportStartDate",
+						"value": "2021-04-06",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:10700/admin/metrics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10700",
+					"path": [
+						"admin",
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Standard PSR - Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Has valid data for Event 20A\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // processingDate",
+							"    pm.expect(jsonData.processingDate).to.eql(\"2023-12-15T12:30:46Z\");",
+							"    // schemeDetails",
+							"    pm.expect(jsonData.schemeDetails.pSTR).to.eql(\"87219363YN\");",
+							"    pm.expect(jsonData.schemeDetails.schemeName).to.eql(\"Abc Ltd\");",
+							"    // er20aDetails",
+							"    pm.expect(jsonData.er20aDetails.reportStartDate).to.eql(\"2021-04-06\");",
+							"    pm.expect(jsonData.er20aDetails.reportEndDate).to.eql(\"2022-04-05\");",
+							"    pm.expect(jsonData.er20aDetails.reportVersionNumber).to.eql(\"001\");",
+							"    pm.expect(jsonData.er20aDetails.reportSubmittedDateAndTime).to.eql(\"2023-12-13T12:12:12Z\");",
+							"    // schemeMasterTrustDetails",
+							"    pm.expect(jsonData.schemeMasterTrustDetails.startDate).to.eql(\"2021-06-08\");",
+							"    // erDeclarationDetails",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedBy).to.eql(\"PSP\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedID).to.eql(\"20000001\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedName).to.eql(\"ABCDEFGHIJKLMNOPQRSTUV\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.authorisedPSAID).to.eql(\"A4045157\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration1).to.eql(\"Selected\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration2).to.eql(\"Selected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "reportVersionNumber",
+						"value": "001",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "reportStartDate",
+						"value": "2021-04-06",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reportDetails\" : {\n    \"pstr\" : \"17836742CF\",\n    \"psrStatus\" : \"Compiled\",\n    \"periodStart\" : \"2022-04-06\",\n    \"periodEnd\" : \"2023-04-05\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10700",
+					"path": [
+						"pension-scheme-return",
+						"psr",
+						"standard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Standard PSR - Missing body",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Has valid data for Event 20A\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // processingDate",
+							"    pm.expect(jsonData.processingDate).to.eql(\"2023-12-15T12:30:46Z\");",
+							"    // schemeDetails",
+							"    pm.expect(jsonData.schemeDetails.pSTR).to.eql(\"87219363YN\");",
+							"    pm.expect(jsonData.schemeDetails.schemeName).to.eql(\"Abc Ltd\");",
+							"    // er20aDetails",
+							"    pm.expect(jsonData.er20aDetails.reportStartDate).to.eql(\"2021-04-06\");",
+							"    pm.expect(jsonData.er20aDetails.reportEndDate).to.eql(\"2022-04-05\");",
+							"    pm.expect(jsonData.er20aDetails.reportVersionNumber).to.eql(\"001\");",
+							"    pm.expect(jsonData.er20aDetails.reportSubmittedDateAndTime).to.eql(\"2023-12-13T12:12:12Z\");",
+							"    // schemeMasterTrustDetails",
+							"    pm.expect(jsonData.schemeMasterTrustDetails.startDate).to.eql(\"2021-06-08\");",
+							"    // erDeclarationDetails",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedBy).to.eql(\"PSP\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedID).to.eql(\"20000001\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedName).to.eql(\"ABCDEFGHIJKLMNOPQRSTUV\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.authorisedPSAID).to.eql(\"A4045157\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration1).to.eql(\"Selected\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration2).to.eql(\"Selected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "reportVersionNumber",
+						"value": "001",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "reportStartDate",
+						"value": "2021-04-06",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10700",
+					"path": [
+						"pension-scheme-return",
+						"psr",
+						"standard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Standard PSR - Unprocessable",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Has valid data for Event 20A\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // processingDate",
+							"    pm.expect(jsonData.processingDate).to.eql(\"2023-12-15T12:30:46Z\");",
+							"    // schemeDetails",
+							"    pm.expect(jsonData.schemeDetails.pSTR).to.eql(\"87219363YN\");",
+							"    pm.expect(jsonData.schemeDetails.schemeName).to.eql(\"Abc Ltd\");",
+							"    // er20aDetails",
+							"    pm.expect(jsonData.er20aDetails.reportStartDate).to.eql(\"2021-04-06\");",
+							"    pm.expect(jsonData.er20aDetails.reportEndDate).to.eql(\"2022-04-05\");",
+							"    pm.expect(jsonData.er20aDetails.reportVersionNumber).to.eql(\"001\");",
+							"    pm.expect(jsonData.er20aDetails.reportSubmittedDateAndTime).to.eql(\"2023-12-13T12:12:12Z\");",
+							"    // schemeMasterTrustDetails",
+							"    pm.expect(jsonData.schemeMasterTrustDetails.startDate).to.eql(\"2021-06-08\");",
+							"    // erDeclarationDetails",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedBy).to.eql(\"PSP\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedID).to.eql(\"20000001\");",
+							"    pm.expect(jsonData.erDeclarationDetails.submittedName).to.eql(\"ABCDEFGHIJKLMNOPQRSTUV\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.authorisedPSAID).to.eql(\"A4045157\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration1).to.eql(\"Selected\");",
+							"    pm.expect(jsonData.erDeclarationDetails.pspDeclaration.pspDeclaration2).to.eql(\"Selected\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "reportVersionNumber",
+						"value": "001",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "reportStartDate",
+						"value": "2021-04-06",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"reportDetails\" : {\n    \"pstr\" : \"17836742CF\",\n    \"psrStatus\" : \"Compiled\",\n    \"periodStart\" : \"2023-04-06\",\n    \"periodEnd\" : \"2022-04-05\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10700",
+					"path": [
+						"pension-scheme-return",
+						"psr",
+						"standard"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

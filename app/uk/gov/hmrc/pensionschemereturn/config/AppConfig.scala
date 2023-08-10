@@ -17,14 +17,33 @@
 package uk.gov.hmrc.pensionschemereturn.config
 
 import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AppConfig @Inject()(config: Configuration) {
+class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig, runModeConfiguration: Configuration) {
 
   val appName: String = config.get[String]("appName")
 
   val pensionsAdministrator: Service = config.get[Service]("microservice.services.pensionAdministrator")
   val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
+
+  private val ifURL: String = servicesConfig.baseUrl(serviceName = "if-hod")
+  private val desURL: String = servicesConfig.baseUrl(serviceName = "des-hod")
+
+  lazy val desEnvironment: String =
+    runModeConfiguration.getOptional[String]("microservice.services.des-hod.env").getOrElse("local")
+  lazy val authorization: String = "Bearer " + runModeConfiguration
+    .getOptional[String]("microservice.services.des-hod.authorizationToken")
+    .getOrElse("local")
+
+  lazy val integrationFrameworkEnvironment: String =
+    runModeConfiguration.getOptional[String](path = "microservice.services.if-hod.env").getOrElse("local")
+  lazy val integrationFrameworkAuthorization: String = "Bearer " + runModeConfiguration
+    .getOptional[String](path = "microservice.services.if-hod.authorizationToken")
+    .getOrElse("local")
+
+  val submitStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-standard-psr")}"
+
 }
