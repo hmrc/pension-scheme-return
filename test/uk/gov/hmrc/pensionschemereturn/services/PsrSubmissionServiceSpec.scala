@@ -21,14 +21,13 @@ import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredDetails, ReportDetails, SchemeDesignatory}
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
@@ -60,9 +59,11 @@ class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
           totalPayments = 6
         )
       )
-      val result = service.submitMinimalRequiredDetails(details)
 
-      await(result) mustEqual expectedResponse
+      service.submitMinimalRequiredDetails(details).map { result =>
+        result mustEqual expectedResponse
+      }
+
     }
   }
 }

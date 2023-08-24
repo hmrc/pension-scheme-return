@@ -18,22 +18,19 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
-import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfter
 import play.api.Application
-import play.api.Play.materializer
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.base.SpecBase
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {

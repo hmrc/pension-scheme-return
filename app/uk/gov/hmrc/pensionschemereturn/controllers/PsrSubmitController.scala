@@ -17,15 +17,14 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.Logging
-import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContent, AnyContentAsJson, ControllerComponents, Request, Results}
+import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
 import uk.gov.hmrc.pensionschemereturn.models.MinimalRequiredDetails
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton()
 class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionService: PsrSubmissionService)(
