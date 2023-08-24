@@ -17,13 +17,14 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.Logging
-import play.api.mvc.{Action, AnyContent, ControllerComponents, Request, Results}
+import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
+import uk.gov.hmrc.pensionschemereturn.models.MinimalRequiredDetails
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton()
 class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionService: PsrSubmissionService)(
@@ -32,6 +33,18 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     with HttpErrorFunctions
     with Results
     with Logging {
+
+  def submitMinimalRequiredDetails: Action[AnyContent] =
+    Action.async { implicit request =>
+      val minimalRequiredDetails = requiredBody.as[MinimalRequiredDetails]
+      logger.debug(message = s"Submitting minimal required details - Incoming payload: $minimalRequiredDetails")
+      psrSubmissionService
+        .submitMinimalRequiredDetails(minimalRequiredDetails)
+        .map(response => {
+          logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
+          NoContent
+        })
+    }
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
     val userAnswers = requiredBody

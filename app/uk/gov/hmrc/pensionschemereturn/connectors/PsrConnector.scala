@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
@@ -38,7 +38,7 @@ class PsrConnector @Inject()(
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
     val StandardPsrUrl = config.submitStandardPsrUrl
-    logger.debug("Submit standard PSR called URL:" + StandardPsrUrl)
+    logger.info("Submit standard PSR called URL: " + StandardPsrUrl + s" with payload: ${Json.stringify(data)}")
 
     http.POST[JsValue, HttpResponse](StandardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly).map {
       response =>

@@ -18,7 +18,6 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
-import org.mockito.MockitoSugar.mock
 import org.scalatest.BeforeAndAfter
 import play.api.Application
 import play.api.http.Status
@@ -26,16 +25,15 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.base.SpecBase
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PsrControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
+class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit lazy val rh: RequestHeader = FakeRequest("", "")
@@ -52,6 +50,39 @@ class PsrControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
     .build()
 
   private val controller = application.injector.instanceOf[PsrSubmitController]
+
+  "POST minimal required details" must {
+    "return 204" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockPsrSubmissionService.submitMinimalRequiredDetails(any())(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+
+      val requestJson: JsValue = Json.parse(
+        """{
+          |
+          |  "reportDetails" : {
+          |    "pstr": "test-pstr",
+          |    "periodStart": "2022-04-06",
+          |    "periodEnd": "2023-04-05"
+          |  },
+          |  "accountingPeriods": [
+          |    ["2022-04-06", "2023-04-05"]
+          |  ],
+          |  "schemeDesignatory": {
+          |    "openBankAccount": true,
+          |    "activeMembers": 1,
+          |    "deferredMembers": 2,
+          |    "pensionerMembers": 3,
+          |    "totalPayments": 6
+          |  }
+          |}""".stripMargin
+      )
+      val postRequest = fakeRequest.withJsonBody(requestJson)
+      val result = controller.submitMinimalRequiredDetails(postRequest)
+      status(result) mustBe Status.NO_CONTENT
+    }
+  }
 
   "POST standard PSR" must {
     "return 204" in {
@@ -70,8 +101,7 @@ class PsrControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
           |}""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
-      val result = controller
-        .submitStandardPsr(postRequest)
+      val result = controller.submitStandardPsr(postRequest)
       status(result) mustBe Status.NO_CONTENT
     }
   }
