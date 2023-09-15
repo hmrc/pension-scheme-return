@@ -17,8 +17,10 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.Logging
+import play.api.mvc.Results.NoContent
 import play.api.mvc._
-import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
+import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions, HttpResponse}
+import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.{httpResult, requiredBody}
 import uk.gov.hmrc.pensionschemereturn.models.MinimalRequiredDetails
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -40,24 +42,25 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
       logger.debug(message = s"Submitting minimal required details - Incoming payload: $minimalRequiredDetails")
       psrSubmissionService
         .submitMinimalRequiredDetails(minimalRequiredDetails)
-        .map(response => {
-          logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
-          NoContent
-        })
+        .map(httpResult("Submitting minimal required details", _))
     }
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
     val userAnswers = requiredBody
-    logger.debug(message = s"Submit standard PSR - Incoming payload: $userAnswers")
+    logger.debug(message = s"Submitting standard PSR - Incoming payload: $userAnswers")
     psrSubmissionService
       .submitStandardPsr(userAnswers)
-      .map(response => {
-        logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
-        NoContent
-      })
+      .map(httpResult("Submitting standard PSR", _))
   }
+}
 
+object PsrSubmitController extends Logging {
   private def requiredBody(implicit request: Request[AnyContent]) =
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
 
+  private val httpResult: (String, HttpResponse) => Result =
+    (msg, response) => {
+      logger.debug(message = s"$msg - response: ${response.status} , body: ${response.body}")
+      NoContent
+    }
 }

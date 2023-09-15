@@ -20,7 +20,8 @@ import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeId.{PsaId, PspId}
 import uk.gov.hmrc.pensionschemereturn.models.requests.IdentifierRequest.{AdministratorRequest, PractitionerRequest}
 
-sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request) { self =>
+sealed abstract class IdentifierRequest[A](request: Request[A]) extends WrappedRequest[A](request) {
+  self =>
 
   def fold[B](admin: AdministratorRequest[A] => B, practitioner: PractitionerRequest[A] => B): B =
     self match {

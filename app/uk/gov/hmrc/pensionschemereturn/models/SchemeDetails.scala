@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models
 
-import play.api.libs.json.{JsError, JsPath, JsString, JsSuccess, Json, Reads}
+import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.utils.Named
 
 case class SchemeDetails(schemeName: String, pstr: String, schemeStatus: SchemeStatus, authorisingPSAID: Option[String])
@@ -37,12 +37,19 @@ sealed trait SchemeStatus
 object SchemeStatus {
 
   case object Pending extends Named("Pending") with SchemeStatus
+
   case object PendingInfoRequired extends Named("Pending Info Required") with SchemeStatus
+
   case object PendingInfoReceived extends Named("Pending Info Received") with SchemeStatus
+
   case object Rejected extends Named("Rejected") with SchemeStatus
+
   case object Open extends Named("Open") with SchemeStatus
+
   case object Deregistered extends Named("Deregistered") with SchemeStatus
+
   case object WoundUp extends Named("Wound-up") with SchemeStatus
+
   case object RejectedUnderAppeal extends Named("Rejected Under Appeal") with SchemeStatus
 
   implicit val reads: Reads[SchemeStatus] = {

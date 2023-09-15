@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.cache
 
-import play.api.libs.json.{JsError, JsString, JsSuccess, Json, Reads}
+import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.utils.Named
 
 case class SessionData(administratorOrPractitioner: PensionSchemeUser)
@@ -31,6 +31,7 @@ sealed trait PensionSchemeUser
 object PensionSchemeUser {
 
   case object Administrator extends Named("administrator") with PensionSchemeUser
+
   case object Practitioner extends Named("practitioner") with PensionSchemeUser
 
   implicit val reads: Reads[PensionSchemeUser] = {

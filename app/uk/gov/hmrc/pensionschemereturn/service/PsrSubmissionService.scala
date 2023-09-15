@@ -22,8 +22,8 @@ import play.api.libs.json._
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import PsrSubmissionService._
 import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService._
 
 import scala.concurrent.{ExecutionContext, Future}
 

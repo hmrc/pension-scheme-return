@@ -1,24 +1,24 @@
 import play.core.PlayVersion
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "7.12.0"
-  private val hmrcMongoVersion = "0.74.0"
+  private val bootstrapVersion = "7.22.0"
+  private val hmrcMongoVersion = "1.3.0"
 
-  val compile = Seq(
+  val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "bootstrap-backend-play-28"  % bootstrapVersion,
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"         % hmrcMongoVersion,
-    "org.typelevel"           %% "cats-core"                  % "2.9.0"
+    "org.typelevel"           %% "cats-core"                  % "2.10.0"
   )
 
-  val test = Seq(
+  val test: Seq[ModuleID] = Seq(
+    "com.typesafe.play"       %% "play-test"                  % PlayVersion.current         % Test,
     "uk.gov.hmrc"             %% "bootstrap-test-play-28"     % bootstrapVersion            % "test, it",
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"    % hmrcMongoVersion            % Test,
-    "org.scalatestplus"       %% "scalacheck-1-15"            % "3.2.11.0"                  % "test, it",
+    "org.scalatestplus"       %% "scalacheck-1-17"            % "3.2.15.0"                  % "test, it",
     "org.scalacheck"          %% "scalacheck"                 % "1.17.0"                    % "test, it",
     "org.mockito"             %% "mockito-scala"              % "1.17.12"                   % "test, it",
-    "com.typesafe.play"       %% "play-test"                  % PlayVersion.current         % Test,
-    "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.0"                    % "it",
+    "com.vladsch.flexmark"    %  "flexmark-all"               % "0.64.6"                    % "it"
   )
 }
