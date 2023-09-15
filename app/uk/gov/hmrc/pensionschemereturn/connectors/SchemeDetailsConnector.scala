@@ -123,10 +123,13 @@ trait SchemeDetailsConnector {
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Option[SchemeDetails]]
+
   def details(pspId: PspId, schemeId: Srn)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Option[SchemeDetails]]
+
   def checkAssociation(psaId: PsaId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+
   def checkAssociation(pspId: PspId, schemeId: Srn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 }

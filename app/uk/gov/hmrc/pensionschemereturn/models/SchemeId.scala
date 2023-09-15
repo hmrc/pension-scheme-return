@@ -23,6 +23,7 @@ sealed abstract class SchemeId(val idType: String) {
 object SchemeId {
 
   case class Srn(value: String) extends SchemeId("srn")
+
   case class Pstr(value: String) extends SchemeId("pstr")
 
 }

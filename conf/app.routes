@@ -1,4 +1,4 @@
 # microservice specific routes
 
-POST       /psr/standard                           uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
-POST       /psr/submit-minimal-required-details    uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitMinimalRequiredDetails
+POST        /psr/standard                               uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
+POST        /psr/submit-minimal-required-details        uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitMinimalRequiredDetails
