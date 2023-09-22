@@ -55,6 +55,7 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
 }
 
 object PsrSubmitController extends Logging {
+
   private def requiredBody(implicit request: Request[AnyContent]) =
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
 

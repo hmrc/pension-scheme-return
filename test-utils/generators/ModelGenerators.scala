@@ -20,9 +20,11 @@ import org.scalacheck.Gen
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeId.{PsaId, PspId}
 import uk.gov.hmrc.pensionschemereturn.models.SchemeId.{Pstr, Srn}
 import uk.gov.hmrc.pensionschemereturn.models.SchemeStatus._
+import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser
 import uk.gov.hmrc.pensionschemereturn.models.cache.PensionSchemeUser.{Administrator, Practitioner}
-import uk.gov.hmrc.pensionschemereturn.models._
+
+import java.time.LocalDate
 
 trait ModelGenerators extends BasicGenerators {
 
@@ -78,6 +80,14 @@ trait ModelGenerators extends BasicGenerators {
 
   val srnGen: Gen[Srn] = nonEmptyString.map(Srn)
   val pstrGen: Gen[Pstr] = nonEmptyString.map(Pstr)
+
+  val dateGenerator: Gen[LocalDate] = for {
+    day <- Gen.choose(1, 28)
+    month <- Gen.choose(1, 12)
+    year <- Gen.choose(1990, 2000)
+  } yield LocalDate.of(year, month, day)
+
+  val psaOrPspGen: Gen[String] = Gen.oneOf(Seq("PSA", "PSP"))
 
   val schemeIdGen: Gen[SchemeId] = Gen.oneOf(srnGen, pstrGen)
 }
