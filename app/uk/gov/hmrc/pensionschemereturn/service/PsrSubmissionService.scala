@@ -22,8 +22,8 @@ import play.api.libs.json._
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService._
 import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService._
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ class PsrSubmissionService @Inject()(
   jsonPayloadSchemaValidator: JSONSchemaValidator
 ) extends Logging {
 
-  private val SCHEMA_PATH_1444 = "/resources.schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
+  private val SCHEMA_PATH_1444 = "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
 
   def submitMinimalRequiredDetails(
     minimalRequiredDetails: MinimalRequiredDetails
@@ -47,7 +47,7 @@ class PsrSubmissionService @Inject()(
         periodEnd = minimalRequiredDetails.reportDetails.periodEnd
       ),
       ETMPAccountingPeriodDetails(
-        recordVersion = 1, // TODO hardcoded for now
+        recordVersion = "001", // TODO hardcoded for now
         accountingPeriods = minimalRequiredDetails.accountingPeriods.map {
           case (start, end) =>
             ETMPAccountingPeriod(
@@ -57,8 +57,8 @@ class PsrSubmissionService @Inject()(
         }
       ),
       ETMPSchemeDesignatory(
-        recordVersion = 1, // TODO hardcoded for now
-        openBankAccount = minimalRequiredDetails.schemeDesignatory.openBankAccount,
+        recordVersion = "001", // TODO hardcoded for now
+        openBankAccount = if (minimalRequiredDetails.schemeDesignatory.openBankAccount) "Yes" else "No",
         reasonNoOpenAccount = minimalRequiredDetails.schemeDesignatory.reasonForNoBankAccount,
         noOfActiveMembers = minimalRequiredDetails.schemeDesignatory.activeMembers,
         noOfDeferredMembers = minimalRequiredDetails.schemeDesignatory.deferredMembers,
@@ -100,7 +100,7 @@ class PsrSubmissionService @Inject()(
 }
 
 object PsrSubmissionService {
-  private implicit val psrStatusWrites: OWrites[PSRStatus] = status => Json.obj("status" -> status.name)
+  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
   private implicit val reportDetailsWrites: OWrites[ETMPReportDetails] = Json.writes[ETMPReportDetails]
   private implicit val accountingPeriodWrites: OWrites[ETMPAccountingPeriod] = Json.writes[ETMPAccountingPeriod]
   private implicit val accountingPeriodDetailsWrites: OWrites[ETMPAccountingPeriodDetails] =

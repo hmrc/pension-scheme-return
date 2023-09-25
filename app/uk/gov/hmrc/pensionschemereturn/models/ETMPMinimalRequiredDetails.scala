@@ -29,11 +29,11 @@ sealed trait PSRStatus {
 }
 
 case object Compiled extends PSRStatus {
-  val name = "compiled"
+  val name = "Compiled"
 }
 
 case object Submitted extends PSRStatus {
-  val name = "submitted"
+  val name = "Submitted"
 }
 
 case class ETMPReportDetails(
@@ -49,13 +49,13 @@ case class ETMPAccountingPeriod(
 )
 
 case class ETMPAccountingPeriodDetails(
-  recordVersion: Int,
+  recordVersion: String,
   accountingPeriods: List[ETMPAccountingPeriod]
 )
 
 case class ETMPSchemeDesignatory(
-  recordVersion: Int,
-  openBankAccount: Boolean,
+  recordVersion: String,
+  openBankAccount: String,
   reasonNoOpenAccount: Option[String],
   noOfActiveMembers: Int,
   noOfDeferredMembers: Int,

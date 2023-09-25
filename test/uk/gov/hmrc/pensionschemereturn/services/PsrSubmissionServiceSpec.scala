@@ -34,8 +34,7 @@ import scala.concurrent.Future
 class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
 
   private val mockConnector = mock[PsrConnector]
-  private val mockJSONSchemaValidator = mock[JSONSchemaValidator]
-  private val service = new PsrSubmissionService(mockConnector, mockJSONSchemaValidator)
+  private val service = new PsrSubmissionService(mockConnector, new JSONSchemaValidator)
   private implicit val hc = HeaderCarrier()
   private implicit val rq = FakeRequest()
 
@@ -46,7 +45,7 @@ class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
 
       val details = MinimalRequiredDetails(
         ReportDetails(
-          "testPstr",
+          "17836742CF",
           periodStart = LocalDate.of(2020, 12, 12),
           periodEnd = LocalDate.of(2021, 12, 12)
         ),
