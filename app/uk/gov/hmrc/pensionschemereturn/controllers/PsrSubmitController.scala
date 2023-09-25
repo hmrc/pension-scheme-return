@@ -21,7 +21,7 @@ import play.api.mvc.Results.NoContent
 import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.{httpResult, requiredBody}
-import uk.gov.hmrc.pensionschemereturn.models.MinimalRequiredDetails
+import uk.gov.hmrc.pensionschemereturn.models.{LoansSubmission, MinimalRequiredDetails}
 import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -46,7 +46,7 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     }
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    val userAnswers = requiredBody
+    val userAnswers = requiredBody.as[LoansSubmission]
     logger.debug(message = s"Submitting standard PSR - Incoming payload: $userAnswers")
     psrSubmissionService
       .submitStandardPsr(userAnswers)

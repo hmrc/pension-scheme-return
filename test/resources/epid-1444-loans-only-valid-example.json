@@ -55,7 +55,7 @@
                         "capRepaymentCY" : 5000,
                         "intReceivedCY" : 555,
                         "arrearsPrevYears" : "Yes",
-                        "amountOfArrears" : "1234",
+                        "amountOfArrears" : 1234,
                         "amountOutstanding" : 5000
                   }
             ]

@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.utils
 
-import play.api.libs.json.{Json, Reads}
-
-case class LoansDetails(
-                         minimalRequiredDetails: MinimalRequiredDetails,
-                         checkReturnDates: Boolean,
-                         schemeHadLoans: Boolean,
-                         loanTransactions: List[LoanTransactions]
-                       )
-
-case class LoanTransactions()
-
-object LoansDetails {
-  implicit val reads: Reads[LoansDetails] = Json.reads[LoansDetails]
+abstract class WithName(val name: String) {
+  override val toString: String = name
 }
