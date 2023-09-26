@@ -54,7 +54,9 @@ class LoansToEtmp @Inject()() {
       }
     )
 
-  private def buildRecipientIdentityTypeRequest(recipientIdentityType: RecipientIdentityType): RecipientIdentityTypeRequest =
+  private def buildRecipientIdentityTypeRequest(
+    recipientIdentityType: RecipientIdentityType
+  ): RecipientIdentityTypeRequest =
     RecipientIdentityTypeRequest(
       indivOrOrgType = getIdentityTypeAsString(recipientIdentityType.identityType),
       idNumber = recipientIdentityType.idNumber,
