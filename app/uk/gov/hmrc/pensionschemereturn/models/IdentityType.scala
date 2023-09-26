@@ -33,11 +33,13 @@ object IdentityType {
 
   case object Other extends WithName("other") with IdentityType
 
-  implicit val reads: Reads[IdentityType] = {
-    case JsString(Individual.name) => JsSuccess(Individual)
-    case JsString(UKCompany.name) => JsSuccess(UKCompany)
-    case JsString(UKPartnership.name) => JsSuccess(UKPartnership)
-    case JsString(Other.name) => JsSuccess(Other)
-    case invalidType => JsError(s"Expected identity type but got $invalidType")
-  }
+  val values: List[IdentityType] = List(Individual, UKCompany, UKPartnership, Other)
+
+  private val mappings: Map[String, IdentityType] = values.map(v => (v.toString, v)).toMap
+
+  implicit val reads: Reads[IdentityType] =
+    JsPath.read[String].flatMap {
+      case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
+      case invalidValue => Reads(_ => JsError(s"Invalid IdentityType type: $invalidValue"))
+    }
 }

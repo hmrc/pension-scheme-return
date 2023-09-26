@@ -29,7 +29,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.base.SpecBase
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
+import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 
 import scala.concurrent.Future
 
@@ -92,13 +92,62 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
 
       val requestJson: JsValue = Json.parse(
-        """{
-          |
-          |  "reportDetails" : {
-          |    "start" : "2022-04-06",
-          |    "end" : "2023-04-05"
+        """
+          |{
+          |  "minimalRequiredSubmission": {
+          |    "reportDetails": {
+          |      "pstr": "00000042IN",
+          |      "periodStart": "2024-04-05",
+          |      "periodEnd": "2023-04-06"
+          |    },
+          |    "accountingPeriods": [
+          |      [
+          |        "2023-04-06",
+          |        "2024-04-05"
+          |      ]
+          |    ],
+          |    "schemeDesignatory": {
+          |      "openBankAccount": true,
+          |      "activeMembers": 23,
+          |      "deferredMembers": 45,
+          |      "pensionerMembers": 6,
+          |      "totalPayments": 74
+          |    }
+          |  },
+          |  "checkReturnDates": true,
+          |  "loans": {
+          |    "schemeHadLoans": true,
+          |    "loanTransactions": [
+          |      {
+          |        "recipientIdentityType": {
+          |          "identityType": "individual",
+          |          "reasonNoIdNumber": "sdfsdf"
+          |        },
+          |        "loanRecipientName": "sdfsdfds",
+          |        "optConnectedPartyStatus": true,
+          |        "datePeriodLoanDetails": {
+          |          "dateOfLoan": "2023-02-12",
+          |          "loanTotalSchemeAssets": 3,
+          |          "loanPeriodInMonths": 9
+          |        },
+          |        "loanAmountDetails": {
+          |          "loanAmount": 9,
+          |          "capRepaymentCY": 8,
+          |          "amountOutstanding": 7
+          |        },
+          |        "equalInstallments": true,
+          |        "loanInterestDetails": {
+          |          "loanInterestAmount": 8,
+          |          "loanInterestRate": 8,
+          |          "intReceivedCY": 6
+          |        },
+          |        "optSecurityGivenDetails": "kjsdfvsd",
+          |        "optOutstandingArrearsOnLoan": 273
+          |      }
+          |    ]
           |  }
-          |}""".stripMargin
+          |}
+          |""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
       val result = controller.submitStandardPsr(postRequest)

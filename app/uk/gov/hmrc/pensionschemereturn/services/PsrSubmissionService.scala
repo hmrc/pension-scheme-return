@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.service
+package uk.gov.hmrc.pensionschemereturn.services
 
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
@@ -23,51 +23,25 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService._
+import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService._
+import uk.gov.hmrc.pensionschemereturn.transformations.MinimalRequiredDetailsToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
 class PsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
-  jsonPayloadSchemaValidator: JSONSchemaValidator
+  jsonPayloadSchemaValidator: JSONSchemaValidator,
+  minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp
 ) extends Logging {
-
-  private val SCHEMA_PATH_1444 = "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
 
   def submitMinimalRequiredDetails(
     minimalRequiredDetails: MinimalRequiredDetails
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val payload = ETMPMinimalRequiredDetails(
-      ETMPReportDetails(
-        pstr = minimalRequiredDetails.reportDetails.pstr,
-        psrStatus = Compiled,
-        periodStart = minimalRequiredDetails.reportDetails.periodStart,
-        periodEnd = minimalRequiredDetails.reportDetails.periodEnd
-      ),
-      ETMPAccountingPeriodDetails(
-        recordVersion = "001", // TODO hardcoded for now
-        accountingPeriods = minimalRequiredDetails.accountingPeriods.map {
-          case (start, end) =>
-            ETMPAccountingPeriod(
-              accPeriodStart = start,
-              accPeriodEnd = end
-            )
-        }
-      ),
-      ETMPSchemeDesignatory(
-        recordVersion = "001", // TODO hardcoded for now
-        openBankAccount = if (minimalRequiredDetails.schemeDesignatory.openBankAccount) "Yes" else "No",
-        reasonNoOpenAccount = minimalRequiredDetails.schemeDesignatory.reasonForNoBankAccount,
-        noOfActiveMembers = minimalRequiredDetails.schemeDesignatory.activeMembers,
-        noOfDeferredMembers = minimalRequiredDetails.schemeDesignatory.deferredMembers,
-        noOfPensionerMembers = minimalRequiredDetails.schemeDesignatory.pensionerMembers,
-        totalPayments = minimalRequiredDetails.schemeDesignatory.totalPayments
-      )
-    )
-    val payloadAsJson = Json.toJson(payload)
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(SCHEMA_PATH_1444, payloadAsJson)
+    val payloadAsJson = Json.toJson(minimalRequiredDetailsToEtmp.transform(minimalRequiredDetails))
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
         s"Invalid payload when submitStandardPsr :-\n${validationResult.toString}"
@@ -83,9 +57,8 @@ class PsrSubmissionService @Inject()(
   def submitStandardPsr(
     loansSubmission: LoansSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    logger.error("Test : " + loansSubmission.checkReturnDates)
     val payloadAsJson = Json.toJson("to be implemented")
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(SCHEMA_PATH_1444, payloadAsJson)
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
         s"Invalid payload when submitStandardPsr :-\n${validationResult.toString}"

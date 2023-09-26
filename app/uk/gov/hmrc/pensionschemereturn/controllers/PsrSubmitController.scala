@@ -22,7 +22,7 @@ import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.{httpResult, requiredBody}
 import uk.gov.hmrc.pensionschemereturn.models.{LoansSubmission, MinimalRequiredDetails}
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
+import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}

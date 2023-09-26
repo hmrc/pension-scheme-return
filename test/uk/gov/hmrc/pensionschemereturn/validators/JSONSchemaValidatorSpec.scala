@@ -19,10 +19,9 @@ package uk.gov.hmrc.pensionschemereturn.validators
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers.baseApplicationBuilder.injector
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
 
 class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileReader {
-
-  val submitStandardPsrSchemaPath = "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
 
   private lazy val jsonPayloadSchemaValidator: JSONSchemaValidator = injector().instanceOf[JSONSchemaValidator]
 
@@ -30,13 +29,13 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
 
     "Behaviour for valid payload for EPID 1444" in {
       val json = readJsonFromFile("/epid-1444-valid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(submitStandardPsrSchemaPath, json)
+      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
       result.hasErrors mustBe false
     }
 
     "Behaviour for invalid payload with 3 invalid inputs for API 1828" in {
       val json = readJsonFromFile("/epid-1444-invalid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(submitStandardPsrSchemaPath, json)
+      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
       result.hasErrors mustBe true
       val errorsAsString = result.errors.map(_.toString)
 
@@ -51,7 +50,7 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
 
     "Behaviour for valid payload for EPID 1444 loans only" in {
       val json = readJsonFromFile("/epid-1444-loans-only-valid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(submitStandardPsrSchemaPath, json)
+      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
       result.hasErrors mustBe false
     }
   }
