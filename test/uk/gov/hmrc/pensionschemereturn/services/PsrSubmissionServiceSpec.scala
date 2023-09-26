@@ -59,7 +59,11 @@ class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
           activeMembers = 1,
           deferredMembers = 2,
           pensionerMembers = 3,
-          totalPayments = 6
+          totalAssetValueStart = None,
+          totalAssetValueEnd = None,
+          totalCashStart = None,
+          totalCashEnd = None,
+          totalPayments = None
         )
       )
 

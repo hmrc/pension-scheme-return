@@ -25,7 +25,11 @@ case class SchemeDesignatoryRequest(
   noOfActiveMembers: Int,
   noOfDeferredMembers: Int,
   noOfPensionerMembers: Int,
-  totalPayments: Int
+  totalAssetValueStart: Option[Double],
+  totalAssetValueEnd: Option[Double],
+  totalCashStart: Option[Double],
+  totalCashEnd: Option[Double],
+  totalPayments: Option[Double]
 )
 
 object SchemeDesignatoryRequest {
