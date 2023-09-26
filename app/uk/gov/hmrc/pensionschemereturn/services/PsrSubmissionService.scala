@@ -38,9 +38,9 @@ class PsrSubmissionService @Inject()(
 ) extends Logging {
 
   def submitMinimalRequiredDetails(
-    minimalRequiredDetails: MinimalRequiredDetails
+    minimalRequiredSubmission: MinimalRequiredSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val payloadAsJson = Json.toJson(minimalRequiredDetailsToEtmp.transform(minimalRequiredDetails))
+    val payloadAsJson = Json.toJson(minimalRequiredDetailsToEtmp.transform(minimalRequiredSubmission))
     val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
@@ -55,7 +55,7 @@ class PsrSubmissionService @Inject()(
   }
 
   def submitStandardPsr(
-    loansSubmission: LoansSubmission
+    psrSubmission: PsrSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
     val payloadAsJson = Json.toJson("to be implemented")
     val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)

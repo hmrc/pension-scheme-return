@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredDetails, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
 import uk.gov.hmrc.pensionschemereturn.transformations.MinimalRequiredDetailsToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 
@@ -40,11 +40,11 @@ class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
   private implicit val rq = FakeRequest()
 
   "PsrSubmissionService" should {
-    "successfully proxy minimal required details" in {
+    "successfully proxy minimal required submission details" in {
       val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
       when(mockConnector.submitStandardPsr(any())(any(), any(), any())).thenReturn(Future.successful(expectedResponse))
 
-      val details = MinimalRequiredDetails(
+      val details = MinimalRequiredSubmission(
         ReportDetails(
           "17836742CF",
           periodStart = LocalDate.of(2020, 12, 12),

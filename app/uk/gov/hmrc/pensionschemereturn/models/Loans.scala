@@ -48,19 +48,11 @@ case class LoanTransactions(
 
 case class Loans(schemeHadLoans: Boolean, loanTransactions: Seq[LoanTransactions])
 
-case class LoansSubmission(
-  minimalRequiredSubmission: MinimalRequiredDetails,
-  checkReturnDates: Boolean,
-  loans: Loans
-)
-
-object LoansSubmission {
+object Loans {
   private implicit val readsLoanInterestDetails: Reads[LoanInterestDetails] = Json.reads[LoanInterestDetails]
   private implicit val readsLoanAmountDetails: Reads[LoanAmountDetails] = Json.reads[LoanAmountDetails]
   private implicit val readsLoanPeriod: Reads[LoanPeriod] = Json.reads[LoanPeriod]
   private implicit val readsRecipientIdentityType: Reads[RecipientIdentityType] = Json.reads[RecipientIdentityType]
   private implicit val readsLoanTransactions: Reads[LoanTransactions] = Json.reads[LoanTransactions]
-  private implicit val readsLoans: Reads[Loans] = Json.reads[Loans]
-  implicit val reads: Reads[LoansSubmission] = Json.reads[LoansSubmission]
-
+  implicit val reads: Reads[Loans] = Json.reads[Loans]
 }

@@ -22,17 +22,17 @@ import uk.gov.hmrc.pensionschemereturn.models._
 @Singleton()
 class MinimalRequiredDetailsToEtmp @Inject()() {
 
-  def transform(minimalRequiredDetails: MinimalRequiredDetails): ETMPMinimalRequiredDetails =
+  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): ETMPMinimalRequiredDetails =
     ETMPMinimalRequiredDetails(
       ETMPReportDetails(
-        pstr = minimalRequiredDetails.reportDetails.pstr,
+        pstr = minimalRequiredSubmission.reportDetails.pstr,
         psrStatus = Compiled,
-        periodStart = minimalRequiredDetails.reportDetails.periodStart,
-        periodEnd = minimalRequiredDetails.reportDetails.periodEnd
+        periodStart = minimalRequiredSubmission.reportDetails.periodStart,
+        periodEnd = minimalRequiredSubmission.reportDetails.periodEnd
       ),
       ETMPAccountingPeriodDetails(
         recordVersion = "001", // TODO hardcoded for now
-        accountingPeriods = minimalRequiredDetails.accountingPeriods.map {
+        accountingPeriods = minimalRequiredSubmission.accountingPeriods.map {
           case (start, end) =>
             ETMPAccountingPeriod(
               accPeriodStart = start,
@@ -42,12 +42,12 @@ class MinimalRequiredDetailsToEtmp @Inject()() {
       ),
       ETMPSchemeDesignatory(
         recordVersion = "001", // TODO hardcoded for now
-        openBankAccount = if (minimalRequiredDetails.schemeDesignatory.openBankAccount) "Yes" else "No",
-        reasonNoOpenAccount = minimalRequiredDetails.schemeDesignatory.reasonForNoBankAccount,
-        noOfActiveMembers = minimalRequiredDetails.schemeDesignatory.activeMembers,
-        noOfDeferredMembers = minimalRequiredDetails.schemeDesignatory.deferredMembers,
-        noOfPensionerMembers = minimalRequiredDetails.schemeDesignatory.pensionerMembers,
-        totalPayments = minimalRequiredDetails.schemeDesignatory.totalPayments
+        openBankAccount = if (minimalRequiredSubmission.schemeDesignatory.openBankAccount) "Yes" else "No",
+        reasonNoOpenAccount = minimalRequiredSubmission.schemeDesignatory.reasonForNoBankAccount,
+        noOfActiveMembers = minimalRequiredSubmission.schemeDesignatory.activeMembers,
+        noOfDeferredMembers = minimalRequiredSubmission.schemeDesignatory.deferredMembers,
+        noOfPensionerMembers = minimalRequiredSubmission.schemeDesignatory.pensionerMembers,
+        totalPayments = minimalRequiredSubmission.schemeDesignatory.totalPayments
       )
     )
 
