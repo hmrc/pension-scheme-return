@@ -23,8 +23,9 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredDetails, ReportDetails, SchemeDesignatory}
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
+import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.transformations.{LoansToEtmp, MinimalRequiredDetailsToEtmp, PsrSubmissionToEtmp}
+import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,19 +34,21 @@ import scala.concurrent.Future
 class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
 
   private val mockConnector = mock[PsrConnector]
-
-  private val service = new PsrSubmissionService(mockConnector)
+  private val minimalRequiredDetailsToEtmp = new MinimalRequiredDetailsToEtmp
+  private val psrSubmissionToEtmp = new PsrSubmissionToEtmp(minimalRequiredDetailsToEtmp, new LoansToEtmp)
+  private val service =
+    new PsrSubmissionService(mockConnector, new JSONSchemaValidator, minimalRequiredDetailsToEtmp, psrSubmissionToEtmp)
   private implicit val hc = HeaderCarrier()
   private implicit val rq = FakeRequest()
 
   "PsrSubmissionService" should {
-    "successfully proxy minimal required details" in {
+    "successfully proxy minimal required submission details" in {
       val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
       when(mockConnector.submitStandardPsr(any())(any(), any(), any())).thenReturn(Future.successful(expectedResponse))
 
-      val details = MinimalRequiredDetails(
+      val details = MinimalRequiredSubmission(
         ReportDetails(
-          "testPstr",
+          "17836742CF",
           periodStart = LocalDate.of(2020, 12, 12),
           periodEnd = LocalDate.of(2021, 12, 12)
         ),

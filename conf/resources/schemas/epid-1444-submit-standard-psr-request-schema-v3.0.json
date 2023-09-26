@@ -1,0 +1,2121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Submit standard PSR",
+  "type": "object",
+  "properties": {
+    "reportDetails": {
+      "description": "Question 1",
+      "$ref": "#/definitions/reportDetailsType"
+    },
+    "accountingPeriodDetails": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
+          "$ref": "#/definitions/versionType"
+        },
+        "accountingPeriods": {
+          "description": "Question 2",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "items": {
+            "$ref": "#/definitions/accountingPeriodsType"
+          }
+        }
+      },
+      "required": [
+        "accountingPeriods"
+      ],
+      "additionalProperties": false
+    },
+    "schemeDesignatory": {
+      "description": "Questions 3 to 6, 31, 32, 33",
+      "$ref": "#/definitions/schemeDesignatoryType"
+    },
+    "membersPayments": {
+      "description": "Questions 7 to 15\n\nMandatory if number of members is less than 100",
+      "$ref": "#/definitions/membersPaymentsType"
+    },
+    "loans": {
+      "description": "Question 16\n\nMandatory if number of members is less than 100",
+      "$ref": "#/definitions/loansType"
+    },
+    "shares": {
+      "description": "Questions 17 to 23\n\nMandatory if number of members is less than 100",
+      "$ref": "#/definitions/sharesType"
+    },
+    "assets": {
+      "description": "Questions 24 to 30\n\nMandatory if number of members is less than 100",
+      "type": "object",
+      "properties": {
+        "landOrProperty": {
+          "description": "Questions 24 and 25",
+          "$ref": "#/definitions/landOrPropertyType"
+        },
+        "borrowing": {
+          "description": "Question 26",
+          "$ref": "#/definitions/borrowingType"
+        },
+        "bonds": {
+          "description": "Questions 27 and 28",
+          "$ref": "#/definitions/bondsType"
+        },
+        "otherAssets": {
+          "description": "Questions 29 and 30",
+          "$ref": "#/definitions/otherAssetsType"
+        }
+      },
+      "required": [
+        "landOrProperty",
+        "borrowing",
+        "bonds",
+        "otherAssets"
+      ],
+      "additionalProperties": false
+    },
+    "psrDeclaration": {
+      "description": "Mandatory if PSR status is 'Submitted'",
+      "$ref": "#/definitions/declarationType"
+    }
+  },
+  "required": [
+    "reportDetails",
+    "accountingPeriodDetails",
+    "schemeDesignatory"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "accountingPeriodsType": {
+      "type": "object",
+      "properties": {
+        "accPeriodStart": {
+          "description": "Q2: If PSR is for the whole year, then accounting period start and end dates will match the period of the PSR return as a whole.",
+          "type": "string",
+          "format": "date"
+        },
+        "accPeriodEnd": {
+          "description": "Q2: If PSR is for the whole year, then accounting period start and end dates will match the period of the PSR return as a whole.",
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "accPeriodStart",
+        "accPeriodEnd"
+      ],
+      "additionalProperties": false
+    },
+    "address_Type": {
+      "type": "object",
+      "properties": {
+        "addressLine1": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "addressLine2": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "addressLine3": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "addressLine4": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "addressLine5": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "ukPostCode": {
+          "description": "Only use this field if it is a UK address.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 10,
+          "pattern": "^[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}|BFPO\\s?[0-9]{1,3}$"
+        },
+        "countryCode": {
+          "description": "2-Character ISO Country Ciode",
+          "$ref": "#/definitions/countryCodeType"
+        }
+      },
+      "required": [
+        "addressLine1",
+        "addressLine2",
+        "countryCode"
+      ],
+      "additionalProperties": false
+    },
+    "assetsDisposedType": {
+      "type": "object",
+      "properties": {
+        "methodOfDisposal": {
+          "description": "Q30a: Were the assets: 01 = Sold, 02 = Transferred Out, 03 = Other",
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03"
+          ]
+        },
+        "otherMethod": {
+          "description": "Q30a: Other method of disposal\nMandatory when method of disposal is 'Other'.",
+          "$ref": "#/definitions/string160Type"
+        },
+        "dateSold": {
+          "description": "Q30b: What was the date of sale?\n\nMandatory if Sold",
+          "type": "string",
+          "format": "date"
+        },
+        "purchaserName": {
+          "description": "Q30c: What was the name of purchaser?\n\nMandatory if Sold",
+          "$ref": "#/definitions/string160Type"
+        },
+        "purchaserType": {
+          "description": "Q30d: Was the purchaser: Individual, Company, Partnership, or Other\n\nMandatory if Sold",
+          "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+        },
+        "totalAmountReceived": {
+          "description": "Q30e: What is the total amount of consideration received from the sale or disposal of the asset?\n\nMandatory if Sold",
+          "$ref": "#/definitions/currencyType"
+        },
+        "connectedStatus": {
+          "description": "Q30f: Was the asset sold to an 01 = Cconnected party or 02 = Unconnected party?\n\nMandatory if Sold",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "supportedByIndepValuation": {
+          "description": "Q30g: In relation to the transaction, was an independent valuation obtained?\n\nMandatory if Sold",
+          "$ref": "#/definitions/booleanType"
+        },
+        "fullyDisposedOf": {
+          "description": "Q30h: Is any part of the asset linked to the original acquisition still held?",
+          "$ref": "#/definitions/booleanType"
+        }
+      },
+      "required": [
+        "methodOfDisposal",
+        "fullyDisposedOf"
+      ],
+      "additionalProperties": false
+    },
+    "bondTransactionDetailsType": {
+      "type": "object",
+      "properties": {
+        "nameOfBonds": {
+          "description": "Q27d: What is the full name of the bonds held?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "methodOfHolding": {
+          "description": "Q27b: Are the bonds held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03"
+          ]
+        },
+        "dateOfAcqOrContrib": {
+          "description": "Q27c: What was the date of acquisition or contribution of the bonds?\n\nMandatory if bonds held through Acquisition or Contribution. Not required for Transfer",
+          "type": "string",
+          "format": "date"
+        },
+        "costOfBonds": {
+          "description": "Q27e: What was the Total cost of the bonds acquired, or if held for any other reason total value of bonds",
+          "$ref": "#/definitions/currencyType"
+        },
+        "connectedPartyStatus": {
+          "description": "Q27f: Were the bonds acquired from an 01 = Connected party or 02 = Unconnected party?\n\nOnly required if method of holding is through Acquisition",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "bondsUnregulated": {
+          "description": "Q27g: Are the bonds unregulated?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "totalIncomeOrReceipts": {
+          "description": "Q27h: What was the total amount of income or receipts received from the bonds during the year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "bondsDisposed": {
+          "description": "Only required if Q28 is true",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/bondsDisposedType"
+          }
+        }
+      },
+      "required": [
+        "nameOfBonds",
+        "methodOfHolding",
+        "costOfBonds",
+        "bondsUnregulated",
+        "totalIncomeOrReceipts"
+      ],
+      "additionalProperties": false
+    },
+    "bondsDisposedType": {
+      "type": "object",
+      "properties": {
+        "methodOfDisposal": {
+          "description": "Q28a: Were the bonds : 01 = Sold, 02 = Transferred Out, 03 = Other",
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03"
+          ]
+        },
+        "otherMethod": {
+          "description": "Q28a: Other method of disposal\nMandatory when method of disposal is 'Other'.",
+          "$ref": "#/definitions/string160Type"
+        },
+        "dateSold": {
+          "description": "Q28b: What was the date the bonds were sold?\n\nMandatory when Sold",
+          "type": "string",
+          "format": "date"
+        },
+        "amountReceived": {
+          "description": "Q28c: What is the total amount of consideration received from the sale or disposal of the bonds?\n\nMandatory when Sold",
+          "$ref": "#/definitions/currencyType"
+        },
+        "bondsPurchaserName": {
+          "description": "Q28d: ho was the purchaser of the bonds?\n\nMandatory when Sold",
+          "$ref": "#/definitions/string160Type"
+        },
+        "connectedPartyStatus": {
+          "description": "Q28e: Were the bonds sold to a connected party?\nWere the bonds sold to a connected party?\n\nMandatory when Sold",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "totalNowHeld": {
+          "description": "Q28f: What is the total number of bonds now held?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        }
+      },
+      "required": [
+        "methodOfDisposal",
+        "totalNowHeld"
+      ],
+      "additionalProperties": false
+    },
+    "bondsType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "bondsWereAdded": {
+          "description": "Q27: At any point during the tax year ended 5 April did the pension scheme hold either any unregulated bonds or bonds acquired from a connected party?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "bondsWereDisposed": {
+          "description": "Q28: Did the scheme dispose of any unregulated bonds or bonds acquired from a connected party, during the tax year?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfTransactions": {
+          "description": "Q27a: How many bond transactions were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "bondTransactions": {
+          "description": "Mandatory if the answer to Q27a is greater than 0",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/bondTransactionDetailsType"
+          }
+        }
+      },
+      "required": [
+        "bondsWereAdded",
+        "bondsWereDisposed"
+      ],
+      "additionalProperties": false
+    },
+    "booleanType": {
+      "description": "Boolean type - options are 'Yes' or 'No'",
+      "type": "string",
+      "enum": [
+        "No",
+        "Yes"
+      ]
+    },
+    "borrowingDetailsType": {
+      "type": "object",
+      "properties": {
+        "dateOfBorrow": {
+          "description": "Q26b: What was the date the borrowing?",
+          "type": "string",
+          "format": "date"
+        },
+        "amountBorrowed": {
+          "description": "Q26c: What was the amount borrowed?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "schemeAssetsValue": {
+          "description": "Q26d: What were the total value of pension scheme assets as at the date of the borrowing?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "interestRate": {
+          "description": "Q26e: What was rate of Interest applied to the borrowing?",
+          "$ref": "#/definitions/percentage2DecType"
+        },
+        "borrowingFromName": {
+          "description": "Q26f: Who is the scheme borrowing money from?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "connectedPartyStatus": {
+          "description": "Q26g: Was the capital borrowed from an 01 = Connected party or 02 = Unconnected party?",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "reasonForBorrow": {
+          "description": "Q26h: What is the reason for borrowing?",
+          "$ref": "#/definitions/string160Type"
+        }
+      },
+      "required": [
+        "dateOfBorrow",
+        "amountBorrowed",
+        "schemeAssetsValue",
+        "interestRate",
+        "borrowingFromName",
+        "connectedPartyStatus",
+        "reasonForBorrow"
+      ],
+      "additionalProperties": false
+    },
+    "borrowingType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "moneyWasBorrowed": {
+          "description": "Q26: During the tax year did the scheme borrow any money?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfBorrows": {
+          "description": "Q26a: How many times did the scheme borrow any money?",
+          "$ref": "#/definitions/integer7DigitsMinimum1Type"
+        },
+        "moneyBorrowed": {
+          "description": "Mandatory if Q26a is greater than 0",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/borrowingDetailsType"
+          }
+        }
+      },
+      "required": [
+        "moneyWasBorrowed"
+      ],
+      "additionalProperties": false
+    },
+    "connectionStatusType": {
+      "description": "01 = Connected, 02 = Unconnected",
+      "type": "string",
+      "enum": [
+        "01",
+        "02"
+      ]
+    },
+    "contributingEmployerDetails": {
+      "type": "object",
+      "properties": {
+        "orgName": {
+          "description": "String with minLength 1 and maxLength 160",
+          "$ref": "#/definitions/string160Type"
+        },
+        "organisationType": {
+          "description": "Options are: Company, Partnership or Other",
+          "$ref": "#/definitions/orgTypeType"
+        },
+        "totalContribution": {
+          "description": "What is the total contribution made by this employer?",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "orgName",
+        "organisationType",
+        "totalContribution"
+      ],
+      "additionalProperties": false
+    },
+    "countryCodeType": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 2,
+      "enum": [
+        "AD",
+        "AE",
+        "AF",
+        "AG",
+        "AI",
+        "AL",
+        "AM",
+        "AN",
+        "AO",
+        "AQ",
+        "AR",
+        "AS",
+        "AT",
+        "AU",
+        "AW",
+        "AX",
+        "AZ",
+        "BA",
+        "BB",
+        "BD",
+        "BE",
+        "BF",
+        "BG",
+        "BH",
+        "BI",
+        "BJ",
+        "BL",
+        "BM",
+        "BN",
+        "BO",
+        "BQ",
+        "BR",
+        "BS",
+        "BT",
+        "BV",
+        "BW",
+        "BY",
+        "BZ",
+        "CA",
+        "CC",
+        "CD",
+        "CF",
+        "CG",
+        "CH",
+        "CI",
+        "CK",
+        "CL",
+        "CM",
+        "CN",
+        "CO",
+        "CR",
+        "CS",
+        "CU",
+        "CV",
+        "CW",
+        "CX",
+        "CY",
+        "CZ",
+        "DE",
+        "DJ",
+        "DK",
+        "DM",
+        "DO",
+        "DZ",
+        "EC",
+        "EE",
+        "EG",
+        "EH",
+        "ER",
+        "ES",
+        "ET",
+        "EU",
+        "FC",
+        "FI",
+        "FJ",
+        "FK",
+        "FM",
+        "FO",
+        "FR",
+        "GA",
+        "GB",
+        "GD",
+        "GE",
+        "GF",
+        "GG",
+        "GH",
+        "GI",
+        "GL",
+        "GM",
+        "GN",
+        "GP",
+        "GQ",
+        "GR",
+        "GS",
+        "GT",
+        "GU",
+        "GW",
+        "GY",
+        "HK",
+        "HM",
+        "HN",
+        "HR",
+        "HT",
+        "HU",
+        "ID",
+        "IE",
+        "IL",
+        "IM",
+        "IN",
+        "IO",
+        "IQ",
+        "IR",
+        "IS",
+        "IT",
+        "JE",
+        "JM",
+        "JO",
+        "JP",
+        "KE",
+        "KG",
+        "KH",
+        "KI",
+        "KM",
+        "KN",
+        "KP",
+        "KR",
+        "KW",
+        "KY",
+        "KZ",
+        "LA",
+        "LB",
+        "LC",
+        "LI",
+        "LK",
+        "LR",
+        "LS",
+        "LT",
+        "LU",
+        "LV",
+        "LY",
+        "MA",
+        "MC",
+        "MD",
+        "ME",
+        "MF",
+        "MG",
+        "MH",
+        "MK",
+        "ML",
+        "MM",
+        "MN",
+        "MO",
+        "MP",
+        "MQ",
+        "MR",
+        "MS",
+        "MT",
+        "MU",
+        "MV",
+        "MW",
+        "MX",
+        "MY",
+        "MZ",
+        "NA",
+        "NC",
+        "NE",
+        "NF",
+        "NG",
+        "NI",
+        "NL",
+        "NO",
+        "NP",
+        "NR",
+        "NT",
+        "NU",
+        "NZ",
+        "OM",
+        "OR",
+        "PA",
+        "PE",
+        "PF",
+        "PG",
+        "PH",
+        "PK",
+        "PL",
+        "PM",
+        "PN",
+        "PR",
+        "PS",
+        "PT",
+        "PW",
+        "PY",
+        "QA",
+        "RE",
+        "RO",
+        "RS",
+        "RU",
+        "RW",
+        "SA",
+        "SB",
+        "SC",
+        "SD",
+        "SE",
+        "SG",
+        "SH",
+        "SI",
+        "SJ",
+        "SK",
+        "SL",
+        "SM",
+        "SN",
+        "SO",
+        "SR",
+        "SS",
+        "ST",
+        "SV",
+        "SX",
+        "SY",
+        "SZ",
+        "TC",
+        "TD",
+        "TF",
+        "TG",
+        "TH",
+        "TJ",
+        "TK",
+        "TL",
+        "TM",
+        "TN",
+        "TO",
+        "TP",
+        "TR",
+        "TT",
+        "TV",
+        "TW",
+        "TZ",
+        "UA",
+        "UG",
+        "UM",
+        "UN",
+        "US",
+        "UY",
+        "UZ",
+        "VA",
+        "VC",
+        "VE",
+        "VG",
+        "VI",
+        "VN",
+        "VU",
+        "WF",
+        "WS",
+        "YE",
+        "YT",
+        "ZA",
+        "ZM",
+        "ZW",
+        "ZZ"
+      ]
+    },
+    "crnNumberType": {
+      "type": "string",
+      "pattern": "^([0-9]{8})|(R[0-9]{7})|([A-Z]{2}[0-9]{6})$"
+    },
+    "currencyType": {
+      "description": "decimal between 0.00 and 999,999,999.99",
+      "type": "number",
+      "minimum": -999999999.99,
+      "maximum": 999999999.99,
+      "multipleOf": 0.01
+    },
+    "declarationType": {
+      "type": "object",
+      "properties": {
+        "submittedBy": {
+          "description": "Possible values: PSA, PSP",
+          "$ref": "#/definitions/submittedByType"
+        },
+        "submitterId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8,
+          "pattern": "^[A|0|1|2]{1}[0-9]{7}$"
+        },
+        "psaId": {
+          "description": "PSAID Reference number is mandatory if the declaration is submitted by PSP.",
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 8,
+          "pattern": "^A[0-9]{7}$"
+        },
+        "psaDeclaration": {
+          "description": "PSA Declaration",
+          "type": "object",
+          "properties": {
+            "psaDeclaration1": {
+              "description": "To the best of my knowledge and belief, the information given in this return is correct and complete",
+              "type": "boolean"
+            },
+            "psaDeclaration2": {
+              "description": "I understand that if I have made a false statement in this return, I may be liable to a penalty, and that false statements may also lead to prosecution",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "psaDeclaration1",
+            "psaDeclaration2"
+          ],
+          "additionalProperties": false
+        },
+        "pspDeclaration": {
+          "description": "PSP Declaration",
+          "type": "object",
+          "properties": {
+            "pspDeclaration1": {
+              "description": "The content of this report has been approved by the Scheme Administrator",
+              "type": "boolean"
+            },
+            "pspDeclaration2": {
+              "description": "The Scheme Administrator named below has authorised me to submit this report.",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "pspDeclaration1",
+            "pspDeclaration2"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "submittedBy",
+        "submitterId"
+      ],
+      "additionalProperties": false
+    },
+    "indivOrOrgIdentityDetailsType": {
+      "type": "object",
+      "properties": {
+        "indivOrOrgType": {
+          "description": "Type of 'organisation'. Possible values 01 = Individual, 02 = Company, 03 = Partnership, 04 = Other",
+          "$ref": "#/definitions/indivOrOrgTypeType"
+        },
+        "idNumber": {
+          "description": "NINO, CRN or UTR",
+          "type": "string",
+          "pattern": "^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]?|([0-9]{10})|(R[0-9]{7})|([A-Z]{2}[0-9]{6})|([0-9]{8})$"
+        },
+        "reasonNoIdNumber": {
+          "description": "Reason if no ID Number provided (for Individual, Company or Partnership)",
+          "$ref": "#/definitions/string160Type"
+        },
+        "otherDescription": {
+          "description": "If 'Other' selected...",
+          "$ref": "#/definitions/string35Type"
+        }
+      },
+      "required": [
+        "indivOrOrgType"
+      ],
+      "additionalProperties": false
+    },
+    "indivOrOrgTypeType": {
+      "type": "string",
+      "enum": [
+        "01",
+        "02",
+        "03",
+        "04"
+      ]
+    },
+    "integer6DigitsMinimum0Type": {
+      "description": "Integer with minimum 0 and maximum 999999",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 999999
+    },
+    "integer7DigitsMinimum0Type": {
+      "description": "Integer with minimum 0 and maximum 9999999",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9999999
+    },
+    "integer7DigitsMinimum1Type": {
+      "description": "Integer with minimum 1 and maximum 9999999",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9999999
+    },
+    "integer8DigitsMinimum0Type": {
+      "description": "Integer with minimum 0 and maximum 99999999",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 99999999
+    },
+    "landOrPropertyTransactionDetailsType": {
+      "type": "object",
+      "properties": {
+        "propertyDetails": {
+          "description": "Identity of the property",
+          "type": "object",
+          "properties": {
+            "landOrPropertyInUK": {
+              "description": "Q24d: Is the land or property in the UK?",
+              "$ref": "#/definitions/booleanType"
+            },
+            "addressDetails": {
+              "description": "Q24d - Details of property",
+              "$ref": "#/definitions/address_Type"
+            },
+            "landRegistryDetails": {
+              "description": "Q24e",
+              "type": "object",
+              "properties": {
+                "landRegistryReferenceExists": {
+                  "description": "Q24e: Is there a land registry reference in respect of the land or property acquired?",
+                  "$ref": "#/definitions/booleanType"
+                },
+                "landRegistryReference": {
+                  "description": "If answer was 'true'",
+                  "$ref": "#/definitions/string35Type"
+                },
+                "reasonNoReference": {
+                  "description": "If answer was 'false'",
+                  "$ref": "#/definitions/string160Type"
+                }
+              },
+              "required": [
+                "landRegistryReferenceExists"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "landOrPropertyInUK",
+            "addressDetails",
+            "landRegistryDetails"
+          ],
+          "additionalProperties": false
+        },
+        "heldPropertyTransaction": {
+          "type": "object",
+          "properties": {
+            "methodOfHolding": {
+              "description": "Q24b: Is the land or property held as a result of: 01 = Acquisition, 02 = Contribution, or 03 = Transfer",
+              "type": "string",
+              "enum": [
+                "01",
+                "02",
+                "03"
+              ]
+            },
+            "dateOfAcquisitionOrContribution": {
+              "description": "Q24c: What was the date of acquisition or contribution of the land or property?",
+              "type": "string",
+              "format": "date"
+            },
+            "propertyAcquiredFromName": {
+              "description": "Q24f: Who was the land or property acquired from?",
+              "$ref": "#/definitions/string160Type"
+            },
+            "propertyAcquiredFrom": {
+              "description": "Q24g: Type of organisation or individual the land or property acquired from",
+              "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+            },
+            "connectedPartyStatus": {
+              "description": "Q24h: Was the land or property acquired from a 01 = Connected or an 02 = Unconnected party?\n\nMandatory for an Acquisition, not required for Contribution or Transfer",
+              "$ref": "#/definitions/connectionStatusType"
+            },
+            "totalCostOfLandOrProperty": {
+              "description": "Q24i: What is the total cost of the land or property acquired, or if held by another reason, total value of the land or property?",
+              "$ref": "#/definitions/currencyType"
+            },
+            "indepValuationSupport": {
+              "description": "Q24j: Is this transaction supported by an Independent Valuation?\n\nMandatory for an Acquisition or Contribution, not required for Transfer",
+              "$ref": "#/definitions/booleanType"
+            },
+            "residentialSchedule29A": {
+              "description": "Q24k: Is any part of the land or property residential property as defined by schedule 29a Finance Act 2004?",
+              "$ref": "#/definitions/booleanType"
+            },
+            "landOrPropertyLeased": {
+              "description": "Q24l: Is the land or property leased?",
+              "$ref": "#/definitions/booleanType"
+            },
+            "leaseDetails": {
+              "description": "Q24l: Mandatory if land or property is leased.",
+              "$ref": "#/definitions/leaseDetailsType"
+            },
+            "totalIncomeOrReceipts": {
+              "description": "Q24q: What is the total amount of income or receipts, received in respect of the land or Property during the tax year?",
+              "$ref": "#/definitions/currencyType"
+            }
+          },
+          "required": [
+            "methodOfHolding",
+            "totalCostOfLandOrProperty",
+            "residentialSchedule29A",
+            "landOrPropertyLeased",
+            "totalIncomeOrReceipts"
+          ],
+          "additionalProperties": false
+        },
+        "disposedPropertyTransaction": {
+          "description": "Mandatory if Q25 is true",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "methodOfDisposal": {
+                "description": "Q25a: Was the land or property 01 = Sold, 02 = Transferred out, or 03 = Other?",
+                "type": "string",
+                "enum": [
+                  "01",
+                  "02",
+                  "03"
+                ]
+              },
+              "otherMethod": {
+                "description": "Q25a: Mandatory if method of disposal = Other",
+                "$ref": "#/definitions/string160Type"
+              },
+              "dateOfSale": {
+                "description": "Q25b: What was the date of Sale?\n\nOnly required if Sold",
+                "type": "string",
+                "format": "date"
+              },
+              "nameOfPurchaser": {
+                "description": "Q25c: What is the name of the purchaser?\n\nOnly required if Sold",
+                "$ref": "#/definitions/string160Type"
+              },
+              "purchaseOrgDetails": {
+                "description": "Q25d: Type of organisation or individual the land was sold to.\n\nOnly required if Sold",
+                "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+              },
+              "saleProceeds": {
+                "description": "Q25e: What is the total sale proceeds of any land or interest in land sold or premiums received on the disposal of a leasehold intereest in land?\n\nOnly required if Sold",
+                "$ref": "#/definitions/currencyType"
+              },
+              "connectedPartyStatus": {
+                "description": "Q25f: Was the disposal made to an 01 = Connected party, or 02 = Unconnected party? \n\nOnly required if Sold",
+                "$ref": "#/definitions/connectionStatusType"
+              },
+              "indepValuationSupport": {
+                "description": "Q25g: Was an Independent Valuation obtained?  \n\nOnly required if Sold",
+                "$ref": "#/definitions/booleanType"
+              },
+              "portionStillHeld": {
+                "description": "Q25h: Is any of the property or land linked to the original acquisition still held?",
+                "$ref": "#/definitions/booleanType"
+              }
+            },
+            "required": [
+              "methodOfDisposal",
+              "portionStillHeld"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "propertyDetails",
+        "heldPropertyTransaction"
+      ],
+      "additionalProperties": false
+    },
+    "landOrPropertyType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "heldAnyLandOrProperty": {
+          "description": "Q24: At any point during the tax year, did the pension scheme hold any land or property?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "disposeAnyLandOrProperty": {
+          "description": "Q25: During the tax year did the scheme dispose of any land or property?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfTransactions": {
+          "description": "Q24a: How many land or property transactions were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "landOrPropertyTransactions": {
+          "description": "Mandatory if Q24a is greater than 0",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/landOrPropertyTransactionDetailsType"
+          }
+        }
+      },
+      "required": [
+        "heldAnyLandOrProperty",
+        "disposeAnyLandOrProperty"
+      ],
+      "additionalProperties": false
+    },
+    "leaseDetailsType": {
+      "type": "object",
+      "properties": {
+        "lesseeName": {
+          "description": "Q24m: What is the name of lessee?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "connectedPartyStatus": {
+          "description": "Q25n: Is the lessee a connected party? Possible values: 01 = Connected, 02 = Unconnected",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "leaseGrantDate": {
+          "description": "Q24o: In relation to land or property, what date was the lease was granted?",
+          "type": "string",
+          "format": "date"
+        },
+        "annualLeaseAmount": {
+          "description": "Q24p: What is the annual lease amount?",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "lesseeName",
+        "connectedPartyStatus",
+        "leaseGrantDate",
+        "annualLeaseAmount"
+      ],
+      "additionalProperties": false
+    },
+    "loanTransactionDetailType": {
+      "type": "object",
+      "properties": {
+        "dateOfLoan": {
+          "description": "Q16b: What was the date of loan?",
+          "type": "string",
+          "format": "date"
+        },
+        "loanRecipientName": {
+          "description": "Q16c: What is the name of the recipient of loan?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "recipientIdentityType": {
+          "description": "Q16d: Loan recipient type",
+          "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+        },
+        "recipientSponsoringEmployer": {
+          "description": "Q16e: Is the loan to a sponsoring employer of the scheme?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "connectedPartyStatus": {
+          "description": "Q16f: Is the loan to a connected Party? Possible values: 01 = Connected, 02 = Unconnected",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "loanAmount": {
+          "description": "Q16g: What is the loan amount?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "loanInterestAmount": {
+          "description": "Q16h: What is the interest payable for this loan?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "loanTotalSchemeAssets": {
+          "description": "Q16i: What are the total value of pension scheme assets at the date of the loan?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "loanPeriodInMonths": {
+          "description": "Q16j: What is the total period of the loan, in months?",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "equalInstallments": {
+          "description": "Q16k: Are the loan repayments in equal annual instalments?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "loanInterestRate": {
+          "description": "Q16l: What is the Interest Rate for the loan?",
+          "$ref": "#/definitions/percentage2DecType"
+        },
+        "securityGiven": {
+          "description": "Q16m: Has security been given for the loan?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "securityDetails": {
+          "description": "Q16m: If yes, provide details of the security.",
+          "$ref": "#/definitions/string160Type"
+        },
+        "capRepaymentCY": {
+          "description": "Q16n: In respect of this loan, what Capital Repayments have been received by the scheme during the year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "intReceivedCY": {
+          "description": "Q16o: In respect of this loan, what interest payments have been received by the scheme during the year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "arrearsPrevYears": {
+          "description": "Q16p: In respect of this loan, are there any arrears outstanding from previous years?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "amountOfArrears": {
+          "description": "Q16p: If yes, provide the amount of the arrears",
+          "$ref": "#/definitions/currencyType"
+        },
+        "amountOutstanding": {
+          "description": "Q16q: In respect of this loan, what is the amount outstanding at the year end?",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "dateOfLoan",
+        "loanRecipientName",
+        "recipientIdentityType",
+        "recipientSponsoringEmployer",
+        "connectedPartyStatus",
+        "loanAmount",
+        "loanInterestAmount",
+        "loanTotalSchemeAssets",
+        "loanPeriodInMonths",
+        "equalInstallments",
+        "loanInterestRate",
+        "securityGiven",
+        "capRepaymentCY",
+        "intReceivedCY",
+        "arrearsPrevYears",
+        "amountOutstanding"
+      ],
+      "additionalProperties": false
+    },
+    "loansType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "schemeHadLoans": {
+          "description": "Q16: At any point during the tax year, did the scheme make or have any loans outstanding?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfLoans": {
+          "description": "Q16a: How many separate loans were made or outstanding during the tax year and not reported in a previous return?\n\nMandatory if previous answer is 'true'",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "loanTransactions": {
+          "description": "Mandatory if previous answer is 'true'",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/loanTransactionDetailType"
+          }
+        }
+      },
+      "required": [
+        "schemeHadLoans"
+      ],
+      "additionalProperties": false
+    },
+    "memberDetailsType": {
+      "type": "object",
+      "properties": {
+        "memberStatus": {
+          "description": "Member status. Possible values: New, Changed, Deleted",
+          "$ref": "#/definitions/memberStatusType"
+        },
+        "memberPSRVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
+          "$ref": "#/definitions/versionType"
+        },
+        "personalDetails": {
+          "description": "Q7: Member details",
+          "$ref": "#/definitions/personalDetailsType"
+        },
+        "noOfContributions": {
+          "description": "Q8a: How many Employers have made contributions in respect of this member?",
+          "$ref": "#/definitions/integer6DigitsMinimum0Type"
+        },
+        "memberEmpContribution": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/memberEmpContributionType"
+          }
+        },
+        "totalContributions": {
+          "description": "Q10a: What are the total member Contributions in respect of this member?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "noOfTransfersIn": {
+          "description": "Q11a: How many transfers were received in respect of this member?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "memberTransfersIn": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/transferInDetailType"
+          }
+        },
+        "noOfTransfersOut": {
+          "description": "Q12a: How many transfers out, were made in respect of this member?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "memberTransfersOut": {
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/transferOutDetailType"
+          }
+        },
+        "memberLumpSumReceived": {
+          "description": "Q13: Pension Commencement Lump Sum information",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/memberPensionReceivedType"
+          }
+        },
+        "pensionAmountReceived": {
+          "description": "Q14: Pension amount for the year.",
+          "$ref": "#/definitions/currencyType"
+        },
+        "memberPensionSurrender": {
+          "description": "Q15: Surrender information",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/memberSurrenderType"
+          }
+        }
+      },
+      "required": [
+        "memberStatus",
+        "personalDetails",
+        "noOfContributions",
+        "noOfTransfersIn",
+        "noOfTransfersOut"
+      ],
+      "additionalProperties": false
+    },
+    "memberEmpContributionType": {
+      "type": "object",
+      "properties": {
+        "orgName": {
+          "description": "Q8b: Provide the name of the entity that made the employer contribution",
+          "$ref": "#/definitions/string160Type"
+        },
+        "organisationIdentity": {
+          "description": "Q8c: Type of organisation",
+          "$ref": "#/definitions/orgIdentityDetailsType"
+        },
+        "totalContribution": {
+          "description": "Q8d: What is the total contribution made by this employer?",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "orgName",
+        "organisationIdentity",
+        "totalContribution"
+      ],
+      "additionalProperties": false
+    },
+    "memberPensionReceivedType": {
+      "type": "object",
+      "properties": {
+        "lumpSumAmount": {
+          "description": "Lump Sum Amount",
+          "$ref": "#/definitions/currencyType"
+        },
+        "designatedPensionAmount": {
+          "description": "Designated pension amount in respect of lump sum",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "additionalProperties": false
+    },
+    "memberStatusType": {
+      "description": "Member Status. Possible values: New, Changed, Deleted",
+      "type": "string",
+      "enum": [
+        "New",
+        "Changed",
+        "Deleted"
+      ]
+    },
+    "memberSurrenderType": {
+      "type": "object",
+      "properties": {
+        "totalSurrendered": {
+          "description": "Q15a: What was the total amount surrendered by the member?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "dateOfSurrender": {
+          "description": "Q15b: What was the date the member surrendered their benefits?",
+          "type": "string",
+          "format": "date"
+        },
+        "surrenderReason": {
+          "description": "Q15c: What was the reason for the  surrender of benefits?",
+          "$ref": "#/definitions/string35Type"
+        }
+      },
+      "required": [
+        "totalSurrendered",
+        "dateOfSurrender",
+        "surrenderReason"
+      ],
+      "additionalProperties": false
+    },
+    "membersPaymentsType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "employerContributionMade": {
+          "description": "Q8: Have Employer contributions been made for any member, during the tax year?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "unallocatedContribsMade": {
+          "description": "Q9: Were any employer contributions received by the scheme, which were unallocated?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "unallocatedContribAmount": {
+          "description": "Q9: Mandatory if above answer is 'true'",
+          "$ref": "#/definitions/currencyType"
+        },
+        "memberContributionMade": {
+          "description": "Q10: Have Member contributions been made for any member, during the tax year?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "schemeReceivedTransferIn": {
+          "description": "Q11: During the Tax year has the scheme received a transfer in, in respect of any member?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "schemeMadeTransferOut": {
+          "description": "Q12: During the tax year have the scheme made any transfers out, in respect of any member?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "lumpSumReceived": {
+          "description": "Q13: During the tax year did any member receive a Pension Commencement Lump Sum?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "pensionReceived": {
+          "description": "Q14: During the tax year, did any member receive any pension amounts?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "surrenderMade": {
+          "description": "Q15: During the tax year, has any member surrendered any pension benefits within the scheme?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "memberDetails": {
+          "description": "Mandatory if number of members is less than 100",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/memberDetailsType"
+          }
+        }
+      },
+      "required": [
+        "employerContributionMade",
+        "unallocatedContribsMade",
+        "memberContributionMade",
+        "schemeReceivedTransferIn",
+        "schemeMadeTransferOut",
+        "lumpSumReceived",
+        "pensionReceived",
+        "surrenderMade",
+        "memberDetails"
+      ],
+      "additionalProperties": false
+    },
+    "ninoType": {
+      "type": "string",
+      "pattern": "^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]?$"
+    },
+    "orgIdentityDetailsType": {
+      "type": "object",
+      "properties": {
+        "orgType": {
+          "description": "Type of entity. Possible values 01 = UK Company, 02 = UK Partnership, 03 = Others",
+          "$ref": "#/definitions/orgTypeType"
+        },
+        "idNumber": {
+          "description": "CRN or UTR",
+          "type": "string",
+          "pattern": "^[0-9]{10}|[0-9]{8}|[A-Z]{2}[0-9]{6}$"
+        },
+        "reasonNoIdNumber": {
+          "description": "If either CRN or UTR are not provided.",
+          "$ref": "#/definitions/string160Type"
+        },
+        "otherDescription": {
+          "description": "If 'Other' selected...",
+          "$ref": "#/definitions/string35Type"
+        }
+      },
+      "required": [
+        "orgType"
+      ],
+      "additionalProperties": false
+    },
+    "orgTypeType": {
+      "type": "string",
+      "enum": [
+        "01",
+        "02",
+        "03"
+      ]
+    },
+    "otherAssetTransactionDetailsType": {
+      "type": "object",
+      "properties": {
+        "assetDescription": {
+          "description": "Q29c: Description of Asset",
+          "$ref": "#/definitions/string160Type"
+        },
+        "methodOfHolding": {
+          "description": "Q29b: Is the asset held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03"
+          ]
+        },
+        "dateOfAcqOrContrib": {
+          "description": "Q29d: What was the date of acquisition or contribution of the bonds?\n\nMandatory for Acquisition or Contribution",
+          "type": "string",
+          "format": "date"
+        },
+        "costOfAsset": {
+          "description": "Q29e: What is the total cost of asset acquired, or if held for another reason the total value of the asset?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "acquiredFromName": {
+          "description": "Q29f: Who was the asset acquired from?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "acquiredFromType": {
+          "description": "Q29g: Type of entity the the asset was acquired from?\n \nMandatory for Acquisition",
+          "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+        },
+        "connectedStatus": {
+          "description": "Q29h: Was the asset purchased from an 01 = Connected party or 02 = Unconnected party?\n\nMandatory for Acquisition",
+          "$ref": "#/definitions/connectionStatusType"
+        },
+        "supportedByIndepValuation": {
+          "description": "Q29i: Is this transaction supported by an Independent Valuation? \n\nMandatory for Acquisition or Contribution",
+          "$ref": "#/definitions/booleanType"
+        },
+        "movableSchedule29A": {
+          "description": "Q29j: Is the asset tangible moveable property as defined by Schedule 29a Finance Act 2004?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "totalIncomeOrReceipts": {
+          "description": "Q29k: What is the total amount of income and receipts received from the asset during the year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "assetsDisposed": {
+          "description": "Mandatory if Q30 is true",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/assetsDisposedType"
+          }
+        }
+      },
+      "required": [
+        "assetDescription",
+        "methodOfHolding",
+        "costOfAsset",
+        "movableSchedule29A",
+        "totalIncomeOrReceipts"
+      ],
+      "additionalProperties": false
+    },
+    "otherAssetsType": {
+      "description": "Details regarding assets",
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "otherAssetsWereHeld": {
+          "description": "Q29a: At any point during the tax year did  the pension scheme hold any other assets not already declared?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "otherAssetsWereDisposed": {
+          "description": "Q30: During the year did the scheme dispose of any assets?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfTransactions": {
+          "description": "Q29a: How many other asset transactions were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "otherAssetTransactions": {
+          "description": "Mandatory if 29a is greater than 0",
+          "type": "array",
+          "minItems": 0,
+          "items": {
+            "$ref": "#/definitions/otherAssetTransactionDetailsType"
+          }
+        }
+      },
+      "required": [
+        "otherAssetsWereHeld",
+        "otherAssetsWereDisposed"
+      ],
+      "additionalProperties": false
+    },
+    "percentage2DecType": {
+      "type": "number",
+      "minimum": -999.99,
+      "maximum": 999.99,
+      "multipleOf": 0.01
+    },
+    "periodType": {
+      "description": "Type representing a tax period",
+      "type": "object",
+      "properties": {
+        "periodFrom": {
+          "type": "string",
+          "format": "date"
+        },
+        "periodTo": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "periodFrom",
+        "periodTo"
+      ],
+      "additionalProperties": false
+    },
+    "personalDetailsType": {
+      "type": "object",
+      "properties": {
+        "foreName": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "middleName": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "lastName": {
+          "description": "String with minLength 1 and maxLength 35",
+          "$ref": "#/definitions/string35Type"
+        },
+        "nino": {
+          "description": "National Insurance number",
+          "$ref": "#/definitions/ninoType"
+        },
+        "reasonNoNINO": {
+          "description": "String with minLength 1 and maxLength 160",
+          "$ref": "#/definitions/string160Type"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "foreName",
+        "lastName",
+        "dateOfBirth"
+      ],
+      "additionalProperties": false
+    },
+    "pstrType": {
+      "description": "Pension Scteme Tax Reference",
+      "type": "string",
+      "pattern": "^[0-9]{8}[A-Z]{2}$"
+    },
+    "reportDetailsType": {
+      "type": "object",
+      "properties": {
+        "pstr": {
+          "description": "Pension Scheme Tax Reference\n\nPattern [0-9]{8}[A-Z]{2}",
+          "$ref": "#/definitions/pstrType"
+        },
+        "psrStatus": {
+          "description": "Possible values : Compiled, Submitted",
+          "type": "string",
+          "enum": [
+            "Compiled",
+            "Submitted"
+          ]
+        },
+        "periodStart": {
+          "description": "Derived from Q1",
+          "type": "string",
+          "format": "date"
+        },
+        "periodEnd": {
+          "description": "Derived from Q1",
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "pstr",
+        "psrStatus",
+        "periodStart",
+        "periodEnd"
+      ],
+      "additionalProperties": false
+    },
+    "schemeDesignatoryType": {
+      "description": "Scheme Details",
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "openBankAccount": {
+          "description": "Q3: As at the 5 April did the Scheme have at least one open bank account?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "reasonNoOpenAccount": {
+          "description": "Q3: If no, please provide a reason",
+          "$ref": "#/definitions/string160Type"
+        },
+        "noOfActiveMembers": {
+          "description": "Q4: What is the total number of Active Pension Scheme members as at 5 April or the end date of Accounting Period?",
+          "$ref": "#/definitions/integer8DigitsMinimum0Type"
+        },
+        "noOfDeferredMembers": {
+          "description": "Q4: What is the total number of Deferred Pension Scheme members as at 5 April or the end date of Accounting Period?",
+          "$ref": "#/definitions/integer8DigitsMinimum0Type"
+        },
+        "noOfPensionerMembers": {
+          "description": "Q4: What is the total number of Pensioners Pension Scheme members as at 5 April or the end date of Accounting Period?",
+          "$ref": "#/definitions/integer8DigitsMinimum0Type"
+        },
+        "totalAssetValueStart": {
+          "description": "Q5: What is the Total Value of Pension Scheme Assets, including cash, at the start of the Tax year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "totalAssetValueEnd": {
+          "description": "Q32: What is the Total Value of Pension Scheme Assets, including cash, at the end of the Tax year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "totalCashStart": {
+          "description": "Q6: What is the Total Cash held in all Bank accounts as at the start of the Tax year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "totalCashEnd": {
+          "description": "Q33: What is the Total Cash held in all Bank accounts as at the end of the Tax year?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "totalPayments": {
+          "description": "Q31: What are the total payments paid in respect of the scheme, for; fees; commissions; wages; salaries? for the administration of the scheme, under s180 (1) FA04",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "openBankAccount",
+        "noOfActiveMembers",
+        "noOfDeferredMembers",
+        "noOfPensionerMembers"
+      ],
+      "additionalProperties": false
+    },
+    "schemeTypeType": {
+      "description": "Scheme Type. Options are Occupational or SIPP",
+      "type": "string",
+      "enum": [
+        "Occupational",
+        "SIPP"
+      ]
+    },
+    "shareTypeType": {
+      "description": "Type of shares held: 01 - Sponsoring employer, 02 - Unquoted shares, 03 - Connected Party",
+      "type": "string",
+      "enum": [
+        "01",
+        "02",
+        "03"
+      ]
+    },
+    "sharesType": {
+      "type": "object",
+      "properties": {
+        "recordVersion": {
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+          "$ref": "#/definitions/versionType"
+        },
+        "sponsorEmployerSharesWereHeld": {
+          "description": "Q17: At any point during the tax year, did the pension scheme hold any shares in a sponsoring employer?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfSponsEmplyrShareTransactions": {
+          "description": "Q17a: How many share transactions, in a sponsoring employer, were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "unquotedSharesWereHeld": {
+          "description": "Q18: At any point during the tax year, did the pension scheme hold any unquoted shares",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfUnquotedShareTransactions": {
+          "description": "Q18a: How many share transactions, in unquoted shares, were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "connectedPartySharesWereHeld": {
+          "description": "Q19: At any point during the tax year, did the pension scheme hold any shares acquired from a connected party that were either not in a sponsoring employer and were not unquoted shares?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "noOfConnPartyTransactions": {
+          "description": "Q19a: How many share transactions, from a connected party, were made during the tax year and not reported in a previous return?",
+          "$ref": "#/definitions/integer7DigitsMinimum0Type"
+        },
+        "sponsorEmployerSharesWereDisposed": {
+          "description": "Q20: At any point during the tax year, did the pension scheme dispose of any shares in a sponsoring employer?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "unquotedSharesWereDisposed": {
+          "description": "Q21: Did the Scheme dispose of any unquoted shares during the tax year?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "connectedPartySharesWereDisposed": {
+          "description": "Q22: At any point during the tax year, did the pension scheme dispose of any shares from a connected party that were either not in a sponsoring employer and were not unquoted shares?",
+          "$ref": "#/definitions/booleanType"
+        },
+        "shareTransactions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "typeOfSharesHeld": {
+                "description": "Type of shares held:\n01 - Sponsoring employer\n02 - Unquoted shares\n03 - Connected Party",
+                "$ref": "#/definitions/shareTypeType"
+              },
+              "shareIdentification": {
+                "type": "object",
+                "properties": {
+                  "nameOfSharesCompany": {
+                    "description": "Q17d/18d/19d: What is the name of the company to which the shares relate?",
+                    "$ref": "#/definitions/string160Type"
+                  },
+                  "crnNumber": {
+                    "description": "Q17e/18e/19e: What is the CRN of the company to which the shares relate?",
+                    "$ref": "#/definitions/crnNumberType"
+                  },
+                  "reasonNoCRN": {
+                    "description": "Q17e/18e/19e: No CRN - provide reason",
+                    "$ref": "#/definitions/string160Type"
+                  },
+                  "classOfShares": {
+                    "description": "Q17f/18f/19f: What are the class of shares acquired or held?",
+                    "$ref": "#/definitions/string160Type"
+                  }
+                },
+                "required": [
+                  "nameOfSharesCompany"
+                ],
+                "additionalProperties": false
+              },
+              "heldSharesTransaction": {
+                "type": "object",
+                "properties": {
+                  "methodOfHolding": {
+                    "description": "Q17b/18b/19b: Are the Shares held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
+                    "type": "string",
+                    "enum": [
+                      "01",
+                      "02",
+                      "03"
+                    ]
+                  },
+                  "dateOfAcqOrContrib": {
+                    "description": "Q17c/18c/19c: What was the date of acquisition or contribution of the shares?\nMandatory for Acquisition or Contribution",
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "totalShares": {
+                    "description": "Q17g/18g/19g: What are the total number of shares acquired, received or held, in respect of this transaction?",
+                    "$ref": "#/definitions/integer7DigitsMinimum1Type"
+                  },
+                  "acquiredFromName": {
+                    "description": "Q17h/18h/19h: Who were the shares acquired from?",
+                    "$ref": "#/definitions/string160Type"
+                  },
+                  "acquiredFromType": {
+                    "description": "Q17i/18i/19i: Shares acquired from details",
+                    "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+                  },
+                  "connectedPartyStatus": {
+                    "description": "Q18j: Were the shares acquired from a connected party? (Mandatory for Unquoted Shares)",
+                    "$ref": "#/definitions/connectionStatusType"
+                  },
+                  "costOfShares": {
+                    "description": "Q17j/18k/19j: What was the total cost of shares acquired, or subscribed for, or if held by any other reason, the total value of the shares?",
+                    "$ref": "#/definitions/currencyType"
+                  },
+                  "supportedByIndepValuation": {
+                    "description": "Q17k/18l/19k: In respect of of these shares, was this transaction supported by an independent valuation?",
+                    "$ref": "#/definitions/booleanType"
+                  },
+                  "totalAssetValue": {
+                    "description": "Q17l: What was the total value of Pension Scheme Assets, at the date of acquisition? (Mandatory for Sponsoring Employer shares)",
+                    "$ref": "#/definitions/currencyType"
+                  },
+                  "totalDividendsOrReceipts": {
+                    "description": "Q17m/18m/19l: What was the total amount of dividends or other receipts received during the year?",
+                    "$ref": "#/definitions/currencyType"
+                  }
+                },
+                "required": [
+                  "methodOfHolding",
+                  "totalShares",
+                  "acquiredFromName",
+                  "acquiredFromType",
+                  "costOfShares",
+                  "supportedByIndepValuation",
+                  "totalDividendsOrReceipts"
+                ],
+                "additionalProperties": false
+              },
+              "disposedSharesTransaction": {
+                "description": "Only required if the Shares were also disposed in the specified Tax Year",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "methodOfDisposal": {
+                      "description": "Q20a/21a/22a: Were the bonds : 01 = Sold, 02 = Redeemed, 03 = Transferred Out, 04 = Other",
+                      "type": "string",
+                      "enum": [
+                        "01",
+                        "02",
+                        "03",
+                        "04"
+                      ]
+                    },
+                    "otherMethod": {
+                      "description": "Q20a/21a/22a: Other method of disposal\nMandatory when 'Other'",
+                      "$ref": "#/definitions/string160Type"
+                    },
+                    "salesQuestions": {
+                      "description": "Mandatory if Shares were Sold",
+                      "type": "object",
+                      "properties": {
+                        "dateOfSale": {
+                          "description": "Q20b/21b/22b: In respect of the shares, what was the date of sale?",
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "noOfSharesSold": {
+                          "description": "Q20c/21c/22c: What was the number of shares sold?",
+                          "$ref": "#/definitions/integer7DigitsMinimum1Type"
+                        },
+                        "amountReceived": {
+                          "description": "Q20d/21d/22d: What was the total amount of consideration received for the sale of shares?",
+                          "$ref": "#/definitions/currencyType"
+                        },
+                        "nameOfPurchaser": {
+                          "description": "Q20e/21e/22e: What is the name of the purchaser of the shares?",
+                          "$ref": "#/definitions/string160Type"
+                        },
+                        "purchaserType": {
+                          "description": "Q20f/21f/22f: Type of purchaser the shares were sold to?",
+                          "$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+                        },
+                        "connectedPartyStatus": {
+                          "description": "Q20g/21g/22g: Were the shares sold to a connected party?",
+                          "$ref": "#/definitions/connectionStatusType"
+                        },
+                        "supportedByIndepValuation": {
+                          "description": "Q20h21h/22h: In relation to the transaction, was an independent valuation obtained?\nMandatory if Sold",
+                          "$ref": "#/definitions/booleanType"
+                        }
+                      },
+                      "required": [
+                        "dateOfSale",
+                        "noOfSharesSold",
+                        "amountReceived",
+                        "nameOfPurchaser",
+                        "purchaserType",
+                        "connectedPartyStatus",
+                        "supportedByIndepValuation"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "redemptionQuestions": {
+                      "description": "Mandatory if Shares were Redeemed",
+                      "type": "object",
+                      "properties": {
+                        "dateOfRedemption": {
+                          "description": "Q20j/21j/22j: In respect of the shares, what was the date of redemption",
+                          "type": "string",
+                          "format": "date"
+                        },
+                        "noOfSharesRedeemed": {
+                          "description": "Q20k/21k/22k: What was the number of shares redeemed?",
+                          "$ref": "#/definitions/integer7DigitsMinimum1Type"
+                        },
+                        "amountReceived": {
+                          "description": "Q20l/21l:/22l In relation to the redemption, what was the consideration received by the scheme?",
+                          "$ref": "#/definitions/currencyType"
+                        }
+                      },
+                      "required": [
+                        "dateOfRedemption",
+                        "noOfSharesRedeemed",
+                        "amountReceived"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "totalSharesNowHeld": {
+                      "description": "Q20i/20m/21i/21m/22i/22m: What is the total number of shares now held?",
+                      "$ref": "#/definitions/integer7DigitsMinimum0Type"
+                    }
+                  },
+                  "required": [
+                    "methodOfDisposal",
+                    "totalSharesNowHeld"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "typeOfSharesHeld",
+              "shareIdentification",
+              "heldSharesTransaction"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "totalValueQuotedShares": {
+          "description": "Q23: What is the total value of quoted shares held?",
+          "$ref": "#/definitions/currencyType"
+        }
+      },
+      "required": [
+        "sponsorEmployerSharesWereHeld",
+        "unquotedSharesWereHeld",
+        "connectedPartySharesWereHeld",
+        "sponsorEmployerSharesWereDisposed",
+        "unquotedSharesWereDisposed",
+        "connectedPartySharesWereDisposed",
+        "totalValueQuotedShares"
+      ],
+      "additionalProperties": false
+    },
+    "string160Type": {
+      "description": "String with minLength 1 and maxLength 160",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^.{1,160}$"
+    },
+    "string35Type": {
+      "description": "String with minLength 1 and maxLength 35",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 35,
+      "pattern": "^.{1,35}$"
+    },
+    "submittedByType": {
+      "type": "string",
+      "enum": [
+        "PSA",
+        "PSP"
+      ]
+    },
+    "transferInDetailType": {
+      "type": "object",
+      "properties": {
+        "dateOfTransfer": {
+          "description": "Q11b: Date of Transfer",
+          "type": "string",
+          "format": "date"
+        },
+        "schemeName": {
+          "description": "Q11c: What was the name of the Transferring scheme?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "transferSchemeType": {
+          "description": "Q11d: Type of transferring scheme",
+          "$ref": "#/definitions/transferringSchemeType"
+        },
+        "transferValue": {
+          "description": "Q11e: What is the total value of the transfer?",
+          "$ref": "#/definitions/currencyType"
+        },
+        "transferIncludedAsset": {
+          "description": "Q11f: Did the Transfer include an asset?",
+          "$ref": "#/definitions/booleanType"
+        }
+      },
+      "required": [
+        "dateOfTransfer",
+        "schemeName",
+        "transferSchemeType",
+        "transferValue",
+        "transferIncludedAsset"
+      ],
+      "additionalProperties": false
+    },
+    "transferOutDetailType": {
+      "type": "object",
+      "properties": {
+        "dateOfTransfer": {
+          "description": "Q12b: Date of Transfer",
+          "type": "string",
+          "format": "date"
+        },
+        "schemeName": {
+          "description": "Q12c: What is the name of the receiving scheme?",
+          "$ref": "#/definitions/string160Type"
+        },
+        "transferSchemeType": {
+          "description": "Q12d: Type of receiving scheme",
+          "$ref": "#/definitions/transferringSchemeType"
+        }
+      },
+      "required": [
+        "dateOfTransfer",
+        "schemeName",
+        "transferSchemeType"
+      ],
+      "additionalProperties": false
+    },
+    "transferringSchemeType": {
+      "type": "object",
+      "properties": {
+        "schemeType": {
+          "description": "Type of transfering scheme. Options: 01 = RegisteredScheme, 02 = QROPS, 03 = Other",
+          "type": "string",
+          "enum": [
+            "01",
+            "02",
+            "03"
+          ]
+        },
+        "refNumber": {
+          "description": "PSTR or QROPS Reference",
+          "type": "string",
+          "pattern": "^(Q[0-9]{6})|([0-9]{8}[A-Z]{2})$"
+        },
+        "otherDescription": {
+          "description": "Description if Other selected",
+          "$ref": "#/definitions/string160Type"
+        }
+      },
+      "required": [
+        "schemeType"
+      ],
+      "additionalProperties": false
+    },
+    "versionType": {
+      "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
+      "type": "string",
+      "pattern": "^[0-9]{3}$"
+    }
+  },
+  "version": "0.0.7"
+}

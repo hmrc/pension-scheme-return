@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, Reads}
 
 import java.time.LocalDate
 
-case class MinimalRequiredDetails(
+case class MinimalRequiredSubmission(
   reportDetails: ReportDetails,
   accountingPeriods: List[(LocalDate, LocalDate)],
   schemeDesignatory: SchemeDesignatory
@@ -41,8 +41,8 @@ case class SchemeDesignatory(
   totalPayments: Int
 )
 
-object MinimalRequiredDetails {
+object MinimalRequiredSubmission {
   private implicit val reportDetailsReads: Reads[ReportDetails] = Json.reads[ReportDetails]
   private implicit val schemeDesignatoryReads: Reads[SchemeDesignatory] = Json.reads[SchemeDesignatory]
-  implicit val reads: Reads[MinimalRequiredDetails] = Json.reads[MinimalRequiredDetails]
+  implicit val reads: Reads[MinimalRequiredSubmission] = Json.reads[MinimalRequiredSubmission]
 }

@@ -21,8 +21,8 @@ import play.api.mvc.Results.NoContent
 import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.{httpResult, requiredBody}
-import uk.gov.hmrc.pensionschemereturn.models.MinimalRequiredDetails
-import uk.gov.hmrc.pensionschemereturn.service.PsrSubmissionService
+import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredSubmission, PsrSubmission}
+import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
@@ -38,15 +38,15 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
 
   def submitMinimalRequiredDetails: Action[AnyContent] =
     Action.async { implicit request =>
-      val minimalRequiredDetails = requiredBody.as[MinimalRequiredDetails]
-      logger.debug(message = s"Submitting minimal required details - Incoming payload: $minimalRequiredDetails")
+      val minimalRequiredSubmission = requiredBody.as[MinimalRequiredSubmission]
+      logger.debug(message = s"Submitting minimal required details - Incoming payload: $minimalRequiredSubmission")
       psrSubmissionService
-        .submitMinimalRequiredDetails(minimalRequiredDetails)
+        .submitMinimalRequiredDetails(minimalRequiredSubmission)
         .map(httpResult("Submitting minimal required details", _))
     }
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    val userAnswers = requiredBody
+    val userAnswers = requiredBody.as[PsrSubmission]
     logger.debug(message = s"Submitting standard PSR - Incoming payload: $userAnswers")
     psrSubmissionService
       .submitStandardPsr(userAnswers)
@@ -55,6 +55,7 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
 }
 
 object PsrSubmitController extends Logging {
+
   private def requiredBody(implicit request: Request[AnyContent]) =
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
 
