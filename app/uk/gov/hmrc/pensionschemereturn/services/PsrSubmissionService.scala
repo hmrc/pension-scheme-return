@@ -23,8 +23,7 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService._
-import uk.gov.hmrc.pensionschemereturn.transformations.MinimalRequiredDetailsToEtmp
+import uk.gov.hmrc.pensionschemereturn.transformations.{MinimalRequiredDetailsToEtmp, PsrSubmissionToEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
 
@@ -34,7 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
-  minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp
+  minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp,
+  psrSubmissionToEtmp: PsrSubmissionToEtmp
 ) extends Logging {
 
   def submitMinimalRequiredDetails(
@@ -57,7 +57,7 @@ class PsrSubmissionService @Inject()(
   def submitStandardPsr(
     psrSubmission: PsrSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val payloadAsJson = Json.toJson("to be implemented")
+    val payloadAsJson = Json.toJson(psrSubmissionToEtmp.transform(psrSubmission))
     val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
@@ -70,14 +70,4 @@ class PsrSubmissionService @Inject()(
       }
     }
   }
-}
-
-object PsrSubmissionService {
-  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
-  private implicit val reportDetailsWrites: OWrites[ETMPReportDetails] = Json.writes[ETMPReportDetails]
-  private implicit val accountingPeriodWrites: OWrites[ETMPAccountingPeriod] = Json.writes[ETMPAccountingPeriod]
-  private implicit val accountingPeriodDetailsWrites: OWrites[ETMPAccountingPeriodDetails] =
-    Json.writes[ETMPAccountingPeriodDetails]
-  private implicit val schemeDesignatoryWrites: OWrites[ETMPSchemeDesignatory] = Json.writes[ETMPSchemeDesignatory]
-  implicit val reads: OWrites[ETMPMinimalRequiredDetails] = Json.writes[ETMPMinimalRequiredDetails]
 }

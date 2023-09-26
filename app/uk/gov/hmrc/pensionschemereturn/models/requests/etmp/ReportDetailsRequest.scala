@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+
+import play.api.libs.json.{JsString, Json, OWrites, Writes}
 
 import java.time.LocalDate
-
-case class ETMPMinimalRequiredDetails(
-  reportDetails: ETMPReportDetails,
-  accountingPeriodDetails: ETMPAccountingPeriodDetails,
-  schemeDesignatory: ETMPSchemeDesignatory
-)
 
 sealed trait PSRStatus {
   val name: String
@@ -36,29 +32,14 @@ case object Submitted extends PSRStatus {
   val name = "Submitted"
 }
 
-case class ETMPReportDetails(
+case class ReportDetailsRequest(
   pstr: String,
   psrStatus: PSRStatus,
   periodStart: LocalDate,
   periodEnd: LocalDate
 )
 
-case class ETMPAccountingPeriod(
-  accPeriodStart: LocalDate,
-  accPeriodEnd: LocalDate
-)
-
-case class ETMPAccountingPeriodDetails(
-  recordVersion: String,
-  accountingPeriods: List[ETMPAccountingPeriod]
-)
-
-case class ETMPSchemeDesignatory(
-  recordVersion: String,
-  openBankAccount: String,
-  reasonNoOpenAccount: Option[String],
-  noOfActiveMembers: Int,
-  noOfDeferredMembers: Int,
-  noOfPensionerMembers: Int,
-  totalPayments: Int
-)
+object ReportDetailsRequest {
+  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
+  implicit val writes: OWrites[ReportDetailsRequest] = Json.writes[ReportDetailsRequest]
+}

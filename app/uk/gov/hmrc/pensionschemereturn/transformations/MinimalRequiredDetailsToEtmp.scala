@@ -18,29 +18,30 @@ package uk.gov.hmrc.pensionschemereturn.transformations
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
 
 @Singleton()
 class MinimalRequiredDetailsToEtmp @Inject()() {
 
-  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): ETMPMinimalRequiredDetails =
-    ETMPMinimalRequiredDetails(
-      ETMPReportDetails(
+  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): MinimalRequiredSubmissionRequest =
+    MinimalRequiredSubmissionRequest(
+      ReportDetailsRequest(
         pstr = minimalRequiredSubmission.reportDetails.pstr,
         psrStatus = Compiled,
         periodStart = minimalRequiredSubmission.reportDetails.periodStart,
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd
       ),
-      ETMPAccountingPeriodDetails(
+      AccountingPeriodDetailsRequest(
         recordVersion = "001", // TODO hardcoded for now
         accountingPeriods = minimalRequiredSubmission.accountingPeriods.map {
           case (start, end) =>
-            ETMPAccountingPeriod(
+            AccountingPeriodRequest(
               accPeriodStart = start,
               accPeriodEnd = end
             )
         }
       ),
-      ETMPSchemeDesignatory(
+      SchemeDesignatoryRequest(
         recordVersion = "001", // TODO hardcoded for now
         openBankAccount = if (minimalRequiredSubmission.schemeDesignatory.openBankAccount) "Yes" else "No",
         reasonNoOpenAccount = minimalRequiredSubmission.schemeDesignatory.reasonForNoBankAccount,

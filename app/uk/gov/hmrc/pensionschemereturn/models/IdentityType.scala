@@ -42,4 +42,13 @@ object IdentityType {
       case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
       case invalidValue => Reads(_ => JsError(s"Invalid IdentityType type: $invalidValue"))
     }
+
+  def getIdentityTypeAsString(identityType: IdentityType): String =
+    identityType match {
+      case Individual => "01"
+      case UKCompany => "02"
+      case UKPartnership => "03"
+      case Other => "04"
+      case _ => "Unsupported IdentityType"
+    }
 }

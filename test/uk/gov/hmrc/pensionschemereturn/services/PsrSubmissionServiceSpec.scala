@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
-import uk.gov.hmrc.pensionschemereturn.transformations.MinimalRequiredDetailsToEtmp
+import uk.gov.hmrc.pensionschemereturn.transformations.{LoansToEtmp, MinimalRequiredDetailsToEtmp, PsrSubmissionToEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 
 import java.time.LocalDate
@@ -34,8 +34,10 @@ import scala.concurrent.Future
 class PsrSubmissionServiceSpec extends PlaySpec with MockitoSugar {
 
   private val mockConnector = mock[PsrConnector]
+  private val minimalRequiredDetailsToEtmp = new MinimalRequiredDetailsToEtmp
+  private val psrSubmissionToEtmp = new PsrSubmissionToEtmp(minimalRequiredDetailsToEtmp, new LoansToEtmp)
   private val service =
-    new PsrSubmissionService(mockConnector, new JSONSchemaValidator, new MinimalRequiredDetailsToEtmp)
+    new PsrSubmissionService(mockConnector, new JSONSchemaValidator, minimalRequiredDetailsToEtmp, psrSubmissionToEtmp)
   private implicit val hc = HeaderCarrier()
   private implicit val rq = FakeRequest()
 
