@@ -48,6 +48,10 @@ class MinimalRequiredDetailsToEtmp @Inject()() {
         noOfActiveMembers = minimalRequiredSubmission.schemeDesignatory.activeMembers,
         noOfDeferredMembers = minimalRequiredSubmission.schemeDesignatory.deferredMembers,
         noOfPensionerMembers = minimalRequiredSubmission.schemeDesignatory.pensionerMembers,
+        totalAssetValueStart = minimalRequiredSubmission.schemeDesignatory.totalAssetValueStart,
+        totalAssetValueEnd = minimalRequiredSubmission.schemeDesignatory.totalAssetValueEnd,
+        totalCashStart = minimalRequiredSubmission.schemeDesignatory.totalCashStart,
+        totalCashEnd = minimalRequiredSubmission.schemeDesignatory.totalCashEnd,
         totalPayments = minimalRequiredSubmission.schemeDesignatory.totalPayments
       )
     )
