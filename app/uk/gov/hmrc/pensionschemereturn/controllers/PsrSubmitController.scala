@@ -17,11 +17,10 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.Logging
-import play.api.mvc.Results.NoContent
 import play.api.mvc._
-import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.{httpResult, requiredBody}
-import uk.gov.hmrc.pensionschemereturn.models.{MinimalRequiredSubmission, PsrSubmission}
+import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
+import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.requiredBody
+import uk.gov.hmrc.pensionschemereturn.models.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -36,21 +35,15 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     with Results
     with Logging {
 
-  def submitMinimalRequiredDetails: Action[AnyContent] =
-    Action.async { implicit request =>
-      val minimalRequiredSubmission = requiredBody.as[MinimalRequiredSubmission]
-      logger.debug(message = s"Submitting minimal required details - Incoming payload: $minimalRequiredSubmission")
-      psrSubmissionService
-        .submitMinimalRequiredDetails(minimalRequiredSubmission)
-        .map(httpResult("Submitting minimal required details", _))
-    }
-
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    val userAnswers = requiredBody.as[PsrSubmission]
-    logger.debug(message = s"Submitting standard PSR - Incoming payload: $userAnswers")
+    val psrSubmission = requiredBody.as[PsrSubmission]
+    logger.debug(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
     psrSubmissionService
-      .submitStandardPsr(userAnswers)
-      .map(httpResult("Submitting standard PSR", _))
+      .submitStandardPsr(psrSubmission)
+      .map(response => {
+        logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
+        NoContent
+      })
   }
 }
 
@@ -58,10 +51,4 @@ object PsrSubmitController extends Logging {
 
   private def requiredBody(implicit request: Request[AnyContent]) =
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
-
-  private val httpResult: (String, HttpResponse) => Result =
-    (msg, response) => {
-      logger.debug(message = s"$msg - response: ${response.status} , body: ${response.body}")
-      NoContent
-    }
 }

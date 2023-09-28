@@ -17,19 +17,21 @@
 package uk.gov.hmrc.pensionschemereturn.validators
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.inject.{Inject, Singleton}
 import com.networknt.schema.{JsonSchemaFactory, SpecVersion, ValidationMessage}
 import play.api.libs.json._
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 case class SchemaValidationResult(errors: Set[ValidationMessage]) {
-  override def toString =
+  override def toString: String =
     errors.map(validationMessage => validationMessage.toString + "\n").mkString + "\n"
 
-  def hasErrors = errors.nonEmpty
+  def hasErrors: Boolean = errors.nonEmpty
 }
 
-class JSONSchemaValidator {
+@Singleton()
+class JSONSchemaValidator @Inject()() {
 
   def validatePayload(jsonSchemaPath: String, data: JsValue): SchemaValidationResult = {
     val schemaUrl = getClass.getResourceAsStream(jsonSchemaPath)

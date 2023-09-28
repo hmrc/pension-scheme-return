@@ -22,32 +22,31 @@ import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
 
 @Singleton()
-class LoansToEtmp @Inject()() {
+class LoansToEtmp @Inject()() extends Transformer {
 
   def transform(loans: Loans): LoansRequest =
     LoansRequest(
       recordVersion = "001", // TODO hardcoded for now
-      schemeHadLoans = if (loans.schemeHadLoans) "Yes" else "No",
+      schemeHadLoans = toYesNo(loans.schemeHadLoans),
       noOfLoans = loans.loanTransactions.size,
       loanTransactions = loans.loanTransactions.map { loanTransaction =>
         LoanTransactionsRequest(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
           recipientIdentityType = buildRecipientIdentityTypeRequest(loanTransaction.recipientIdentityType),
-          recipientSponsoringEmployer =
-            if (loanTransaction.optRecipientSponsoringEmployer.contains("sponsoring")) "Yes" else "No",
+          recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains("sponsoring")),
           connectedPartyStatus = if (loanTransaction.optConnectedPartyStatus.getOrElse(false)) "01" else "02",
           loanAmount = loanTransaction.loanAmountDetails.loanAmount,
           loanInterestAmount = loanTransaction.loanInterestDetails.loanInterestAmount,
           loanTotalSchemeAssets = loanTransaction.datePeriodLoanDetails.loanTotalSchemeAssets,
           loanPeriodInMonths = loanTransaction.datePeriodLoanDetails.loanPeriodInMonths,
-          equalInstallments = if (loanTransaction.equalInstallments) "Yes" else "No",
+          equalInstallments = toYesNo(loanTransaction.equalInstallments),
           loanInterestRate = loanTransaction.loanInterestDetails.loanInterestRate,
-          securityGiven = loanTransaction.optSecurityGivenDetails.map(_ => "Yes").getOrElse("No"),
+          securityGiven = optToYesNo(loanTransaction.optSecurityGivenDetails),
           securityDetails = loanTransaction.optSecurityGivenDetails,
           capRepaymentCY = loanTransaction.loanAmountDetails.capRepaymentCY,
           intReceivedCY = loanTransaction.loanInterestDetails.intReceivedCY,
-          arrearsPrevYears = loanTransaction.optOutstandingArrearsOnLoan.map(_ => "Yes").getOrElse("No"),
+          arrearsPrevYears = optToYesNo(loanTransaction.optOutstandingArrearsOnLoan),
           amountOfArrears = loanTransaction.optOutstandingArrearsOnLoan,
           amountOutstanding = loanTransaction.loanAmountDetails.amountOutstanding
         )

@@ -23,7 +23,7 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.transformations.{MinimalRequiredDetailsToEtmp, PsrSubmissionToEtmp}
+import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
 
@@ -33,26 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
-  minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp,
   psrSubmissionToEtmp: PsrSubmissionToEtmp
 ) extends Logging {
-
-  def submitMinimalRequiredDetails(
-    minimalRequiredSubmission: MinimalRequiredSubmission
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val payloadAsJson = Json.toJson(minimalRequiredDetailsToEtmp.transform(minimalRequiredSubmission))
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
-    if (validationResult.hasErrors) {
-      throw PensionSchemeReturnValidationFailureException(
-        s"Invalid payload when submitStandardPsr :-\n${validationResult.toString}"
-      )
-    } else {
-      psrConnector.submitStandardPsr(payloadAsJson).recover {
-        case _: BadRequestException =>
-          throw new ExpectationFailedException("Nothing to submit")
-      }
-    }
-  }
 
   def submitStandardPsr(
     psrSubmission: PsrSubmission

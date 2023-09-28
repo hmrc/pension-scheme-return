@@ -37,14 +37,14 @@ class PsrConnector @Inject()(
   def submitStandardPsr(
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val StandardPsrUrl = config.submitStandardPsrUrl
-    logger.info("Submit standard PSR called URL: " + StandardPsrUrl + s" with payload: ${Json.stringify(data)}")
+    val standardPsrUrl = config.submitStandardPsrUrl
+    logger.info("Submit standard PSR called URL: " + standardPsrUrl + s" with payload: ${Json.stringify(data)}")
 
-    http.POST[JsValue, HttpResponse](StandardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly).map {
+    http.POST[JsValue, HttpResponse](standardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly).map {
       response =>
         response.status match {
           case CREATED => response
-          case UNPROCESSABLE_ENTITY => response
+          case _ => handleErrorResponse("POST", standardPsrUrl)(response)
         }
     }
   }
