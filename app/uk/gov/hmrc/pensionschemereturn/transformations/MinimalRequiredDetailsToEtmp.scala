@@ -21,7 +21,7 @@ import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
 
 @Singleton()
-class MinimalRequiredDetailsToEtmp @Inject()() {
+class MinimalRequiredDetailsToEtmp @Inject()() extends Transformer {
 
   def transform(minimalRequiredSubmission: MinimalRequiredSubmission): MinimalRequiredSubmissionRequest =
     MinimalRequiredSubmissionRequest(
@@ -43,7 +43,7 @@ class MinimalRequiredDetailsToEtmp @Inject()() {
       ),
       SchemeDesignatoryRequest(
         recordVersion = "001", // TODO hardcoded for now
-        openBankAccount = if (minimalRequiredSubmission.schemeDesignatory.openBankAccount) "Yes" else "No",
+        openBankAccount = toYesNo(minimalRequiredSubmission.schemeDesignatory.openBankAccount),
         reasonNoOpenAccount = minimalRequiredSubmission.schemeDesignatory.reasonForNoBankAccount,
         noOfActiveMembers = minimalRequiredSubmission.schemeDesignatory.activeMembers,
         noOfDeferredMembers = minimalRequiredSubmission.schemeDesignatory.deferredMembers,
