@@ -38,15 +38,15 @@ class PsrConnector @Inject()(
   def submitStandardPsr(
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val submitStandardPsrUrl = config.submitStandardPsrUrl
-    logger.info("Submit standard PSR called URL: " + submitStandardPsrUrl + s" with payload: ${Json.stringify(data)}")
+    val url = config.submitStandardPsrUrl
+    logger.info("Submit standard PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
 
     http
-      .POST[JsValue, HttpResponse](submitStandardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly)
+      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
       .map { response =>
         response.status match {
           case CREATED => response
-          case _ => handleErrorResponse("POST", submitStandardPsrUrl)(response)
+          case _ => handleErrorResponse("POST", url)(response)
         }
       }
   }
@@ -59,20 +59,19 @@ class PsrConnector @Inject()(
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[JsObject]] = {
 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
-    val getStandardPsrUrl: String =
-      config.getStandardPsrUrl.format(params)
-    val logMessage = "Get standard PSR called URL: " + getStandardPsrUrl + s" with pstr: $pstr"
+    val url: String = config.getStandardPsrUrl.format(params)
+    val logMessage = "Get standard PSR called URL: " + url + s" with pstr: $pstr"
 
     logger.info(logMessage)
 
-    http.GET[HttpResponse](getStandardPsrUrl)(implicitly, headerCarrier, implicitly).map { response =>
+    http.GET[HttpResponse](url)(implicitly, headerCarrier, implicitly).map { response =>
       response.status match {
         case OK =>
           Some(response.json.as[JsObject])
         case NOT_FOUND =>
           logger.warn(s"$logMessage and returned ${response.status}")
           None
-        case _ => handleErrorResponse("GET", getStandardPsrUrl)(response)
+        case _ => handleErrorResponse("GET", url)(response)
       }
     }
   }

@@ -174,46 +174,35 @@
 			],
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{bearer_token}}",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "pstr",
-						"value": "24000015IN",
-						"type": "text"
-					},
-					{
-						"key": "startDate",
-						"value": "2021-04-06",
-						"type": "text"
-					},
-					{
-						"key": "endDate",
-						"value": "2022-04-05",
-						"type": "text"
-					},
-					{
-						"key": "reportType",
-						"value": "ER",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "{{pension-scheme-return}}/psr/standard",
+					"raw": "{{pension-scheme-return}}/psr/standard/24000015IN?fbNumber=123",
 					"host": [
 						"{{pension-scheme-return}}"
 					],
 					"path": [
 						"psr",
-						"standard"
+						"standard",
+						"24000015IN"
+					],
+					"query": [
+						{
+							"key": "periodStartDate",
+							"value": "2021-04-06",
+							"disabled": true
+						},
+						{
+							"key": "psrVersion",
+							"value": "456",
+							"disabled": true
+						},
+						{
+							"key": "fbNumber",
+							"value": "123"
+						}
 					]
 				}
 			},
