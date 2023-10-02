@@ -119,4 +119,25 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
       status(result) mustBe Status.NO_CONTENT
     }
   }
+
+  "GET standard PSR" must {
+    "return 200" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Some(responseJson)))
+
+      val result = controller.getStandardPsr(fakeRequest)
+      status(result) mustBe Status.OK
+    }
+
+    "return 404" in {
+
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(None))
+
+      val result = controller.getStandardPsr(fakeRequest)
+      status(result) mustBe Status.NOT_FOUND
+    }
+  }
 }

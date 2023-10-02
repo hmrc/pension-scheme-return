@@ -45,6 +45,20 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
         NoContent
       })
   }
+
+  def getStandardPsr: Action[AnyContent] = Action.async { implicit request =>
+    val pstr = "12345678AA"
+    val optFbNumber = Some("001")
+    val optPeriodStartDate = None
+    val optPsrVersion = None
+    logger.debug(
+      s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
+    )
+    psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
+      case None => NotFound
+      case Some(jsObj) => Ok(jsObj)
+    }
+  }
 }
 
 object PsrSubmitController extends Logging {

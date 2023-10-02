@@ -52,4 +52,12 @@ class PsrSubmissionService @Inject()(
       }
     }
   }
+
+  def getStandardPsr(
+    pstr: String,
+    optFbNumber: Option[String],
+    optPeriodStartDate: Option[String],
+    optPsrVersion: Option[String]
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[Option[JsObject]] =
+    psrConnector.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
 }

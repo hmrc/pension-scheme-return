@@ -19,7 +19,8 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
@@ -37,15 +38,56 @@ class PsrConnector @Inject()(
   def submitStandardPsr(
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val standardPsrUrl = config.submitStandardPsrUrl
-    logger.info("Submit standard PSR called URL: " + standardPsrUrl + s" with payload: ${Json.stringify(data)}")
+    val submitStandardPsrUrl = config.submitStandardPsrUrl
+    logger.info("Submit standard PSR called URL: " + submitStandardPsrUrl + s" with payload: ${Json.stringify(data)}")
 
-    http.POST[JsValue, HttpResponse](standardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly).map {
-      response =>
+    http
+      .POST[JsValue, HttpResponse](submitStandardPsrUrl, data)(implicitly, implicitly, headerCarrier, implicitly)
+      .map { response =>
         response.status match {
           case CREATED => response
-          case _ => handleErrorResponse("POST", standardPsrUrl)(response)
+          case _ => handleErrorResponse("POST", submitStandardPsrUrl)(response)
         }
+      }
+  }
+
+  def getStandardPsr(
+    pstr: String,
+    optFbNumber: Option[String],
+    optPeriodStartDate: Option[String],
+    optPsrVersion: Option[String]
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[JsObject]] = {
+
+    val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+    val getStandardPsrUrl: String =
+      config.getStandardPsrUrl.format(params)
+    val logMessage = "Get standard PSR called URL: " + getStandardPsrUrl + s" with pstr: $pstr"
+
+    logger.info(logMessage)
+
+    http.GET[HttpResponse](getStandardPsrUrl)(implicitly, headerCarrier, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          Some(response.json.as[JsObject])
+        case NOT_FOUND =>
+          logger.warn(s"$logMessage and returned ${response.status}")
+          None
+        case _ => handleErrorResponse("GET", getStandardPsrUrl)(response)
+      }
     }
   }
+
+  private def buildParams(
+    pstr: String,
+    optFbNumber: Option[String],
+    optPeriodStartDate: Option[String],
+    optPsrVersion: Option[String]
+  ): String =
+    (optFbNumber, optPeriodStartDate, optPsrVersion) match {
+      case (Some(fbNumber), _, _) => s"$pstr?fbNumber=$fbNumber"
+      case (None, Some(periodStartDate), Some(psrVersion)) =>
+        s"$pstr?periodStartDate=$periodStartDate&psrVersion=$psrVersion"
+      case _ => throw new BadRequestException("Missing url parameters")
+    }
+
 }
