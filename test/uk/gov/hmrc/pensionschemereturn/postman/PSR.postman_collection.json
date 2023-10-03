@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3a1248ef-d909-4d5e-a663-a1bb122f991b",
+		"_postman_id": "381c5b57-e7df-42f2-b2dd-aa6f5550db89",
 		"name": "PSR",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1174017"
 	},
 	"item": [
 		{
@@ -142,6 +143,66 @@
 					"path": [
 						"admin",
 						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Standard PSR",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/standard/24000015IN?fbNumber=123",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"standard",
+						"24000015IN"
+					],
+					"query": [
+						{
+							"key": "periodStartDate",
+							"value": "2021-04-06",
+							"disabled": true
+						},
+						{
+							"key": "psrVersion",
+							"value": "456",
+							"disabled": true
+						},
+						{
+							"key": "fbNumber",
+							"value": "123"
+						}
 					]
 				}
 			},

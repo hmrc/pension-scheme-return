@@ -20,7 +20,7 @@ import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
@@ -61,7 +61,22 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar {
   private implicit val hc = HeaderCarrier()
   private implicit val rq = FakeRequest()
 
-  "PsrSubmissionService" should {
+  "getStandardPsr" should {
+    "return 200 when connector returns data" in {
+      val sampleResponse = Some(Json.obj())
+
+      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(sampleResponse))
+
+      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[JsObject] =>
+        result mustEqual sampleResponse
+
+        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+      }
+    }
+  }
+
+  "submitStandardPsr" should {
     "successfully submit only minimal required submission details" in {
       val expectedResponse = HttpResponse(201, Json.obj(), Map.empty)
 

@@ -17,17 +17,17 @@
 package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock.{delete, get, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.time.{Millis, Span}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.http.test.WireMockSupport
+import uk.gov.hmrc.http.test.{HttpClientSupport, WireMockSupport}
 import utils.BaseSpec
 
 import scala.reflect.ClassTag
 
-abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
+abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport with HttpClientSupport {
 
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(500, Millis)), interval = scaled(Span(50, Millis)))
@@ -44,6 +44,14 @@ abstract class BaseConnectorSpec extends BaseSpec with WireMockSupport {
   def stubGet(url: String, response: ResponseDefinitionBuilder): StubMapping =
     wireMockServer.stubFor(
       get(urlEqualTo(url))
+        .willReturn(response)
+    )
+
+  def stubPost(url: String, requestBody: String, response: ResponseDefinitionBuilder): StubMapping =
+    wireMockServer.stubFor(
+      post(urlEqualTo(url))
+        .withHeader("Content-Type", equalTo("application/json"))
+        .withRequestBody(equalTo(requestBody))
         .willReturn(response)
     )
 
