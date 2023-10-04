@@ -140,4 +140,30 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
       status(result) mustBe Status.NOT_FOUND
     }
   }
+
+  "POST SIPP PSR" must {
+    "return 204" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockPsrSubmissionService.submitSippPsr(any())(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+
+      val requestJson: JsValue = Json.parse(
+        """
+          |{
+          |  "reportDetails" : {
+          |    "pstr" : "17836742CF",
+          |    "psrStatus" : "Compiled",
+          |    "periodStart" : "2022-04-06",
+          |    "periodEnd" : "2023-04-05",
+          |    "memberTransactions": "Yes"
+          |  }
+          |}
+          |""".stripMargin
+      )
+      val postRequest = fakeRequest.withJsonBody(requestJson)
+      val result = controller.submitSippPsr(postRequest)
+      status(result) mustBe Status.NO_CONTENT
+    }
+  }
 }

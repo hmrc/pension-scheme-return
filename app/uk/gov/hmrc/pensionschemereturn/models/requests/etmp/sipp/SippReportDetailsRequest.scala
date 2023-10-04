@@ -14,9 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.validators
+package uk.gov.hmrc.pensionschemereturn.models.requests.etmp.sipp
 
-object SchemaPaths {
-  val EPID_1444 = "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
-  val EPID_1446 = "/resources/schemas/epid-1446-submit-standard-psr-request-schema-v1.0.json"
+import play.api.libs.json.{JsString, Json, OWrites, Writes}
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PSRStatus
+
+import java.time.LocalDate
+
+case class SippReportDetailsRequest(
+  pstr: String,
+  status: PSRStatus,
+  periodStart: LocalDate,
+  periodEnd: LocalDate,
+  memberTransactions: String
+)
+
+object SippReportDetailsRequest {
+  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
+  implicit val writes: OWrites[SippReportDetailsRequest] = Json.writes[SippReportDetailsRequest]
 }

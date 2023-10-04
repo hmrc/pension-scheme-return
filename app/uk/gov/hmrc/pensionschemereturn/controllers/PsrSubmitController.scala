@@ -21,6 +21,7 @@ import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
 import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.requiredBody
 import uk.gov.hmrc.pensionschemereturn.models.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -60,6 +61,18 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
       case Some(jsObj) => Ok(jsObj)
     }
   }
+
+  def submitSippPsr: Action[AnyContent] = Action.async { implicit request =>
+    val sippPsrSubmission = requiredBody.as[SippPsrSubmission]
+    logger.debug(message = s"Submitting SIPP PSR - Incoming payload: $sippPsrSubmission")
+    psrSubmissionService
+      .submitSippPsr(sippPsrSubmission)
+      .map(response => {
+        logger.debug(message = s"Submit SIPP PSR - response: ${response.status} , body: ${response.body}")
+        NoContent
+      })
+  }
+
 }
 
 object PsrSubmitController extends Logging {

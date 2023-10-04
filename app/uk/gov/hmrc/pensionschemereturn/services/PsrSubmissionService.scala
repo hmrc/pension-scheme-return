@@ -23,9 +23,11 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmp
+import uk.gov.hmrc.pensionschemereturn.transformations.sipp.SippPsrSubmissionToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.{EPID_1444, EPID_1446}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
-  psrSubmissionToEtmp: PsrSubmissionToEtmp
+  psrSubmissionToEtmp: PsrSubmissionToEtmp,
+  sippPsrSubmissionToEtmp: SippPsrSubmissionToEtmp
 ) extends Logging {
 
   def submitStandardPsr(
@@ -60,4 +63,22 @@ class PsrSubmissionService @Inject()(
     optPsrVersion: Option[String]
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[Option[JsObject]] =
     psrConnector.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+
+  def submitSippPsr(
+    sippPsrSubmission: SippPsrSubmission
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
+    val payloadAsJson = Json.toJson(sippPsrSubmissionToEtmp.transform(sippPsrSubmission))
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1446, payloadAsJson)
+    if (validationResult.hasErrors) {
+      throw PensionSchemeReturnValidationFailureException(
+        s"Invalid payload when submitSippPsr :-\n${validationResult.toString}"
+      )
+    } else {
+      psrConnector.submitSippPsr(payloadAsJson).recover {
+        case _: BadRequestException =>
+          throw new ExpectationFailedException("Nothing to submit")
+      }
+    }
+  }
+
 }

@@ -2,3 +2,4 @@
 
 POST        /psr/standard              uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
 GET         /psr/standard/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.getStandardPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
+POST        /psr/sipp                  uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitSippPsr
