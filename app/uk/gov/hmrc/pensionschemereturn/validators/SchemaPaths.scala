@@ -18,5 +18,5 @@ package uk.gov.hmrc.pensionschemereturn.validators
 
 object SchemaPaths {
   val EPID_1444 = "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
-  val EPID_1446 = "/resources/schemas/epid-1446-submit-standard-psr-request-schema-v1.0.json"
+  val EPID_1446 = "/resources/schemas/epid-1446-submit-sipp-psr-request-schema-v1.0.json"
 }
