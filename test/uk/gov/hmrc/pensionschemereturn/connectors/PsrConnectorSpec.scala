@@ -44,7 +44,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   private lazy val connector: PsrConnector = applicationBuilder.injector().instanceOf[PsrConnector]
 
   "submitStandardPsr" should {
-    "return a standard PSR value with only fbNumber" in {
+    "return 201 - created" in {
       stubPost(
         "/pension-online/psr/standard",
         Json.stringify(createJsonObject()),
@@ -149,6 +149,24 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
       thrown.responseCode mustBe BAD_REQUEST
       thrown.message mustEqual "Missing url parameters"
+    }
+  }
+
+  "submitSippPsr" should {
+    "return 201 - created" in {
+      stubPost(
+        "/pension-online/psr/sipp",
+        Json.stringify(createJsonObject()),
+        created()
+      )
+
+      whenReady(connector.submitSippPsr(createJsonObject())) { result: HttpResponse =>
+        WireMock.verify(
+          postRequestedFor(urlEqualTo("/pension-online/psr/sipp"))
+        )
+
+        result.status mustBe CREATED
+      }
     }
   }
 

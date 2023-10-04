@@ -76,6 +76,22 @@ class PsrConnector @Inject()(
     }
   }
 
+  def submitSippPsr(
+    data: JsValue
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
+    val url = config.submitSippPsrUrl
+    logger.info("Submit SIPP PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
+
+    http
+      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
+      .map { response =>
+        response.status match {
+          case CREATED => response
+          case _ => handleErrorResponse("POST", url)(response)
+        }
+      }
+  }
+
   private def buildParams(
     pstr: String,
     optFbNumber: Option[String],

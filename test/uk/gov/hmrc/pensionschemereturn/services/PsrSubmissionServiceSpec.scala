@@ -27,12 +27,17 @@ import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, Header
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.sipp.{SippPsrSubmissionRequest, SippReportDetailsRequest}
+import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionServiceSpec.{
   samplePsrSubmission,
   samplePsrSubmissionRequest,
+  sampleSippPsrSubmission,
+  sampleSippPsrSubmissionRequest,
   validationMessage
 }
 import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmp
+import uk.gov.hmrc.pensionschemereturn.transformations.sipp.SippPsrSubmissionToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
 import utils.BaseSpec
 
@@ -47,16 +52,19 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar {
     reset(mockPsrConnector)
     reset(mockJSONSchemaValidator)
     reset(mockPsrSubmissionToEtmp)
+    reset(mockSippPsrSubmissionToEtmp)
   }
 
   private val mockPsrConnector = mock[PsrConnector]
   private val mockJSONSchemaValidator = mock[JSONSchemaValidator]
   private val mockPsrSubmissionToEtmp = mock[PsrSubmissionToEtmp]
+  private val mockSippPsrSubmissionToEtmp = mock[SippPsrSubmissionToEtmp]
 
   private val service = new PsrSubmissionService(
     mockPsrConnector,
     mockJSONSchemaValidator,
-    mockPsrSubmissionToEtmp
+    mockPsrSubmissionToEtmp,
+    mockSippPsrSubmissionToEtmp
   )
   private implicit val hc = HeaderCarrier()
   private implicit val rq = FakeRequest()
@@ -129,6 +137,61 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar {
       verify(mockPsrConnector, times(1)).submitStandardPsr(any())(any(), any(), any())
     }
   }
+
+  "submitSippPsr" should {
+    "successfully submit only minimal required SIPP submission details" in {
+      val expectedResponse = HttpResponse(201, Json.obj(), Map.empty)
+
+      when(mockSippPsrSubmissionToEtmp.transform(any())).thenReturn(sampleSippPsrSubmissionRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set.empty))
+      when(mockPsrConnector.submitSippPsr(any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponse))
+
+      whenReady(service.submitSippPsr(sampleSippPsrSubmission)) { result: HttpResponse =>
+        result mustEqual expectedResponse
+
+        verify(mockSippPsrSubmissionToEtmp, times(1)).transform(any())
+        verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+        verify(mockPsrConnector, times(1)).submitSippPsr(any())(any(), any(), any())
+      }
+    }
+
+    "throw exception when validation fails for submitSippPsr" in {
+      when(mockSippPsrSubmissionToEtmp.transform(any())).thenReturn(sampleSippPsrSubmissionRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set(validationMessage)))
+
+      val thrown = intercept[PensionSchemeReturnValidationFailureException] {
+        await(service.submitSippPsr(sampleSippPsrSubmission))
+      }
+      thrown.responseCode mustBe BAD_REQUEST
+      thrown.message must include("Invalid payload when submitSippPsr :-\ncustomMessage")
+
+      verify(mockSippPsrSubmissionToEtmp, times(1)).transform(any())
+      verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+      verify(mockPsrConnector, never).submitSippPsr(any())(any(), any(), any())
+    }
+
+    "throw exception when connector call not successful for submitSippPsr" in {
+      when(mockSippPsrSubmissionToEtmp.transform(any())).thenReturn(sampleSippPsrSubmissionRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set.empty))
+      when(mockPsrConnector.submitSippPsr(any())(any(), any(), any()))
+        .thenReturn(Future.failed(new BadRequestException("invalid-request")))
+
+      val thrown = intercept[ExpectationFailedException] {
+        await(service.submitSippPsr(sampleSippPsrSubmission))
+      }
+      thrown.responseCode mustBe EXPECTATION_FAILED
+      thrown.message must include("Nothing to submit")
+
+      verify(mockSippPsrSubmissionToEtmp, times(1)).transform(any())
+      verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+      verify(mockPsrConnector, times(1)).submitSippPsr(any())(any(), any(), any())
+    }
+  }
+
 }
 
 object PsrSubmissionServiceSpec {
@@ -178,6 +241,21 @@ object PsrSubmissionServiceSpec {
       None
     ),
     None
+  )
+
+  val sampleSippReportDetailsSubmission: SippReportDetailsSubmission = SippReportDetailsSubmission(
+    "17836742CF",
+    periodStart = LocalDate.of(2020, 12, 12),
+    periodEnd = LocalDate.of(2021, 12, 12),
+    memberTransactions = "Yes"
+  )
+
+  val sampleSippPsrSubmission: SippPsrSubmission = SippPsrSubmission(
+    sampleSippReportDetailsSubmission
+  )
+
+  val sampleSippPsrSubmissionRequest: SippPsrSubmissionRequest = SippPsrSubmissionRequest(
+    SippReportDetailsRequest("testPstr", Compiled, today, today, "Yes")
   )
 
   val validationMessage: ValidationMessage = ValidationMessage.ofWithCustom(
