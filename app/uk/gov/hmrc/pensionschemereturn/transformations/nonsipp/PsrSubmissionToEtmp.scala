@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.transformations
+package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PsrSubmissionEtmpRequest
 
 @Singleton()
 class PsrSubmissionToEtmp @Inject()(
@@ -26,13 +26,13 @@ class PsrSubmissionToEtmp @Inject()(
   loansToEtmp: LoansToEtmp
 ) {
 
-  def transform(psrSubmission: PsrSubmission): PsrSubmissionRequest = {
-    val minimalRequiredSubmissionRequest =
+  def transform(psrSubmission: PsrSubmission): PsrSubmissionEtmpRequest = {
+    val etmpMinimalRequiredSubmission =
       minimalRequiredDetailsToEtmp.transform(psrSubmission.minimalRequiredSubmission)
-    PsrSubmissionRequest(
-      minimalRequiredSubmissionRequest.reportDetails,
-      minimalRequiredSubmissionRequest.accountingPeriodDetails,
-      minimalRequiredSubmissionRequest.schemeDesignatory,
+    PsrSubmissionEtmpRequest(
+      etmpMinimalRequiredSubmission.reportDetails,
+      etmpMinimalRequiredSubmission.accountingPeriodDetails,
+      etmpMinimalRequiredSubmission.schemeDesignatory,
       loans = psrSubmission.loans.map(loansToEtmp.transform)
     )
   }

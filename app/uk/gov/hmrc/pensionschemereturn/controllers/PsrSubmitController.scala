@@ -17,10 +17,11 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.Logging
+import play.api.libs.json.Json
 import play.api.mvc._
 import uk.gov.hmrc.http.{BadRequestException, HttpErrorFunctions}
 import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.requiredBody
-import uk.gov.hmrc.pensionschemereturn.models.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -58,7 +59,7 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     )
     psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
       case None => NotFound
-      case Some(jsObj) => Ok(jsObj)
+      case Some(psrSubmission) => Ok(Json.toJson(psrSubmission))
     }
   }
 

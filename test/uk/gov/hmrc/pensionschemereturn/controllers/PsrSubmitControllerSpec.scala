@@ -29,10 +29,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.base.SpecBase
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
+import utils.TestValues
 
 import scala.concurrent.Future
 
-class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter {
+class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter with TestValues {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   private val fakeRequest = FakeRequest("POST", "/")
@@ -89,7 +90,7 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |          "reasonNoIdNumber": "sdfsdf"
           |        },
           |        "loanRecipientName": "sdfsdfds",
-          |        "optConnectedPartyStatus": true,
+          |        "connectedPartyStatus": true,
           |        "datePeriodLoanDetails": {
           |          "dateOfLoan": "2023-02-12",
           |          "loanTotalSchemeAssets": 3,
@@ -122,10 +123,9 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
 
   "GET standard PSR" must {
     "return 200" in {
-      val responseJson: JsObject = Json.obj("mock" -> "pass")
 
       when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Some(responseJson)))
+        .thenReturn(Future.successful(Some(samplePsrSubmission)))
 
       val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(fakeRequest)
       status(result) mustBe Status.OK

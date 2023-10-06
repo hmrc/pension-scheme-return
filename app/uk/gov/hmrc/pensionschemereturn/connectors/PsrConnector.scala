@@ -20,10 +20,11 @@ import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
+import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +57,7 @@ class PsrConnector @Inject()(
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[JsObject]] = {
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[PsrSubmissionEtmpResponse]] = {
 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
     val url: String = config.getStandardPsrUrl.format(params)
@@ -67,7 +68,7 @@ class PsrConnector @Inject()(
     http.GET[HttpResponse](url)(implicitly, headerCarrier, implicitly).map { response =>
       response.status match {
         case OK =>
-          Some(response.json.as[JsObject])
+          Some(response.json.as[PsrSubmissionEtmpResponse])
         case NOT_FOUND =>
           logger.warn(s"$logMessage and returned ${response.status}")
           None

@@ -18,9 +18,15 @@ package uk.gov.hmrc.pensionschemereturn.transformations
 
 trait Transformer {
 
+  protected val Sponsoring: String = "sponsoring"
+  protected val ConnectedParty: String = "connectedParty"
+  protected val Neither: String = "neither"
+
   protected val Yes: String = "Yes"
   protected val No: String = "No"
 
   protected def toYesNo(condition: Boolean): String = if (condition) Yes else No
   protected def optToYesNo(optValue: Option[_]): String = optValue.map(_ => Yes).getOrElse(No)
+
+  protected def fromYesNo(value: String): Boolean = value == Yes
 }

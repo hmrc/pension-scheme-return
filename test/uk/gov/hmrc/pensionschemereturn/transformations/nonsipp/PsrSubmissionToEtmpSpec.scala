@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.transformations
+package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
-import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmpSpec.{
-  sampleLoansRequest,
-  sampleMinimalRequiredSubmissionRequest
+import uk.gov.hmrc.pensionschemereturn.models.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Loans, MinimalRequiredSubmission, PsrSubmission}
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PsrSubmissionEtmpRequest
+import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
+import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.PsrSubmissionToEtmpSpec.{
+  sampleEtmpLoans,
+  sampleEtmpMinimalRequiredSubmission
 }
 
 import java.time.LocalDate
@@ -45,7 +48,7 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
   "PsrSubmissionToEtmp" should {
     "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails" in {
 
-      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleMinimalRequiredSubmissionRequest)
+      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
@@ -53,10 +56,10 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
         loans = None
       )
 
-      val expected = PsrSubmissionRequest(
-        sampleMinimalRequiredSubmissionRequest.reportDetails,
-        sampleMinimalRequiredSubmissionRequest.accountingPeriodDetails,
-        sampleMinimalRequiredSubmissionRequest.schemeDesignatory,
+      val expected = PsrSubmissionEtmpRequest(
+        sampleEtmpMinimalRequiredSubmission.reportDetails,
+        sampleEtmpMinimalRequiredSubmission.accountingPeriodDetails,
+        sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
         None
       )
 
@@ -67,8 +70,8 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
 
     "PSR submission should successfully transform to etmp format" in {
 
-      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleMinimalRequiredSubmissionRequest)
-      when(mockLoansToEtmp.transform(any())).thenReturn(sampleLoansRequest)
+      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
+      when(mockLoansToEtmp.transform(any())).thenReturn(sampleEtmpLoans)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
@@ -76,11 +79,11 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
         loans = Some(mock[Loans])
       )
 
-      val expected = PsrSubmissionRequest(
-        sampleMinimalRequiredSubmissionRequest.reportDetails,
-        sampleMinimalRequiredSubmissionRequest.accountingPeriodDetails,
-        sampleMinimalRequiredSubmissionRequest.schemeDesignatory,
-        Some(sampleLoansRequest)
+      val expected = PsrSubmissionEtmpRequest(
+        sampleEtmpMinimalRequiredSubmission.reportDetails,
+        sampleEtmpMinimalRequiredSubmission.accountingPeriodDetails,
+        sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
+        Some(sampleEtmpLoans)
       )
 
       transformation.transform(psrSubmission) mustEqual expected
@@ -94,23 +97,23 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
 object PsrSubmissionToEtmpSpec extends Transformer {
 
   val today: LocalDate = LocalDate.now
-  val sampleMinimalRequiredSubmissionRequest: MinimalRequiredSubmissionRequest = MinimalRequiredSubmissionRequest(
-    ReportDetailsRequest(
+  val sampleEtmpMinimalRequiredSubmission: EtmpMinimalRequiredSubmission = EtmpMinimalRequiredSubmission(
+    EtmpReportDetails(
       pstr = "testPstr",
       psrStatus = Compiled,
       periodStart = today,
       periodEnd = today
     ),
-    AccountingPeriodDetailsRequest(
+    EtmpAccountingPeriodDetails(
       recordVersion = "001",
       accountingPeriods = List(
-        AccountingPeriodRequest(
+        EtmpAccountingPeriod(
           accPeriodStart = today,
           accPeriodEnd = today
         )
       )
     ),
-    SchemeDesignatoryRequest(
+    EtmpSchemeDesignatory(
       recordVersion = "001",
       openBankAccount = No,
       reasonNoOpenAccount = Some("reasonForNoBankAccount"),
@@ -125,15 +128,15 @@ object PsrSubmissionToEtmpSpec extends Transformer {
     )
   )
 
-  val sampleLoansRequest: LoansRequest = LoansRequest(
+  val sampleEtmpLoans: EtmpLoans = EtmpLoans(
     recordVersion = "001",
     schemeHadLoans = Yes,
     noOfLoans = 1,
     loanTransactions = List(
-      LoanTransactionsRequest(
+      EtmpLoanTransactions(
         dateOfLoan = today,
         loanRecipientName = "UKPartnershipName",
-        recipientIdentityType = RecipientIdentityTypeRequest(
+        recipientIdentityType = EtmpRecipientIdentityType(
           indivOrOrgType = "03",
           idNumber = Some("1234567890"),
           reasonNoIdNumber = None,

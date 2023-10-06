@@ -33,3 +33,4 @@ abstract class BaseSpec
     with OptionValues
     with Generators
     with ModelSerializers
+    with TestValues

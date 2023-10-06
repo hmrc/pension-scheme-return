@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-case class LoansRequest(
+case class EtmpLoans(
   recordVersion: String,
   schemeHadLoans: String,
   noOfLoans: Int,
-  loanTransactions: Seq[LoanTransactionsRequest]
+  loanTransactions: Seq[EtmpLoanTransactions]
 )
 
-case class LoanTransactionsRequest(
+case class EtmpLoanTransactions(
   dateOfLoan: LocalDate,
   loanRecipientName: String,
-  recipientIdentityType: RecipientIdentityTypeRequest,
+  recipientIdentityType: EtmpRecipientIdentityType,
   recipientSponsoringEmployer: String,
   connectedPartyStatus: String,
   loanAmount: Double,
@@ -48,17 +48,17 @@ case class LoanTransactionsRequest(
   amountOutstanding: Double
 )
 
-case class RecipientIdentityTypeRequest(
+case class EtmpRecipientIdentityType(
   indivOrOrgType: String,
   idNumber: Option[String],
   reasonNoIdNumber: Option[String],
   otherDescription: Option[String]
 )
 
-object LoansRequest {
-  private implicit val writesRecipientIdentityTypeRequest: OWrites[RecipientIdentityTypeRequest] =
-    Json.writes[RecipientIdentityTypeRequest]
-  private implicit val writesLoanTransactionsRequest: OWrites[LoanTransactionsRequest] =
-    Json.writes[LoanTransactionsRequest]
-  implicit val writes: OWrites[LoansRequest] = Json.writes[LoansRequest]
+object EtmpLoans {
+  private implicit val formatsRecipientIdentityType: OFormat[EtmpRecipientIdentityType] =
+    Json.format[EtmpRecipientIdentityType]
+  private implicit val formatsLoanTransactions: OFormat[EtmpLoanTransactions] =
+    Json.format[EtmpLoanTransactions]
+  implicit val formats: OFormat[EtmpLoans] = Json.format[EtmpLoans]
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.utils.WithName
@@ -43,12 +43,21 @@ object IdentityType {
       case invalidValue => Reads(_ => JsError(s"Invalid IdentityType type: $invalidValue"))
     }
 
-  def getIdentityTypeAsString(identityType: IdentityType): String =
+  implicit val writes: Writes[IdentityType] = it => JsString(it.name)
+
+  def identityTypeToString(identityType: IdentityType): String =
     identityType match {
       case Individual => "01"
       case UKCompany => "02"
       case UKPartnership => "03"
       case Other => "04"
-      case _ => "Unsupported IdentityType"
+    }
+
+  def stringToIdentityType(value: String): IdentityType =
+    value match {
+      case "01" => Individual
+      case "02" => UKCompany
+      case "03" => UKPartnership
+      case "04" => Other
     }
 }

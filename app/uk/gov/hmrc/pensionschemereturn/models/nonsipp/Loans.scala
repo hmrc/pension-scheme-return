@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
@@ -36,7 +36,7 @@ case class RecipientIdentityType(
 case class LoanTransactions(
   recipientIdentityType: RecipientIdentityType,
   loanRecipientName: String,
-  optConnectedPartyStatus: Option[Boolean],
+  connectedPartyStatus: Boolean,
   optRecipientSponsoringEmployer: Option[String],
   datePeriodLoanDetails: LoanPeriod,
   loanAmountDetails: LoanAmountDetails,
@@ -49,10 +49,10 @@ case class LoanTransactions(
 case class Loans(schemeHadLoans: Boolean, loanTransactions: Seq[LoanTransactions])
 
 object Loans {
-  private implicit val readsLoanInterestDetails: Reads[LoanInterestDetails] = Json.reads[LoanInterestDetails]
-  private implicit val readsLoanAmountDetails: Reads[LoanAmountDetails] = Json.reads[LoanAmountDetails]
-  private implicit val readsLoanPeriod: Reads[LoanPeriod] = Json.reads[LoanPeriod]
-  private implicit val readsRecipientIdentityType: Reads[RecipientIdentityType] = Json.reads[RecipientIdentityType]
-  private implicit val readsLoanTransactions: Reads[LoanTransactions] = Json.reads[LoanTransactions]
-  implicit val reads: Reads[Loans] = Json.reads[Loans]
+  private implicit val formatLoanInterestDetails: OFormat[LoanInterestDetails] = Json.format[LoanInterestDetails]
+  private implicit val formatLoanAmountDetails: OFormat[LoanAmountDetails] = Json.format[LoanAmountDetails]
+  private implicit val formatLoanPeriod: OFormat[LoanPeriod] = Json.format[LoanPeriod]
+  private implicit val formatRecipientIdentityType: OFormat[RecipientIdentityType] = Json.format[RecipientIdentityType]
+  private implicit val formatLoanTransactions: OFormat[LoanTransactions] = Json.format[LoanTransactions]
+  implicit val formats: OFormat[Loans] = Json.format[Loans]
 }

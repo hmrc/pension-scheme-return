@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.transformations
+package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 import java.time.LocalDate
 
@@ -47,23 +49,23 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
         )
       )
 
-      val expected = MinimalRequiredSubmissionRequest(
-        ReportDetailsRequest(
+      val expected = EtmpMinimalRequiredSubmission(
+        EtmpReportDetails(
           pstr = "testPstr",
           psrStatus = Compiled,
           periodStart = today,
           periodEnd = today
         ),
-        AccountingPeriodDetailsRequest(
+        EtmpAccountingPeriodDetails(
           recordVersion = "001",
           accountingPeriods = List(
-            AccountingPeriodRequest(
+            EtmpAccountingPeriod(
               accPeriodStart = today,
               accPeriodEnd = today
             )
           )
         ),
-        SchemeDesignatoryRequest(
+        EtmpSchemeDesignatory(
           recordVersion = "001",
           openBankAccount = No,
           reasonNoOpenAccount = Some("reasonForNoBankAccount"),

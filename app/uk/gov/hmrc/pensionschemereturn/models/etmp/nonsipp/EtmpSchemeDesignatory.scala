@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Json, OFormat}
 
-case class SchemeDesignatoryRequest(
+case class EtmpSchemeDesignatory(
   recordVersion: String,
   openBankAccount: String,
   reasonNoOpenAccount: Option[String],
@@ -32,6 +32,6 @@ case class SchemeDesignatoryRequest(
   totalPayments: Option[Double]
 )
 
-object SchemeDesignatoryRequest {
-  implicit val writes: OWrites[SchemeDesignatoryRequest] = Json.writes[SchemeDesignatoryRequest]
+object EtmpSchemeDesignatory {
+  implicit val formats: OFormat[EtmpSchemeDesignatory] = Json.format[EtmpSchemeDesignatory]
 }
