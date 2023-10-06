@@ -23,8 +23,9 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
-import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmp
+import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.transformations.sipp.SippPsrSubmissionToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.{EPID_1444, EPID_1446}
@@ -36,7 +37,8 @@ class PsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
   psrSubmissionToEtmp: PsrSubmissionToEtmp,
-  sippPsrSubmissionToEtmp: SippPsrSubmissionToEtmp
+  sippPsrSubmissionToEtmp: SippPsrSubmissionToEtmp,
+  standardPsrFromEtmp: StandardPsrFromEtmp
 ) extends Logging {
 
   def submitStandardPsr(
@@ -61,8 +63,14 @@ class PsrSubmissionService @Inject()(
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[Option[JsObject]] =
-    psrConnector.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+  )(
+    implicit headerCarrier: HeaderCarrier,
+    ec: ExecutionContext,
+    request: RequestHeader
+  ): Future[Option[PsrSubmission]] =
+    psrConnector
+      .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+      .map(_.map(standardPsrFromEtmp.transform))
 
   def submitSippPsr(
     sippPsrSubmission: SippPsrSubmission

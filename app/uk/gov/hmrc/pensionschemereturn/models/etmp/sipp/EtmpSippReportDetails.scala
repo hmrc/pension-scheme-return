@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp.sipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.sipp
 
-import play.api.libs.json.{JsString, Json, OWrites, Writes}
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PSRStatus
+import play.api.libs.json.{Json, OWrites}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 
 import java.time.LocalDate
 
-case class SippReportDetailsRequest(
+case class EtmpSippReportDetails(
   pstr: String,
-  status: PSRStatus,
+  status: EtmpPsrStatus,
   periodStart: LocalDate,
   periodEnd: LocalDate,
   memberTransactions: String
 )
 
-object SippReportDetailsRequest {
-  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
-  implicit val writes: OWrites[SippReportDetailsRequest] = Json.writes[SippReportDetailsRequest]
+object EtmpSippReportDetails {
+  implicit val writes: OWrites[EtmpSippReportDetails] = Json.writes[EtmpSippReportDetails]
 }

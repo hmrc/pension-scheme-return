@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.transformations
+package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.MinimalRequiredSubmission
+import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
 class MinimalRequiredDetailsToEtmp @Inject()() extends Transformer {
 
-  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): MinimalRequiredSubmissionRequest =
-    MinimalRequiredSubmissionRequest(
-      ReportDetailsRequest(
+  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): EtmpMinimalRequiredSubmission =
+    EtmpMinimalRequiredSubmission(
+      EtmpReportDetails(
         pstr = minimalRequiredSubmission.reportDetails.pstr,
         psrStatus = Compiled,
         periodStart = minimalRequiredSubmission.reportDetails.periodStart,
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd
       ),
-      AccountingPeriodDetailsRequest(
+      EtmpAccountingPeriodDetails(
         recordVersion = "001", // TODO hardcoded for now
         accountingPeriods = minimalRequiredSubmission.accountingPeriods.map {
           case (start, end) =>
-            AccountingPeriodRequest(
+            EtmpAccountingPeriod(
               accPeriodStart = start,
               accPeriodEnd = end
             )
         }
       ),
-      SchemeDesignatoryRequest(
+      EtmpSchemeDesignatory(
         recordVersion = "001", // TODO hardcoded for now
         openBankAccount = toYesNo(minimalRequiredSubmission.schemeDesignatory.openBankAccount),
         reasonNoOpenAccount = minimalRequiredSubmission.schemeDesignatory.reasonForNoBankAccount,

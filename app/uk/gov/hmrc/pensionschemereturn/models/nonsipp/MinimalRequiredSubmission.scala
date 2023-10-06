@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
@@ -46,7 +46,7 @@ case class SchemeDesignatory(
 )
 
 object MinimalRequiredSubmission {
-  private implicit val reportDetailsReads: Reads[ReportDetails] = Json.reads[ReportDetails]
-  private implicit val schemeDesignatoryReads: Reads[SchemeDesignatory] = Json.reads[SchemeDesignatory]
-  implicit val reads: Reads[MinimalRequiredSubmission] = Json.reads[MinimalRequiredSubmission]
+  private implicit val formatDetails: OFormat[ReportDetails] = Json.format[ReportDetails]
+  private implicit val formatSchemeDesignatory: OFormat[SchemeDesignatory] = Json.format[SchemeDesignatory]
+  implicit val formats: OFormat[MinimalRequiredSubmission] = Json.format[MinimalRequiredSubmission]
 }

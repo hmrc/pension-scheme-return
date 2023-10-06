@@ -16,30 +16,13 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
 
-import play.api.libs.json.{JsString, Json, OWrites, Writes}
+import play.api.libs.json.{Json, OWrites}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 
-import java.time.LocalDate
-
-sealed trait PSRStatus {
-  val name: String
-}
-
-case object Compiled extends PSRStatus {
-  val name = "Compiled"
-}
-
-case object Submitted extends PSRStatus {
-  val name = "Submitted"
-}
-
-case class ReportDetailsRequest(
-  pstr: String,
-  psrStatus: PSRStatus,
-  periodStart: LocalDate,
-  periodEnd: LocalDate
+case class SippPsrSubmissionEtmpRequest(
+  reportDetails: EtmpSippReportDetails
 )
 
-object ReportDetailsRequest {
-  private implicit val psrStatusWrites: Writes[PSRStatus] = status => JsString(status.name)
-  implicit val writes: OWrites[ReportDetailsRequest] = Json.writes[ReportDetailsRequest]
+object SippPsrSubmissionEtmpRequest {
+  implicit val writes: OWrites[SippPsrSubmissionEtmpRequest] = Json.writes[SippPsrSubmissionEtmpRequest]
 }

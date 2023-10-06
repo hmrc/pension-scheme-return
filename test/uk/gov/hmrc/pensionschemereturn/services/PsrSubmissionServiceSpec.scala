@@ -20,29 +20,21 @@ import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.sipp.{SippPsrSubmissionRequest, SippReportDetailsRequest}
-import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
-import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionServiceSpec.{
-  samplePsrSubmission,
-  samplePsrSubmissionRequest,
-  sampleSippPsrSubmission,
-  sampleSippPsrSubmissionRequest,
-  validationMessage
-}
-import uk.gov.hmrc.pensionschemereturn.transformations.PsrSubmissionToEtmp
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionServiceSpec._
+import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.transformations.sipp.SippPsrSubmissionToEtmp
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
 import utils.BaseSpec
 
 import java.text.MessageFormat
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -59,27 +51,43 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar {
   private val mockJSONSchemaValidator = mock[JSONSchemaValidator]
   private val mockPsrSubmissionToEtmp = mock[PsrSubmissionToEtmp]
   private val mockSippPsrSubmissionToEtmp = mock[SippPsrSubmissionToEtmp]
+  private val mockStandardPsrFromEtmp = mock[StandardPsrFromEtmp]
 
   private val service = new PsrSubmissionService(
     mockPsrConnector,
     mockJSONSchemaValidator,
     mockPsrSubmissionToEtmp,
-    mockSippPsrSubmissionToEtmp
+    mockSippPsrSubmissionToEtmp,
+    mockStandardPsrFromEtmp
   )
-  private implicit val hc = HeaderCarrier()
-  private implicit val rq = FakeRequest()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit val rq: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "getStandardPsr" should {
-    "return 200 when connector returns data" in {
-      val sampleResponse = Some(Json.obj())
+    "return 200 without data when connector returns successfully" in {
 
       when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(sampleResponse))
+        .thenReturn(Future.successful(None))
 
-      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[JsObject] =>
-        result mustEqual sampleResponse
+      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[PsrSubmission] =>
+        result mustBe None
 
         verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+        verify(mockStandardPsrFromEtmp, never).transform(any())
+      }
+    }
+
+    "return 200 with data when connector returns successfully" in {
+
+      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(samplePsrSubmissionResponse)))
+      when(mockStandardPsrFromEtmp.transform(any())).thenReturn(samplePsrSubmission)
+
+      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[PsrSubmission] =>
+        result mustBe Some(samplePsrSubmission)
+
+        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+        verify(mockStandardPsrFromEtmp, times(1)).transform(any())
       }
     }
   }
@@ -195,68 +203,6 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar {
 }
 
 object PsrSubmissionServiceSpec {
-  val today = LocalDate.now()
-
-  val sampleMinimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
-    ReportDetails(
-      "17836742CF",
-      periodStart = LocalDate.of(2020, 12, 12),
-      periodEnd = LocalDate.of(2021, 12, 12)
-    ),
-    List(LocalDate.of(2020, 12, 12) -> LocalDate.of(2021, 12, 12)),
-    SchemeDesignatory(
-      reasonForNoBankAccount = None,
-      openBankAccount = true,
-      activeMembers = 1,
-      deferredMembers = 2,
-      pensionerMembers = 3,
-      totalAssetValueStart = None,
-      totalAssetValueEnd = None,
-      totalCashStart = None,
-      totalCashEnd = None,
-      totalPayments = None
-    )
-  )
-
-  val samplePsrSubmission: PsrSubmission = PsrSubmission(
-    sampleMinimalRequiredSubmission,
-    false,
-    None
-  )
-
-  val samplePsrSubmissionRequest: PsrSubmissionRequest = PsrSubmissionRequest(
-    ReportDetailsRequest("testPstr", Compiled, today, today),
-    AccountingPeriodDetailsRequest("001", List(AccountingPeriodRequest(today, today))),
-    SchemeDesignatoryRequest(
-      "001",
-      "openBankAccount",
-      None,
-      1,
-      2,
-      3,
-      None,
-      None,
-      None,
-      None,
-      None
-    ),
-    None
-  )
-
-  val sampleSippReportDetailsSubmission: SippReportDetailsSubmission = SippReportDetailsSubmission(
-    "17836742CF",
-    periodStart = LocalDate.of(2020, 12, 12),
-    periodEnd = LocalDate.of(2021, 12, 12),
-    memberTransactions = "Yes"
-  )
-
-  val sampleSippPsrSubmission: SippPsrSubmission = SippPsrSubmission(
-    sampleSippReportDetailsSubmission
-  )
-
-  val sampleSippPsrSubmissionRequest: SippPsrSubmissionRequest = SippPsrSubmissionRequest(
-    SippReportDetailsRequest("testPstr", Compiled, today, today, "Yes")
-  )
 
   val validationMessage: ValidationMessage = ValidationMessage.ofWithCustom(
     "type",

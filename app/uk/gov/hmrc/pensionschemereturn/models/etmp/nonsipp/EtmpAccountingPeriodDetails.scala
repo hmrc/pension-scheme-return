@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-case class AccountingPeriodRequest(
+case class EtmpAccountingPeriod(
   accPeriodStart: LocalDate,
   accPeriodEnd: LocalDate
 )
 
-case class AccountingPeriodDetailsRequest(
+case class EtmpAccountingPeriodDetails(
   recordVersion: String,
-  accountingPeriods: List[AccountingPeriodRequest]
+  accountingPeriods: List[EtmpAccountingPeriod]
 )
 
-object AccountingPeriodDetailsRequest {
-  private implicit val accountingPeriodWrites: OWrites[AccountingPeriodRequest] = Json.writes[AccountingPeriodRequest]
-  implicit val writes: OWrites[AccountingPeriodDetailsRequest] =
-    Json.writes[AccountingPeriodDetailsRequest]
+object EtmpAccountingPeriodDetails {
+  private implicit val accountingPeriodFormats: OFormat[EtmpAccountingPeriod] = Json.format[EtmpAccountingPeriod]
+  implicit val formats: OFormat[EtmpAccountingPeriodDetails] =
+    Json.format[EtmpAccountingPeriodDetails]
 }

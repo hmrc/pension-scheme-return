@@ -17,16 +17,16 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.sipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.sipp.SippReportDetailsRequest
+import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
+import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippReportDetailsSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
 class SippReportDetailsToEtmp @Inject()() extends Transformer {
 
-  def transform(sippReportDetailsSubmission: SippReportDetailsSubmission): SippReportDetailsRequest =
-    SippReportDetailsRequest(
+  def transform(sippReportDetailsSubmission: SippReportDetailsSubmission): EtmpSippReportDetails =
+    EtmpSippReportDetails(
       pstr = sippReportDetailsSubmission.pstr,
       status = Compiled, // TODO
       periodStart = sippReportDetailsSubmission.periodStart,

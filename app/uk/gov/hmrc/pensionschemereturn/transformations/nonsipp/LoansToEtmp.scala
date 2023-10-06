@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.transformations
+package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.IdentityType.getIdentityTypeAsString
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans, EtmpRecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Loans, RecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
 class LoansToEtmp @Inject()() extends Transformer {
 
-  def transform(loans: Loans): LoansRequest =
-    LoansRequest(
+  def transform(loans: Loans): EtmpLoans =
+    EtmpLoans(
       recordVersion = "001", // TODO hardcoded for now
       schemeHadLoans = toYesNo(loans.schemeHadLoans),
       noOfLoans = loans.loanTransactions.size,
       loanTransactions = loans.loanTransactions.map { loanTransaction =>
-        LoanTransactionsRequest(
+        EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
           recipientIdentityType = buildRecipientIdentityTypeRequest(loanTransaction.recipientIdentityType),
-          recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains("sponsoring")),
-          connectedPartyStatus = if (loanTransaction.optConnectedPartyStatus.getOrElse(false)) "01" else "02",
+          recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains(Sponsoring)),
+          connectedPartyStatus = if (loanTransaction.connectedPartyStatus) "01" else "02",
           loanAmount = loanTransaction.loanAmountDetails.loanAmount,
           loanInterestAmount = loanTransaction.loanInterestDetails.loanInterestAmount,
           loanTotalSchemeAssets = loanTransaction.datePeriodLoanDetails.loanTotalSchemeAssets,
@@ -55,9 +56,9 @@ class LoansToEtmp @Inject()() extends Transformer {
 
   private def buildRecipientIdentityTypeRequest(
     recipientIdentityType: RecipientIdentityType
-  ): RecipientIdentityTypeRequest =
-    RecipientIdentityTypeRequest(
-      indivOrOrgType = getIdentityTypeAsString(recipientIdentityType.identityType),
+  ): EtmpRecipientIdentityType =
+    EtmpRecipientIdentityType(
+      indivOrOrgType = identityTypeToString(recipientIdentityType.identityType),
       idNumber = recipientIdentityType.idNumber,
       reasonNoIdNumber = recipientIdentityType.reasonNoIdNumber,
       otherDescription = recipientIdentityType.otherDescription

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class PsrSubmission(
   minimalRequiredSubmission: MinimalRequiredSubmission,
@@ -25,5 +25,5 @@ case class PsrSubmission(
 )
 
 object PsrSubmission {
-  implicit val reads: Reads[PsrSubmission] = Json.reads[PsrSubmission]
+  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
 }
