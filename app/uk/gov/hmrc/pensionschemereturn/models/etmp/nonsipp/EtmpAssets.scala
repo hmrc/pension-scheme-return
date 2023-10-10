@@ -1,0 +1,82 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+
+import play.api.libs.json.{Json, OFormat}
+
+case class EtmpAssets(
+  landOrProperty: EtmpLandOrProperty,
+  borrowing: EtmpBorrowing,
+  bonds: EtmpBonds,
+  otherAssets: EtmpOtherAssets
+)
+
+case class EtmpLandOrProperty(
+  recordVersion: Option[String],
+  heldAnyLandOrProperty: String,
+  disposeAnyLandOrProperty: String,
+  noOfTransactions: Option[Int],
+  landOrPropertyTransactions: Option[Seq[EtmpLandOrPropertyTransactions]]
+)
+
+case class EtmpBorrowing(
+  moneyWasBorrowed: String
+)
+case class EtmpBonds(
+  bondsWereAdded: String,
+  bondsWereDisposed: String
+)
+
+case class EtmpOtherAssets(
+  otherAssetsWereHeld: String,
+  otherAssetsWereDisposed: String
+)
+
+case class EtmpLandOrPropertyTransactions(
+  landOrPropertyInUK: String,
+  addressDetails: EtmpAddress,
+  landRegistryDetails: EtmpLandRegistryDetails
+)
+
+case class EtmpAddress(
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  addressLine5: Option[String],
+  ukPostCode: Option[String],
+  countryCode: String
+)
+
+case class EtmpLandRegistryDetails(
+  landRegistryReferenceExists: String,
+  landRegistryReference: Option[String],
+  reasonNoReference: Option[String]
+)
+
+object EtmpAssets {
+  // TODO comp error here:
+  private implicit val formatsEtmpLandOrProperty: OFormat[EtmpLandOrProperty] =
+    Json.format[EtmpLandOrProperty]
+  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
+    Json.format[EtmpBorrowing]
+  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
+    Json.format[EtmpBonds]
+  private implicit val formatsEtmpOtherAssets: OFormat[EtmpOtherAssets] =
+    Json.format[EtmpOtherAssets]
+  implicit val formats: OFormat[EtmpAssets] = Json.format[EtmpAssets]
+}
