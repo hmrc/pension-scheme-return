@@ -18,13 +18,16 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets]
+case class Address(
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  town: Option[String],
+  postCode: Option[String],
+  country: String,
+  countryCode: String
 )
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
 }
