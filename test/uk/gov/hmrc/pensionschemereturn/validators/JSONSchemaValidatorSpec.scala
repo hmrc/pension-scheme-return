@@ -53,5 +53,11 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
       val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
       result.hasErrors mustBe false
     }
+
+    "Behaviour for valid payload for EPID 1444 assets only" in {
+      val json = readJsonFromFile("/epid-1444-assets-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
+      result.hasErrors mustBe false
+    }
   }
 }
