@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{JsError, JsPath, JsString, JsSuccess, Reads, Writes}
+import play.api.libs.json._
 import play.api.mvc.JavascriptLiteral
 import uk.gov.hmrc.pensionschemereturn.utils.WithName
 
@@ -45,5 +45,12 @@ object SchemeHoldLandProperty {
     }
 
   implicit val writes: Writes[SchemeHoldLandProperty] = it => JsString(it.name)
+
+  def schemeHoldLandPropertyToString(schemeHoldLandProperty: SchemeHoldLandProperty): String =
+    schemeHoldLandProperty match {
+      case Acquisition => "01"
+      case Contribution => "02"
+      case Transfer => "03"
+    }
 
 }

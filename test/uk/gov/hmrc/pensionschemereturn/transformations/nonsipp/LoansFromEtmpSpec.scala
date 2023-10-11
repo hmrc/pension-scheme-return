@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans, EtmpRecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpIdentityType, EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import utils.TestValues
@@ -38,7 +38,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           EtmpLoanTransactions(
             dateOfLoan = today,
             loanRecipientName = "IndividualName",
-            recipientIdentityType = EtmpRecipientIdentityType(
+            recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "01",
               idNumber = None,
               reasonNoIdNumber = Some("NoNinoReason"),
@@ -97,7 +97,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           EtmpLoanTransactions(
             dateOfLoan = today,
             loanRecipientName = "UKCompanyName",
-            recipientIdentityType = EtmpRecipientIdentityType(
+            recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "02",
               idNumber = None,
               reasonNoIdNumber = Some("NoCrnReason"),
@@ -158,7 +158,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           EtmpLoanTransactions(
             dateOfLoan = today,
             loanRecipientName = "UKPartnershipName",
-            recipientIdentityType = EtmpRecipientIdentityType(
+            recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "03",
               idNumber = Some("1234567890"),
               reasonNoIdNumber = None,
@@ -219,7 +219,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           EtmpLoanTransactions(
             dateOfLoan = today,
             loanRecipientName = "OtherName",
-            recipientIdentityType = EtmpRecipientIdentityType(
+            recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "04",
               idNumber = None,
               reasonNoIdNumber = None,

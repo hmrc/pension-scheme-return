@@ -18,6 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
 import play.api.libs.json.{Json, OFormat}
 
+import java.time.LocalDate
+
 case class EtmpAssets(
   landOrProperty: EtmpLandOrProperty,
   borrowing: EtmpBorrowing,
@@ -29,8 +31,8 @@ case class EtmpLandOrProperty(
   recordVersion: Option[String],
   heldAnyLandOrProperty: String,
   disposeAnyLandOrProperty: String,
-  noOfTransactions: Option[Int],
-  landOrPropertyTransactions: Option[Seq[EtmpLandOrPropertyTransactions]]
+  noOfTransactions: Int,
+  landOrPropertyTransactions: Seq[EtmpLandOrPropertyTransactions]
 )
 
 case class EtmpBorrowing(
@@ -47,9 +49,35 @@ case class EtmpOtherAssets(
 )
 
 case class EtmpLandOrPropertyTransactions(
+  propertyDetails: EtmpPropertyDetails,
+  heldPropertyTransaction: EtmpHeldPropertyTransaction
+)
+
+case class EtmpPropertyDetails(
   landOrPropertyInUK: String,
   addressDetails: EtmpAddress,
   landRegistryDetails: EtmpLandRegistryDetails
+)
+
+case class EtmpHeldPropertyTransaction(
+  methodOfHolding: String,
+  dateOfAcquisitionOrContribution: Option[LocalDate],
+  propertyAcquiredFromName: Option[String],
+  propertyAcquiredFrom: Option[EtmpIdentityType],
+  connectedPartyStatus: Option[String],
+  totalCostOfLandOrProperty: Double,
+  indepValuationSupport: Option[String],
+  residentialSchedule29A: String,
+  landOrPropertyLeased: String,
+  leaseDetails: Option[EtmpLeaseDetails],
+  totalIncomeOrReceipts: Double
+)
+
+case class EtmpLeaseDetails(
+  lesseeName: String,
+  connectedPartyStatus: String,
+  leaseGrantDate: LocalDate,
+  annualLeaseAmount: Double
 )
 
 case class EtmpAddress(
@@ -69,14 +97,25 @@ case class EtmpLandRegistryDetails(
 )
 
 object EtmpAssets {
-  // TODO comp error here:
-  private implicit val formatsEtmpLandOrProperty: OFormat[EtmpLandOrProperty] =
-    Json.format[EtmpLandOrProperty]
-  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
-    Json.format[EtmpBorrowing]
-  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
-    Json.format[EtmpBonds]
+  private implicit val formatsEtmpLeaseDetails: OFormat[EtmpLeaseDetails] =
+    Json.format[EtmpLeaseDetails]
+  private implicit val formatsEtmpLandRegistryDetails: OFormat[EtmpLandRegistryDetails] =
+    Json.format[EtmpLandRegistryDetails]
+  private implicit val formatsEtmpAddress: OFormat[EtmpAddress] =
+    Json.format[EtmpAddress]
+  private implicit val formatsEtmpHeldPropertyTransaction: OFormat[EtmpHeldPropertyTransaction] =
+    Json.format[EtmpHeldPropertyTransaction]
+  private implicit val formatsEtmpPropertyDetails: OFormat[EtmpPropertyDetails] =
+    Json.format[EtmpPropertyDetails]
   private implicit val formatsEtmpOtherAssets: OFormat[EtmpOtherAssets] =
     Json.format[EtmpOtherAssets]
+  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
+    Json.format[EtmpBonds]
+  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
+    Json.format[EtmpBorrowing]
+  private implicit val formatsEtmpLandOrPropertyTransactions: OFormat[EtmpLandOrPropertyTransactions] =
+    Json.format[EtmpLandOrPropertyTransactions]
+  private implicit val formatsEtmpLandOrProperty: OFormat[EtmpLandOrProperty] =
+    Json.format[EtmpLandOrProperty]
   implicit val formats: OFormat[EtmpAssets] = Json.format[EtmpAssets]
 }

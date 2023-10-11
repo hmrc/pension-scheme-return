@@ -19,19 +19,7 @@ package utils
 import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{
-  IdentityType,
-  LoanAmountDetails,
-  LoanInterestDetails,
-  LoanPeriod,
-  LoanTransactions,
-  Loans,
-  MinimalRequiredSubmission,
-  PsrSubmission,
-  RecipientIdentityType,
-  ReportDetails,
-  SchemeDesignatory
-}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
 import uk.gov.hmrc.pensionschemereturn.models.response
 import uk.gov.hmrc.pensionschemereturn.models.response.{PsrDetails, PsrSubmissionEtmpResponse}
@@ -69,7 +57,8 @@ trait TestValues {
   val samplePsrSubmission: PsrSubmission = PsrSubmission(
     minimalRequiredSubmission = sampleMinimalRequiredSubmission,
     checkReturnDates = true,
-    loans = None
+    loans = None,
+    assets = None
   )
 
   val samplePsrSubmissionResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
@@ -116,7 +105,7 @@ trait TestValues {
           EtmpLoanTransactions(
             dateOfLoan = LocalDate.parse("2023-03-30"),
             loanRecipientName = "Electric Car Co.",
-            recipientIdentityType = EtmpRecipientIdentityType(
+            recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "01",
               idNumber = None,
               reasonNoIdNumber = None,
@@ -182,6 +171,7 @@ trait TestValues {
       None,
       None
     ),
+    None,
     None
   )
 

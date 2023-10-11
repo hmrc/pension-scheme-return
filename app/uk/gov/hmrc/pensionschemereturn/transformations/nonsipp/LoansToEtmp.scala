@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans, EtmpRecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpIdentityType, EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Loans, RecipientIdentityType}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -34,7 +34,7 @@ class LoansToEtmp @Inject()() extends Transformer {
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
-          recipientIdentityType = buildRecipientIdentityTypeRequest(loanTransaction.recipientIdentityType),
+          recipientIdentityType = buildEtmpIdentityType(loanTransaction.recipientIdentityType),
           recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains(Sponsoring)),
           connectedPartyStatus = if (loanTransaction.connectedPartyStatus) "01" else "02",
           loanAmount = loanTransaction.loanAmountDetails.loanAmount,
@@ -54,10 +54,10 @@ class LoansToEtmp @Inject()() extends Transformer {
       }
     )
 
-  private def buildRecipientIdentityTypeRequest(
+  private def buildEtmpIdentityType(
     recipientIdentityType: RecipientIdentityType
-  ): EtmpRecipientIdentityType =
-    EtmpRecipientIdentityType(
+  ): EtmpIdentityType =
+    EtmpIdentityType(
       indivOrOrgType = identityTypeToString(recipientIdentityType.identityType),
       idNumber = recipientIdentityType.idNumber,
       reasonNoIdNumber = recipientIdentityType.reasonNoIdNumber,

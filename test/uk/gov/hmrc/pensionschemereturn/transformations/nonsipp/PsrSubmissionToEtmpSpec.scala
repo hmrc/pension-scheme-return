@@ -22,10 +22,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Loans, MinimalRequiredSubmission, PsrSubmission}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Assets, Loans, MinimalRequiredSubmission, PsrSubmission}
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PsrSubmissionEtmpRequest
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.PsrSubmissionToEtmpSpec.{
+  sampleEtmpAssets,
   sampleEtmpLoans,
   sampleEtmpMinimalRequiredSubmission
 }
@@ -37,13 +38,15 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
   override protected def beforeEach(): Unit = {
     reset(mockMinimalRequiredDetailsToEtmp)
     reset(mockLoansToEtmp)
+    reset(mockAssetsToEtmp)
     super.beforeEach()
   }
 
   private val mockMinimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp = mock[MinimalRequiredDetailsToEtmp]
   private val mockLoansToEtmp: LoansToEtmp = mock[LoansToEtmp]
+  private val mockAssetsToEtmp: AssetsToEtmp = mock[AssetsToEtmp]
   private val transformation: PsrSubmissionToEtmp =
-    new PsrSubmissionToEtmp(mockMinimalRequiredDetailsToEtmp, mockLoansToEtmp)
+    new PsrSubmissionToEtmp(mockMinimalRequiredDetailsToEtmp, mockLoansToEtmp, mockAssetsToEtmp)
 
   "PsrSubmissionToEtmp" should {
     "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails" in {
@@ -53,42 +56,49 @@ class PsrSubmissionToEtmpSpec extends PlaySpec with MockitoSugar with Transforme
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
         checkReturnDates = false,
-        loans = None
+        loans = None,
+        assets = None
       )
 
       val expected = PsrSubmissionEtmpRequest(
         sampleEtmpMinimalRequiredSubmission.reportDetails,
         sampleEtmpMinimalRequiredSubmission.accountingPeriodDetails,
         sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
+        None,
         None
       )
 
       transformation.transform(psrSubmission) mustEqual expected
       verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any())
       verify(mockLoansToEtmp, never).transform(any())
+      verify(mockAssetsToEtmp, never).transform(any())
     }
 
     "PSR submission should successfully transform to etmp format" in {
 
       when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
       when(mockLoansToEtmp.transform(any())).thenReturn(sampleEtmpLoans)
+      when(mockAssetsToEtmp.transform(any())).thenReturn(sampleEtmpAssets)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
         checkReturnDates = false,
-        loans = Some(mock[Loans])
+        loans = Some(mock[Loans]),
+        assets = Some(mock[Assets])
       )
 
       val expected = PsrSubmissionEtmpRequest(
         sampleEtmpMinimalRequiredSubmission.reportDetails,
         sampleEtmpMinimalRequiredSubmission.accountingPeriodDetails,
         sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
-        Some(sampleEtmpLoans)
+        Some(sampleEtmpLoans),
+        Some(sampleEtmpAssets)
       )
 
       transformation.transform(psrSubmission) mustEqual expected
       verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any())
       verify(mockLoansToEtmp, times(1)).transform(any())
+      verify(mockAssetsToEtmp, times(1)).transform(any())
     }
 
   }
@@ -136,7 +146,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
       EtmpLoanTransactions(
         dateOfLoan = today,
         loanRecipientName = "UKPartnershipName",
-        recipientIdentityType = EtmpRecipientIdentityType(
+        recipientIdentityType = EtmpIdentityType(
           indivOrOrgType = "03",
           idNumber = Some("1234567890"),
           reasonNoIdNumber = None,
@@ -159,5 +169,19 @@ object PsrSubmissionToEtmpSpec extends Transformer {
         amountOutstanding = Double.MaxValue
       )
     )
+  )
+
+  val sampleEtmpAssets: EtmpAssets = EtmpAssets(
+    landOrProperty = EtmpLandOrProperty(
+      recordVersion = None,
+      heldAnyLandOrProperty = No,
+      disposeAnyLandOrProperty = No,
+      noOfTransactions = 0,
+      landOrPropertyTransactions = Seq.empty
+    ),
+    borrowing = EtmpBorrowing(moneyWasBorrowed = "moneyWasBorrowed"),
+    bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),
+    otherAssets =
+      EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")
   )
 }

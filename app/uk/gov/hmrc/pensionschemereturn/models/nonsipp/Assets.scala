@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{JsString, Json, OFormat, Writes}
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
@@ -35,20 +35,20 @@ case class LandOrPropertyTransactions(
 case class PropertyDetails(
   landOrPropertyInUK: Boolean,
   addressDetails: Address,
-  landRegistryTitleNumberKey: String,
+  landRegistryTitleNumberKey: Boolean,
   landRegistryTitleNumberValue: String
 )
 
 case class HeldPropertyTransaction(
   methodOfHolding: SchemeHoldLandProperty,
   dateOfAcquisitionOrContribution: Option[LocalDate],
-  propertyAcquiredFromName: Option[String],
-  propertyAcquiredFrom: Option[PropertyAcquiredFrom],
-  connectedPartyStatus: Boolean,
+  optPropertyAcquiredFromName: Option[String],
+  optPropertyAcquiredFrom: Option[PropertyAcquiredFrom],
+  optConnectedPartyStatus: Option[Boolean],
   totalCostOfLandOrProperty: Double,
-  indepValuationSupport: Option[Boolean],
+  optIndepValuationSupport: Option[Boolean],
   isLandOrPropertyResidential: Boolean,
-  leaseDetails: LeaseDetails,
+  optLeaseDetails: Option[LeaseDetails],
   landOrPropertyLeased: Boolean,
   totalIncomeOrReceipts: Double
 )
@@ -57,21 +57,18 @@ case class PropertyAcquiredFrom(
   identityType: IdentityType,
   idNumber: Option[String],
   reasonNoIdNumber: Option[String],
-  otherDescription: Option[String],
-  connectedPartyStatus: Boolean
+  otherDescription: Option[String]
 )
 
 case class LeaseDetails(
   lesseeName: String,
-  leaseGrantDate: Double,
-  annualLeaseAmount: String
+  leaseGrantDate: LocalDate,
+  annualLeaseAmount: Double,
+  connectedPartyStatus: Boolean
 )
 
 object Assets {
-
   private implicit val formatLeaseDetails: OFormat[LeaseDetails] = Json.format[LeaseDetails]
-  private implicit val writesSchemeHoldLandProperty: Writes[SchemeHoldLandProperty] =
-    Writes(value => JsString(value.toString)) // TODO
   private implicit val formatPropertyAcquiredFrom: OFormat[PropertyAcquiredFrom] = Json.format[PropertyAcquiredFrom]
   private implicit val formatHeldPropertyTransaction: OFormat[HeldPropertyTransaction] =
     Json.format[HeldPropertyTransaction]

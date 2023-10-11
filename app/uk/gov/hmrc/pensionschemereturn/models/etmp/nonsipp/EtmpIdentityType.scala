@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
-import play.api.libs.json.{Json, OWrites}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import play.api.libs.json.{Json, OFormat}
 
-case class PsrSubmissionEtmpRequest(
-  reportDetails: EtmpReportDetails,
-  accountingPeriodDetails: EtmpAccountingPeriodDetails,
-  schemeDesignatory: EtmpSchemeDesignatory,
-  loans: Option[EtmpLoans],
-  assets: Option[EtmpAssets]
+case class EtmpIdentityType(
+  indivOrOrgType: String,
+  idNumber: Option[String],
+  reasonNoIdNumber: Option[String],
+  otherDescription: Option[String]
 )
-
-object PsrSubmissionEtmpRequest {
-  implicit val writes: OWrites[PsrSubmissionEtmpRequest] = Json.writes[PsrSubmissionEtmpRequest]
+object EtmpIdentityType {
+  implicit val formatsIdentityType: OFormat[EtmpIdentityType] =
+    Json.format[EtmpIdentityType]
 }

@@ -17,19 +17,10 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
-  EtmpAddress,
-  EtmpAssets,
-  EtmpBonds,
-  EtmpBorrowing,
-  EtmpLandOrProperty,
-  EtmpLandOrPropertyTransactions,
-  EtmpLandRegistryDetails,
-  EtmpOtherAssets,
-  EtmpRecipientIdentityType
-}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Assets, RecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.schemeHoldLandPropertyToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Assets, PropertyAcquiredFrom}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
@@ -41,29 +32,58 @@ class AssetsToEtmp @Inject()() extends Transformer {
         recordVersion = None,
         heldAnyLandOrProperty = toYesNo(assets.landOrProperty.landOrPropertyHeld),
         disposeAnyLandOrProperty = toYesNo(false), //TODO
-        noOfTransactions = Some(assets.landOrProperty.landOrPropertyTransactions.size),
-        landOrPropertyTransactions = Some(
-          assets.landOrProperty.landOrPropertyTransactions.map(
-            landOrPropertyTransactions =>
-              EtmpLandOrPropertyTransactions(
-                landOrPropertyInUK = toYesNo(landOrPropertyTransactions.propertyDetails.landOrPropertyInUK),
+        noOfTransactions = assets.landOrProperty.landOrPropertyTransactions.size,
+        landOrPropertyTransactions = assets.landOrProperty.landOrPropertyTransactions.map(
+          landOrPropertyTransaction => {
+
+            val propertyDetails = landOrPropertyTransaction.propertyDetails
+            val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
+            val landRegistryReferenceExist = propertyDetails.landRegistryTitleNumberKey
+            val landRegistryReferenceValue = propertyDetails.landRegistryTitleNumberValue
+            val addressDetails = propertyDetails.addressDetails
+
+            EtmpLandOrPropertyTransactions(
+              EtmpPropertyDetails(
+                landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                 addressDetails = EtmpAddress(
-                  addressLine1 = landOrPropertyTransactions.propertyDetails.addressDetails.addressLine1,
-                  addressLine2 = landOrPropertyTransactions.propertyDetails.addressDetails.addressLine2,
-                  addressLine3 = landOrPropertyTransactions.propertyDetails.addressDetails.addressLine3,
+                  addressLine1 = addressDetails.addressLine1,
+                  addressLine2 = addressDetails.addressLine2,
+                  addressLine3 = addressDetails.addressLine3,
                   addressLine4 = None,
                   addressLine5 = None,
-                  ukPostCode = landOrPropertyTransactions.propertyDetails.addressDetails.postCode,
-                  countryCode = landOrPropertyTransactions.propertyDetails.addressDetails.countryCode
+                  ukPostCode = addressDetails.postCode,
+                  countryCode = addressDetails.countryCode
                 ),
                 landRegistryDetails = EtmpLandRegistryDetails(
-                  //TODO - 2nd and 3rd in PSR should be option
-                  toYesNo(false),
-                  None,
-                  Some(landOrPropertyTransactions.propertyDetails.landRegistryTitleNumberValue)
+                  toYesNo(landRegistryReferenceExist),
+                  Option.when(landRegistryReferenceExist)(landRegistryReferenceValue),
+                  Option.when(!landRegistryReferenceExist)(landRegistryReferenceValue)
                 )
+              ),
+              EtmpHeldPropertyTransaction(
+                methodOfHolding = schemeHoldLandPropertyToString(heldPropertyTransaction.methodOfHolding),
+                dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
+                propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
+                propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(buildEtmpIdentityType),
+                connectedPartyStatus = heldPropertyTransaction.optConnectedPartyStatus
+                  .map(connectedPartyStatus => if (connectedPartyStatus) "01" else "02"),
+                totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
+                indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
+                residentialSchedule29A = toYesNo(heldPropertyTransaction.isLandOrPropertyResidential),
+                landOrPropertyLeased = toYesNo(heldPropertyTransaction.landOrPropertyLeased),
+                leaseDetails = heldPropertyTransaction.optLeaseDetails.map(
+                  leaseDetails =>
+                    EtmpLeaseDetails(
+                      lesseeName = leaseDetails.lesseeName,
+                      connectedPartyStatus = if (leaseDetails.connectedPartyStatus) "01" else "02",
+                      leaseGrantDate = leaseDetails.leaseGrantDate,
+                      annualLeaseAmount = leaseDetails.annualLeaseAmount
+                    )
+                ),
+                totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
               )
-          )
+            )
+          }
         )
       ),
       borrowing = EtmpBorrowing(
@@ -79,13 +99,13 @@ class AssetsToEtmp @Inject()() extends Transformer {
       )
     )
 
-  private def buildRecipientIdentityTypeRequest(
-    recipientIdentityType: RecipientIdentityType
-  ): EtmpRecipientIdentityType =
-    EtmpRecipientIdentityType(
-      indivOrOrgType = identityTypeToString(recipientIdentityType.identityType),
-      idNumber = recipientIdentityType.idNumber,
-      reasonNoIdNumber = recipientIdentityType.reasonNoIdNumber,
-      otherDescription = recipientIdentityType.otherDescription
+  private def buildEtmpIdentityType(
+    propertyAcquiredFrom: PropertyAcquiredFrom
+  ): EtmpIdentityType =
+    EtmpIdentityType(
+      indivOrOrgType = identityTypeToString(propertyAcquiredFrom.identityType),
+      idNumber = propertyAcquiredFrom.idNumber,
+      reasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+      otherDescription = propertyAcquiredFrom.otherDescription
     )
 }
