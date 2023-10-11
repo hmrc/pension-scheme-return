@@ -111,7 +111,51 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |        "optOutstandingArrearsOnLoan": 273
           |      }
           |    ]
-          |  }
+          |  },
+          |  "assets": {
+          |        "landOrProperty": {
+          |            "landOrPropertyHeld": true,
+          |            "landOrPropertyTransactions": [
+          |                {
+          |                    "propertyDetails": {
+          |                        "landOrPropertyInUK": true,
+          |                        "addressDetails": {
+          |                            "addressLine1": "Flat 2",
+          |                            "addressLine2": "7 Other Place",
+          |                            "addressLine3": "Some District",
+          |                            "town": "Anytown",
+          |                            "postCode": "ZZ1 1ZZ",
+          |                            "country": "United Kingdom",
+          |                            "countryCode": "GB"
+          |                        },
+          |                        "landRegistryTitleNumberKey": true,
+          |                        "landRegistryTitleNumberValue": "MS123456"
+          |                    },
+          |                    "heldPropertyTransaction": {
+          |                        "methodOfHolding": "Acquisition",
+          |                        "dateOfAcquisitionOrContribution": "2009-03-01",
+          |                        "optPropertyAcquiredFromName": "Seller-Test",
+          |                        "optPropertyAcquiredFrom": {
+          |                            "identityType": "individual",
+          |                            "idNumber": "SX123456D"
+          |                        },
+          |                        "optConnectedPartyStatus": true,
+          |                        "totalCostOfLandOrProperty": 87,
+          |                        "optIndepValuationSupport": true,
+          |                        "isLandOrPropertyResidential": true,
+          |                        "optLeaseDetails": {
+          |                            "lesseeName": "Lessee-Test",
+          |                            "leaseGrantDate": "2008-07-06",
+          |                            "annualLeaseAmount": 98,
+          |                            "connectedPartyStatus": false
+          |                        },
+          |                        "landOrPropertyLeased": true,
+          |                        "totalIncomeOrReceipts": 90
+          |                    }
+          |                }
+          |            ]
+          |        }
+          |    }
           |}
           |""".stripMargin
       )
