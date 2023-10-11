@@ -23,7 +23,6 @@ import java.time.LocalDate
 case class Assets(landOrProperty: LandOrProperty)
 case class LandOrProperty(
   landOrPropertyHeld: Boolean,
-  //disposeAnyLandOrProperty: Boolean,
   landOrPropertyTransactions: Seq[LandOrPropertyTransactions]
 )
 
