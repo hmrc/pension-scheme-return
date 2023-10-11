@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans, EtmpRecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpIdentityType, EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -29,241 +29,72 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
   val today: LocalDate = LocalDate.now
 
   "LoansToEtmp - PSR Loans should successfully transform to etmp format " should {
-    "for Individual" in {
-      val loans: Loans = Loans(
-        schemeHadLoans = true,
-        loanTransactions = List(
-          LoanTransactions(
-            recipientIdentityType = RecipientIdentityType(
-              IdentityType.Individual,
-              None,
-              Some("NoNinoReason"),
-              None
-            ),
-            loanRecipientName = "IndividualName",
-            connectedPartyStatus = true,
-            optRecipientSponsoringEmployer = None,
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
-            loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            equalInstallments = true,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            optSecurityGivenDetails = None,
-            optOutstandingArrearsOnLoan = Some(Double.MaxValue)
+    List(
+      (None, No),
+      (Some(ConnectedParty), No),
+      (Some(Sponsoring), Yes),
+      (Some(Neither), No)
+    ).foreach {
+      case (inputRecipientSponsoringEmployer, resultRecipientSponsoringEmployer) =>
+        s"as an Individual for recipientSponsoringEmployer : $inputRecipientSponsoringEmployer" in {
+          val loans: Loans = Loans(
+            schemeHadLoans = true,
+            loanTransactions = List(
+              LoanTransactions(
+                recipientIdentityType = RecipientIdentityType(
+                  IdentityType.Individual,
+                  None,
+                  Some("NoNinoReason"),
+                  None
+                ),
+                loanRecipientName = "IndividualName",
+                connectedPartyStatus = true,
+                optRecipientSponsoringEmployer = inputRecipientSponsoringEmployer,
+                datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
+                loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+                equalInstallments = true,
+                loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+                optSecurityGivenDetails = None,
+                optOutstandingArrearsOnLoan = Some(Double.MaxValue)
+              )
+            )
           )
-        )
-      )
 
-      val expected = EtmpLoans(
-        recordVersion = "001",
-        schemeHadLoans = Yes,
-        noOfLoans = 1,
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = today,
-            loanRecipientName = "IndividualName",
-            recipientIdentityType = EtmpRecipientIdentityType(
-              indivOrOrgType = "01",
-              idNumber = None,
-              reasonNoIdNumber = Some("NoNinoReason"),
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "01",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = Yes,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = No,
-            securityDetails = None,
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = Yes,
-            amountOfArrears = Some(Double.MaxValue),
-            amountOutstanding = Double.MaxValue
+          val expected = EtmpLoans(
+            recordVersion = "001",
+            schemeHadLoans = Yes,
+            noOfLoans = 1,
+            loanTransactions = List(
+              EtmpLoanTransactions(
+                dateOfLoan = today,
+                loanRecipientName = "IndividualName",
+                recipientIdentityType = EtmpIdentityType(
+                  indivOrOrgType = "01",
+                  idNumber = None,
+                  reasonNoIdNumber = Some("NoNinoReason"),
+                  otherDescription = None
+                ),
+                recipientSponsoringEmployer = resultRecipientSponsoringEmployer,
+                connectedPartyStatus = Connected,
+                loanAmount = Double.MaxValue,
+                loanInterestAmount = Double.MaxValue,
+                loanTotalSchemeAssets = Double.MaxValue,
+                loanPeriodInMonths = Int.MaxValue,
+                equalInstallments = Yes,
+                loanInterestRate = Double.MaxValue,
+                securityGiven = No,
+                securityDetails = None,
+                capRepaymentCY = Double.MaxValue,
+                intReceivedCY = Double.MaxValue,
+                arrearsPrevYears = Yes,
+                amountOfArrears = Some(Double.MaxValue),
+                amountOutstanding = Double.MaxValue
+              )
+            )
           )
-        )
-      )
 
-      transformation.transform(loans) mustEqual expected
-    }
-    "for UKCompany" in {
-      val loans: Loans = Loans(
-        schemeHadLoans = true,
-        loanTransactions = List(
-          LoanTransactions(
-            recipientIdentityType = RecipientIdentityType(
-              IdentityType.UKCompany,
-              None,
-              Some("NoCrnReason"),
-              None
-            ),
-            loanRecipientName = "UKCompanyName",
-            connectedPartyStatus = true,
-            optRecipientSponsoringEmployer = Some("connectedParty"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
-            loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            equalInstallments = true,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            optSecurityGivenDetails = None,
-            optOutstandingArrearsOnLoan = Some(Double.MaxValue)
-          )
-        )
-      )
-
-      val expected = EtmpLoans(
-        recordVersion = "001",
-        schemeHadLoans = Yes,
-        noOfLoans = 1,
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = today,
-            loanRecipientName = "UKCompanyName",
-            recipientIdentityType = EtmpRecipientIdentityType(
-              indivOrOrgType = "02",
-              idNumber = None,
-              reasonNoIdNumber = Some("NoCrnReason"),
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "01",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = Yes,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = No,
-            securityDetails = None,
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = Yes,
-            amountOfArrears = Some(Double.MaxValue),
-            amountOutstanding = Double.MaxValue
-          )
-        )
-      )
-
-      transformation.transform(loans) mustEqual expected
-    }
-    "for UKPartnership" in {
-      val loans: Loans = Loans(
-        schemeHadLoans = true,
-        loanTransactions = List(
-          LoanTransactions(
-            recipientIdentityType = RecipientIdentityType(
-              IdentityType.UKPartnership,
-              Some("1234567890"),
-              None,
-              None
-            ),
-            loanRecipientName = "UKPartnershipName",
-            connectedPartyStatus = false,
-            optRecipientSponsoringEmployer = Some("sponsoring"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
-            loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            equalInstallments = false,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            optSecurityGivenDetails = Some("SecurityGivenDetails"),
-            optOutstandingArrearsOnLoan = None
-          )
-        )
-      )
-
-      val expected = EtmpLoans(
-        recordVersion = "001",
-        schemeHadLoans = Yes,
-        noOfLoans = 1,
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = today,
-            loanRecipientName = "UKPartnershipName",
-            recipientIdentityType = EtmpRecipientIdentityType(
-              indivOrOrgType = "03",
-              idNumber = Some("1234567890"),
-              reasonNoIdNumber = None,
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = Yes,
-            connectedPartyStatus = "02",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = No,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = Yes,
-            securityDetails = Some("SecurityGivenDetails"),
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = No,
-            amountOfArrears = None,
-            amountOutstanding = Double.MaxValue
-          )
-        )
-      )
-
-      transformation.transform(loans) mustEqual expected
-    }
-    "for Other" in {
-      val loans: Loans = Loans(
-        schemeHadLoans = true,
-        loanTransactions = List(
-          LoanTransactions(
-            recipientIdentityType = RecipientIdentityType(
-              IdentityType.Other,
-              None,
-              None,
-              Some("otherDescription")
-            ),
-            loanRecipientName = "OtherName",
-            connectedPartyStatus = false,
-            optRecipientSponsoringEmployer = Some("neither"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
-            loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            equalInstallments = false,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-            optSecurityGivenDetails = Some("SecurityGivenDetails"),
-            optOutstandingArrearsOnLoan = None
-          )
-        )
-      )
-
-      val expected = EtmpLoans(
-        recordVersion = "001",
-        schemeHadLoans = Yes,
-        noOfLoans = 1,
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = today,
-            loanRecipientName = "OtherName",
-            recipientIdentityType = EtmpRecipientIdentityType(
-              indivOrOrgType = "04",
-              idNumber = None,
-              reasonNoIdNumber = None,
-              otherDescription = Some("otherDescription")
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "02",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = No,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = Yes,
-            securityDetails = Some("SecurityGivenDetails"),
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = No,
-            amountOfArrears = None,
-            amountOutstanding = Double.MaxValue
-          )
-        )
-      )
-
-      transformation.transform(loans) mustEqual expected
+          transformation.transform(loans) mustEqual expected
+        }
     }
   }
 }

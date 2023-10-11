@@ -37,7 +37,8 @@ class StandardPsrFromEtmp @Inject()(
       minimalRequiredSubmission = minimalRequiredSubmission,
       checkReturnDates =
         isCheckReturnDates(minimalRequiredSubmission.reportDetails, minimalRequiredSubmission.accountingPeriods.head),
-      loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform)
+      loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
+      assets = None //TODO
     )
   }
 

@@ -23,7 +23,8 @@ import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PsrSubmissionEtmpReq
 @Singleton()
 class PsrSubmissionToEtmp @Inject()(
   minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp,
-  loansToEtmp: LoansToEtmp
+  loansToEtmp: LoansToEtmp,
+  assetsToEtmp: AssetsToEtmp
 ) {
 
   def transform(psrSubmission: PsrSubmission): PsrSubmissionEtmpRequest = {
@@ -33,7 +34,8 @@ class PsrSubmissionToEtmp @Inject()(
       etmpMinimalRequiredSubmission.reportDetails,
       etmpMinimalRequiredSubmission.accountingPeriodDetails,
       etmpMinimalRequiredSubmission.schemeDesignatory,
-      loans = psrSubmission.loans.map(loansToEtmp.transform)
+      loans = psrSubmission.loans.map(loansToEtmp.transform),
+      assets = psrSubmission.assets.map(assetsToEtmp.transform)
     )
   }
 

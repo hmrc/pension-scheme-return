@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, 
 
 class IdentityTypeSpec extends AnyWordSpec with Matchers {
 
-  "IdentityTypeSpec" should {
+  "IdentityType" should {
 
     "successfully convert from string to IdentityType" in {
       IdentityType.stringToIdentityType("01") shouldEqual Individual

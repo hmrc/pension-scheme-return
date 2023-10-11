@@ -30,7 +30,7 @@ case class EtmpLoans(
 case class EtmpLoanTransactions(
   dateOfLoan: LocalDate,
   loanRecipientName: String,
-  recipientIdentityType: EtmpRecipientIdentityType,
+  recipientIdentityType: EtmpIdentityType,
   recipientSponsoringEmployer: String,
   connectedPartyStatus: String,
   loanAmount: Double,
@@ -48,16 +48,7 @@ case class EtmpLoanTransactions(
   amountOutstanding: Double
 )
 
-case class EtmpRecipientIdentityType(
-  indivOrOrgType: String,
-  idNumber: Option[String],
-  reasonNoIdNumber: Option[String],
-  otherDescription: Option[String]
-)
-
 object EtmpLoans {
-  private implicit val formatsRecipientIdentityType: OFormat[EtmpRecipientIdentityType] =
-    Json.format[EtmpRecipientIdentityType]
   private implicit val formatsLoanTransactions: OFormat[EtmpLoanTransactions] =
     Json.format[EtmpLoanTransactions]
   implicit val formats: OFormat[EtmpLoans] = Json.format[EtmpLoans]

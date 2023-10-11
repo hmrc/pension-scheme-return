@@ -17,9 +17,8 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans, EtmpRecipientIdentityType}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Loans, RecipientIdentityType}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Loans
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
@@ -34,9 +33,14 @@ class LoansToEtmp @Inject()() extends Transformer {
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
-          recipientIdentityType = buildRecipientIdentityTypeRequest(loanTransaction.recipientIdentityType),
+          recipientIdentityType = transformToEtmpIdentityType(
+            loanTransaction.recipientIdentityType.identityType,
+            loanTransaction.recipientIdentityType.idNumber,
+            loanTransaction.recipientIdentityType.reasonNoIdNumber,
+            loanTransaction.recipientIdentityType.otherDescription
+          ),
           recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains(Sponsoring)),
-          connectedPartyStatus = if (loanTransaction.connectedPartyStatus) "01" else "02",
+          connectedPartyStatus = transformToEtmpConnectedPartyStatus(loanTransaction.connectedPartyStatus),
           loanAmount = loanTransaction.loanAmountDetails.loanAmount,
           loanInterestAmount = loanTransaction.loanInterestDetails.loanInterestAmount,
           loanTotalSchemeAssets = loanTransaction.datePeriodLoanDetails.loanTotalSchemeAssets,
@@ -52,15 +56,5 @@ class LoansToEtmp @Inject()() extends Transformer {
           amountOutstanding = loanTransaction.loanAmountDetails.amountOutstanding
         )
       }
-    )
-
-  private def buildRecipientIdentityTypeRequest(
-    recipientIdentityType: RecipientIdentityType
-  ): EtmpRecipientIdentityType =
-    EtmpRecipientIdentityType(
-      indivOrOrgType = identityTypeToString(recipientIdentityType.identityType),
-      idNumber = recipientIdentityType.idNumber,
-      reasonNoIdNumber = recipientIdentityType.reasonNoIdNumber,
-      otherDescription = recipientIdentityType.otherDescription
     )
 }
