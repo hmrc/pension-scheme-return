@@ -18,9 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Assets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.schemeHoldLandPropertyToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{Assets, PropertyAcquiredFrom}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
@@ -64,7 +63,15 @@ class AssetsToEtmp @Inject()() extends Transformer {
                 methodOfHolding = schemeHoldLandPropertyToString(heldPropertyTransaction.methodOfHolding),
                 dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
                 propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
-                propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(buildEtmpIdentityType),
+                propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(
+                  propertyAcquiredFrom =>
+                    buildEtmpIdentityType(
+                      identityType = propertyAcquiredFrom.identityType,
+                      optIdNumber = propertyAcquiredFrom.idNumber,
+                      optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                      optOtherDescription = propertyAcquiredFrom.otherDescription
+                    )
+                ),
                 connectedPartyStatus = heldPropertyTransaction.optConnectedPartyStatus
                   .map(connectedPartyStatus => if (connectedPartyStatus) "01" else "02"),
                 totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
@@ -97,15 +104,5 @@ class AssetsToEtmp @Inject()() extends Transformer {
         otherAssetsWereHeld = toYesNo(false),
         otherAssetsWereDisposed = toYesNo(false)
       )
-    )
-
-  private def buildEtmpIdentityType(
-    propertyAcquiredFrom: PropertyAcquiredFrom
-  ): EtmpIdentityType =
-    EtmpIdentityType(
-      indivOrOrgType = identityTypeToString(propertyAcquiredFrom.identityType),
-      idNumber = propertyAcquiredFrom.idNumber,
-      reasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-      otherDescription = propertyAcquiredFrom.otherDescription
     )
 }
