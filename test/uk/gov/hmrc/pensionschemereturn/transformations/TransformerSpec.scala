@@ -23,29 +23,34 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
 
 class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
   "Transformer" should {
-    "successfully convert boolean to Yes or No" in {
-      toYesNo(true) mustEqual Yes
-      toYesNo(false) mustEqual No
+    "successfully transform boolean to Yes or No" in {
+      toYesNo(true) mustEqual "Yes"
+      toYesNo(false) mustEqual "No"
     }
 
-    "successfully convert optional boolean to Yes or No" in {
-      optToYesNo(Some("")) mustEqual Yes
-      optToYesNo(None) mustEqual No
+    "successfully transform optional boolean to Yes or No" in {
+      optToYesNo(Some("")) mustEqual "Yes"
+      optToYesNo(None) mustEqual "No"
     }
 
-    "successfully convert Yes or No to boolean" in {
+    "successfully transform Yes or No to boolean" in {
       fromYesNo(Yes) mustBe true
       fromYesNo(No) mustBe false
     }
 
-    "successfully build EtmpIdentityType - Individual" in {
-      buildEtmpIdentityType(IdentityType.Individual, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+    "successfully transform boolean to EtmpConnectedPartyStatus" in {
+      transformToEtmpConnectedPartyStatus(true) mustBe "01"
+      transformToEtmpConnectedPartyStatus(false) mustBe "02"
+    }
+
+    "successfully transform to EtmpIdentityType - Individual" in {
+      transformToEtmpIdentityType(IdentityType.Individual, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "01",
         Some("IdNumber"),
         None,
         None
       )
-      buildEtmpIdentityType(IdentityType.Individual, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      transformToEtmpIdentityType(IdentityType.Individual, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "01",
         None,
         Some("ReasonNoIdNumber"),
@@ -53,14 +58,14 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
       )
     }
 
-    "successfully build EtmpIdentityType - Company" in {
-      buildEtmpIdentityType(IdentityType.UKCompany, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+    "successfully transform to EtmpIdentityType - Company" in {
+      transformToEtmpIdentityType(IdentityType.UKCompany, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "02",
         Some("IdNumber"),
         None,
         None
       )
-      buildEtmpIdentityType(IdentityType.UKCompany, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      transformToEtmpIdentityType(IdentityType.UKCompany, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "02",
         None,
         Some("ReasonNoIdNumber"),
@@ -68,14 +73,14 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
       )
     }
 
-    "successfully build EtmpIdentityType - Partnership" in {
-      buildEtmpIdentityType(IdentityType.UKPartnership, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+    "successfully transform to EtmpIdentityType - Partnership" in {
+      transformToEtmpIdentityType(IdentityType.UKPartnership, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "03",
         Some("IdNumber"),
         None,
         None
       )
-      buildEtmpIdentityType(IdentityType.UKPartnership, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      transformToEtmpIdentityType(IdentityType.UKPartnership, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "03",
         None,
         Some("ReasonNoIdNumber"),
@@ -83,8 +88,8 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
       )
     }
 
-    "successfully build EtmpIdentityType - Other" in {
-      buildEtmpIdentityType(IdentityType.Other, None, None, Some("OtherDescription")) mustEqual EtmpIdentityType(
+    "successfully transform to EtmpIdentityType - Other" in {
+      transformToEtmpIdentityType(IdentityType.Other, None, None, Some("OtherDescription")) mustEqual EtmpIdentityType(
         "04",
         None,
         None,

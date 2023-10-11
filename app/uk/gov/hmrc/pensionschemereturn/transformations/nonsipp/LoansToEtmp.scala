@@ -33,14 +33,14 @@ class LoansToEtmp @Inject()() extends Transformer {
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
-          recipientIdentityType = buildEtmpIdentityType(
+          recipientIdentityType = transformToEtmpIdentityType(
             loanTransaction.recipientIdentityType.identityType,
             loanTransaction.recipientIdentityType.idNumber,
             loanTransaction.recipientIdentityType.reasonNoIdNumber,
             loanTransaction.recipientIdentityType.otherDescription
           ),
           recipientSponsoringEmployer = toYesNo(loanTransaction.optRecipientSponsoringEmployer.contains(Sponsoring)),
-          connectedPartyStatus = if (loanTransaction.connectedPartyStatus) "01" else "02",
+          connectedPartyStatus = transformToEtmpConnectedPartyStatus(loanTransaction.connectedPartyStatus),
           loanAmount = loanTransaction.loanAmountDetails.loanAmount,
           loanInterestAmount = loanTransaction.loanInterestDetails.loanInterestAmount,
           loanTotalSchemeAssets = loanTransaction.datePeriodLoanDetails.loanTotalSchemeAssets,

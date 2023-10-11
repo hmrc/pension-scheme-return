@@ -29,12 +29,15 @@ trait Transformer {
   protected val Yes: String = "Yes"
   protected val No: String = "No"
 
+  protected val Connected: String = "01"
+  protected val Unconnected: String = "02"
+
   protected def toYesNo(condition: Boolean): String = if (condition) Yes else No
   protected def optToYesNo(optValue: Option[_]): String = optValue.map(_ => Yes).getOrElse(No)
 
   protected def fromYesNo(value: String): Boolean = value == Yes
 
-  protected def buildEtmpIdentityType(
+  protected def transformToEtmpIdentityType(
     identityType: IdentityType,
     optIdNumber: Option[String],
     optReasonNoIdNumber: Option[String],
@@ -46,4 +49,8 @@ trait Transformer {
       reasonNoIdNumber = optReasonNoIdNumber,
       otherDescription = optOtherDescription
     )
+
+  protected def transformToEtmpConnectedPartyStatus(condition: Boolean): String =
+    if (condition) Connected else Unconnected
+
 }
