@@ -25,7 +25,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   EtmpLoans,
   EtmpSchemeDesignatory
 }
-import uk.gov.hmrc.pensionschemereturn.models.response.{PsrDetails, PsrSubmissionEtmpResponse, SchemeDetails}
+import uk.gov.hmrc.pensionschemereturn.models.response.{EtmpPsrDetails, EtmpSchemeDetails, PsrSubmissionEtmpResponse}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import utils.TestValues
 
@@ -52,8 +52,8 @@ class StandardPsrFromEtmpSpec
     when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(sampleMinimalRequiredSubmission)
 
     val psrSubmissionResponse = PsrSubmissionEtmpResponse(
-      schemeDetails = mock[SchemeDetails],
-      psrDetails = mock[PsrDetails],
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None
@@ -72,8 +72,8 @@ class StandardPsrFromEtmpSpec
     )
 
     val psrSubmissionResponse = PsrSubmissionEtmpResponse(
-      schemeDetails = mock[SchemeDetails],
-      psrDetails = mock[PsrDetails],
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None
@@ -96,8 +96,8 @@ class StandardPsrFromEtmpSpec
     when(mockLoansFromEtmp.transform(any())).thenReturn(sampleLoans)
 
     val psrSubmissionResponse = PsrSubmissionEtmpResponse(
-      schemeDetails = mock[SchemeDetails],
-      psrDetails = mock[PsrDetails],
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = Some(mock[EtmpLoans])

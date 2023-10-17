@@ -16,15 +16,21 @@
 
 package utils
 
+import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
-import uk.gov.hmrc.pensionschemereturn.models.response
-import uk.gov.hmrc.pensionschemereturn.models.response.{PsrDetails, PsrSubmissionEtmpResponse}
+import uk.gov.hmrc.pensionschemereturn.models.response.{
+  EtmpPsrDetails,
+  EtmpSchemeDetails,
+  PsrSubmissionEtmpResponse,
+  SippPsrSubmissionEtmpResponse
+}
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 
+import java.text.MessageFormat
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime}
 
@@ -61,28 +67,29 @@ trait TestValues {
     assets = None
   )
 
-  val samplePsrSubmissionResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
-    response.SchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
-    PsrDetails(
+  private val sampleEtmpAccountingPeriodDetails: EtmpAccountingPeriodDetails = EtmpAccountingPeriodDetails(
+    recordVersion = "002",
+    accountingPeriods = List(
+      EtmpAccountingPeriod(
+        accPeriodStart = LocalDate.parse("2022-04-06"),
+        accPeriodEnd = LocalDate.parse("2022-12-31")
+      ),
+      EtmpAccountingPeriod(
+        accPeriodStart = LocalDate.parse("2023-01-01"),
+        accPeriodEnd = LocalDate.parse("2023-04-05")
+      )
+    )
+  )
+  val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
+    EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
+    EtmpPsrDetails(
       fbVersion = "001",
       fbstatus = Compiled,
       periodStart = LocalDate.parse("2023-04-06"),
       periodEnd = LocalDate.parse("2024-04-05"),
       compilationOrSubmissionDate = LocalDateTime.parse("2023-12-17T09:30:47Z", DateTimeFormatter.ISO_DATE_TIME)
     ),
-    EtmpAccountingPeriodDetails(
-      recordVersion = "002",
-      accountingPeriods = List(
-        EtmpAccountingPeriod(
-          accPeriodStart = LocalDate.parse("2022-04-06"),
-          accPeriodEnd = LocalDate.parse("2022-12-31")
-        ),
-        EtmpAccountingPeriod(
-          accPeriodStart = LocalDate.parse("2023-01-01"),
-          accPeriodEnd = LocalDate.parse("2023-04-05")
-        )
-      )
-    ),
+    sampleEtmpAccountingPeriodDetails,
     EtmpSchemeDesignatory(
       recordVersion = "002",
       openBankAccount = "Yes",
@@ -155,7 +162,7 @@ trait TestValues {
     )
   )
 
-  val samplePsrSubmissionRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
+  val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
     EtmpReportDetails(pstr, Compiled, today, today),
     EtmpAccountingPeriodDetails("001", List(EtmpAccountingPeriod(today, today))),
     EtmpSchemeDesignatory(
@@ -186,7 +193,29 @@ trait TestValues {
     sampleSippReportDetailsSubmission
   )
 
-  val sampleSippPsrSubmissionRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
-    EtmpSippReportDetails(pstr, Compiled, today, today, "Yes")
+  val sampleSippPsrSubmissionEtmpRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
+    EtmpSippReportDetails(pstr, Compiled, today, today, "Yes", None, None)
+  )
+
+  val sampleSippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse = SippPsrSubmissionEtmpResponse(
+    reportDetails = EtmpSippReportDetails(
+      pstr = "12345678AA",
+      status = Compiled,
+      periodStart = LocalDate.parse("2022-04-06"),
+      periodEnd = LocalDate.parse("2023-04-05"),
+      memberTransactions = "Yes",
+      schemeName = Some("PSR Scheme"),
+      psrVersion = Some("001")
+    ),
+    accountingPeriodDetails = sampleEtmpAccountingPeriodDetails
+  )
+
+  val validationMessage: ValidationMessage = ValidationMessage.ofWithCustom(
+    "type",
+    CustomErrorMessageType.of("CustomErrorMessageType"),
+    new MessageFormat("MessageFormat"),
+    "customMessage",
+    "at",
+    "schemaPath"
   )
 }

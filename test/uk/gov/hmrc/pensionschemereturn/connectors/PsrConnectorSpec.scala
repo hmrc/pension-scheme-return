@@ -25,8 +25,11 @@ import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.sampleResponseAsJsonString
-import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.{
+  sampleSippPsrResponseAsJsonString,
+  sampleStandardPsrResponseAsJsonString
+}
+import uk.gov.hmrc.pensionschemereturn.models.response.{PsrSubmissionEtmpResponse, SippPsrSubmissionEtmpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -69,7 +72,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
       stubGet(
         "/pension-online/psr/standard/testPstr?fbNumber=testFbNumber",
-        ok(sampleResponseAsJsonString)
+        ok(sampleStandardPsrResponseAsJsonString)
       )
 
       whenReady(connector.getStandardPsr("testPstr", Some("testFbNumber"), None, None)) {
@@ -78,7 +81,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
             getRequestedFor(urlEqualTo("/pension-online/psr/standard/testPstr?fbNumber=testFbNumber"))
           )
 
-          result mustBe Some(samplePsrSubmissionResponse)
+          result mustBe Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -86,7 +89,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
       stubGet(
         "/pension-online/psr/standard/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
-        ok(sampleResponseAsJsonString)
+        ok(sampleStandardPsrResponseAsJsonString)
       )
 
       whenReady(connector.getStandardPsr("testPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
@@ -98,7 +101,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
               )
             )
           )
-          result mustBe Some(samplePsrSubmissionResponse)
+          result mustBe Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -173,11 +176,102 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     }
   }
 
+  "getSippPsr" should {
+
+    "return a SIPP PSR value with only fbNumber" in {
+
+      stubGet(
+        "/pension-online/psr/sipp/testPstr?fbNumber=testFbNumber",
+        ok(sampleSippPsrResponseAsJsonString)
+      )
+
+      whenReady(connector.getSippPsr("testPstr", Some("testFbNumber"), None, None)) {
+        result: Option[SippPsrSubmissionEtmpResponse] =>
+          WireMock.verify(
+            getRequestedFor(urlEqualTo("/pension-online/psr/sipp/testPstr?fbNumber=testFbNumber"))
+          )
+
+          result mustBe Some(sampleSippPsrSubmissionEtmpResponse)
+      }
+    }
+
+    "return a SIPP PSR value with periodStartDate and psrVersion" in {
+
+      stubGet(
+        "/pension-online/psr/sipp/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        ok(sampleSippPsrResponseAsJsonString)
+      )
+
+      whenReady(connector.getSippPsr("testPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
+        result: Option[SippPsrSubmissionEtmpResponse] =>
+          WireMock.verify(
+            getRequestedFor(
+              urlEqualTo(
+                "/pension-online/psr/sipp/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+              )
+            )
+          )
+          result mustBe Some(sampleSippPsrSubmissionEtmpResponse)
+      }
+    }
+
+    "return 404 NotFound when pstr not found in etmp" in {
+
+      stubGet(
+        "/pension-online/psr/sipp/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        notFound()
+      )
+
+      whenReady(connector.getSippPsr("notFoundTestPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
+        result: Option[_] =>
+          WireMock.verify(
+            getRequestedFor(
+              urlEqualTo(
+                "/pension-online/psr/sipp/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+              )
+            )
+          )
+          result mustBe None
+      }
+    }
+
+    "return 400 BadRequest when etmp returns badRequest" in {
+
+      stubGet(
+        "/pension-online/psr/sipp/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        badRequest().withBody("INVALID_PAYLOAD")
+      )
+
+      val thrown = intercept[BadRequestException] {
+        await(connector.getSippPsr("invalidTestPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion")))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/psr/sipp/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+          )
+        )
+      )
+      thrown.responseCode mustBe BAD_REQUEST
+      thrown.message must include(s"Response body 'INVALID_PAYLOAD'")
+
+    }
+
+    "return 400 BadRequest when missing parameters" in {
+
+      val thrown = intercept[BadRequestException] {
+        await(connector.getSippPsr("testPstr", None, None, None))
+      }
+
+      thrown.responseCode mustBe BAD_REQUEST
+      thrown.message mustEqual "Missing url parameters"
+    }
+  }
 }
 
 object PsrConnectorSpec {
 
-  val sampleResponseAsJsonString: String =
+  val sampleStandardPsrResponseAsJsonString: String =
     """
       |{
       |    "schemeDetails": {
@@ -827,6 +921,277 @@ object PsrConnectorSpec {
       |            ]
       |        }
       |    }
+      |}
+      |""".stripMargin
+  val sampleSippPsrResponseAsJsonString: String =
+    """
+      |{
+      |  "reportDetails": {
+      |    "pstr": "12345678AA",
+      |    "schemeName": "PSR Scheme",
+      |    "psrVersion": "001",
+      |    "status": "Compiled",
+      |    "periodStart": "2022-04-06",
+      |    "periodEnd": "2023-04-05",
+      |    "memberTransactions": "Yes"
+      |  },
+      |  "accountingPeriodDetails": {
+      |    "version": "002",
+      |    "accountingPeriods": [
+      |      {
+      |        "accPeriodStart": "2022-04-06",
+      |        "accPeriodEnd": "2022-12-31"
+      |      },
+      |      {
+      |        "accPeriodStart": "2023-01-01",
+      |        "accPeriodEnd": "2023-04-05"
+      |      }
+      |    ]
+      |  },
+      |  "memberAndTransactions": [
+      |    {
+      |      "status": "New",
+      |      "version": "000",
+      |      "memberDetails": {
+      |        "personalDetails": {
+      |          "firstName": "Dave",
+      |          "middleName": "K",
+      |          "lastName": "Robin",
+      |          "nino": "AA200000A",
+      |          "dateOfBirth": "1900-03-14"
+      |        },
+      |        "isUKAddress": "Yes",
+      |        "addressDetails": {
+      |          "addressLine1": "Brignton",
+      |          "addressLine2": "Brignton2",
+      |          "addressLine3": "Brignton3",
+      |          "addressLine4": "Brignton4",
+      |          "addressLine5": "Brignton5",
+      |          "ukPostCode": "BN12 4XL",
+      |          "countryCode": "GB"
+      |        }
+      |      },
+      |      "landConnectedParty": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "acquisitionDate": "2023-03-14",
+      |            "landOrPropertyinUK": "Yes",
+      |            "addressDetails": {
+      |              "addressLine1": "London1",
+      |              "addressLine2": "London2",
+      |              "addressLine3": "London3",
+      |              "addressLine4": "London4",
+      |              "addressLine5": "London5",
+      |              "ukPostCode": "LH3 4DG",
+      |              "countryCode": "GB"
+      |            },
+      |            "registryDetails": {
+      |              "registryRefExist": "No",
+      |              "registryReference": "Lost"
+      |            },
+      |            "acquiredFromName": "SUN Ltd",
+      |            "acquiredFromType": {
+      |              "indivOrOrgType": "02",
+      |              "idNumber": "CRN123456"
+      |            },
+      |            "totalCost": 1234.99,
+      |            "independentValution": "No",
+      |            "jointlyHeld": "Yes",
+      |            "noOfPersons": 1,
+      |            "jointPropertyPersonDetails": [
+      |              {
+      |                "personName": "Tom K",
+      |                "nino": "AA230000A"
+      |              }
+      |            ],
+      |            "residentialSchedule29A": "No",
+      |            "isLeased": "Yes",
+      |            "lesseeDetails": [
+      |              {
+      |                "lesseeName": "Google Ltd ",
+      |                "lesseeConnectedParty": "01",
+      |                "leaseGrantedDate": "2023-03-14",
+      |                "annualLeaseAmount": 9999.99
+      |              }
+      |            ],
+      |            "totalIncomeOrReceipts": 999999.99,
+      |            "isPropertyDisposed": "Yes",
+      |            "disposalDetails": {
+      |              "disposedPropertyProceedsAmt": 2000.99,
+      |              "independentValutionDisposal": "No",
+      |              "propertyFullyDisposed": "No",
+      |              "purchaserDetails": [
+      |                {
+      |                  "purchaserConnectedParty": "01",
+      |                  "purchaserName": "Micheal K"
+      |                }
+      |              ]
+      |            }
+      |          }
+      |        ]
+      |      },
+      |      "otherAssetsConnectedParty": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "acquisitionDate": "2023-03-14",
+      |            "assetDescription": "Tesco store",
+      |            "acquisitionOfShares": "No",
+      |            "acquiredFromName": "Morrisons XYZ",
+      |            "acquiredFromType": {
+      |              "indivOrOrgType": "01",
+      |              "idNumber": "AA200000A"
+      |            },
+      |            "totalCost": 99999999.99,
+      |            "independentValution": "No",
+      |            "tangibleSchedule29A": "No",
+      |            "totalIncomeOrReceipts": 9999.99,
+      |            "isPropertyDisposed": "No",
+      |            "disposalDetails": {
+      |              "disposedPropertyProceedsAmt": 9999999.99,
+      |              "independentValutionDisposal": "No",
+      |              "propertyFullyDisposed": "No",
+      |              "purchaserDetails": [
+      |                {
+      |                  "purchaserConnectedParty": "01",
+      |                  "purchaserName": "Morris K"
+      |                }
+      |              ]
+      |            },
+      |            "disposalOfShares": "No",
+      |            "noOfSharesHeld": 0
+      |          }
+      |        ]
+      |      },
+      |      "landArmsLength": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "acquisitionDate": "2023-03-14",
+      |            "landOrPropertyinUK": "Yes",
+      |            "addressDetails": {
+      |              "addressLine1": "Brighton1",
+      |              "addressLine2": "Brighton2",
+      |              "addressLine3": "Brighton3",
+      |              "addressLine4": "Brighton4",
+      |              "addressLine5": "Brighton5",
+      |              "ukPostCode": "BN12 4XL",
+      |              "countryCode": "GB"
+      |            },
+      |            "registryDetails": {
+      |              "registryRefExist": "Yes",
+      |              "registryReference": "1234XDF"
+      |            },
+      |            "acquiredFromName": "Willco",
+      |            "acquiredFromType": {
+      |              "indivOrOrgType": "02",
+      |              "idNumber": "CRN678901"
+      |            },
+      |            "totalCost": 999999.99,
+      |            "independentValution": "No",
+      |            "jointlyHeld": "No",
+      |            "residentialSchedule29A": "No",
+      |            "isLeased": "No",
+      |            "totalIncomeOrReceipts": 2000.99,
+      |            "isPropertyDisposed": "No"
+      |          }
+      |        ]
+      |      },
+      |      "tangibleProperty": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "assetDescription": "Ice Cream Machine",
+      |            "acquisitionDate": "2023-03-14",
+      |            "totalCost": 999999.99,
+      |            "acquiredFromName": "Rambo M",
+      |            "acquiredFromType": {
+      |              "indivOrOrgType": "01",
+      |              "idNumber": "AA250000A"
+      |            },
+      |            "independentValution": "No",
+      |            "totalIncomeOrReceipts": 9999.99,
+      |            "costOrMarket": "Cost Value",
+      |            "costMarketValue": 99999.99,
+      |            "isPropertyDisposed": "No",
+      |            "disposalDetails": {
+      |              "disposedPropertyProceedsAmt": 9999.99,
+      |              "independentValutionDisposal": "No",
+      |              "propertyFullyDisposed": "No",
+      |              "purchaserDetails": [
+      |                {
+      |                  "purchaserConnectedParty": "01",
+      |                  "purchaserName": "Michel K"
+      |                }
+      |              ]
+      |            }
+      |          }
+      |        ]
+      |      },
+      |      "loanOutstanding": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "loanRecipientName": "Loyds Ltd",
+      |            "indivOrOrgIdentityDetails": {
+      |              "indivOrOrgType": "02",
+      |              "idNumber": "CRN123456"
+      |            },
+      |            "dateOfLoan": "2023-03-14",
+      |            "amountOfLoan": 999.99,
+      |            "loanConnectedParty": "01",
+      |            "repayDate": "2023-03-14",
+      |            "interestRate": 10,
+      |            "loanSecurity": "No",
+      |            "capitalRepayments": 99999.99,
+      |            "interestPayments": 99999.99,
+      |            "arrearsOutstandingPrYears": "No",
+      |            "arrearsOutstandingPrYearsAmt": 999999.99,
+      |            "outstandingYearEndAmount": 9999.99
+      |          }
+      |        ]
+      |      },
+      |      "unquotedShares": {
+      |        "noOfTransactions": 1,
+      |        "transactionDetails": [
+      |          {
+      |            "sharesCompanyDetails": {
+      |              "companySharesName": "Boeing",
+      |              "companySharesCRN": "CRN456789",
+      |              "sharesClass": "Primary",
+      |              "noOfShares": 100
+      |            },
+      |            "acquiredFromName": "HL Ltd",
+      |            "acquiredFromType": {
+      |              "indivOrOrgType": "02",
+      |              "idNumber": "CRN345345"
+      |            },
+      |            "totalCost": 9999.99,
+      |            "independentValution": "No",
+      |            "noOfSharesSold": 10,
+      |            "totalDividendsIncome": 999.99,
+      |            "sharesDisposed": "Yes",
+      |            "sharesDisposalDetails": {
+      |              "disposedShareAmount": 9999.99,
+      |              "disposalConnectedParty": "01",
+      |              "purchaserName": "Dave SS",
+      |              "independentValutionDisposal": "No"
+      |            }
+      |          }
+      |        ]
+      |      }
+      |    }
+      |  ],
+      |  "psrDeclaration": {
+      |    "submittedBy": "PSP",
+      |    "submitterID": "20000019",
+      |    "psaID": "A0000023",
+      |    "pspDeclaration": {
+      |      "declaration1": true,
+      |      "declaration2": true
+      |    }
+      |  }
       |}
       |""".stripMargin
 

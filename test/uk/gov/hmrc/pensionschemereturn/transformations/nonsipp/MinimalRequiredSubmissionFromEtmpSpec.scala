@@ -55,7 +55,7 @@ class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar w
         )
       )
 
-      transformation.transform(samplePsrSubmissionResponse) mustEqual expected
+      transformation.transform(samplePsrSubmissionEtmpResponse) mustEqual expected
     }
   }
 }

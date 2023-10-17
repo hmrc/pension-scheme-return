@@ -20,15 +20,15 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc._
 import uk.gov.hmrc.http.HttpErrorFunctions
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
+import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
+import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton()
-class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionService: PsrSubmissionService)(
+class SippPsrSubmitController @Inject()(cc: ControllerComponents, sippPsrSubmissionService: SippPsrSubmissionService)(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
@@ -36,29 +36,29 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     with Results
     with Logging {
 
-  def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    val psrSubmission = requiredBody.as[PsrSubmission]
-    logger.debug(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
-    psrSubmissionService
-      .submitStandardPsr(psrSubmission)
+  def submitSippPsr: Action[AnyContent] = Action.async { implicit request =>
+    val sippPsrSubmission = requiredBody.as[SippPsrSubmission]
+    logger.debug(message = s"Submitting SIPP PSR - Incoming payload: $sippPsrSubmission")
+    sippPsrSubmissionService
+      .submitSippPsr(sippPsrSubmission)
       .map(response => {
-        logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
+        logger.debug(message = s"Submit SIPP PSR - response: ${response.status} , body: ${response.body}")
         NoContent
       })
   }
 
-  def getStandardPsr(
+  def getSippPsr(
     pstr: String,
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
   ): Action[AnyContent] = Action.async { implicit request =>
     logger.debug(
-      s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
+      s"Retrieving SIPP PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
     )
-    psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
+    sippPsrSubmissionService.getSippPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
       case None => NotFound
-      case Some(psrSubmission) => Ok(Json.toJson(psrSubmission))
+      case Some(sippPsrSubmission) => Ok(Json.toJson(sippPsrSubmission))
     }
   }
 }

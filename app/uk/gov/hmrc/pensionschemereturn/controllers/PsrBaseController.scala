@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.sipp
+package uk.gov.hmrc.pensionschemereturn.controllers
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.JsValue
+import play.api.mvc.{AnyContent, Request}
+import uk.gov.hmrc.http.BadRequestException
 
-import java.time.LocalDate
-
-case class SippReportDetailsSubmission(
-  pstr: String,
-  periodStart: LocalDate,
-  periodEnd: LocalDate,
-  memberTransactions: String
-)
-
-object SippReportDetailsSubmission {
-  implicit val format: OFormat[SippReportDetailsSubmission] = Json.format[SippReportDetailsSubmission]
+trait PsrBaseController {
+  def requiredBody(implicit request: Request[AnyContent]): JsValue =
+    request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
 }

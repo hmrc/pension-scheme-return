@@ -27,19 +27,19 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
 import java.time.{LocalDate, LocalDateTime}
 
 case class PsrSubmissionEtmpResponse(
-  schemeDetails: SchemeDetails,
-  psrDetails: PsrDetails,
+  schemeDetails: EtmpSchemeDetails,
+  psrDetails: EtmpPsrDetails,
   accountingPeriodDetails: EtmpAccountingPeriodDetails,
   schemeDesignatory: EtmpSchemeDesignatory,
   loans: Option[EtmpLoans]
 )
 
-case class SchemeDetails(
+case class EtmpSchemeDetails(
   pstr: String,
   schemeName: String
 )
 
-case class PsrDetails(
+case class EtmpPsrDetails(
   fbVersion: String,
   fbstatus: EtmpPsrStatus,
   periodStart: LocalDate,
@@ -48,7 +48,7 @@ case class PsrDetails(
 )
 
 object PsrSubmissionEtmpResponse {
-  private implicit val readsSchemeDetails: Reads[SchemeDetails] = Json.reads[SchemeDetails]
-  private implicit val readsPsrDetails: Reads[PsrDetails] = Json.reads[PsrDetails]
+  private implicit val readsEtmpSchemeDetails: Reads[EtmpSchemeDetails] = Json.reads[EtmpSchemeDetails]
+  private implicit val readsEtmpPsrDetails: Reads[EtmpPsrDetails] = Json.reads[EtmpPsrDetails]
   implicit val reads: Reads[PsrSubmissionEtmpResponse] = Json.reads[PsrSubmissionEtmpResponse]
 }

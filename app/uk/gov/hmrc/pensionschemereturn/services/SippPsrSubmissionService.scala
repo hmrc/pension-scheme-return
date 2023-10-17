@@ -23,39 +23,39 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
+import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
+import uk.gov.hmrc.pensionschemereturn.transformations.sipp.{SippPsrFromEtmp, SippPsrSubmissionToEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1446
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class PsrSubmissionService @Inject()(
+class SippPsrSubmissionService @Inject()(
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
-  psrSubmissionToEtmp: PsrSubmissionToEtmp,
-  standardPsrFromEtmp: StandardPsrFromEtmp
+  sippPsrSubmissionToEtmp: SippPsrSubmissionToEtmp,
+  sippPsrFromEtmp: SippPsrFromEtmp
 ) extends Logging {
 
-  def submitStandardPsr(
-    psrSubmission: PsrSubmission
+  def submitSippPsr(
+    sippPsrSubmission: SippPsrSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val payloadAsJson = Json.toJson(psrSubmissionToEtmp.transform(psrSubmission))
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1444, payloadAsJson)
+    val payloadAsJson = Json.toJson(sippPsrSubmissionToEtmp.transform(sippPsrSubmission))
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1446, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
-        s"Invalid payload when submitStandardPsr :-\n${validationResult.toString}"
+        s"Invalid payload when submitSippPsr :-\n${validationResult.toString}"
       )
     } else {
-      psrConnector.submitStandardPsr(payloadAsJson).recover {
+      psrConnector.submitSippPsr(payloadAsJson).recover {
         case _: BadRequestException =>
           throw new ExpectationFailedException("Nothing to submit")
       }
     }
   }
 
-  def getStandardPsr(
+  def getSippPsr(
     pstr: String,
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
@@ -64,8 +64,9 @@ class PsrSubmissionService @Inject()(
     implicit headerCarrier: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader
-  ): Future[Option[PsrSubmission]] =
+  ): Future[Option[SippPsrSubmission]] =
     psrConnector
-      .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
-      .map(_.map(standardPsrFromEtmp.transform))
+      .getSippPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+      .map(_.map(sippPsrFromEtmp.transform))
+
 }

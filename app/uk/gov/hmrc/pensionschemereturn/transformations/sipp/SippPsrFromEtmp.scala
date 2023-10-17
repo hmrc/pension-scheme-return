@@ -17,22 +17,23 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.sipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
-import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
-import uk.gov.hmrc.pensionschemereturn.models.sipp.SippReportDetailsSubmission
+import uk.gov.hmrc.pensionschemereturn.models.response.SippPsrSubmissionEtmpResponse
+import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class SippReportDetailsToEtmp @Inject()() extends Transformer {
+class SippPsrFromEtmp @Inject()() extends Transformer {
 
-  def transform(sippReportDetailsSubmission: SippReportDetailsSubmission): EtmpSippReportDetails =
-    EtmpSippReportDetails(
-      pstr = sippReportDetailsSubmission.pstr,
-      status = Compiled, // TODO
-      periodStart = sippReportDetailsSubmission.periodStart,
-      periodEnd = sippReportDetailsSubmission.periodEnd,
-      memberTransactions = sippReportDetailsSubmission.memberTransactions,
-      schemeName = None,
-      psrVersion = None
+  def transform(sippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse): SippPsrSubmission = {
+    val reportDetails = sippPsrSubmissionEtmpResponse.reportDetails
+    SippPsrSubmission(
+      reportDetails = SippReportDetailsSubmission(
+        pstr = reportDetails.pstr,
+        periodStart = reportDetails.periodStart,
+        periodEnd = reportDetails.periodEnd,
+        memberTransactions = reportDetails.memberTransactions
+      )
     )
+
+  }
 }

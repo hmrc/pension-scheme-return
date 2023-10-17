@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.etmp.sipp
 
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 
 import java.time.LocalDate
@@ -26,9 +26,11 @@ case class EtmpSippReportDetails(
   status: EtmpPsrStatus,
   periodStart: LocalDate,
   periodEnd: LocalDate,
-  memberTransactions: String
+  memberTransactions: String,
+  schemeName: Option[String],
+  psrVersion: Option[String]
 )
 
 object EtmpSippReportDetails {
-  implicit val writes: OWrites[EtmpSippReportDetails] = Json.writes[EtmpSippReportDetails]
+  implicit val format: OFormat[EtmpSippReportDetails] = Json.format[EtmpSippReportDetails]
 }
