@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9a39aae5-2e44-451f-9318-24c82d904d11",
+		"_postman_id": "a09816f3-9958-4884-871e-ccc8856f81e9",
 		"name": "PSR",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "1174017"
@@ -56,7 +56,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - Success",
+			"name": "Standard PSR - Success",
 			"event": [
 				{
 					"listen": "test",
@@ -77,20 +77,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"minimalRequiredSubmission\": {\n        \"reportDetails\": {\n            \"pstr\": \"00000042IN\",\n            \"periodStart\": \"2023-04-06\",\n            \"periodEnd\": \"2024-04-05\"\n        },\n        \"accountingPeriods\": [\n            [\n                \"2023-04-06\",\n                \"2024-04-05\"\n            ]\n        ],\n        \"schemeDesignatory\": {\n            \"openBankAccount\": true,\n            \"activeMembers\": 23,\n            \"deferredMembers\": 45,\n            \"pensionerMembers\": 6,\n            \"totalPayments\": 74\n        }\n    },\n    \"checkReturnDates\": true,\n    \"loans\": {\n        \"schemeHadLoans\": true,\n        \"loanTransactions\": [\n            {\n                \"recipientIdentityType\": {\n                    \"identityType\": \"individual\",\n                    \"reasonNoIdNumber\": \"sdfsdf\"\n                },\n                \"loanRecipientName\": \"sdfsdfds\",\n                \"connectedPartyStatus\": true,\n                \"datePeriodLoanDetails\": {\n                    \"dateOfLoan\": \"2023-02-12\",\n                    \"loanTotalSchemeAssets\": 3,\n                    \"loanPeriodInMonths\": 9\n                },\n                \"loanAmountDetails\": {\n                    \"loanAmount\": 9,\n                    \"capRepaymentCY\": 8,\n                    \"amountOutstanding\": 7\n                },\n                \"equalInstallments\": true,\n                \"loanInterestDetails\": {\n                    \"loanInterestAmount\": 8,\n                    \"loanInterestRate\": 8,\n                    \"intReceivedCY\": 6\n                },\n                \"optSecurityGivenDetails\": \"kjsdfvsd\",\n                \"optOutstandingArrearsOnLoan\": 273\n            }\n        ]\n    },\n    \"assets\": {\n        \"landOrProperty\": {\n            \"landOrPropertyHeld\": true,\n            \"landOrPropertyTransactions\": [\n                {\n                    \"propertyDetails\": {\n                        \"landOrPropertyInUK\": true,\n                        \"addressDetails\": {\n                            \"addressLine1\": \"Flat 2\",\n                            \"addressLine2\": \"7 Other Place\",\n                            \"addressLine3\": \"Some District\",\n                            \"town\": \"Anytown\",\n                            \"postCode\": \"ZZ1 1ZZ\",\n                            \"country\": \"United Kingdom\",\n                            \"countryCode\": \"GB\"\n                        },\n                        \"landRegistryTitleNumberKey\": true,\n                        \"landRegistryTitleNumberValue\": \"MS123456\"\n                    },\n                    \"heldPropertyTransaction\": {\n                        \"methodOfHolding\": \"Acquisition\",\n                        \"dateOfAcquisitionOrContribution\": \"2009-03-01\",\n                        \"optPropertyAcquiredFromName\": \"Seller-Test\",\n                        \"optPropertyAcquiredFrom\": {\n                            \"identityType\": \"individual\",\n                            \"idNumber\": \"SX123456D\"\n                        },\n                        \"optConnectedPartyStatus\": true,\n                        \"totalCostOfLandOrProperty\": 87,\n                        \"optIndepValuationSupport\": true,\n                        \"isLandOrPropertyResidential\": true,\n                        \"optLeaseDetails\": {\n                            \"lesseeName\": \"Lessee-Test\",\n                            \"leaseGrantDate\": \"2008-07-06\",\n                            \"annualLeaseAmount\": 98,\n                            \"connectedPartyStatus\": false\n                        },\n                        \"landOrPropertyLeased\": true,\n                        \"totalIncomeOrReceipts\": 90\n                    }\n                }\n            ]\n        }\n    }\n}",
@@ -101,14 +88,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/standard",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"standard"
 					]
@@ -117,7 +101,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - Missing body",
+			"name": "Standard PSR - Missing body",
 			"event": [
 				{
 					"listen": "test",
@@ -138,29 +122,13 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/standard",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"standard"
 					]
@@ -169,7 +137,7 @@
 			"response": []
 		},
 		{
-			"name": "POST Standard PSR - Unprocessable",
+			"name": "Standard PSR - Unprocessable",
 			"event": [
 				{
 					"listen": "test",
@@ -190,20 +158,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"minimalRequiredSubmission\": {\n    \"reportDetails\": {\n      \"pstr\": \"00000042IN\",\n      \"periodStart\": \"2024-04-05\",\n      \"periodEnd\": \"2023-04-06\"\n    },\n    \"accountingPeriods\": [\n      [\n        \"2023-04-06\",\n        \"2024-04-05\"\n      ]\n    ],\n    \"schemeDesignatory\": {\n      \"openBankAccount\": true,\n      \"activeMembers\": 23,\n      \"deferredMembers\": 45,\n      \"pensionerMembers\": 6,\n      \"totalPayments\": 74\n    }\n  },\n  \"checkReturnDates\": true\n}\n",
@@ -214,14 +169,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/standard",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"standard"
 					]
@@ -408,7 +360,7 @@
 			"response": []
 		},
 		{
-			"name": "POST SIPP PSR - Success",
+			"name": "SIPP PSR - Success",
 			"event": [
 				{
 					"listen": "test",
@@ -429,20 +381,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"reportDetails\" : {\n    \"pstr\" : \"17836742CF\",\n    \"psrStatus\" : \"Compiled\",\n    \"periodStart\" : \"2022-04-06\",\n    \"periodEnd\" : \"2023-04-05\",\n    \"memberTransactions\": \"Yes\"\n  }\n}",
@@ -453,14 +392,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/sipp",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/sipp",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"sipp"
 					]
@@ -469,7 +405,7 @@
 			"response": []
 		},
 		{
-			"name": "POST SIPP PSR - Missing body",
+			"name": "SIPP PSR - Missing body",
 			"event": [
 				{
 					"listen": "test",
@@ -490,20 +426,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -514,14 +437,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/standard",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/standard",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"standard"
 					]
@@ -530,7 +450,7 @@
 			"response": []
 		},
 		{
-			"name": "POST SIPP PSR - Unprocessable",
+			"name": "SIPP PSR - Unprocessable",
 			"event": [
 				{
 					"listen": "test",
@@ -551,20 +471,7 @@
 					"type": "noauth"
 				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "reportVersionNumber",
-						"value": "001",
-						"type": "default",
-						"disabled": true
-					},
-					{
-						"key": "reportStartDate",
-						"value": "2021-04-06",
-						"type": "default",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"reportDetails\" : {\n    \"pstr\" : \"17836742CF\",\n    \"psrStatus\" : \"Compiled\",\n    \"periodStart\" : \"2023-04-05\",\n    \"periodEnd\" : \"2022-04-06\",\n    \"memberTransactions\": \"Yes\"\n  }\n}",
@@ -575,16 +482,191 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:10700/pension-scheme-return/psr/sipp",
-					"protocol": "http",
+					"raw": "{{pension-scheme-return}}/psr/sipp",
 					"host": [
-						"localhost"
+						"{{pension-scheme-return}}"
 					],
-					"port": "10700",
 					"path": [
-						"pension-scheme-return",
 						"psr",
 						"sipp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SIPP PSR with periodStartDate&psrVersion",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/sipp/24000015IN?periodStartDate=2021-04-06&psrVersion=456",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"sipp",
+						"24000015IN"
+					],
+					"query": [
+						{
+							"key": "periodStartDate",
+							"value": "2021-04-06"
+						},
+						{
+							"key": "psrVersion",
+							"value": "456"
+						},
+						{
+							"key": "fbNumber",
+							"value": "123",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SIPP PSR with fbNumber",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/sipp/24000015IN?fbNumber=123",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"sipp",
+						"24000015IN"
+					],
+					"query": [
+						{
+							"key": "periodStartDate",
+							"value": "2021-04-06",
+							"disabled": true
+						},
+						{
+							"key": "psrVersion",
+							"value": "456",
+							"disabled": true
+						},
+						{
+							"key": "fbNumber",
+							"value": "123"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SIPP PSR - 422",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 422\", function () {",
+							"    pm.response.to.have.status(422);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/sipp/24000015IN?psrVersion=456&periodStartDate=9999-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"sipp",
+						"24000015IN"
+					],
+					"query": [
+						{
+							"key": "psrVersion",
+							"value": "456"
+						},
+						{
+							"key": "fbNumber",
+							"value": "123",
+							"disabled": true
+						},
+						{
+							"key": "periodStartDate",
+							"value": "9999-04-06"
+						}
 					]
 				}
 			},
