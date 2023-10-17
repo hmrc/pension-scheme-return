@@ -24,7 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
-import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
+import uk.gov.hmrc.pensionschemereturn.models.response.{PsrSubmissionEtmpResponse, SippPsrSubmissionEtmpResponse}
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -91,6 +91,31 @@ class PsrConnector @Inject()(
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
+  }
+
+  def getSippPsr(
+    pstr: String,
+    optFbNumber: Option[String],
+    optPeriodStartDate: Option[String],
+    optPsrVersion: Option[String]
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[SippPsrSubmissionEtmpResponse]] = {
+
+    val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+    val url: String = config.getSippPsrUrl.format(params)
+    val logMessage = "Get SIPP PSR called URL: " + url + s" with pstr: $pstr"
+
+    logger.info(logMessage)
+
+    http.GET[HttpResponse](url)(implicitly, headerCarrier, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          Some(response.json.as[SippPsrSubmissionEtmpResponse])
+        case NOT_FOUND =>
+          logger.warn(s"$logMessage and returned ${response.status}")
+          None
+        case _ => handleErrorResponse("GET", url)(response)
+      }
+    }
   }
 
   private def buildParams(

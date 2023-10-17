@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.sipp
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class SippPsrSubmission(
   reportDetails: SippReportDetailsSubmission
 )
 
 object SippPsrSubmission {
-  implicit val reads: Reads[SippPsrSubmission] = Json.reads[SippPsrSubmission]
+  implicit val formats: OFormat[SippPsrSubmission] = Json.format[SippPsrSubmission]
 }
