@@ -20,6 +20,8 @@ import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
 import uk.gov.hmrc.pensionschemereturn.models.response.{
@@ -37,15 +39,17 @@ import java.time.{LocalDate, LocalDateTime}
 trait TestValues {
 
   val pstr = "testPstr"
-  val today: LocalDate = LocalDate.now
+  val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
+
+  // Standard - PSR
 
   val sampleMinimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
     reportDetails = ReportDetails(
       pstr = pstr,
-      periodStart = today,
-      periodEnd = today
+      periodStart = sampleToday,
+      periodEnd = sampleToday
     ),
-    accountingPeriods = List(today -> today),
+    accountingPeriods = List(sampleToday -> sampleToday),
     schemeDesignatory = SchemeDesignatory(
       reasonForNoBankAccount = None,
       openBankAccount = true,
@@ -67,6 +71,82 @@ trait TestValues {
     assets = None
   )
 
+  val sampleLoans: Loans = Loans(
+    schemeHadLoans = true,
+    loanTransactions = List(
+      LoanTransactions(
+        recipientIdentityType = RecipientIdentityType(
+          IdentityType.Individual,
+          None,
+          Some("NoNinoReason"),
+          None
+        ),
+        loanRecipientName = "IndividualName",
+        connectedPartyStatus = true,
+        optRecipientSponsoringEmployer = None,
+        datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
+        loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+        equalInstallments = true,
+        loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+        optSecurityGivenDetails = None,
+        optOutstandingArrearsOnLoan = Some(Double.MaxValue)
+      )
+    )
+  )
+
+  val sampleAddress: Address = Address(
+    "testAddressLine1",
+    "testAddressLine2",
+    Some("testAddressLine3"),
+    Some("GB135HG"),
+    "GB"
+  )
+
+  val sampleAssets: Assets = Assets(
+    landOrProperty = LandOrProperty(
+      landOrPropertyHeld = true,
+      landOrPropertyTransactions = Seq(
+        LandOrPropertyTransactions(
+          propertyDetails = PropertyDetails(
+            landOrPropertyInUK = true,
+            addressDetails = sampleAddress,
+            landRegistryTitleNumberKey = true,
+            landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
+          ),
+          heldPropertyTransaction = HeldPropertyTransaction(
+            methodOfHolding = Acquisition,
+            dateOfAcquisitionOrContribution = Some(sampleToday),
+            optPropertyAcquiredFromName = Some("PropertyAcquiredFromName"),
+            optPropertyAcquiredFrom = Some(
+              PropertyAcquiredFrom(
+                identityType = UKCompany,
+                idNumber = Some("idNumber"),
+                reasonNoIdNumber = None,
+                otherDescription = None
+              )
+            ),
+            optConnectedPartyStatus = Some(true),
+            totalCostOfLandOrProperty = Double.MaxValue,
+            optIndepValuationSupport = Some(true),
+            isLandOrPropertyResidential = true,
+            optLeaseDetails = Some(
+              LeaseDetails(
+                lesseeName = "lesseeName",
+                leaseGrantDate = sampleToday,
+                annualLeaseAmount = Double.MaxValue,
+                connectedPartyStatus = true
+              )
+            ),
+            landOrPropertyLeased = true,
+            totalIncomeOrReceipts = Double.MaxValue
+          )
+        )
+      )
+    )
+  )
+
+  // Standard - ETMP
+
   private val sampleEtmpAccountingPeriodDetails: EtmpAccountingPeriodDetails = EtmpAccountingPeriodDetails(
     recordVersion = "002",
     accountingPeriods = List(
@@ -80,6 +160,64 @@ trait TestValues {
       )
     )
   )
+
+  private val etmpAddress: EtmpAddress = EtmpAddress(
+    addressLine1 = "testAddressLine1",
+    addressLine2 = "testAddressLine2",
+    addressLine3 = Some("testAddressLine3"),
+    addressLine4 = None,
+    addressLine5 = None,
+    ukPostCode = Some("GB135HG"),
+    countryCode = "GB"
+  )
+
+  private val sampleEtmpLandOrProperty: EtmpLandOrProperty = EtmpLandOrProperty(
+    recordVersion = Some("001"),
+    heldAnyLandOrProperty = "Yes",
+    disposeAnyLandOrProperty = "No",
+    noOfTransactions = 1,
+    landOrPropertyTransactions = Seq(
+      EtmpLandOrPropertyTransactions(
+        propertyDetails = EtmpPropertyDetails(
+          landOrPropertyInUK = "Yes",
+          addressDetails = etmpAddress,
+          landRegistryDetails = EtmpLandRegistryDetails(
+            landRegistryReferenceExists = "Yes",
+            landRegistryReference = Some("landRegistryTitleNumberValue"),
+            reasonNoReference = None
+          )
+        ),
+        heldPropertyTransaction = EtmpHeldPropertyTransaction(
+          methodOfHolding = "01",
+          dateOfAcquisitionOrContribution = Some(sampleToday),
+          propertyAcquiredFromName = Some("PropertyAcquiredFromName"),
+          propertyAcquiredFrom = Some(
+            EtmpIdentityType(
+              indivOrOrgType = "02",
+              idNumber = Some("idNumber"),
+              reasonNoIdNumber = None,
+              otherDescription = None
+            )
+          ),
+          connectedPartyStatus = Some("01"),
+          totalCostOfLandOrProperty = Double.MaxValue,
+          indepValuationSupport = Some("Yes"),
+          residentialSchedule29A = "Yes",
+          landOrPropertyLeased = "Yes",
+          leaseDetails = Some(
+            EtmpLeaseDetails(
+              lesseeName = "lesseeName",
+              connectedPartyStatus = "01",
+              leaseGrantDate = sampleToday,
+              annualLeaseAmount = Double.MaxValue
+            )
+          ),
+          totalIncomeOrReceipts = Double.MaxValue
+        )
+      )
+    )
+  )
+
   val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
     EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
     EtmpPsrDetails(
@@ -136,35 +274,23 @@ trait TestValues {
           )
         )
       )
-    )
-  )
-
-  val sampleLoans: Loans = Loans(
-    schemeHadLoans = true,
-    loanTransactions = List(
-      LoanTransactions(
-        recipientIdentityType = RecipientIdentityType(
-          IdentityType.Individual,
-          None,
-          Some("NoNinoReason"),
-          None
-        ),
-        loanRecipientName = "IndividualName",
-        connectedPartyStatus = true,
-        optRecipientSponsoringEmployer = None,
-        datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
-        loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-        equalInstallments = true,
-        loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
-        optSecurityGivenDetails = None,
-        optOutstandingArrearsOnLoan = Some(Double.MaxValue)
+    ),
+    Some(
+      EtmpAssets(
+        landOrProperty = sampleEtmpLandOrProperty,
+        borrowing = EtmpBorrowing(moneyWasBorrowed = "No"),
+        bonds = EtmpBonds(bondsWereAdded = "No", bondsWereDisposed = "No"),
+        otherAssets = EtmpOtherAssets(
+          otherAssetsWereHeld = "No",
+          otherAssetsWereDisposed = "No"
+        )
       )
     )
   )
 
   val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
-    EtmpReportDetails(pstr, Compiled, today, today),
-    EtmpAccountingPeriodDetails("001", List(EtmpAccountingPeriod(today, today))),
+    EtmpReportDetails(pstr, Compiled, sampleToday, sampleToday),
+    EtmpAccountingPeriodDetails("001", List(EtmpAccountingPeriod(sampleToday, sampleToday))),
     EtmpSchemeDesignatory(
       "001",
       "openBankAccount",
@@ -182,6 +308,7 @@ trait TestValues {
     None
   )
 
+  // SIPP - PSR
   val sampleSippReportDetailsSubmission: SippReportDetailsSubmission = SippReportDetailsSubmission(
     "17836742CF",
     periodStart = LocalDate.of(2020, 12, 12),
@@ -193,8 +320,10 @@ trait TestValues {
     sampleSippReportDetailsSubmission
   )
 
+  // SIPP - ETMP
+
   val sampleSippPsrSubmissionEtmpRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
-    EtmpSippReportDetails(pstr, Compiled, today, today, "Yes", None, None)
+    EtmpSippReportDetails(pstr, Compiled, sampleToday, sampleToday, "Yes", None, None)
   )
 
   val sampleSippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse = SippPsrSubmissionEtmpResponse(

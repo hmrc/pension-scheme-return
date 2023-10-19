@@ -42,9 +42,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                   "testAddressLine1",
                   "testAddressLine2",
                   Some("testAddressLine3"),
-                  Some("testTown"),
-                  Some("testPostCode"),
-                  "testCountry",
+                  Some("GB135HG"),
                   "GB"
                 ),
                 landRegistryTitleNumberKey = true,
@@ -98,7 +96,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                   addressLine3 = Some("testAddressLine3"),
                   addressLine4 = None,
                   addressLine5 = None,
-                  ukPostCode = Some("testPostCode"),
+                  ukPostCode = Some("GB135HG"),
                   countryCode = "GB"
                 ),
                 landRegistryDetails = EtmpLandRegistryDetails(

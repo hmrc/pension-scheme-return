@@ -26,7 +26,8 @@ import java.time.LocalDate
 @Singleton()
 class StandardPsrFromEtmp @Inject()(
   minimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp,
-  loansFromEtmp: LoansFromEtmp
+  loansFromEtmp: LoansFromEtmp,
+  assetsFromEtmp: AssetsFromEtmp
 ) extends Transformer {
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): PsrSubmission = {
@@ -38,7 +39,7 @@ class StandardPsrFromEtmp @Inject()(
       checkReturnDates =
         isCheckReturnDates(minimalRequiredSubmission.reportDetails, minimalRequiredSubmission.accountingPeriods.head),
       loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
-      assets = None //TODO
+      assets = psrSubmissionResponse.assets.map(assetsFromEtmp.transform)
     )
   }
 

@@ -30,7 +30,7 @@ class LoansFromEtmp @Inject()() extends Transformer {
       schemeHadLoans = fromYesNo(loans.schemeHadLoans),
       loanTransactions = loans.loanTransactions.map(
         loanTransaction => {
-          val connectedPartyStatus = loanTransaction.connectedPartyStatus == "01"
+          val connectedPartyStatus = loanTransaction.connectedPartyStatus == Connected
           val identityType = stringToIdentityType(loanTransaction.recipientIdentityType.indivOrOrgType)
           LoanTransactions(
             recipientIdentityType = RecipientIdentityType(

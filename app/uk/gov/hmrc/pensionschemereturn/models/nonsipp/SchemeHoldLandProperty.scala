@@ -53,4 +53,11 @@ object SchemeHoldLandProperty {
       case Transfer => "03"
     }
 
+  def stringToSchemeHoldLandProperty(string: String): SchemeHoldLandProperty =
+    string match {
+      case "01" => Acquisition
+      case "02" => Contribution
+      case "03" => Transfer
+    }
+
 }

@@ -36,7 +36,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         noOfLoans = 1,
         loanTransactions = List(
           EtmpLoanTransactions(
-            dateOfLoan = today,
+            dateOfLoan = sampleToday,
             loanRecipientName = "IndividualName",
             recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "01",
@@ -76,7 +76,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             loanRecipientName = "IndividualName",
             connectedPartyStatus = true,
             optRecipientSponsoringEmployer = None,
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
+            datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
@@ -95,7 +95,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         noOfLoans = 1,
         loanTransactions = List(
           EtmpLoanTransactions(
-            dateOfLoan = today,
+            dateOfLoan = sampleToday,
             loanRecipientName = "UKCompanyName",
             recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "02",
@@ -135,7 +135,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             loanRecipientName = "UKCompanyName",
             connectedPartyStatus = true,
             optRecipientSponsoringEmployer = Some("connectedParty"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
+            datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
@@ -156,7 +156,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         noOfLoans = 1,
         loanTransactions = List(
           EtmpLoanTransactions(
-            dateOfLoan = today,
+            dateOfLoan = sampleToday,
             loanRecipientName = "UKPartnershipName",
             recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "03",
@@ -196,7 +196,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             loanRecipientName = "UKPartnershipName",
             connectedPartyStatus = false,
             optRecipientSponsoringEmployer = Some("sponsoring"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
+            datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
@@ -217,7 +217,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         noOfLoans = 1,
         loanTransactions = List(
           EtmpLoanTransactions(
-            dateOfLoan = today,
+            dateOfLoan = sampleToday,
             loanRecipientName = "OtherName",
             recipientIdentityType = EtmpIdentityType(
               indivOrOrgType = "04",
@@ -257,7 +257,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             loanRecipientName = "OtherName",
             connectedPartyStatus = false,
             optRecipientSponsoringEmployer = Some("neither"),
-            datePeriodLoanDetails = LoanPeriod(today, Double.MaxValue, Int.MaxValue),
+            datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
