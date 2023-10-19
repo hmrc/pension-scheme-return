@@ -30,7 +30,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
   val today: LocalDate = LocalDate.now
 
   "AssetsToEtmp - PSR Assets should successfully transform to etmp format " should {
-    "as an Individual for LandOrProperty when landRegistryTitleNumberKey is true with LeaseDetails" in {
+    "as an Individual (Acquisition) for LandOrProperty when landRegistryTitleNumberKey is true with LeaseDetails" in {
       val assets = Assets(
         landOrProperty = LandOrProperty(
           landOrPropertyHeld = true,
@@ -143,7 +143,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
       transformation.transform(assets) mustEqual expected
     }
 
-    "as a UKCompany for LandOrProperty when landRegistryTitleNumberKey is false without LeaseDetails" in {
+    "as a Contribution Holding for LandOrProperty when landRegistryTitleNumberKey is false without LeaseDetails" in {
       val assets = Assets(
         landOrProperty = LandOrProperty(
           landOrPropertyHeld = true,
