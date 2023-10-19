@@ -143,7 +143,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
       transformation.transform(assets) mustEqual expected
     }
 
-    "as an Individual for LandOrProperty when landRegistryTitleNumberKey is false without LeaseDetails" in {
+    "as a UKCompany for LandOrProperty when landRegistryTitleNumberKey is false without LeaseDetails" in {
       val assets = Assets(
         landOrProperty = LandOrProperty(
           landOrPropertyHeld = true,
@@ -162,21 +162,14 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                 landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
               ),
               heldPropertyTransaction = HeldPropertyTransaction(
-                methodOfHolding = SchemeHoldLandProperty.Acquisition,
+                methodOfHolding = SchemeHoldLandProperty.Contribution,
                 dateOfAcquisitionOrContribution = Some(today),
-                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                optPropertyAcquiredFrom = Some(
-                  PropertyAcquiredFrom(
-                    IdentityType.Individual,
-                    None,
-                    Some("NoNinoReason"),
-                    None
-                  )
-                ),
-                optConnectedPartyStatus = Some(true),
+                optPropertyAcquiredFromName = None,
+                optPropertyAcquiredFrom = None,
+                optConnectedPartyStatus = Some(false),
                 totalCostOfLandOrProperty = Double.MaxValue,
-                optIndepValuationSupport = Some(true),
-                isLandOrPropertyResidential = true,
+                optIndepValuationSupport = Some(false),
+                isLandOrPropertyResidential = false,
                 optLeaseDetails = None,
                 landOrPropertyLeased = false,
                 totalIncomeOrReceipts = Double.MaxValue
@@ -212,21 +205,14 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                 )
               ),
               heldPropertyTransaction = EtmpHeldPropertyTransaction(
-                methodOfHolding = "01",
+                methodOfHolding = "02",
                 dateOfAcquisitionOrContribution = Some(today),
-                propertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                propertyAcquiredFrom = Some(
-                  EtmpIdentityType(
-                    indivOrOrgType = "01",
-                    idNumber = None,
-                    reasonNoIdNumber = Some("NoNinoReason"),
-                    otherDescription = None
-                  )
-                ),
-                connectedPartyStatus = Some(Connected),
+                propertyAcquiredFromName = None,
+                propertyAcquiredFrom = None,
+                connectedPartyStatus = Some(Unconnected),
                 totalCostOfLandOrProperty = Double.MaxValue,
-                indepValuationSupport = Some(Yes),
-                residentialSchedule29A = Yes,
+                indepValuationSupport = Some(No),
+                residentialSchedule29A = No,
                 landOrPropertyLeased = No,
                 leaseDetails = None,
                 totalIncomeOrReceipts = Double.MaxValue
