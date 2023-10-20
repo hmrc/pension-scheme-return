@@ -20,6 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.{
   schemeHoldLandPropertyToString,
+  stringToSchemeHoldLandProperty,
   Acquisition,
   Contribution,
   Transfer
@@ -33,6 +34,12 @@ class SchemeHoldLandPropertySpec extends AnyWordSpec with Matchers {
       schemeHoldLandPropertyToString(Acquisition) shouldEqual "01"
       schemeHoldLandPropertyToString(Contribution) shouldEqual "02"
       schemeHoldLandPropertyToString(Transfer) shouldEqual "03"
+    }
+
+    "successfully convert from SchemeHoldLandProperty to String" in {
+      stringToSchemeHoldLandProperty("01") shouldEqual Acquisition
+      stringToSchemeHoldLandProperty("02") shouldEqual Contribution
+      stringToSchemeHoldLandProperty("03") shouldEqual Transfer
     }
   }
 }

@@ -688,40 +688,46 @@ object PsrConnectorSpec {
       |    },
       |    "assets": {
       |        "landOrProperty": {
-      |            "recordVersion": "529",
-      |            "heldAnyLandOrProperty": "No",
+      |            "recordVersion": "001",
+      |            "heldAnyLandOrProperty": "Yes",
       |            "disposeAnyLandOrProperty": "No",
-      |            "noOfTransactions": 3620886,
+      |            "noOfTransactions": 1,
       |            "landOrPropertyTransactions": [
       |                {
       |                    "propertyDetails": {
       |                        "landOrPropertyInUK": "Yes",
       |                        "addressDetails": {
-      |                            "addressLine1": "1 High Street",
-      |                            "addressLine2": "Egham",
-      |                            "addressLine3": "Surrey",
+      |                            "addressLine1": "testAddressLine1",
+      |                            "addressLine2": "testAddressLine2",
+      |                            "addressLine3": "testAddressLine3",
       |                            "ukPostCode": "GB135HG",
       |                            "countryCode": "GB"
       |                        },
       |                        "landRegistryDetails": {
       |                            "landRegistryReferenceExists": "Yes",
-      |                            "landRegistryReference": "LR-10000102202202"
+      |                            "landRegistryReference": "landRegistryTitleNumberValue"
       |                        }
       |                    },
       |                    "heldPropertyTransaction": {
-      |                        "methodOfHolding": "02",
-      |                        "dateOfAcquisitionOrContribution": "1953-03-28",
-      |                        "propertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd.",
+      |                        "methodOfHolding": "01",
+      |                        "dateOfAcquisitionOrContribution": "2023-10-19",
+      |                        "propertyAcquiredFromName": "PropertyAcquiredFromName",
       |                        "propertyAcquiredFrom": {
-      |                            "indivOrOrgType": "01",
-      |                            "idNumber": "AB380580"
+      |                            "indivOrOrgType": "02",
+      |                            "idNumber": "idNumber"
       |                        },
       |                        "connectedPartyStatus": "01",
-      |                        "totalCostOfLandOrProperty": 1000000,
-      |                        "indepValuationSupport": "No",
+      |                        "totalCostOfLandOrProperty": 1.7976931348623157E+308,
+      |                        "indepValuationSupport": "Yes",
       |                        "residentialSchedule29A": "Yes",
-      |                        "landOrPropertyLeased": "No",
-      |                        "totalIncomeOrReceipts": 25000
+      |                        "landOrPropertyLeased": "Yes",
+      |                        "leaseDetails": {
+      |                            "lesseeName": "lesseeName",
+      |                            "connectedPartyStatus": "01",
+      |                            "leaseGrantDate": "2023-10-19",
+      |                            "annualLeaseAmount": 1.7976931348623157E+308
+      |                         },
+      |                        "totalIncomeOrReceipts": 1.7976931348623157E+308
       |                    },
       |                    "disposedPropertyTransaction": [
       |                        {
@@ -736,70 +742,6 @@ object PsrConnectorSpec {
       |                            "connectedPartyStatus": "01",
       |                            "indepValuationSupport": "No",
       |                            "portionStillHeld": "No"
-      |                        }
-      |                    ]
-      |                },
-      |                {
-      |                    "propertyDetails": {
-      |                        "landOrPropertyInUK": "No",
-      |                        "addressDetails": {
-      |                            "addressLine1": "1 Hacienda Way",
-      |                            "addressLine2": "Madrid",
-      |                            "addressLine3": "01055",
-      |                            "countryCode": "ES"
-      |                        },
-      |                        "landRegistryDetails": {
-      |                            "landRegistryReferenceExists": "No",
-      |                            "reasonNoReference": "Foreign property"
-      |                        }
-      |                    },
-      |                    "heldPropertyTransaction": {
-      |                        "methodOfHolding": "03",
-      |                        "dateOfAcquisitionOrContribution": "2022-12-30",
-      |                        "propertyAcquiredFromName": "Joe Sussex",
-      |                        "propertyAcquiredFrom": {
-      |                            "indivOrOrgType": "01",
-      |                            "idNumber": "WE252815"
-      |                        },
-      |                        "connectedPartyStatus": "02",
-      |                        "totalCostOfLandOrProperty": 14000000,
-      |                        "indepValuationSupport": "No",
-      |                        "residentialSchedule29A": "No",
-      |                        "landOrPropertyLeased": "Yes",
-      |                        "leaseDetails": {
-      |                            "lesseeName": "Leasee",
-      |                            "connectedPartyStatus": "02",
-      |                            "leaseGrantDate": "2023-01-17",
-      |                            "annualLeaseAmount": 500000
-      |                        },
-      |                        "totalIncomeOrReceipts": 500000
-      |                    },
-      |                    "disposedPropertyTransaction": [
-      |                        {
-      |                            "methodOfDisposal": "01",
-      |                            "dateOfSale": "2022-11-09",
-      |                            "nameOfPurchaser": "Realty Purchasers Co.",
-      |                            "purchaseOrgDetails": {
-      |                                "indivOrOrgType": "02",
-      |                                "idNumber": "JE463863"
-      |                            },
-      |                            "saleProceeds": 1550000,
-      |                            "connectedPartyStatus": "01",
-      |                            "indepValuationSupport": "No",
-      |                            "portionStillHeld": "Yes"
-      |                        },
-      |                        {
-      |                            "methodOfDisposal": "01",
-      |                            "dateOfSale": "2023-01-26",
-      |                            "nameOfPurchaser": "ABC Company Inc.",
-      |                            "purchaseOrgDetails": {
-      |                                "indivOrOrgType": "02",
-      |                                "idNumber": "DA576257"
-      |                            },
-      |                            "saleProceeds": 10234.56,
-      |                            "connectedPartyStatus": "02",
-      |                            "indepValuationSupport": "No",
-      |                            "portionStillHeld": "Yes"
       |                        }
       |                    ]
       |                }
@@ -823,7 +765,7 @@ object PsrConnectorSpec {
       |        },
       |        "bonds": {
       |            "recordVersion": "528",
-      |            "bondsWereAdded": "Yes",
+      |            "bondsWereAdded": "No",
       |            "bondsWereDisposed": "No",
       |            "noOfTransactions": 2,
       |            "bondTransactions": [
@@ -869,7 +811,7 @@ object PsrConnectorSpec {
       |        },
       |        "otherAssets": {
       |            "recordVersion": "002",
-      |            "otherAssetsWereHeld": "Yes",
+      |            "otherAssetsWereHeld": "No",
       |            "otherAssetsWereDisposed": "No",
       |            "noOfTransactions": 2,
       |            "otherAssetTransactions": [

@@ -20,6 +20,7 @@ import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   EtmpAccountingPeriodDetails,
+  EtmpAssets,
   EtmpLoans,
   EtmpSchemeDesignatory
 }
@@ -31,7 +32,8 @@ case class PsrSubmissionEtmpResponse(
   psrDetails: EtmpPsrDetails,
   accountingPeriodDetails: EtmpAccountingPeriodDetails,
   schemeDesignatory: EtmpSchemeDesignatory,
-  loans: Option[EtmpLoans]
+  loans: Option[EtmpLoans],
+  assets: Option[EtmpAssets]
 )
 
 case class EtmpSchemeDetails(

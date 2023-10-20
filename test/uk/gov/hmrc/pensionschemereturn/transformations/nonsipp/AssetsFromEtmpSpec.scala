@@ -24,63 +24,15 @@ import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 import java.time.LocalDate
 
-class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
+class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
 
-  private val transformation: AssetsToEtmp = new AssetsToEtmp()
+  private val transformation: AssetsFromEtmp = new AssetsFromEtmp()
   val today: LocalDate = LocalDate.now
 
-  "AssetsToEtmp - PSR Assets should successfully transform to etmp format " should {
+  "AssetsFromEtmp - PSR Assets should successfully transform from etmp format " should {
     "as an Individual for LandOrProperty" in {
-      val assets = Assets(
-        landOrProperty = LandOrProperty(
-          landOrPropertyHeld = true,
-          landOrPropertyTransactions = List(
-            LandOrPropertyTransactions(
-              propertyDetails = PropertyDetails(
-                landOrPropertyInUK = true,
-                addressDetails = Address(
-                  "testAddressLine1",
-                  "testAddressLine2",
-                  Some("testAddressLine3"),
-                  Some("GB135HG"),
-                  "GB"
-                ),
-                landRegistryTitleNumberKey = true,
-                landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
-              ),
-              heldPropertyTransaction = HeldPropertyTransaction(
-                methodOfHolding = SchemeHoldLandProperty.Acquisition,
-                dateOfAcquisitionOrContribution = Some(today),
-                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                optPropertyAcquiredFrom = Some(
-                  PropertyAcquiredFrom(
-                    IdentityType.Individual,
-                    None,
-                    Some("NoNinoReason"),
-                    None
-                  )
-                ),
-                optConnectedPartyStatus = Some(true),
-                totalCostOfLandOrProperty = Double.MaxValue,
-                optIndepValuationSupport = Some(true),
-                isLandOrPropertyResidential = true,
-                optLeaseDetails = Some(
-                  LeaseDetails(
-                    lesseeName = "lesseeName",
-                    leaseGrantDate = today,
-                    annualLeaseAmount = Double.MaxValue,
-                    connectedPartyStatus = false
-                  )
-                ),
-                landOrPropertyLeased = true,
-                totalIncomeOrReceipts = Double.MaxValue
-              )
-            )
-          )
-        )
-      )
 
-      val expected = EtmpAssets(
+      val assets = EtmpAssets(
         landOrProperty = EtmpLandOrProperty(
           recordVersion = None,
           heldAnyLandOrProperty = Yes,
@@ -139,7 +91,54 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
         bonds = EtmpBonds(bondsWereAdded = No, bondsWereDisposed = No),
         otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
       )
-
+      val expected = Assets(
+        landOrProperty = LandOrProperty(
+          landOrPropertyHeld = true,
+          landOrPropertyTransactions = List(
+            LandOrPropertyTransactions(
+              propertyDetails = PropertyDetails(
+                landOrPropertyInUK = true,
+                addressDetails = Address(
+                  "testAddressLine1",
+                  "testAddressLine2",
+                  Some("testAddressLine3"),
+                  Some("GB135HG"),
+                  "GB"
+                ),
+                landRegistryTitleNumberKey = true,
+                landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
+              ),
+              heldPropertyTransaction = HeldPropertyTransaction(
+                methodOfHolding = SchemeHoldLandProperty.Acquisition,
+                dateOfAcquisitionOrContribution = Some(today),
+                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                optPropertyAcquiredFrom = Some(
+                  PropertyAcquiredFrom(
+                    IdentityType.Individual,
+                    None,
+                    Some("NoNinoReason"),
+                    None
+                  )
+                ),
+                optConnectedPartyStatus = Some(true),
+                totalCostOfLandOrProperty = Double.MaxValue,
+                optIndepValuationSupport = Some(true),
+                isLandOrPropertyResidential = true,
+                optLeaseDetails = Some(
+                  LeaseDetails(
+                    lesseeName = "lesseeName",
+                    leaseGrantDate = today,
+                    annualLeaseAmount = Double.MaxValue,
+                    connectedPartyStatus = false
+                  )
+                ),
+                landOrPropertyLeased = true,
+                totalIncomeOrReceipts = Double.MaxValue
+              )
+            )
+          )
+        )
+      )
       transformation.transform(assets) mustEqual expected
     }
   }

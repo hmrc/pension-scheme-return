@@ -22,6 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   EtmpAccountingPeriodDetails,
+  EtmpAssets,
   EtmpLoans,
   EtmpSchemeDesignatory
 }
@@ -39,13 +40,16 @@ class StandardPsrFromEtmpSpec
   override protected def beforeEach(): Unit = {
     reset(mockMinimalRequiredSubmissionFromEtmp)
     reset(mockLoansFromEtmp)
+    reset(mockAssetsFromEtmp)
     super.beforeEach()
   }
 
   val mockMinimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp = mock[MinimalRequiredSubmissionFromEtmp]
   val mockLoansFromEtmp: LoansFromEtmp = mock[LoansFromEtmp]
+  val mockAssetsFromEtmp: AssetsFromEtmp = mock[AssetsFromEtmp]
 
-  private val transformation = new StandardPsrFromEtmp(mockMinimalRequiredSubmissionFromEtmp, mockLoansFromEtmp)
+  private val transformation =
+    new StandardPsrFromEtmp(mockMinimalRequiredSubmissionFromEtmp, mockLoansFromEtmp, mockAssetsFromEtmp)
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails when checkReturnDates is true" in {
 
@@ -56,19 +60,21 @@ class StandardPsrFromEtmpSpec
       psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
-      loans = None
+      loans = None,
+      assets = None
     )
 
     transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
+    verify(mockAssetsFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails checkReturnDates is false" in {
 
     when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(
       sampleMinimalRequiredSubmission
-        .copy(reportDetails = sampleMinimalRequiredSubmission.reportDetails.copy(periodStart = today.plusDays(1)))
+        .copy(reportDetails = sampleMinimalRequiredSubmission.reportDetails.copy(periodStart = sampleToday.plusDays(1)))
     )
 
     val psrSubmissionResponse = PsrSubmissionEtmpResponse(
@@ -76,11 +82,12 @@ class StandardPsrFromEtmpSpec
       psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
-      loans = None
+      loans = None,
+      assets = None
     )
 
     val updatedReportDetails =
-      samplePsrSubmission.minimalRequiredSubmission.reportDetails.copy(periodStart = today.plusDays(1))
+      samplePsrSubmission.minimalRequiredSubmission.reportDetails.copy(periodStart = sampleToday.plusDays(1))
     transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(
       minimalRequiredSubmission =
         samplePsrSubmission.minimalRequiredSubmission.copy(reportDetails = updatedReportDetails),
@@ -88,6 +95,7 @@ class StandardPsrFromEtmpSpec
     )
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
+    verify(mockAssetsFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with Loans" in {
@@ -100,11 +108,33 @@ class StandardPsrFromEtmpSpec
       psrDetails = mock[EtmpPsrDetails],
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
-      loans = Some(mock[EtmpLoans])
+      loans = Some(mock[EtmpLoans]),
+      assets = None
     )
 
     transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(loans = Some(sampleLoans))
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, times(1)).transform(any())
+    verify(mockAssetsFromEtmp, never).transform(any())
+  }
+
+  "PSR submission should successfully transform to etmp format with Assets" in {
+
+    when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(sampleMinimalRequiredSubmission)
+    when(mockAssetsFromEtmp.transform(any())).thenReturn(sampleAssets)
+
+    val psrSubmissionResponse = PsrSubmissionEtmpResponse(
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
+      accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
+      schemeDesignatory = mock[EtmpSchemeDesignatory],
+      loans = None,
+      assets = Some(mock[EtmpAssets])
+    )
+
+    transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(assets = Some(sampleAssets))
+    verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
+    verify(mockLoansFromEtmp, never).transform(any())
+    verify(mockAssetsFromEtmp, times(1)).transform(any())
   }
 }
