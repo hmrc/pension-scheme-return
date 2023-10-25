@@ -3,10 +3,49 @@
 
 Pension scheme return is the backend service for pension scheme return which is a feature on manage your pension. 
 
-### Running the test suite
+***
+
+## Technical documentation
+
+### Before running the app
+
+Run the following command to start all of the related services for this project:
+```bash
+sm2 -start PSR_ALL
 ```
+Included in the above command is `PENSION_SCHEME_RETURN`, which is this repository's most recent release.
+If you want to run your local version of this code instead, run:
+```bash
+sm2 -stop PENSION_SCHEME_RETURN
+```
+
+then:
+
+```bash
+sbt 'run'
+```
+
+Note: this service runs on port 10700 by default, but a different port (e.g. 17000) may be specified, as shown in the example below:
+
+```bash
+sbt 'run 17000'
+```
+
+***
+
+### Running the test suite
+
+```bash
 sbt clean coverage test it:test coverageReport
 ```
+or 
+
+You can execute the [runtests.sh](runtests.sh) file to run the tests and generate coverage report easily.
+```bash
+/bin/bash ./runtests.sh
+```
+
+***
 
 ### Importing the Postman Collection
 
@@ -43,9 +82,12 @@ Or
 >
 > - `pension-scheme-return`   sets the host of the service requests to match the environment
 
+***
 
 ### Useful links
 - [confluence](https://confluence.tools.tax.service.gov.uk/display/PSR/Pension+Scheme+Return+Home)
+
+***
 
 ### License
 
