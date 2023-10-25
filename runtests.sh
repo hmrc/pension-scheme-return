@@ -1,3 +1,2 @@
 #!/bin/bash
-sbt it:test
-sbt clean coverage compile test coverageReport
+sbt clean compile coverage it:test test coverageReport
