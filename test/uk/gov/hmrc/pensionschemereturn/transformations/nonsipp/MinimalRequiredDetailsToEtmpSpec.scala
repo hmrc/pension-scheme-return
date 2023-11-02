@@ -57,7 +57,7 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           periodEnd = today
         ),
         EtmpAccountingPeriodDetails(
-          recordVersion = "001",
+          recordVersion = None,
           accountingPeriods = List(
             EtmpAccountingPeriod(
               accPeriodStart = today,
@@ -66,7 +66,7 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           )
         ),
         EtmpSchemeDesignatory(
-          recordVersion = "001",
+          recordVersion = None,
           openBankAccount = No,
           reasonNoOpenAccount = Some("reasonForNoBankAccount"),
           noOfActiveMembers = 1,

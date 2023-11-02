@@ -26,7 +26,7 @@ class LoansToEtmp @Inject()() extends Transformer {
 
   def transform(loans: Loans): EtmpLoans =
     EtmpLoans(
-      recordVersion = "001", // TODO hardcoded for now
+      recordVersion = None,
       schemeHadLoans = toYesNo(loans.schemeHadLoans),
       noOfLoans = loans.loanTransactions.size,
       loanTransactions = loans.loanTransactions.map { loanTransaction =>

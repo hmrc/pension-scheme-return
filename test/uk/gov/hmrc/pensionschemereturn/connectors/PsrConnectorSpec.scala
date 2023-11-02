@@ -749,17 +749,17 @@ object PsrConnectorSpec {
       |        },
       |        "borrowing": {
       |            "recordVersion": "164",
-      |            "moneyWasBorrowed": "No",
+      |            "moneyWasBorrowed": "Yes",
       |            "noOfBorrows": 1,
       |            "moneyBorrowed": [
       |                {
-      |                    "dateOfBorrow": "2022-10-18",
-      |                    "amountBorrowed": 2000,
-      |                    "schemeAssetsValue": 0,
-      |                    "interestRate": 5.55,
-      |                    "borrowingFromName": "Loans R Us",
-      |                    "connectedPartyStatus": "02",
-      |                    "reasonForBorrow": "We needed the money."
+      |                    "dateOfBorrow": "2023-10-19",
+      |                    "amountBorrowed": 1.7976931348623157E+308,
+      |                    "schemeAssetsValue": 1.7976931348623157E+308,
+      |                    "interestRate": 1.7976931348623157E+308,
+      |                    "borrowingFromName": "borrowingFromName",
+      |                    "connectedPartyStatus": "01",
+      |                    "reasonForBorrow": "reasonForBorrow"
       |                }
       |            ]
       |        },

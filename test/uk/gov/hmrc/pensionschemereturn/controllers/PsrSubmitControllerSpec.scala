@@ -113,51 +113,65 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |    ]
           |  },
           |  "assets": {
-          |        "landOrProperty": {
-          |            "landOrPropertyHeld": true,
-          |            "landOrPropertyTransactions": [
-          |                {
-          |                    "propertyDetails": {
-          |                        "landOrPropertyInUK": true,
-          |                        "addressDetails": {
-          |                            "addressLine1": "Flat 2",
-          |                            "addressLine2": "7 Other Place",
-          |                            "addressLine3": "Some District",
-          |                            "town": "Anytown",
-          |                            "postCode": "ZZ1 1ZZ",
-          |                            "country": "United Kingdom",
-          |                            "countryCode": "GB"
-          |                        },
-          |                        "landRegistryTitleNumberKey": true,
-          |                        "landRegistryTitleNumberValue": "MS123456"
-          |                    },
-          |                    "heldPropertyTransaction": {
-          |                        "methodOfHolding": "Acquisition",
-          |                        "dateOfAcquisitionOrContribution": "2009-03-01",
-          |                        "optPropertyAcquiredFromName": "Seller-Test",
-          |                        "optPropertyAcquiredFrom": {
-          |                            "identityType": "individual",
-          |                            "idNumber": "SX123456D"
-          |                        },
-          |                        "optConnectedPartyStatus": true,
-          |                        "totalCostOfLandOrProperty": 87,
-          |                        "optIndepValuationSupport": true,
-          |                        "isLandOrPropertyResidential": true,
-          |                        "optLeaseDetails": {
-          |                            "lesseeName": "Lessee-Test",
-          |                            "leaseGrantDate": "2008-07-06",
-          |                            "annualLeaseAmount": 98,
-          |                            "connectedPartyStatus": false
-          |                        },
-          |                        "landOrPropertyLeased": true,
-          |                        "totalIncomeOrReceipts": 90
-          |                    }
-          |                }
-          |            ]
+          |    "landOrProperty": {
+          |      "landOrPropertyHeld": true,
+          |      "landOrPropertyTransactions": [
+          |        {
+          |          "propertyDetails": {
+          |            "landOrPropertyInUK": true,
+          |            "addressDetails": {
+          |              "addressLine1": "Flat 2",
+          |              "addressLine2": "7 Other Place",
+          |              "addressLine3": "Some District",
+          |              "town": "Anytown",
+          |              "postCode": "ZZ1 1ZZ",
+          |              "country": "United Kingdom",
+          |              "countryCode": "GB"
+          |            },
+          |            "landRegistryTitleNumberKey": true,
+          |            "landRegistryTitleNumberValue": "MS123456"
+          |          },
+          |          "heldPropertyTransaction": {
+          |            "methodOfHolding": "Acquisition",
+          |            "dateOfAcquisitionOrContribution": "2009-03-01",
+          |            "optPropertyAcquiredFromName": "Seller-Test",
+          |            "optPropertyAcquiredFrom": {
+          |              "identityType": "individual",
+          |              "idNumber": "SX123456D"
+          |            },
+          |            "optConnectedPartyStatus": true,
+          |            "totalCostOfLandOrProperty": 87,
+          |            "optIndepValuationSupport": true,
+          |            "isLandOrPropertyResidential": true,
+          |            "optLeaseDetails": {
+          |              "lesseeName": "Lessee-Test",
+          |              "leaseGrantDate": "2008-07-06",
+          |              "annualLeaseAmount": 98,
+          |              "connectedPartyStatus": false
+          |            },
+          |            "landOrPropertyLeased": true,
+          |            "totalIncomeOrReceipts": 90
+          |          }
           |        }
+          |      ]
+          |    },
+          |    "borrowing": {
+          |      "moneyWasBorrowed": true,
+          |      "moneyBorrowed": [
+          |        {
+          |          "dateOfBorrow": "2023-10-19",
+          |          "amountBorrowed": 2,
+          |          "schemeAssetsValue": 3,
+          |          "interestRate": 4,
+          |          "borrowingFromName": "borrowingFromName",
+          |          "connectedPartyStatus": true,
+          |          "reasonForBorrow": "reasonForBorrow"
+          |        }
+          |      ]
           |    }
+          |  }
           |}
-          |""".stripMargin
+          """.stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
       val result = controller.submitStandardPsr(postRequest)

@@ -94,7 +94,21 @@ class AssetsToEtmp @Inject()() extends Transformer {
         )
       ),
       borrowing = EtmpBorrowing(
-        moneyWasBorrowed = toYesNo(false)
+        recordVersion = None,
+        moneyWasBorrowed = toYesNo(assets.borrowing.moneyWasBorrowed),
+        noOfBorrows = assets.borrowing.moneyBorrowed.size,
+        moneyBorrowed = assets.borrowing.moneyBorrowed.map(
+          mb =>
+            EtmpMoneyBorrowed(
+              dateOfBorrow = mb.dateOfBorrow,
+              schemeAssetsValue = mb.schemeAssetsValue,
+              amountBorrowed = mb.amountBorrowed,
+              interestRate = mb.interestRate,
+              borrowingFromName = mb.borrowingFromName,
+              connectedPartyStatus = transformToEtmpConnectedPartyStatus(mb.connectedPartyStatus),
+              reasonForBorrow = mb.reasonForBorrow
+            )
+        )
       ),
       bonds = EtmpBonds(
         bondsWereAdded = toYesNo(false),

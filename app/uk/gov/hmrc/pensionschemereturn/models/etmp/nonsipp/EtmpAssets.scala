@@ -36,7 +36,20 @@ case class EtmpLandOrProperty(
 )
 
 case class EtmpBorrowing(
-  moneyWasBorrowed: String
+  recordVersion: Option[String],
+  moneyWasBorrowed: String,
+  noOfBorrows: Int,
+  moneyBorrowed: Seq[EtmpMoneyBorrowed]
+)
+
+case class EtmpMoneyBorrowed(
+  dateOfBorrow: LocalDate,
+  schemeAssetsValue: Double,
+  amountBorrowed: Double,
+  interestRate: Double,
+  borrowingFromName: String,
+  connectedPartyStatus: String,
+  reasonForBorrow: String
 )
 case class EtmpBonds(
   bondsWereAdded: String,
@@ -97,6 +110,7 @@ case class EtmpLandRegistryDetails(
 )
 
 object EtmpAssets {
+
   private implicit val formatsEtmpLeaseDetails: OFormat[EtmpLeaseDetails] =
     Json.format[EtmpLeaseDetails]
   private implicit val formatsEtmpLandRegistryDetails: OFormat[EtmpLandRegistryDetails] =
@@ -107,15 +121,20 @@ object EtmpAssets {
     Json.format[EtmpHeldPropertyTransaction]
   private implicit val formatsEtmpPropertyDetails: OFormat[EtmpPropertyDetails] =
     Json.format[EtmpPropertyDetails]
-  private implicit val formatsEtmpOtherAssets: OFormat[EtmpOtherAssets] =
-    Json.format[EtmpOtherAssets]
-  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
-    Json.format[EtmpBonds]
-  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
-    Json.format[EtmpBorrowing]
   private implicit val formatsEtmpLandOrPropertyTransactions: OFormat[EtmpLandOrPropertyTransactions] =
     Json.format[EtmpLandOrPropertyTransactions]
   private implicit val formatsEtmpLandOrProperty: OFormat[EtmpLandOrProperty] =
     Json.format[EtmpLandOrProperty]
+
+  private implicit val formatsEtmpOtherAssets: OFormat[EtmpOtherAssets] =
+    Json.format[EtmpOtherAssets]
+  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
+    Json.format[EtmpBonds]
+
+  private implicit val formatsEtmpMoneyBorrowed: OFormat[EtmpMoneyBorrowed] =
+    Json.format[EtmpMoneyBorrowed]
+  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
+    Json.format[EtmpBorrowing]
+
   implicit val formats: OFormat[EtmpAssets] = Json.format[EtmpAssets]
 }

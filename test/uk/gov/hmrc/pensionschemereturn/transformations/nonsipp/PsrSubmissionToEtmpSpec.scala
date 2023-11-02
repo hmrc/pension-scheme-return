@@ -115,7 +115,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
       periodEnd = today
     ),
     EtmpAccountingPeriodDetails(
-      recordVersion = "001",
+      recordVersion = None,
       accountingPeriods = List(
         EtmpAccountingPeriod(
           accPeriodStart = today,
@@ -124,7 +124,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
       )
     ),
     EtmpSchemeDesignatory(
-      recordVersion = "001",
+      recordVersion = Some("001"),
       openBankAccount = No,
       reasonNoOpenAccount = Some("reasonForNoBankAccount"),
       noOfActiveMembers = 1,
@@ -139,7 +139,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
   )
 
   val sampleEtmpLoans: EtmpLoans = EtmpLoans(
-    recordVersion = "001",
+    recordVersion = Some("001"),
     schemeHadLoans = Yes,
     noOfLoans = 1,
     loanTransactions = List(
@@ -179,7 +179,12 @@ object PsrSubmissionToEtmpSpec extends Transformer {
       noOfTransactions = 0,
       landOrPropertyTransactions = Seq.empty
     ),
-    borrowing = EtmpBorrowing(moneyWasBorrowed = "moneyWasBorrowed"),
+    borrowing = EtmpBorrowing(
+      recordVersion = None,
+      moneyWasBorrowed = "moneyWasBorrowed",
+      noOfBorrows = 0,
+      moneyBorrowed = Seq.empty
+    ),
     bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),
     otherAssets =
       EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")

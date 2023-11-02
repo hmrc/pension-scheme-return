@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class EtmpLoans(
-  recordVersion: String,
+  recordVersion: Option[String],
   schemeHadLoans: String,
   noOfLoans: Int,
   loanTransactions: Seq[EtmpLoanTransactions]
