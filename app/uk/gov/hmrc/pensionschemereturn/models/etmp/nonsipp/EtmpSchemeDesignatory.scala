@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 import play.api.libs.json.{Json, OFormat}
 
 case class EtmpSchemeDesignatory(
-  recordVersion: String,
+  recordVersion: Option[String],
   openBankAccount: String,
   reasonNoOpenAccount: Option[String],
   noOfActiveMembers: Int,

@@ -32,7 +32,7 @@ object SippPsrSubmissionEtmpResponse {
 
   implicit val accountingPeriodDetailsReads: Reads[EtmpAccountingPeriodDetails] = {
     (JsPath \ "version")
-      .read[String]
+      .readNullable[String]
       .and((JsPath \ "accountingPeriods").read[List[EtmpAccountingPeriod]])(EtmpAccountingPeriodDetails.apply _)
   }
 

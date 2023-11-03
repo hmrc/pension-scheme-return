@@ -26,7 +26,7 @@ case class EtmpAccountingPeriod(
 )
 
 case class EtmpAccountingPeriodDetails(
-  recordVersion: String,
+  recordVersion: Option[String],
   accountingPeriods: List[EtmpAccountingPeriod]
 )
 

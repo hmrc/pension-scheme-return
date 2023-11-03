@@ -77,6 +77,20 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
               )
             )
           )
+        ),
+        borrowing = Borrowing(
+          moneyWasBorrowed = true,
+          moneyBorrowed = Seq(
+            MoneyBorrowed(
+              dateOfBorrow = today,
+              schemeAssetsValue = Double.MinPositiveValue,
+              amountBorrowed = Double.MaxValue,
+              interestRate = Double.MaxValue,
+              borrowingFromName = "borrowingFromName",
+              connectedPartyStatus = true,
+              reasonForBorrow = "reasonForBorrow"
+            )
+          )
         )
       )
 
@@ -135,7 +149,22 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
             )
           )
         ),
-        borrowing = EtmpBorrowing(moneyWasBorrowed = No),
+        borrowing = EtmpBorrowing(
+          recordVersion = None,
+          moneyWasBorrowed = Yes,
+          noOfBorrows = 1,
+          moneyBorrowed = Seq(
+            EtmpMoneyBorrowed(
+              dateOfBorrow = today,
+              schemeAssetsValue = Double.MinPositiveValue,
+              amountBorrowed = Double.MaxValue,
+              interestRate = Double.MaxValue,
+              borrowingFromName = "borrowingFromName",
+              connectedPartyStatus = Connected,
+              reasonForBorrow = "reasonForBorrow"
+            )
+          )
+        ),
         bonds = EtmpBonds(bondsWereAdded = No, bondsWereDisposed = No),
         otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
       )

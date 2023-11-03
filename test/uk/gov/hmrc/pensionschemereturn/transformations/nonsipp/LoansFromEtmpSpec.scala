@@ -31,7 +31,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
     "for Individual" in {
 
       val etmpLoans = EtmpLoans(
-        recordVersion = "001",
+        recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = 1,
         loanTransactions = List(
@@ -90,7 +90,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
     "for UKCompany" in {
       val etmpLoans = EtmpLoans(
-        recordVersion = "001",
+        recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = 1,
         loanTransactions = List(
@@ -151,7 +151,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
     "for UKPartnership" in {
 
       val etmpLoans = EtmpLoans(
-        recordVersion = "001",
+        recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = 1,
         loanTransactions = List(
@@ -212,7 +212,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
     "for Other" in {
 
       val etmpLoans = EtmpLoans(
-        recordVersion = "001",
+        recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = 1,
         loanTransactions = List(

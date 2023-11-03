@@ -142,13 +142,27 @@ trait TestValues {
           )
         )
       )
+    ),
+    borrowing = Borrowing(
+      moneyWasBorrowed = true,
+      moneyBorrowed = Seq(
+        MoneyBorrowed(
+          dateOfBorrow = sampleToday,
+          schemeAssetsValue = Double.MaxValue,
+          amountBorrowed = Double.MaxValue,
+          interestRate = Double.MaxValue,
+          borrowingFromName = "borrowingFromName",
+          connectedPartyStatus = true,
+          reasonForBorrow = "reasonForBorrow"
+        )
+      )
     )
   )
 
   // Standard - ETMP
 
   private val sampleEtmpAccountingPeriodDetails: EtmpAccountingPeriodDetails = EtmpAccountingPeriodDetails(
-    recordVersion = "002",
+    recordVersion = Some("002"),
     accountingPeriods = List(
       EtmpAccountingPeriod(
         accPeriodStart = LocalDate.parse("2022-04-06"),
@@ -229,7 +243,7 @@ trait TestValues {
     ),
     sampleEtmpAccountingPeriodDetails,
     EtmpSchemeDesignatory(
-      recordVersion = "002",
+      recordVersion = Some("002"),
       openBankAccount = "Yes",
       reasonNoOpenAccount = None,
       noOfActiveMembers = 5,
@@ -243,7 +257,7 @@ trait TestValues {
     ),
     Some(
       EtmpLoans(
-        recordVersion = "003",
+        recordVersion = Some("003"),
         schemeHadLoans = "Yes",
         noOfLoans = 1,
         loanTransactions = Seq(
@@ -278,7 +292,22 @@ trait TestValues {
     Some(
       EtmpAssets(
         landOrProperty = sampleEtmpLandOrProperty,
-        borrowing = EtmpBorrowing(moneyWasBorrowed = "No"),
+        borrowing = EtmpBorrowing(
+          recordVersion = Some("164"),
+          moneyWasBorrowed = "Yes",
+          noOfBorrows = 1,
+          moneyBorrowed = Seq(
+            EtmpMoneyBorrowed(
+              dateOfBorrow = sampleToday,
+              schemeAssetsValue = Double.MaxValue,
+              amountBorrowed = Double.MaxValue,
+              interestRate = Double.MaxValue,
+              borrowingFromName = "borrowingFromName",
+              connectedPartyStatus = "01",
+              reasonForBorrow = "reasonForBorrow"
+            )
+          )
+        ),
         bonds = EtmpBonds(bondsWereAdded = "No", bondsWereDisposed = "No"),
         otherAssets = EtmpOtherAssets(
           otherAssetsWereHeld = "No",
@@ -290,9 +319,9 @@ trait TestValues {
 
   val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
     EtmpReportDetails(pstr, Compiled, sampleToday, sampleToday),
-    EtmpAccountingPeriodDetails("001", List(EtmpAccountingPeriod(sampleToday, sampleToday))),
+    EtmpAccountingPeriodDetails(None, List(EtmpAccountingPeriod(sampleToday, sampleToday))),
     EtmpSchemeDesignatory(
-      "001",
+      Some("001"),
       "openBankAccount",
       None,
       1,
