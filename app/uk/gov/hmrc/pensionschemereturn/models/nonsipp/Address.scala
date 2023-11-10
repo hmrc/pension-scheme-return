@@ -20,8 +20,9 @@ import play.api.libs.json.{Json, OFormat}
 
 case class Address(
   addressLine1: String,
-  addressLine2: String,
+  addressLine2: Option[String],
   addressLine3: Option[String],
+  town: String,
   postCode: Option[String],
   countryCode: String
 )

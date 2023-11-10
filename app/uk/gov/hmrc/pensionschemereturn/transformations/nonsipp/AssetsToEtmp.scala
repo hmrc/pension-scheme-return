@@ -46,9 +46,9 @@ class AssetsToEtmp @Inject()() extends Transformer {
                 landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                 addressDetails = EtmpAddress(
                   addressLine1 = addressDetails.addressLine1,
-                  addressLine2 = addressDetails.addressLine2,
+                  addressLine2 = addressDetails.addressLine2.getOrElse(addressDetails.town),
                   addressLine3 = addressDetails.addressLine3,
-                  addressLine4 = None,
+                  addressLine4 = addressDetails.addressLine2.map(_ => addressDetails.town),
                   addressLine5 = None,
                   ukPostCode = addressDetails.postCode,
                   countryCode = addressDetails.countryCode
@@ -96,7 +96,7 @@ class AssetsToEtmp @Inject()() extends Transformer {
       borrowing = EtmpBorrowing(
         recordVersion = None,
         moneyWasBorrowed = toYesNo(assets.borrowing.moneyWasBorrowed),
-        noOfBorrows = assets.borrowing.moneyBorrowed.size,
+        noOfBorrows = Option.when(assets.borrowing.moneyWasBorrowed)(assets.borrowing.moneyBorrowed.size),
         moneyBorrowed = assets.borrowing.moneyBorrowed.map(
           mb =>
             EtmpMoneyBorrowed(

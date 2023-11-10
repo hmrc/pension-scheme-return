@@ -182,7 +182,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
     borrowing = EtmpBorrowing(
       recordVersion = None,
       moneyWasBorrowed = "moneyWasBorrowed",
-      noOfBorrows = 0,
+      noOfBorrows = None,
       moneyBorrowed = Seq.empty
     ),
     bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),

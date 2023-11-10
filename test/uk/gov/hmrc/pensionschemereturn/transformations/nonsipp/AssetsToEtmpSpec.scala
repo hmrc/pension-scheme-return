@@ -40,8 +40,9 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                 landOrPropertyInUK = true,
                 addressDetails = Address(
                   "testAddressLine1",
-                  "testAddressLine2",
+                  None,
                   Some("testAddressLine3"),
+                  "town",
                   Some("GB135HG"),
                   "GB"
                 ),
@@ -106,7 +107,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                 landOrPropertyInUK = Yes,
                 addressDetails = EtmpAddress(
                   addressLine1 = "testAddressLine1",
-                  addressLine2 = "testAddressLine2",
+                  addressLine2 = "town",
                   addressLine3 = Some("testAddressLine3"),
                   addressLine4 = None,
                   addressLine5 = None,
@@ -152,7 +153,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
         borrowing = EtmpBorrowing(
           recordVersion = None,
           moneyWasBorrowed = Yes,
-          noOfBorrows = 1,
+          noOfBorrows = Some(1),
           moneyBorrowed = Seq(
             EtmpMoneyBorrowed(
               dateOfBorrow = today,
