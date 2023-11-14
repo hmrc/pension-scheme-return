@@ -96,8 +96,9 @@ trait TestValues {
 
   val sampleAddress: Address = Address(
     "testAddressLine1",
-    "testAddressLine2",
+    Some("testAddressLine2"),
     Some("testAddressLine3"),
+    "town",
     Some("GB135HG"),
     "GB"
   )
@@ -295,7 +296,7 @@ trait TestValues {
         borrowing = EtmpBorrowing(
           recordVersion = Some("164"),
           moneyWasBorrowed = "Yes",
-          noOfBorrows = 1,
+          noOfBorrows = Some(1),
           moneyBorrowed = Seq(
             EtmpMoneyBorrowed(
               dateOfBorrow = sampleToday,
