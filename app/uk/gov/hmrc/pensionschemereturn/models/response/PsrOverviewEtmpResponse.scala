@@ -34,6 +34,5 @@ case class PsrOverviewEtmpResponse(
 
 object PsrOverviewEtmpResponse {
 
-  //implicit val reads: Reads[PsrOverviewEtmpResponse] = Json.reads[PsrOverviewEtmpResponse]
   implicit val formats: Format[PsrOverviewEtmpResponse] = Json.format[PsrOverviewEtmpResponse]
 }
