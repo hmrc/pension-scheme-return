@@ -18,18 +18,24 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.http.Status.{BAD_REQUEST, CREATED}
+import play.api.http.Status.{BAD_REQUEST, CREATED, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.{
+  errorResponse,
+  sampleOverviewResponseAsJsonString,
   sampleSippPsrResponseAsJsonString,
   sampleStandardPsrResponseAsJsonString
 }
-import uk.gov.hmrc.pensionschemereturn.models.response.{PsrSubmissionEtmpResponse, SippPsrSubmissionEtmpResponse}
+import uk.gov.hmrc.pensionschemereturn.models.response.{
+  PsrOverviewEtmpResponse,
+  PsrSubmissionEtmpResponse,
+  SippPsrSubmissionEtmpResponse
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -47,6 +53,85 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     )
 
   private lazy val connector: PsrConnector = applicationBuilder.injector().instanceOf[PsrConnector]
+  "getOverview" should {
+
+    "return overview details when returns were found" in {
+
+      stubGet(
+        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
+        ok(sampleOverviewResponseAsJsonString)
+      )
+
+      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05")
+          )
+        )
+
+        result mustBe sampleOverviewResponse
+      }
+    }
+
+    "return empty list when pstr not found in etmp" in {
+
+      stubGet(
+        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
+        ok("[]")
+      )
+
+      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05"
+            )
+          )
+        )
+        result mustBe Seq.empty
+      }
+    }
+
+    "return 400 BadRequest when missing parameters" in {
+
+      stubGet(
+        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=",
+        badRequest().withBody(errorResponse("MISSING_TO_DATE"))
+      )
+
+      val thrown = intercept[BadRequestException] {
+        await(connector.getOverview("testPstr", "2020-04-06", ""))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate="
+          )
+        )
+      )
+      thrown.message must include("Reason for MISSING_TO_DATE")
+    }
+
+    "return 403 Forbidden when invalid date range" in {
+
+      stubGet(
+        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2024-04-05&toDate=2020-04-06",
+        forbidden().withBody(errorResponse("FROM_DATE_NOT_IN_RANGE"))
+      )
+
+      val thrown = intercept[UpstreamErrorResponse] {
+        await(connector.getOverview("testPstr", "2024-04-05", "2020-04-06"))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2024-04-05&toDate=2020-04-06"
+          )
+        )
+      )
+      thrown.message must include("Reason for FROM_DATE_NOT_IN_RANGE")
+    }
+  }
 
   "submitStandardPsr" should {
     "return 201 - created" in {
@@ -270,6 +355,31 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 }
 
 object PsrConnectorSpec {
+  val sampleOverviewResponseAsJsonString: String =
+    """
+      |[
+      |    {
+      |        "periodStartDate": "2022-04-06",
+      |        "periodEndDate": "2023-04-05",
+      |        "numberOfVersions": 1,
+      |        "submittedVersionAvailable": "No",
+      |        "compiledVersionAvailable": "Yes",
+      |        "ntfDateOfIssue": "2022-12-06",
+      |        "psrDueDate": "2023-03-31",
+      |        "psrReportType": "Standard"
+      |    },
+      |    {
+      |        "periodStartDate": "2021-04-06",
+      |        "periodEndDate": "2022-04-05",
+      |        "numberOfVersions": 2,
+      |        "submittedVersionAvailable": "Yes",
+      |        "compiledVersionAvailable": "Yes",
+      |        "ntfDateOfIssue": "2021-12-06",
+      |        "psrDueDate": "2022-03-31",
+      |        "psrReportType": "Standard"
+      |    }
+      |]
+      |""".stripMargin
 
   val sampleStandardPsrResponseAsJsonString: String =
     """
@@ -1136,5 +1246,13 @@ object PsrConnectorSpec {
       |  }
       |}
       |""".stripMargin
+
+  private def errorResponse(code: String): String =
+    Json.stringify(
+      Json.obj(
+        "code" -> code,
+        "reason" -> s"Reason for $code"
+      )
+    )
 
 }

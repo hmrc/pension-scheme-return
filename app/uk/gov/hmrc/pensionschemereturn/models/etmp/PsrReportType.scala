@@ -1,0 +1,48 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.pensionschemereturn.models.etmp
+
+import play.api.libs.json._
+
+sealed trait PsrReportType {
+  val name: String
+}
+
+case object Standard extends PsrReportType {
+  val name = "Standard"
+}
+
+case object SIPP extends PsrReportType {
+  val name = "SIPP"
+}
+
+object PsrReportType {
+
+  private val values: List[PsrReportType] = List(Standard, SIPP)
+
+  implicit val formats: Format[PsrReportType] = new Format[PsrReportType] {
+    override def writes(o: PsrReportType): JsValue = JsString(o.name)
+
+    override def reads(json: JsValue): JsResult[PsrReportType] = {
+      val jsonAsString = json.as[String]
+      values.find(_.toString == jsonAsString) match {
+        case Some(status) => JsSuccess(status)
+        case None => JsError(s"Unknown psr report type: $jsonAsString")
+      }
+    }
+  }
+}
