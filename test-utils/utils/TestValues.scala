@@ -17,7 +17,7 @@
 package utils
 
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Standard}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
@@ -27,6 +27,7 @@ import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRe
 import uk.gov.hmrc.pensionschemereturn.models.response.{
   EtmpPsrDetails,
   EtmpSchemeDetails,
+  PsrOverviewEtmpResponse,
   PsrSubmissionEtmpResponse,
   SippPsrSubmissionEtmpResponse
 }
@@ -376,5 +377,28 @@ trait TestValues {
     "customMessage",
     "at",
     "schemaPath"
+  )
+
+  val sampleOverviewResponse = Seq(
+    PsrOverviewEtmpResponse(
+      periodStartDate = LocalDate.parse("2022-04-06"),
+      periodEndDate = LocalDate.parse("2023-04-05"),
+      numberOfVersions = 1,
+      submittedVersionAvailable = "No",
+      compiledVersionAvailable = "Yes",
+      ntfDateOfIssue = LocalDate.parse("2022-12-06"),
+      psrDueDate = LocalDate.parse("2023-03-31"),
+      psrReportType = Standard
+    ),
+    PsrOverviewEtmpResponse(
+      periodStartDate = LocalDate.parse("2021-04-06"),
+      periodEndDate = LocalDate.parse("2022-04-05"),
+      numberOfVersions = 2,
+      submittedVersionAvailable = "Yes",
+      compiledVersionAvailable = "Yes",
+      ntfDateOfIssue = LocalDate.parse("2021-12-06"),
+      psrDueDate = LocalDate.parse("2022-03-31"),
+      psrReportType = Standard
+    )
   )
 }

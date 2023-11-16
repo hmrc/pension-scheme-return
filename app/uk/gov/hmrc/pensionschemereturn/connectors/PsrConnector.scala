@@ -24,17 +24,22 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
-import uk.gov.hmrc.pensionschemereturn.models.response.{PsrSubmissionEtmpResponse, SippPsrSubmissionEtmpResponse}
+import uk.gov.hmrc.pensionschemereturn.models.response.{
+  PsrOverviewEtmpResponse,
+  PsrSubmissionEtmpResponse,
+  SippPsrSubmissionEtmpResponse
+}
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
 
+import java.util.UUID.randomUUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsrConnector @Inject()(
-  config: AppConfig,
-  http: HttpClient
-) extends HttpErrorFunctions
+class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
+    extends HttpErrorFunctions
     with HttpResponseHelper
     with Logging {
+
+  private val maxLengthCorrelationId = 36
 
   def submitStandardPsr(
     data: JsValue
@@ -118,6 +123,29 @@ class PsrConnector @Inject()(
     }
   }
 
+  def getOverview(pstr: String, fromDate: String, toDate: String)(
+    implicit headerCarrier: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Seq[PsrOverviewEtmpResponse]] = {
+
+    val url: String = config.getOverviewUrl.format(pstr, fromDate, toDate)
+    val logMessage = s"Get overview called, URL: $url"
+    logger.info(logMessage)
+
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          response.json.as[Seq[PsrOverviewEtmpResponse]]
+        case NOT_FOUND =>
+          logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
+          Seq.empty[PsrOverviewEtmpResponse]
+        case _ => handleErrorResponse("GET", url)(response)
+      }
+    }
+  }
+
   private def buildParams(
     pstr: String,
     optFbNumber: Option[String],
@@ -130,5 +158,22 @@ class PsrConnector @Inject()(
         s"$pstr?periodStartDate=$periodStartDate&psrVersion=$psrVersion"
       case _ => throw new BadRequestException("Missing url parameters")
     }
+  private def getCorrelationId: String = randomUUID.toString.slice(0, maxLengthCorrelationId)
+
+  private def integrationFrameworkHeader: Seq[(String, String)] =
+    Seq(
+      "Environment" -> config.integrationFrameworkEnvironment,
+      "Authorization" -> config.integrationFrameworkAuthorization,
+      "Content-Type" -> "application/json",
+      "CorrelationId" -> getCorrelationId
+    )
+
+  private def desHeader: Seq[(String, String)] =
+    Seq(
+      "Environment" -> config.desEnvironment,
+      "Authorization" -> config.desEnvironmentAuthorization,
+      "Content-Type" -> "application/json",
+      "CorrelationId" -> getCorrelationId
+    )
 
 }

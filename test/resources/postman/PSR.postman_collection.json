@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "360e0029-2e74-42e9-8826-cf452c60c645",
+		"_postman_id": "5a6a8699-75d5-4b68-bc03-c21788e4b6c1",
 		"name": "PSR",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "1174017"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -666,6 +665,326 @@
 						{
 							"key": "periodStartDate",
 							"value": "9999-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - Success - Standard",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/24000001IN?toDate=2024-04-06&fromDate=2021-04-05",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "toDate",
+							"value": "2024-04-06"
+						},
+						{
+							"key": "fromDate",
+							"value": "2021-04-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - Success - SIPP",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/24000020IN?toDate=2024-04-06&fromDate=2021-04-05",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"24000020IN"
+					],
+					"query": [
+						{
+							"key": "toDate",
+							"value": "2024-04-06"
+						},
+						{
+							"key": "fromDate",
+							"value": "2021-04-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - Success NTF",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/24000013IN?toDate=2024-04-06&fromDate=2021-04-05",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"24000013IN"
+					],
+					"query": [
+						{
+							"key": "toDate",
+							"value": "2024-04-06"
+						},
+						{
+							"key": "fromDate",
+							"value": "2021-04-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - None found",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/NOTFOUND?toDate=2024-04-06&fromDate=2021-04-05",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"NOTFOUND"
+					],
+					"query": [
+						{
+							"key": "toDate",
+							"value": "2024-04-06"
+						},
+						{
+							"key": "fromDate",
+							"value": "2021-04-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - Invalid date range",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/24000001IN?fromDate=2024-04-05&toDate=2021-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "fromDate",
+							"value": "2024-04-05"
+						},
+						{
+							"key": "toDate",
+							"value": "2021-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Overview - Missing date",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/overview/24000001IN?fromDate=2024-04-05",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"overview",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "fromDate",
+							"value": "2024-04-05"
 						}
 					]
 				}

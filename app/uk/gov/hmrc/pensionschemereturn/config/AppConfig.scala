@@ -34,7 +34,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
 
   lazy val desEnvironment: String =
     runModeConfiguration.getOptional[String]("microservice.services.des-hod.env").getOrElse("local")
-  lazy val authorization: String = "Bearer " + runModeConfiguration
+  lazy val desEnvironmentAuthorization: String = "Bearer " + runModeConfiguration
     .getOptional[String]("microservice.services.des-hod.authorizationToken")
     .getOrElse("local")
 
@@ -44,6 +44,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
     .getOptional[String](path = "microservice.services.if-hod.authorizationToken")
     .getOrElse("local")
 
+  val getOverviewUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-overview")}"
   val submitStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-standard-psr")}"
   val getStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-standard-psr")}"
   val submitSippPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-sipp-psr")}"
