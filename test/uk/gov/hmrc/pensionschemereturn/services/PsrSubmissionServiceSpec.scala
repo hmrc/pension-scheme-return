@@ -88,12 +88,12 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
 
   "submitStandardPsr" should {
     "successfully submit only minimal required submission details" in {
-      val expectedResponse = HttpResponse(201, Json.obj(), Map.empty)
+      val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
 
       when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
       when(mockJSONSchemaValidator.validatePayload(any(), any()))
         .thenReturn(SchemaValidationResult(Set.empty))
-      when(mockPsrConnector.submitStandardPsr(any())(any(), any(), any()))
+      when(mockPsrConnector.submitStandardPsr(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponse))
 
       whenReady(service.submitStandardPsr(samplePsrSubmission)) { result: HttpResponse =>
@@ -101,7 +101,7 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
 
         verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
         verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-        verify(mockPsrConnector, times(1)).submitStandardPsr(any())(any(), any(), any())
+        verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any())(any(), any(), any())
       }
     }
 
@@ -118,14 +118,14 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
 
       verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
       verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-      verify(mockPsrConnector, never).submitStandardPsr(any())(any(), any(), any())
+      verify(mockPsrConnector, never).submitStandardPsr(any(), any())(any(), any(), any())
     }
 
     "throw exception when connector call not successful for submitStandardPsr" in {
       when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
       when(mockJSONSchemaValidator.validatePayload(any(), any()))
         .thenReturn(SchemaValidationResult(Set.empty))
-      when(mockPsrConnector.submitStandardPsr(any())(any(), any(), any()))
+      when(mockPsrConnector.submitStandardPsr(any(), any())(any(), any(), any()))
         .thenReturn(Future.failed(new BadRequestException("invalid-request")))
 
       val thrown = intercept[ExpectationFailedException] {
@@ -136,7 +136,7 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
 
       verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
       verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-      verify(mockPsrConnector, times(1)).submitStandardPsr(any())(any(), any(), any())
+      verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any())(any(), any(), any())
     }
   }
 

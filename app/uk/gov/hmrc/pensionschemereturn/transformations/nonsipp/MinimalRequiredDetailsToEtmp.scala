@@ -28,7 +28,7 @@ class MinimalRequiredDetailsToEtmp @Inject()() extends Transformer {
   def transform(minimalRequiredSubmission: MinimalRequiredSubmission): EtmpMinimalRequiredSubmission =
     EtmpMinimalRequiredSubmission(
       EtmpReportDetails(
-        pstr = minimalRequiredSubmission.reportDetails.pstr,
+        pstr = None,
         psrStatus = Compiled,
         periodStart = minimalRequiredSubmission.reportDetails.periodStart,
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd

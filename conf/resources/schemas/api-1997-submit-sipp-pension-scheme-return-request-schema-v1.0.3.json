@@ -1,0 +1,1378 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"title": "Submit Pension Schema Return",
+	"type": "object",
+	"properties": {
+		"reportDetails": {
+			"description": "ReportDetails",
+			"$ref": "#/definitions/reportDetailsType"
+		},
+		"accountingPeriodDetails": {
+			"type": "object",
+			"properties": {
+				"version": {
+					"description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
+					"$ref": "#/definitions/versionType"
+				},
+				"accountingPeriods": {
+					"description": "Question 2: Accounting Period covered by this return [option to select up to three accounting periods]",
+					"type": "array",
+					"minItems": 1,
+					"maxItems": 3,
+					"items": {
+						"$ref": "#/definitions/accountingPeriodsType"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"memberAndTransactions": {
+			"description": "This node is Mandatory, if the answer is  MemberTransactions = Yes.",
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "object",
+				"properties": {
+					"status": {
+						"description": "Possible values : New, Changed, Deleted",
+						"type": "string",
+						"enum": [
+							"New",
+							"Changed",
+							"Deleted"
+						]
+					},
+					"version": {
+						"description": "If the PSR is being compiled/submitted for the first time for a reporting period, then MDTP will NOT provide the Version Number.  After the initial compilation or submission i.e. version 001 onwards, MDTP is expected to provide the version number played back by ETMP unless that specific member details are newly added, amended or deleted by the customer. ETMP will determine the version number based on the logic built in ETMP for all those charge details for which version number is not provided in the request.",
+						"$ref": "#/definitions/versionType"
+					},
+					"memberDetails": {
+						"description": "Question 4:",
+						"type": "object",
+						"properties": {
+							"personalDetails": {
+								"description": "Question 4Personal Details",
+								"$ref": "#/definitions/personalDetailsType"
+							},
+							"isUKAddress": {
+								"$ref": "#/definitions/yesOrNoType"
+							},
+							"addressDetails": {
+								"$ref": "#/definitions/addressType"
+							}
+						},
+						"required": [
+							"personalDetails",
+							"isUKAddress",
+							"addressDetails"
+						],
+						"additionalProperties": false
+					},
+					"landConnectedParty": {
+						"description": "Question 5:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 5A:How many land or property transactions did the member make during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"description": "Member status. Possible values: New, Changed, Deleted",
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"acquisitionDate": {
+											"description": "Question 5B:",
+											"$ref": "#/definitions/dateType"
+										},
+										"landOrPropertyinUK": {
+											"description": "Question 5C:Possible values:Yes or No",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"addressDetails": {
+											"description": "Question 5C:",
+											"$ref": "#/definitions/addressType"
+										},
+										"registryDetails": {
+											"description": "Question 5D:This node is related to is there a land Registry reference in respect of the land or property?",
+											"$ref": "#/definitions/registryDetailsType"
+										},
+										"acquiredFromName": {
+											"description": "Question 5F:Who was the land or property acquired from?",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquiredFromType": {
+											"description": "Possible Values01 - Individual02 - Company03 - Partnership04 - Other",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"totalCost": {
+											"description": "Question 5G:What is the total cost of the land or property acquired?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"independentValution": {
+											"description": "Question 5H:Is this transaction supported by an Independent Valuation?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"jointlyHeld": {
+											"description": "Question 5J:Is the property held jointly?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"noOfPersons": {
+											"description": "Question 5J:How many persons jointly own the property?",
+											"$ref": "#/definitions/integer7DigitsMinimum0Type"
+										},
+										"jointPropertyPersonDetails": {
+											"description": "Question 5J:",
+											"type": "array",
+											"minItems": 0,
+											"items": {
+												"$ref": "#/definitions/jointPropertyPersonDetailsType"
+											}
+										},
+										"residentialSchedule29A": {
+											"description": "Question 5K:Is any part of the land or property residential property as defined by schedule 29a Finance Act 2004?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"isLeased": {
+											"description": "Question 5L:is the land or property leased?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"lesseeDetails": {
+											"description": "Question 5L:",
+											"type": "array",
+											"minItems": 0,
+											"items": {
+												"$ref": "#/definitions/lesseeDetailsType"
+											}
+										},
+										"totalIncomeOrReceipts": {
+											"description": "Question 5M:What is the total amount of income or receipts, received in respect of the land or Property during the tax year?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"isPropertyDisposed": {
+											"description": "Question 5N:Was any disposal of the land or property made during the year [option yes or no]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"disposalDetails": {
+											"description": "Question 5N:Disposal details are required if isPropertyDisposed = Yes",
+											"$ref": "#/definitions/disposalDetailsType"
+										}
+									},
+									"required": [
+										"acquisitionDate",
+										"landOrPropertyinUK",
+										"addressDetails",
+										"registryDetails",
+										"acquiredFromName",
+										"acquiredFromType",
+										"totalCost",
+										"independentValution",
+										"jointlyHeld",
+										"residentialSchedule29A",
+										"isLeased",
+										"totalIncomeOrReceipts",
+										"isPropertyDisposed"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					},
+					"otherAssetsConnectedParty": {
+						"description": "Question 6:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 6A:How many asset transactions were made during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"acquisitionDate": {
+											"description": "Question 6B: What was the date the asset was acquired?",
+											"$ref": "#/definitions/dateType"
+										},
+										"assetDescription": {
+											"description": "Question 6C: Description of asset",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquisitionOfShares": {
+											"description": "Question 6D: Was this an acquisition of shares? [Option to select Yes or No]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"sharesCompanyDetails": {
+											"description": "Question 6DThis node is required,  if acquisitionOfShares = Yes.",
+											"$ref": "#/definitions/sharesCompanyType"
+										},
+										"acquiredFromName": {
+											"description": "Question 6E:Who was the asset acquired from?",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquiredFromType": {
+											"description": "Question 6F:",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"totalCost": {
+											"description": "Question 6G:What is the total cost of the Asset acquired?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"independentValution": {
+											"description": "Question 6H:Is this transaction supported by an Independent Valuation?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"tangibleSchedule29A": {
+											"description": "Question 6I:Is any part of the asset Tangible Moveable Property as defined by Schedule 29a Finance Act 2004?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"totalIncomeOrReceipts": {
+											"description": "Question 6J:What is the total amount of income and receipts received in respect of the asset during tax year:",
+											"$ref": "#/definitions/currencyType"
+										},
+										"isPropertyDisposed": {
+											"description": "Question 6k  During the year was any disposal of the asset made [option Yes or No]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"disposalDetails": {
+											"description": "Question 6K:Disposal details are required if isPropertyDisposed = Yes",
+											"$ref": "#/definitions/disposalDetailsType"
+										},
+										"disposalOfShares": {
+											"description": "Question 6K: Was the disposal of shares [option to select Yes or No]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"noOfSharesHeld": {
+											"description": "Question 6K: if disposalOfShares = Yes - what is the total number of shares now held",
+											"$ref": "#/definitions/integer7DigitsMinimum0Type"
+										}
+									},
+									"required": [
+										"acquisitionDate",
+										"assetDescription",
+										"acquisitionOfShares",
+										"acquiredFromName",
+										"acquiredFromType",
+										"totalCost",
+										"independentValution",
+										"tangibleSchedule29A",
+										"totalIncomeOrReceipts",
+										"isPropertyDisposed",
+										"disposalOfShares"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					},
+					"landArmsLength": {
+						"description": "Question 7:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 7A:How many land or property transactions were made during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"acquisitionDate": {
+											"description": "Question 7B:",
+											"$ref": "#/definitions/dateType"
+										},
+										"landOrPropertyinUK": {
+											"description": "Question 7C:Is the land or property in the UK?  [option to select Yes or No]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"addressDetails": {
+											"description": "Question 7C:",
+											"$ref": "#/definitions/addressType"
+										},
+										"registryDetails": {
+											"description": "Question 7D:Is there a land Registry reference in respect of the land or property?",
+											"$ref": "#/definitions/registryDetailsType"
+										},
+										"acquiredFromName": {
+											"description": "Question 7E:Who was the land or property acquired from?",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquiredFromType": {
+											"description": "Question 7F:",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"totalCost": {
+											"description": "Question 7G:",
+											"$ref": "#/definitions/currencyType"
+										},
+										"independentValution": {
+											"description": "Question 7H:",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"jointlyHeld": {
+											"description": "Question 7I:",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"noOfPersons": {
+											"description": "Integer with minimum 0 and maximum 9999999",
+											"$ref": "#/definitions/integer7DigitsMinimum0Type"
+										},
+										"jointPropertyPersonDetails": {
+											"type": "array",
+											"minItems": 0,
+											"items": {
+												"$ref": "#/definitions/jointPropertyPersonDetailsType"
+											}
+										},
+										"residentialSchedule29A": {
+											"description": "Question 7J:Is any part of the land or property residential property as defined by schedule 29a Finance Act 2004?",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"isLeased": {
+											"description": "Question 7K:",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"lesseeDetails": {
+											"description": "Question 7K:",
+											"type": "array",
+											"minItems": 0,
+											"items": {
+												"$ref": "#/definitions/lesseeDetailsType"
+											}
+										},
+										"totalIncomeOrReceipts": {
+											"description": "Question 7L:What is the total amount of income or receipts, received in respect of the land or Property during the tax year?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"isPropertyDisposed": {
+											"description": "Question 7M:Was any disposal of the land or property made during the year [option yes or no]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"disposalDetails": {
+											"description": "Question 7M:Disposal details are required if isPropertyDisposed = Yes",
+											"$ref": "#/definitions/disposalDetailsType"
+										}
+									},
+									"required": [
+										"acquisitionDate",
+										"landOrPropertyinUK",
+										"addressDetails",
+										"registryDetails",
+										"acquiredFromName",
+										"acquiredFromType",
+										"totalCost",
+										"independentValution",
+										"jointlyHeld",
+										"residentialSchedule29A",
+										"isLeased",
+										"totalIncomeOrReceipts",
+										"isPropertyDisposed"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					},
+					"tangibleProperty": {
+						"description": "Question 8:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 8A:How many transactions of tangible moveable property were made during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"assetDescription": {
+											"description": "Question 8B:",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquisitionDate": {
+											"description": "Question 8C:",
+											"$ref": "#/definitions/dateType"
+										},
+										"totalCost": {
+											"description": "Question 8D:",
+											"$ref": "#/definitions/currencyType"
+										},
+										"acquiredFromName": {
+											"description": "Question 8E:",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquiredFromType": {
+											"description": "Question 8F:",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"independentValution": {
+											"description": "Question 8G:Is this transaction supported by an Independent ValuatiPossible values are :Yes or No",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"totalIncomeOrReceipts": {
+											"description": "Question 8H:What is the total amount of income and receipts received in respect of the asset during tax year:",
+											"$ref": "#/definitions/currencyType"
+										},
+										"costOrMarket": {
+											"description": "Question 8I:What is the Current value of the asset:Possible values; Cost Value ,  Market Value",
+											"type": "string",
+											"minLength": 1,
+											"maxLength": 35,
+											"enum": [
+												"Cost Value",
+												"Market Value"
+											]
+										},
+										"costMarketValue": {
+											"description": "Question 8I:Cost value or Market value in currency",
+											"$ref": "#/definitions/currencyType"
+										},
+										"isPropertyDisposed": {
+											"description": "Question 8J:During the year was there any disposal of the tangible moveable property [option Yes or No]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"disposalDetails": {
+											"description": "Question 8J and this node elements also related to 8J",
+											"$ref": "#/definitions/disposalDetailsType"
+										}
+									},
+									"required": [
+										"assetDescription",
+										"acquisitionDate",
+										"totalCost",
+										"acquiredFromName",
+										"acquiredFromType",
+										"independentValution",
+										"totalIncomeOrReceipts",
+										"costOrMarket",
+										"costMarketValue",
+										"isPropertyDisposed"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					},
+					"loanOutstanding": {
+						"description": "Question 9:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 9A:How many separate loans were made or outstanding during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"description": "Mandatory, if the number of transactions is =&gt;1",
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"loanRecipientName": {
+											"description": "Question 9B:What is the name of the recipient of loan?",
+											"$ref": "#/definitions/string160Type"
+										},
+										"indivOrOrgIdentityDetails": {
+											"description": "Question 9C:this node is contains group related data elementsIs the recipient of the loan: [option to select individual or company or partnership or other]Select Individual or Company or Partnership or Other",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"dateOfLoan": {
+											"description": "Question 9D:What was the date of loan?",
+											"$ref": "#/definitions/dateType"
+										},
+										"amountOfLoan": {
+											"description": "Question 9E:What is the amount of the loan?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"loanConnectedParty": {
+											"description": "Question 9F: is the loan to a connected party?Possible values:01 - Connected party02 - Unconnected",
+											"$ref": "#/definitions/connectionStatusType"
+										},
+										"repayDate": {
+											"description": "Question 9G:",
+											"$ref": "#/definitions/dateType"
+										},
+										"interestRate": {
+											"description": "Question 9H:What is the Interest Rate for the loan?",
+											"type": "number",
+											"minimum": -999.99,
+											"maximum": 999.99,
+											"multipleOf": 0.01
+										},
+										"loanSecurity": {
+											"description": "Question 9I:Has security been given for the loan?[option to select yes or no]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"capitalRepayments": {
+											"description": "Question 9J:In respect of this loan, what Capital Repayments have been received by the scheme during the year?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"interestPayments": {
+											"description": "Question 9K:In respect of this loan, what interest payments have been received by the scheme during the year?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"arrearsOutstandingPrYears": {
+											"description": "Question 9L:",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"arrearsOutstandingPrYearsAmt": {
+											"description": "Question 9L:In respect of this loan, are there any arrears outstanding from previous years,this field is required when arrearsOutstandingPrYears = Yes",
+											"$ref": "#/definitions/currencyType"
+										},
+										"outstandingYearEndAmount": {
+											"description": "Question 9M:In respect of this loan, what is the amount outstanding at the year end?",
+											"$ref": "#/definitions/currencyType"
+										}
+									},
+									"required": [
+										"loanRecipientName",
+										"indivOrOrgIdentityDetails",
+										"dateOfLoan",
+										"amountOfLoan",
+										"loanConnectedParty",
+										"repayDate",
+										"interestRate",
+										"loanSecurity",
+										"capitalRepayments",
+										"interestPayments",
+										"arrearsOutstandingPrYears",
+										"outstandingYearEndAmount"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					},
+					"unquotedShares": {
+						"description": "Question 10A:",
+						"type": "object",
+						"properties": {
+							"noOfTransactions": {
+								"description": "Question 10A:  How many share transactions were made during the tax year and not reported in a previous return for this member?",
+								"$ref": "#/definitions/integer7DigitsMinimum0Type"
+							},
+							"transactionDetails": {
+								"description": "Mandatory, if the number of transactions is =&gt;1",
+								"type": "array",
+								"minItems": 1,
+								"items": {
+									"type": "object",
+									"properties": {
+										"sharesCompanyDetails": {
+											"description": "Question 10B to 10E",
+											"$ref": "#/definitions/sharesCompanyType"
+										},
+										"acquiredFromName": {
+											"description": "Question 10F: Who were the shares acquired from?",
+											"$ref": "#/definitions/string160Type"
+										},
+										"acquiredFromType": {
+											"description": "Question 10G: Were the shares acquired from: [option to select individual or company or partnership or other]",
+											"$ref": "#/definitions/indivOrOrgIdentityDetailsType"
+										},
+										"totalCost": {
+											"description": "Question 10H:What was the total cost of shares acquired, or subscribed for?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"independentValution": {
+											"description": "Question 10I: In respect of of these shares, was this transaction supported by an independent valuation? [option to select yes or no]",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"noOfSharesSold": {
+											"description": "if  independentValution = Yes,What was the number of shares sold?If no, go to Question 10J",
+											"$ref": "#/definitions/integer7DigitsMinimum0Type"
+										},
+										"totalDividendsIncome": {
+											"description": "Question 10J: What was the total amount of dividends or other income received during the year?",
+											"$ref": "#/definitions/currencyType"
+										},
+										"sharesDisposed": {
+											"description": "Was any disposal of shares made during the tax yearpossible valies are: Yes or No",
+											"$ref": "#/definitions/yesOrNoType"
+										},
+										"sharesDisposalDetails": {
+											"description": "Question 10K:",
+											"type": "object",
+											"properties": {
+												"disposedShareAmount": {
+													"description": "Question 10K:this data element is mandatory when sharesDisposed = Yes ,What was the total amount of consideration received for the sale of shares?",
+													"$ref": "#/definitions/currencyType"
+												},
+												"disposalConnectedParty": {
+													"description": "Question 10K: This field is required when sharesDisposed = Yes,Was the disposal made to a connected party or connected parties?Possible values;01 - Connected party02 - Unconnected",
+													"type": "string",
+													"enum": [
+														"01",
+														"02"
+													]
+												},
+												"purchaserName": {
+													"description": "Question 10K: this field is required when sharesDisposed = YesWhat is the name of the purchaser of the shares?",
+													"$ref": "#/definitions/string160Type"
+												},
+												"independentValutionDisposal": {
+													"description": "Question 10K:Was the transaction supported by an independent valuation?[option to select yes or no}",
+													"$ref": "#/definitions/yesOrNoType"
+												}
+											},
+											"required": [
+												"disposedShareAmount",
+												"disposalConnectedParty",
+												"purchaserName",
+												"independentValutionDisposal"
+											],
+											"additionalProperties": false
+										},
+										"noOfSharesHeld": {
+											"description": "if shareDisposed = No,What is the total number of shares now held? If anything other than nil, transaction to be played back in future year",
+											"$ref": "#/definitions/integer7DigitsMinimum0Type"
+										}
+									},
+									"required": [
+										"sharesCompanyDetails",
+										"acquiredFromName",
+										"acquiredFromType",
+										"totalCost",
+										"independentValution",
+										"totalDividendsIncome",
+										"sharesDisposed"
+									],
+									"additionalProperties": false
+								}
+							}
+						},
+						"required": [
+							"noOfTransactions"
+						],
+						"additionalProperties": false
+					}
+				},
+				"required": [
+					"status",
+					"memberDetails"
+				],
+				"additionalProperties": false
+			}
+		},
+		"psrDeclaration": {
+			"description": "Either PSA or PSP declaration is mandatory if the PSR status is 'Submitted'",
+			"$ref": "#/definitions/declarationType"
+		}
+	},
+	"required": [
+		"reportDetails"
+	],
+	"definitions": {
+		"accountingPeriodsType": {
+			"type": "object",
+			"properties": {
+				"accPeriodStart": {
+					"$ref": "#/definitions/dateType"
+				},
+				"accPeriodEnd": {
+					"$ref": "#/definitions/dateType"
+				}
+			},
+			"required": [
+				"accPeriodStart",
+				"accPeriodEnd"
+			],
+			"additionalProperties": false
+		},
+		"addressType": {
+			"type": "object",
+			"properties": {
+				"addressLine1": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"addressLine2": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"addressLine3": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"addressLine4": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"addressLine5": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"ukPostCode": {
+					"description": "Only use this field if it is a UK address.",
+					"type": "string",
+					"pattern": "^([A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}|BFPO\\s?[0-9]{1,3})$"
+				},
+				"countryCode": {
+					"description": "2-Character ISO Country Code",
+					"$ref": "#/definitions/countryCodeType"
+				}
+			},
+			"required": [
+				"addressLine1",
+				"addressLine2",
+				"countryCode"
+			],
+			"additionalProperties": false
+		},
+		"connectionStatusType": {
+			"description": "01 = Connected, 02 = Unconnected",
+			"type": "string",
+			"enum": [
+				"01",
+				"02"
+			]
+		},
+		"countryCodeType": {
+			"type": "string",
+			"minLength": 2,
+			"maxLength": 2,
+			"enum": [
+				"AD",
+				"AE",
+				"AF",
+				"AG",
+				"AI",
+				"AL",
+				"AM",
+				"AN",
+				"AO",
+				"AQ",
+				"AR",
+				"AS",
+				"AT",
+				"AU",
+				"AW",
+				"AX",
+				"AZ",
+				"BA",
+				"BB",
+				"BD",
+				"BE",
+				"BF",
+				"BG",
+				"BH",
+				"BI",
+				"BJ",
+				"BL",
+				"BM",
+				"BN",
+				"BO",
+				"BQ",
+				"BR",
+				"BS",
+				"BT",
+				"BV",
+				"BW",
+				"BY",
+				"BZ",
+				"CA",
+				"CC",
+				"CD",
+				"CF",
+				"CG",
+				"CH",
+				"CI",
+				"CK",
+				"CL",
+				"CM",
+				"CN",
+				"CO",
+				"CR",
+				"CS",
+				"CU",
+				"CV",
+				"CW",
+				"CX",
+				"CY",
+				"CZ",
+				"DE",
+				"DJ",
+				"DK",
+				"DM",
+				"DO",
+				"DZ",
+				"EC",
+				"EE",
+				"EG",
+				"EH",
+				"ER",
+				"ES",
+				"ET",
+				"EU",
+				"FC",
+				"FI",
+				"FJ",
+				"FK",
+				"FM",
+				"FO",
+				"FR",
+				"GA",
+				"GB",
+				"GD",
+				"GE",
+				"GF",
+				"GG",
+				"GH",
+				"GI",
+				"GL",
+				"GM",
+				"GN",
+				"GP",
+				"GQ",
+				"GR",
+				"GS",
+				"GT",
+				"GU",
+				"GW",
+				"GY",
+				"HK",
+				"HM",
+				"HN",
+				"HR",
+				"HT",
+				"HU",
+				"ID",
+				"IE",
+				"IL",
+				"IM",
+				"IN",
+				"IO",
+				"IQ",
+				"IR",
+				"IS",
+				"IT",
+				"JE",
+				"JM",
+				"JO",
+				"JP",
+				"KE",
+				"KG",
+				"KH",
+				"KI",
+				"KM",
+				"KN",
+				"KP",
+				"KR",
+				"KW",
+				"KY",
+				"KZ",
+				"LA",
+				"LB",
+				"LC",
+				"LI",
+				"LK",
+				"LR",
+				"LS",
+				"LT",
+				"LU",
+				"LV",
+				"LY",
+				"MA",
+				"MC",
+				"MD",
+				"ME",
+				"MF",
+				"MG",
+				"MH",
+				"MK",
+				"ML",
+				"MM",
+				"MN",
+				"MO",
+				"MP",
+				"MQ",
+				"MR",
+				"MS",
+				"MT",
+				"MU",
+				"MV",
+				"MW",
+				"MX",
+				"MY",
+				"MZ",
+				"NA",
+				"NC",
+				"NE",
+				"NF",
+				"NG",
+				"NI",
+				"NL",
+				"NO",
+				"NP",
+				"NR",
+				"NT",
+				"NU",
+				"NZ",
+				"OM",
+				"OR",
+				"PA",
+				"PE",
+				"PF",
+				"PG",
+				"PH",
+				"PK",
+				"PL",
+				"PM",
+				"PN",
+				"PR",
+				"PS",
+				"PT",
+				"PW",
+				"PY",
+				"QA",
+				"RE",
+				"RO",
+				"RS",
+				"RU",
+				"RW",
+				"SA",
+				"SB",
+				"SC",
+				"SD",
+				"SE",
+				"SG",
+				"SH",
+				"SI",
+				"SJ",
+				"SK",
+				"SL",
+				"SM",
+				"SN",
+				"SO",
+				"SR",
+				"SS",
+				"ST",
+				"SV",
+				"SX",
+				"SY",
+				"SZ",
+				"TC",
+				"TD",
+				"TF",
+				"TG",
+				"TH",
+				"TJ",
+				"TK",
+				"TL",
+				"TM",
+				"TN",
+				"TO",
+				"TP",
+				"TR",
+				"TT",
+				"TV",
+				"TW",
+				"TZ",
+				"UA",
+				"UG",
+				"UM",
+				"UN",
+				"US",
+				"UY",
+				"UZ",
+				"VA",
+				"VC",
+				"VE",
+				"VG",
+				"VI",
+				"VN",
+				"VU",
+				"WF",
+				"WS",
+				"YE",
+				"YT",
+				"ZA",
+				"ZM",
+				"ZW",
+				"ZZ"
+			]
+		},
+		"crnNumberType": {
+			"type": "string",
+			"pattern": "^([A-Z0-9]{8,10})$"
+		},
+		"currencyType": {
+			"description": "decimal between 0.00 and 999,999,999.99",
+			"type": "number",
+			"minimum": -999999999.99,
+			"maximum": 999999999.99,
+			"multipleOf": 0.01
+		},
+		"dateType": {
+			"type": "string",
+			"pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+		},
+		"declarationType": {
+			"type": "object",
+			"properties": {
+				"submittedBy": {
+					"description": "Possible : Values are PSA or PSP",
+					"$ref": "#/definitions/submittedByType"
+				},
+				"submitterID": {
+					"type": "string",
+					"pattern": "^([A|0|1|2]{1}[0-9]{7})$"
+				},
+				"psaID": {
+					"type": "string",
+					"pattern": "^(A[0-9]{7})$"
+				},
+				"psaDeclaration": {
+					"description": "PSA Declaration is mandatory if the PSR return is submitted by PSA",
+					"type": "object",
+					"properties": {
+						"declaration1": {
+							"description": "Possible values;- true=  Selected-false=  Not Selected",
+							"type": "boolean"
+						},
+						"declaration2": {
+							"description": "Possible values;- true=  Selected-false=  Not Selected",
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"declaration1",
+						"declaration2"
+					],
+					"additionalProperties": false
+				},
+				"pspDeclaration": {
+					"description": "PSP Declaration is mandatory if the PSR return is submitted by PSP",
+					"type": "object",
+					"properties": {
+						"declaration1": {
+							"description": "Possible values;- true=  Selected-false=  Not Selected",
+							"type": "boolean"
+						},
+						"declaration2": {
+							"description": "Possible values;- true=  Selected-false=  Not Selected",
+							"type": "boolean"
+						}
+					},
+					"required": [
+						"declaration1",
+						"declaration2"
+					],
+					"additionalProperties": false
+				}
+			},
+			"required": [
+				"submittedBy",
+				"submitterID"
+			],
+			"additionalProperties": false
+		},
+		"disposalDetailsType": {
+			"type": "object",
+			"properties": {
+				"disposedPropertyProceedsAmt": {
+					"description": "decimal between 0.00 and 999,999,999.99",
+					"$ref": "#/definitions/currencyType"
+				},
+				"independentValutionDisposal": {
+					"$ref": "#/definitions/yesOrNoType"
+				},
+				"propertyFullyDisposed": {
+					"$ref": "#/definitions/yesOrNoType"
+				},
+				"purchaserDetails": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "object",
+						"properties": {
+							"purchaserConnectedParty": {
+								"description": "Possible values 01 - Connected party 02 - Unconnected",
+								"type": "string",
+								"enum": [
+									"01",
+									"02"
+								]
+							},
+							"purchaserName": {
+								"$ref": "#/definitions/string160Type"
+							}
+						},
+						"required": [
+							"purchaserConnectedParty",
+							"purchaserName"
+						],
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": [
+				"disposedPropertyProceedsAmt",
+				"independentValutionDisposal",
+				"propertyFullyDisposed",
+				"purchaserDetails"
+			],
+			"additionalProperties": false
+		},
+
+		"indOrOrgType": {
+			"type": "string",
+			"enum": [
+				"01",
+				"02",
+				"03",
+				"04"
+			]
+		},
+		"indivOrOrgIdentityDetailsType": {
+			"type": "object",
+			"properties": {
+				"indivOrOrgType": {
+					"description": "Type of 'organisation'. Possible values 01 = Individual, 02 = Company, 03 = Partnership, 04 = Other",
+					"$ref": "#/definitions/indOrOrgType"
+				},
+				"idNumber": {
+					"description": "NINO, CRN or UTR",
+					"type": "string",
+					"pattern": "^([A-Z0-9]{8,10})$"
+				},
+				"reasonNoIdNumber": {
+					"description": "Reason if no ID Number provided (for Individual, Company or Partnership)",
+					"$ref": "#/definitions/string160Type"
+				},
+				"otherDescription": {
+					"description": "If 'Other' selected...",
+					"$ref": "#/definitions/string35Type"
+				}
+			},
+			"required": [
+				"indivOrOrgType"
+			],
+			"additionalProperties": false
+		},
+		"integer7DigitsMinimum0Type": {
+			"description": "Integer with minimum 0 and maximum 9999999",
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 9999999
+		},
+		"jointPropertyPersonDetailsType": {
+			"type": "object",
+			"properties": {
+				"personName": {
+					"$ref": "#/definitions/string160Type"
+				},
+				"nino": {
+					"$ref": "#/definitions/ninoType"
+				},
+				"reasonNoNINO": {
+					"description": "if No NINO, provide reason",
+					"$ref": "#/definitions/string160Type"
+				}
+			},
+			"required": [
+				"personName"
+			],
+			"additionalProperties": false
+		},
+		"lesseeDetailsType": {
+			"type": "object",
+			"properties": {
+				"lesseeName": {
+					"description": "What is the name of the lessee",
+					"$ref": "#/definitions/string160Type"
+				},
+				"lesseeConnectedParty": {
+					"description": "Possible values are 01 - Connected party02 - Unconnected",
+					"type": "string",
+					"enum": [
+						"01",
+						"02"
+					]
+				},
+				"leaseGrantedDate": {
+					"description": "What date was the lease granted?",
+					"$ref": "#/definitions/dateType"
+				},
+				"annualLeaseAmount": {
+					"description": "What is the annual lease amount?",
+					"$ref": "#/definitions/currencyType"
+				}
+			},
+			"required": [
+				"lesseeName",
+				"lesseeConnectedParty",
+				"leaseGrantedDate",
+				"annualLeaseAmount"
+			],
+			"additionalProperties": false
+		},
+		"ninoType": {
+			"type": "string",
+			"pattern": "^([A-Z]{2}[0-9]{6}[A-Z]{1})$"
+		},
+		"personalDetailsType": {
+			"type": "object",
+			"properties": {
+				"firstName": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"middleName": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"lastName": {
+					"$ref": "#/definitions/string35Type"
+				},
+				"nino": {
+					"description": "National Insurance number",
+					"$ref": "#/definitions/ninoType"
+				},
+				"reasonNoNINO": {
+					"$ref": "#/definitions/string160Type"
+				},
+				"dateOfBirth": {
+					"$ref": "#/definitions/dateType"
+				}
+			},
+			"required": [
+				"firstName",
+				"lastName",
+				"dateOfBirth"
+			],
+			"additionalProperties": false
+		},
+
+		"registryDetailsType": {
+			"type": "object",
+			"properties": {
+				"registryRefExist": {
+					"description": "Is there a land registry reference in respect of the land or property ?Possible Values :Yes or No",
+					"$ref": "#/definitions/yesOrNoType"
+				},
+				"registryReference": {
+					"description": "If  Yes, provide registry reference",
+					"$ref": "#/definitions/string35Type"
+				},
+				"noRegistryRefReason": {
+					"description": "If No, provide registry reference",
+					"$ref": "#/definitions/string160Type"
+				}
+			},
+			"required": [
+				"registryRefExist"
+			],
+			"additionalProperties": false
+		},
+		"reportDetailsType": {
+			"type": "object",
+			"properties": {
+
+				"status": {
+					"description": "Possible values : Compiled, Submitted",
+					"type": "string",
+					"enum": [
+						"Compiled",
+						"Submitted"
+					]
+				},
+				"periodStart": {
+					"$ref": "#/definitions/dateType"
+				},
+				"periodEnd": {
+					"$ref": "#/definitions/dateType"
+				},
+				"memberTransactions": {
+					"description": "At any time during the period of this return, did any member hold any of the following:A) an interest in land or property from a connected partyB) any asset acquired from a connected partyC)  an interest in land or property acquired from an arms length partyD) Tangible moveable propertyE) an outstanding loanF) Unquoted shares acquired from an arms length party.",
+					"type": "string"
+				}
+			},
+			"required": [
+				"status",
+				"periodStart",
+				"periodEnd"			
+			],
+			"additionalProperties": false
+		},
+		"sharesCompanyType": {
+			"type": "object",
+			"properties": {
+				"companySharesName": {
+					"description": "What is the name of the company to which the shares relate?",
+					"$ref": "#/definitions/string160Type"
+				},
+				"companySharesCRN": {
+					"description": "What is the CRN of the company that has the shares?Min 7 character – Max 8 charactersEither NNNNNNNOr ANNNNNN where the alpha is Ror AANNNNNN where the alpha pair is one of AC BR FC GE GN GS IC IP LP NA NF NI NLNO NP NR NZ OC RC SA SC SF SI SL SO SPSR SZ ZC",
+					"$ref": "#/definitions/crnNumberType"
+				},
+				"reasonNoCRN": {
+					"description": "No CRN - provide reason",
+					"$ref": "#/definitions/string160Type"
+				},
+				"sharesClass": {
+					"description": "What are the class of shares?",
+					"$ref": "#/definitions/string160Type"
+				},
+				"noOfShares": {
+					"description": "What are the total number of shares acquired or received/held, in respect of this transaction?",
+					"$ref": "#/definitions/integer7DigitsMinimum0Type"
+				}
+			},
+			"required": [
+				"companySharesName",
+				"sharesClass",
+				"noOfShares"
+			],
+			"additionalProperties": false
+		},
+		"string160Type": {
+			"type": "string",
+			"pattern": "^(.{1,160})$"
+		},
+		"string35Type": {
+			"type": "string",
+			"pattern": "^(.{1,35})$"
+		},
+		"submittedByType": {
+			"description": "Possible : Values are PSA or PSP",
+			"type": "string",
+			"enum": [
+				"PSA",
+				"PSP"
+			]
+		},
+		"versionType": {
+			"type": "string",
+			"pattern": "^([0-9]{3})$"
+		},
+		"yesOrNoType": {
+			"type": "string",
+			"enum": [
+				"No",
+				"Yes"
+			]
+		}
+	}
+}

@@ -23,8 +23,11 @@ class SchemaPathSpec extends AnyWordSpec with Matchers {
 
   "SchemaPaths" must {
 
-    "have EPID 1444 with correct path" in {
-      SchemaPaths.EPID_1444 mustBe "/resources/schemas/epid-1444-submit-standard-psr-request-schema-v3.0.json"
+    "have API 1999 with correct path" in {
+      SchemaPaths.API_1999 mustBe "/resources/schemas/api-1999-submit-pension-scheme-return-request-schema-v1.1.5.json"
+    }
+    "have API 1997 with correct path" in {
+      SchemaPaths.API_1997 mustBe "/resources/schemas/api-1997-submit-sipp-pension-scheme-return-request-schema-v1.0.3.json"
     }
   }
 }

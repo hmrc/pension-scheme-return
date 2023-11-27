@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.http.Status.{BAD_REQUEST, CREATED, OK}
+import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.RequestHeader
@@ -53,6 +53,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     )
 
   private lazy val connector: PsrConnector = applicationBuilder.injector().instanceOf[PsrConnector]
+
   "getOverview" should {
 
     "return overview details when returns were found" in {
@@ -77,7 +78,12 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
       stubGet(
         "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
-        ok("[]")
+        notFound().withBody(
+          errorResponse(
+            "NO_REPORT_FOUND",
+            "The remote endpoint has indicated No Scheme report was found for the given period."
+          )
+        )
       )
 
       whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
@@ -96,7 +102,12 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
       stubGet(
         "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=",
-        badRequest().withBody(errorResponse("MISSING_TO_DATE"))
+        badRequest().withBody(
+          errorResponse(
+            "MISSING_TO_DATE",
+            "Submission has not passed validation. Required query parameter toDate has not been supplied."
+          )
+        )
       )
 
       val thrown = intercept[BadRequestException] {
@@ -109,14 +120,21 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           )
         )
       )
-      thrown.message must include("Reason for MISSING_TO_DATE")
+      thrown.message must include(
+        "'{\"failures\":[{\"code\":\"MISSING_TO_DATE\",\"reason\":\"Submission has not passed validation. Required query parameter toDate has not been supplied.\"}]}'"
+      )
     }
 
     "return 403 Forbidden when invalid date range" in {
 
       stubGet(
         "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2024-04-05&toDate=2020-04-06",
-        forbidden().withBody(errorResponse("FROM_DATE_NOT_IN_RANGE"))
+        forbidden().withBody(
+          errorResponse(
+            "FROM_DATE_NOT_IN_RANGE",
+            "The remote endpoint has indicated From Date cannot be in the future."
+          )
+        )
       )
 
       val thrown = intercept[UpstreamErrorResponse] {
@@ -129,24 +147,26 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           )
         )
       )
-      thrown.message must include("Reason for FROM_DATE_NOT_IN_RANGE")
+      thrown.message must include(
+        "'{\"failures\":[{\"code\":\"FROM_DATE_NOT_IN_RANGE\",\"reason\":\"The remote endpoint has indicated From Date cannot be in the future.\"}]}'"
+      )
     }
   }
 
   "submitStandardPsr" should {
-    "return 201 - created" in {
+    "return 200 - ok" in {
       stubPost(
-        "/pension-online/psr/standard",
+        "/pension-online/scheme-return/testPstr",
         Json.stringify(createJsonObject()),
-        created()
+        ok()
       )
 
-      whenReady(connector.submitStandardPsr(createJsonObject())) { result: HttpResponse =>
+      whenReady(connector.submitStandardPsr("testPstr", createJsonObject())) { result: HttpResponse =>
         WireMock.verify(
-          postRequestedFor(urlEqualTo("/pension-online/psr/standard"))
+          postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
         )
 
-        result.status mustBe CREATED
+        result.status mustBe OK
       }
     }
   }
@@ -156,14 +176,14 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return a standard PSR value with only fbNumber" in {
 
       stubGet(
-        "/pension-online/psr/standard/testPstr?fbNumber=testFbNumber",
+        "/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber",
         ok(sampleStandardPsrResponseAsJsonString)
       )
 
       whenReady(connector.getStandardPsr("testPstr", Some("testFbNumber"), None, None)) {
         result: Option[PsrSubmissionEtmpResponse] =>
           WireMock.verify(
-            getRequestedFor(urlEqualTo("/pension-online/psr/standard/testPstr?fbNumber=testFbNumber"))
+            getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber"))
           )
 
           result mustBe Some(samplePsrSubmissionEtmpResponse)
@@ -173,7 +193,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return a standard PSR value with periodStartDate and psrVersion" in {
 
       stubGet(
-        "/pension-online/psr/standard/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         ok(sampleStandardPsrResponseAsJsonString)
       )
 
@@ -182,7 +202,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           WireMock.verify(
             getRequestedFor(
               urlEqualTo(
-                "/pension-online/psr/standard/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+                "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
               )
             )
           )
@@ -193,7 +213,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 404 NotFound when pstr not found in etmp" in {
 
       stubGet(
-        "/pension-online/psr/standard/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         notFound()
       )
 
@@ -202,7 +222,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           WireMock.verify(
             getRequestedFor(
               urlEqualTo(
-                "/pension-online/psr/standard/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+                "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
               )
             )
           )
@@ -213,7 +233,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when etmp returns badRequest" in {
 
       stubGet(
-        "/pension-online/psr/standard/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         badRequest().withBody("INVALID_PAYLOAD")
       )
 
@@ -223,7 +243,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/psr/standard/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+            "/pension-online/scheme-return/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
           )
         )
       )
@@ -244,19 +264,19 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   }
 
   "submitSippPsr" should {
-    "return 201 - created" in {
+    "return 200 - ok" in {
       stubPost(
-        "/pension-online/psr/sipp",
+        "/pension-online/scheme-return/SIPP/testPstr",
         Json.stringify(createJsonObject()),
-        created()
+        ok()
       )
 
-      whenReady(connector.submitSippPsr(createJsonObject())) { result: HttpResponse =>
+      whenReady(connector.submitSippPsr("testPstr", createJsonObject())) { result: HttpResponse =>
         WireMock.verify(
-          postRequestedFor(urlEqualTo("/pension-online/psr/sipp"))
+          postRequestedFor(urlEqualTo("/pension-online/scheme-return/SIPP/testPstr"))
         )
 
-        result.status mustBe CREATED
+        result.status mustBe OK
       }
     }
   }
@@ -266,14 +286,14 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return a SIPP PSR value with only fbNumber" in {
 
       stubGet(
-        "/pension-online/psr/sipp/testPstr?fbNumber=testFbNumber",
+        "/pension-online/scheme-return/SIPP/testPstr?psrFormBundleNumber=testFbNumber",
         ok(sampleSippPsrResponseAsJsonString)
       )
 
       whenReady(connector.getSippPsr("testPstr", Some("testFbNumber"), None, None)) {
         result: Option[SippPsrSubmissionEtmpResponse] =>
           WireMock.verify(
-            getRequestedFor(urlEqualTo("/pension-online/psr/sipp/testPstr?fbNumber=testFbNumber"))
+            getRequestedFor(urlEqualTo("/pension-online/scheme-return/SIPP/testPstr?psrFormBundleNumber=testFbNumber"))
           )
 
           result mustBe Some(sampleSippPsrSubmissionEtmpResponse)
@@ -283,7 +303,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return a SIPP PSR value with periodStartDate and psrVersion" in {
 
       stubGet(
-        "/pension-online/psr/sipp/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/SIPP/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         ok(sampleSippPsrResponseAsJsonString)
       )
 
@@ -292,7 +312,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           WireMock.verify(
             getRequestedFor(
               urlEqualTo(
-                "/pension-online/psr/sipp/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+                "/pension-online/scheme-return/SIPP/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
               )
             )
           )
@@ -303,7 +323,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 404 NotFound when pstr not found in etmp" in {
 
       stubGet(
-        "/pension-online/psr/sipp/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/SIPP/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         notFound()
       )
 
@@ -312,7 +332,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           WireMock.verify(
             getRequestedFor(
               urlEqualTo(
-                "/pension-online/psr/sipp/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+                "/pension-online/scheme-return/SIPP/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
               )
             )
           )
@@ -323,7 +343,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when etmp returns badRequest" in {
 
       stubGet(
-        "/pension-online/psr/sipp/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/SIPP/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
         badRequest().withBody("INVALID_PAYLOAD")
       )
 
@@ -333,7 +353,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/psr/sipp/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+            "/pension-online/scheme-return/SIPP/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
           )
         )
       )
@@ -1247,11 +1267,15 @@ object PsrConnectorSpec {
       |}
       |""".stripMargin
 
-  private def errorResponse(code: String): String =
+  private def errorResponse(code: String, reason: String): String =
     Json.stringify(
       Json.obj(
-        "code" -> code,
-        "reason" -> s"Reason for $code"
+        "failures" -> Json.arr(
+          Json.obj(
+            "code" -> code,
+            "reason" -> reason
+          )
+        )
       )
     )
 

@@ -42,16 +42,17 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   private val maxLengthCorrelationId = 36
 
   def submitStandardPsr(
+    pstr: String,
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val url = config.submitStandardPsrUrl
+    val url: String = config.submitStandardPsrUrl.format(pstr)
     logger.info("Submit standard PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
 
     http
       .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
       .map { response =>
         response.status match {
-          case CREATED => response
+          case OK => response
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
@@ -83,16 +84,17 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   }
 
   def submitSippPsr(
+    pstr: String,
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-    val url = config.submitSippPsrUrl
+    val url: String = config.submitSippPsrUrl.format(pstr)
     logger.info("Submit SIPP PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
 
     http
       .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
       .map { response =>
         response.status match {
-          case CREATED => response
+          case OK => response
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
@@ -153,7 +155,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     optPsrVersion: Option[String]
   ): String =
     (optFbNumber, optPeriodStartDate, optPsrVersion) match {
-      case (Some(fbNumber), _, _) => s"$pstr?fbNumber=$fbNumber"
+      case (Some(fbNumber), _, _) => s"$pstr?psrFormBundleNumber=$fbNumber"
       case (None, Some(periodStartDate), Some(psrVersion)) =>
         s"$pstr?periodStartDate=$periodStartDate&psrVersion=$psrVersion"
       case _ => throw new BadRequestException("Missing url parameters")

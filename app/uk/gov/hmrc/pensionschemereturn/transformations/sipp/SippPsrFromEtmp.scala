@@ -28,7 +28,7 @@ class SippPsrFromEtmp @Inject()() extends Transformer {
     val reportDetails = sippPsrSubmissionEtmpResponse.reportDetails
     SippPsrSubmission(
       reportDetails = SippReportDetailsSubmission(
-        pstr = reportDetails.pstr,
+        pstr = reportDetails.pstr.get,
         periodStart = reportDetails.periodStart,
         periodEnd = reportDetails.periodEnd,
         memberTransactions = reportDetails.memberTransactions

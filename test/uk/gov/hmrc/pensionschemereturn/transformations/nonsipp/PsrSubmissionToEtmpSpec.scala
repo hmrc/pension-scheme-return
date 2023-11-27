@@ -109,7 +109,7 @@ object PsrSubmissionToEtmpSpec extends Transformer {
   val today: LocalDate = LocalDate.now
   val sampleEtmpMinimalRequiredSubmission: EtmpMinimalRequiredSubmission = EtmpMinimalRequiredSubmission(
     EtmpReportDetails(
-      pstr = "testPstr",
+      pstr = None,
       psrStatus = Compiled,
       periodStart = today,
       periodEnd = today

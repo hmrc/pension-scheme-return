@@ -26,7 +26,7 @@ import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.sipp.{SippPsrFromEtmp, SippPsrSubmissionToEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1446
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1997
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,13 +42,13 @@ class SippPsrSubmissionService @Inject()(
     sippPsrSubmission: SippPsrSubmission
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
     val payloadAsJson = Json.toJson(sippPsrSubmissionToEtmp.transform(sippPsrSubmission))
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(EPID_1446, payloadAsJson)
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(API_1997, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
         s"Invalid payload when submitSippPsr :-\n${validationResult.toString}"
       )
     } else {
-      psrConnector.submitSippPsr(payloadAsJson).recover {
+      psrConnector.submitSippPsr(sippPsrSubmission.reportDetails.pstr, payloadAsJson).recover {
         case _: BadRequestException =>
           throw new ExpectationFailedException("Nothing to submit")
       }
