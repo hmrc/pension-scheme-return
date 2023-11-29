@@ -45,6 +45,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
     .getOrElse("local")
 
   val getOverviewUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-overview")}"
+  val getVersionsUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-versions")}"
   val submitStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-standard-psr")}"
   val getStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-standard-psr")}"
   val submitSippPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-sipp-psr")}"
