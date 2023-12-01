@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.response
 
-import play.api.libs.json.{Format, Json, Reads}
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.PsrReportType
 
 import java.time.LocalDate

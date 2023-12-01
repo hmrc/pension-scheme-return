@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.validators
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers.baseApplicationBuilder.injector
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.EPID_1444
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
 
 class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileReader {
 
@@ -27,36 +27,36 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
 
   "validateJson" must {
 
-    "Behaviour for valid payload for EPID 1444" in {
-      val json = readJsonFromFile("/epid-1444-valid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
+    "Behaviour for valid payload for API 1999" in {
+      val json = readJsonFromFile("/api-1999-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe false
     }
 
-    "Behaviour for invalid payload with 3 invalid inputs for API 1828" in {
-      val json = readJsonFromFile("/epid-1444-invalid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
+    "Behaviour for invalid payload with 3 invalid inputs for API 1999" in {
+      val json = readJsonFromFile("/api-1999-invalid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe true
       val errorsAsString = result.errors.map(_.toString)
 
       errorsAsString.equals(
         Set(
           "$.reportDetails.psrStatus: does not have a value in the enumeration [Compiled, Submitted]",
-          "$.reportDetails.periodStart: does not match the date pattern must be a valid RFC 3339 full-date",
-          "$.reportDetails.periodEnd: does not match the date pattern must be a valid RFC 3339 full-date"
+          "$.reportDetails.periodStart: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$",
+          "$.reportDetails.periodEnd: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
         )
-      )
+      ) mustBe true
     }
 
-    "Behaviour for valid payload for EPID 1444 loans only" in {
-      val json = readJsonFromFile("/epid-1444-loans-only-valid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
+    "Behaviour for valid payload for API 1999 loans only" in {
+      val json = readJsonFromFile("/api-1999-loans-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe false
     }
 
-    "Behaviour for valid payload for EPID 1444 assets only" in {
-      val json = readJsonFromFile("/epid-1444-assets-only-valid-example.json")
-      val result = jsonPayloadSchemaValidator.validatePayload(EPID_1444, json)
+    "Behaviour for valid payload for API 1999 assets only" in {
+      val json = readJsonFromFile("/api-1999-assets-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe false
     }
   }

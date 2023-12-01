@@ -27,7 +27,7 @@ class SippReportDetailsToEtmp @Inject()() extends Transformer {
 
   def transform(sippReportDetailsSubmission: SippReportDetailsSubmission): EtmpSippReportDetails =
     EtmpSippReportDetails(
-      pstr = sippReportDetailsSubmission.pstr,
+      pstr = None,
       status = Compiled, // TODO
       periodStart = sippReportDetailsSubmission.periodStart,
       periodEnd = sippReportDetailsSubmission.periodEnd,

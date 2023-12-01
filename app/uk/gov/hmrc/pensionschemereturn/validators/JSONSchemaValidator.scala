@@ -35,7 +35,7 @@ class JSONSchemaValidator @Inject()() {
 
   def validatePayload(jsonSchemaPath: String, data: JsValue): SchemaValidationResult = {
     val schemaUrl = getClass.getResourceAsStream(jsonSchemaPath)
-    val factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+    val factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4)
     val schema = factory.getSchema(schemaUrl)
     val mapper = new ObjectMapper()
     val jsonNode = mapper.readTree(data.toString())

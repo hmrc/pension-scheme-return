@@ -17,25 +17,14 @@
 package utils
 
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, Standard}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, Standard}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
-import uk.gov.hmrc.pensionschemereturn.models.response.{
-  EtmpPsrDetails,
-  EtmpSchemeDetails,
-  OrganisationOrPartnershipDetails,
-  PsaDetails,
-  PsaOrganisationOrPartnershipDetails,
-  PsrOverviewEtmpResponse,
-  PsrSubmissionEtmpResponse,
-  PsrVersionsEtmpResponse,
-  ReportSubmitterDetails,
-  SippPsrSubmissionEtmpResponse
-}
+import uk.gov.hmrc.pensionschemereturn.models.response._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 
 import java.text.MessageFormat
@@ -325,7 +314,7 @@ trait TestValues {
   )
 
   val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
-    EtmpReportDetails(pstr, Compiled, sampleToday, sampleToday),
+    EtmpReportDetails(None, Compiled, sampleToday, sampleToday),
     EtmpAccountingPeriodDetails(None, List(EtmpAccountingPeriod(sampleToday, sampleToday))),
     EtmpSchemeDesignatory(
       Some("001"),
@@ -359,12 +348,12 @@ trait TestValues {
   // SIPP - ETMP
 
   val sampleSippPsrSubmissionEtmpRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
-    EtmpSippReportDetails(pstr, Compiled, sampleToday, sampleToday, "Yes", None, None)
+    EtmpSippReportDetails(None, Compiled, sampleToday, sampleToday, "Yes", None, None)
   )
 
   val sampleSippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse = SippPsrSubmissionEtmpResponse(
     reportDetails = EtmpSippReportDetails(
-      pstr = "12345678AA",
+      pstr = Some("12345678AA"),
       status = Compiled,
       periodStart = LocalDate.parse("2022-04-06"),
       periodEnd = LocalDate.parse("2023-04-05"),

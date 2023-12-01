@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 import java.time.LocalDate
 
 case class EtmpReportDetails(
-  pstr: String,
+  pstr: Option[String],
   psrStatus: EtmpPsrStatus,
   periodStart: LocalDate,
   periodEnd: LocalDate
