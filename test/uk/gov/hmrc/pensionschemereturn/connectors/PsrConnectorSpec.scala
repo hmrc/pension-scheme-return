@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.http.Status.{BAD_REQUEST, CREATED, OK}
+import play.api.http.Status.{BAD_REQUEST, CREATED}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.RequestHeader
@@ -29,11 +29,13 @@ import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.{
   errorResponse,
   sampleOverviewResponseAsJsonString,
   sampleSippPsrResponseAsJsonString,
-  sampleStandardPsrResponseAsJsonString
+  sampleStandardPsrResponseAsJsonString,
+  sampleVersionsResponseAsJsonString
 }
 import uk.gov.hmrc.pensionschemereturn.models.response.{
   PsrOverviewEtmpResponse,
   PsrSubmissionEtmpResponse,
+  PsrVersionsEtmpResponse,
   SippPsrSubmissionEtmpResponse
 }
 
@@ -130,6 +132,86 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         )
       )
       thrown.message must include("Reason for FROM_DATE_NOT_IN_RANGE")
+    }
+  }
+
+  "getVersions" should {
+
+    "return reporting version details when returns were found" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        ok(sampleVersionsResponseAsJsonString)
+      )
+
+      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo("/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06")
+          )
+        )
+
+        result mustBe sampleVersionsResponse
+      }
+    }
+
+    "return empty list when pstr not found in etmp" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        ok("[]")
+      )
+
+      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06"
+            )
+          )
+        )
+        result mustBe Seq.empty
+      }
+    }
+
+    "return 400 BadRequest when invalid pstr - versions" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06",
+        badRequest().withBody(errorResponse("INVALID_PSTR"))
+      )
+
+      val thrown = intercept[BadRequestException] {
+        await(connector.getVersions("testPstr_Invalid", "2020-04-06"))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06"
+          )
+        )
+      )
+      thrown.message must include("Reason for INVALID_PSTR")
+    }
+
+    "return 403 Forbidden when invalid date - versions" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05",
+        forbidden().withBody(errorResponse("PERIOD_START_DATE_NOT_IN_RANGE"))
+      )
+
+      val thrown = intercept[UpstreamErrorResponse] {
+        await(connector.getVersions("testPstr", "2050-04-05"))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05"
+          )
+        )
+      )
+      thrown.message must include("Reason for PERIOD_START_DATE_NOT_IN_RANGE")
     }
   }
 
@@ -377,6 +459,29 @@ object PsrConnectorSpec {
       |        "ntfDateOfIssue": "2021-12-06",
       |        "psrDueDate": "2022-03-31",
       |        "psrReportType": "Standard"
+      |    }
+      |]
+      |""".stripMargin
+
+  val sampleVersionsResponseAsJsonString: String =
+    """
+      |[
+      |    {
+      |        "reportFormBundleNumber": "123456785012",
+      |        "reportVersion": 1,
+      |        "reportStatus": "Compiled",
+      |        "compilationOrSubmissionDate": "2023-04-02T09:30:47Z",
+      |        "reportSubmitterDetails": {
+      |            "reportSubmittedBy": "PSP",
+      |            "organisationOrPartnershipDetails": {
+      |                "organisationOrPartnershipName": "ABC Limited"
+      |            }
+      |        },
+      |        "psaDetails": {
+      |            "psaOrganisationOrPartnershipDetails": {
+      |                "organisationOrPartnershipName": "XYZ Limited"
+      |            }
+      |        }
       |    }
       |]
       |""".stripMargin

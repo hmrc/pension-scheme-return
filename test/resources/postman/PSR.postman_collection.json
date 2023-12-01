@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "5a6a8699-75d5-4b68-bc03-c21788e4b6c1",
+		"_postman_id": "c2506b2f-4679-4276-b8ce-eb5b83a83210",
 		"name": "PSR",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31531877"
 	},
 	"item": [
 		{
@@ -985,6 +986,256 @@
 						{
 							"key": "fromDate",
 							"value": "2024-04-05"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Organisation - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN?startDate=2021-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2021-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Individual - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN?startDate=2022-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2022-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Not Found - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN_Not_found?startDate=2021-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN_Not_found"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2021-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Bad request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN_Invalid?startDate=2021-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN_Invalid"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2021-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Forbidden",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN?startDate=2050-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2050-04-06"
 						}
 					]
 				}

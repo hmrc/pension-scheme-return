@@ -17,7 +17,7 @@
 package utils
 
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Standard}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, Standard}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
@@ -27,8 +27,13 @@ import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRe
 import uk.gov.hmrc.pensionschemereturn.models.response.{
   EtmpPsrDetails,
   EtmpSchemeDetails,
+  OrganisationOrPartnershipDetails,
+  PsaDetails,
+  PsaOrganisationOrPartnershipDetails,
   PsrOverviewEtmpResponse,
   PsrSubmissionEtmpResponse,
+  PsrVersionsEtmpResponse,
+  ReportSubmitterDetails,
   SippPsrSubmissionEtmpResponse
 }
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
@@ -399,6 +404,32 @@ trait TestValues {
       ntfDateOfIssue = LocalDate.parse("2021-12-06"),
       psrDueDate = LocalDate.parse("2022-03-31"),
       psrReportType = Standard
+    )
+  )
+
+  val sampleVersionsResponse = Seq(
+    PsrVersionsEtmpResponse(
+      reportFormBundleNumber = "123456785012",
+      reportVersion = 1,
+      reportStatus = ReportStatusCompiled,
+      compilationOrSubmissionDate = LocalDateTime.parse("2023-04-02T09:30:47"),
+      reportSubmitterDetails = ReportSubmitterDetails(
+        reportSubmittedBy = "PSP",
+        organisationOrPartnershipDetails = Some(
+          OrganisationOrPartnershipDetails(
+            organisationOrPartnershipName = "ABC Limited"
+          )
+        ),
+        individualDetails = None
+      ),
+      psaDetails = PsaDetails(
+        psaOrganisationOrPartnershipDetails = Some(
+          PsaOrganisationOrPartnershipDetails(
+            organisationOrPartnershipName = "XYZ Limited"
+          )
+        ),
+        psaIndividualDetails = None
+      )
     )
   )
 }
