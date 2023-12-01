@@ -27,6 +27,7 @@ import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.models.response.{
   PsrOverviewEtmpResponse,
   PsrSubmissionEtmpResponse,
+  PsrVersionsEtmpResponse,
   SippPsrSubmissionEtmpResponse
 }
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
@@ -143,6 +144,29 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
         case NOT_FOUND =>
           logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
           Seq.empty[PsrOverviewEtmpResponse]
+        case _ => handleErrorResponse("GET", url)(response)
+      }
+    }
+  }
+
+  def getVersions(pstr: String, startDate: String)(
+    implicit headerCarrier: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Seq[PsrVersionsEtmpResponse]] = {
+
+    val url: String = config.getVersionsUrl.format(pstr, startDate)
+    val logMessage = s"Get report versions called, URL: $url"
+    logger.info(logMessage)
+
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
+      response.status match {
+        case OK =>
+          response.json.as[Seq[PsrVersionsEtmpResponse]]
+        case NOT_FOUND =>
+          logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
+          Seq.empty[PsrVersionsEtmpResponse]
         case _ => handleErrorResponse("GET", url)(response)
       }
     }

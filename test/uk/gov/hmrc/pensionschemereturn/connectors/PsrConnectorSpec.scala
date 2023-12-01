@@ -25,15 +25,11 @@ import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.{
-  errorResponse,
-  sampleOverviewResponseAsJsonString,
-  sampleSippPsrResponseAsJsonString,
-  sampleStandardPsrResponseAsJsonString
-}
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
 import uk.gov.hmrc.pensionschemereturn.models.response.{
   PsrOverviewEtmpResponse,
   PsrSubmissionEtmpResponse,
+  PsrVersionsEtmpResponse,
   SippPsrSubmissionEtmpResponse
 }
 
@@ -149,6 +145,102 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       )
       thrown.message must include(
         "'{\"failures\":[{\"code\":\"FROM_DATE_NOT_IN_RANGE\",\"reason\":\"The remote endpoint has indicated From Date cannot be in the future.\"}]}'"
+      )
+    }
+  }
+
+  "getVersions" should {
+
+    "return reporting version details when returns were found" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        ok(sampleVersionsResponseAsJsonString)
+      )
+
+      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo("/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06")
+          )
+        )
+
+        result mustBe sampleVersionsResponse
+      }
+    }
+
+    "return empty list when pstr not found in etmp" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        notFound().withBody(
+          errorResponse(
+            "NO_DATA_FOUND",
+            "The remote endpoint has indicated that no scheme report was found for the given period."
+          )
+        )
+      )
+
+      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06"
+            )
+          )
+        )
+        result mustBe Seq.empty
+      }
+    }
+
+    "return 400 BadRequest when invalid pstr - versions" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06",
+        badRequest().withBody(
+          errorResponse("INVALID_PSTR", "Submission has not passed validation. Invalid parameter pstr.")
+        )
+      )
+
+      val thrown = intercept[BadRequestException] {
+        await(connector.getVersions("testPstr_Invalid", "2020-04-06"))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06"
+          )
+        )
+      )
+      thrown.message must include(
+        "'{\"failures\":[{\"code\":\"INVALID_PSTR\",\"reason\":\"Submission has not passed validation. Invalid parameter pstr.\"}]}'"
+      )
+    }
+
+    "return 403 Forbidden when invalid date - versions" in {
+
+      stubGet(
+        "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05",
+        forbidden().withBody(
+          errorResponse(
+            "PERIOD_START_DATE_NOT_IN_RANGE",
+            "The remote endpoint has indicated that Period Start Date cannot be in the future."
+          )
+        )
+      )
+
+      val thrown = intercept[UpstreamErrorResponse] {
+        await(connector.getVersions("testPstr", "2050-04-05"))
+      }
+      WireMock.verify(
+        getRequestedFor(
+          urlEqualTo(
+            "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05"
+          )
+        )
+      )
+      thrown.message must include(
+        "'{\"failures\":[{\"code\":\"PERIOD_START_DATE_NOT_IN_RANGE\",\"reason\":\"The remote endpoint has indicated that Period Start Date cannot be in the future.\"}]}'"
       )
     }
   }
@@ -397,6 +489,29 @@ object PsrConnectorSpec {
       |        "ntfDateOfIssue": "2021-12-06",
       |        "psrDueDate": "2022-03-31",
       |        "psrReportType": "Standard"
+      |    }
+      |]
+      |""".stripMargin
+
+  val sampleVersionsResponseAsJsonString: String =
+    """
+      |[
+      |    {
+      |        "reportFormBundleNumber": "123456785012",
+      |        "reportVersion": 1,
+      |        "reportStatus": "Compiled",
+      |        "compilationOrSubmissionDate": "2023-04-02T09:30:47Z",
+      |        "reportSubmitterDetails": {
+      |            "reportSubmittedBy": "PSP",
+      |            "organisationOrPartnershipDetails": {
+      |                "organisationOrPartnershipName": "ABC Limited"
+      |            }
+      |        },
+      |        "psaDetails": {
+      |            "psaOrganisationOrPartnershipDetails": {
+      |                "organisationOrPartnershipName": "XYZ Limited"
+      |            }
+      |        }
       |    }
       |]
       |""".stripMargin
