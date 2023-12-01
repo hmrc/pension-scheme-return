@@ -302,11 +302,13 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       }
     }
 
-    "return 404 NotFound when pstr not found in etmp" in {
+    "return 422 (PSR_NOT_FOUND) when pstr not found in etmp" in {
 
       stubGet(
         "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
-        notFound()
+        badRequestEntity().withBody(
+          errorResponse("PSR_NOT_FOUND", "The remote endpoint has indicated no PSR found for requested details. ")
+        )
       )
 
       whenReady(connector.getStandardPsr("notFoundTestPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
