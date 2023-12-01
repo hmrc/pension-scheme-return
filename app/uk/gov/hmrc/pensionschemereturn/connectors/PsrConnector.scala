@@ -77,7 +77,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
         case OK =>
           Some(response.json.as[PsrSubmissionEtmpResponse])
         case UNPROCESSABLE_ENTITY if response.body.contains("PSR_NOT_FOUND") =>
-          logger.warn(s"$logMessage and returned PSR_NOT_FOUND with status: ${response.status}")
+          logger.info(s"$logMessage and returned PSR_NOT_FOUND with status: ${response.status}")
           None
         case _ => handleErrorResponse("GET", url)(response)
       }
