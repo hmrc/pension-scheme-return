@@ -43,7 +43,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
-    logger.info("Submit standard PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
+    logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.stringify(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
 
@@ -51,7 +51,9 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
       .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
-          case OK => response
+          case OK =>
+            logger.debug(s"Submit standard PSR ----<<RESPONSE>>----: ${Json.stringify(response.json)}")
+            response
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
@@ -66,7 +68,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
     val url: String = config.getStandardPsrUrl.format(params)
-    val logMessage = "Get standard PSR called URL: " + url + s" with pstr: $pstr"
+    val logMessage = s"Get standard PSR called URL: $url with pstr: $pstr"
 
     logger.info(logMessage)
 
@@ -90,7 +92,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitSippPsrUrl.format(pstr)
-    logger.info("Submit SIPP PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
+    logger.info(s"Submit SIPP PSR called URL: $url with payload: ${Json.stringify(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
 
@@ -113,7 +115,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
     val url: String = config.getSippPsrUrl.format(params)
-    val logMessage = "Get SIPP PSR called URL: " + url + s" with pstr: $pstr"
+    val logMessage = s"Get SIPP PSR called URL: $url with pstr: $pstr"
 
     logger.info(logMessage)
 
