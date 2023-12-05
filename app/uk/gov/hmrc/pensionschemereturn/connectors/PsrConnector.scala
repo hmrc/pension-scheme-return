@@ -24,12 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
-import uk.gov.hmrc.pensionschemereturn.models.response.{
-  PsrOverviewEtmpResponse,
-  PsrSubmissionEtmpResponse,
-  PsrVersionsEtmpResponse,
-  SippPsrSubmissionEtmpResponse
-}
+import uk.gov.hmrc.pensionschemereturn.models.response.{PsrOverviewEtmpResponse, PsrSubmissionEtmpResponse, PsrVersionsEtmpResponse, SippPsrSubmissionEtmpResponse}
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
 
 import java.util.UUID.randomUUID
@@ -46,11 +41,14 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     pstr: String,
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
+
     val url: String = config.submitStandardPsrUrl.format(pstr)
     logger.info("Submit standard PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
 
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
     http
-      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
+      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
           case OK => response
@@ -72,7 +70,9 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     logger.info(logMessage)
 
-    http.GET[HttpResponse](url)(implicitly, headerCarrier, implicitly).map { response =>
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
       response.status match {
         case OK =>
           Some(response.json.as[PsrSubmissionEtmpResponse])
@@ -88,11 +88,14 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     pstr: String,
     data: JsValue
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
+
     val url: String = config.submitSippPsrUrl.format(pstr)
     logger.info("Submit SIPP PSR called URL: " + url + s" with payload: ${Json.stringify(data)}")
 
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
     http
-      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, headerCarrier, implicitly)
+      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
         response.status match {
           case OK => response
@@ -114,7 +117,9 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     logger.info(logMessage)
 
-    http.GET[HttpResponse](url)(implicitly, headerCarrier, implicitly).map { response =>
+    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
+    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
       response.status match {
         case OK =>
           Some(response.json.as[SippPsrSubmissionEtmpResponse])
@@ -190,14 +195,6 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     Seq(
       "Environment" -> config.integrationFrameworkEnvironment,
       "Authorization" -> config.integrationFrameworkAuthorization,
-      "Content-Type" -> "application/json",
-      "CorrelationId" -> getCorrelationId
-    )
-
-  private def desHeader: Seq[(String, String)] =
-    Seq(
-      "Environment" -> config.desEnvironment,
-      "Authorization" -> config.desEnvironmentAuthorization,
       "Content-Type" -> "application/json",
       "CorrelationId" -> getCorrelationId
     )

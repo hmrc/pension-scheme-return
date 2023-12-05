@@ -30,13 +30,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
   val pensionsScheme: Service = config.get[Service]("microservice.services.pensionsScheme")
 
   private val ifURL: String = servicesConfig.baseUrl(serviceName = "if-hod")
-  private val desURL: String = servicesConfig.baseUrl(serviceName = "des-hod")
-
-  lazy val desEnvironment: String =
-    runModeConfiguration.getOptional[String]("microservice.services.des-hod.env").getOrElse("local")
-  lazy val desEnvironmentAuthorization: String = "Bearer " + runModeConfiguration
-    .getOptional[String]("microservice.services.des-hod.authorizationToken")
-    .getOrElse("local")
 
   lazy val integrationFrameworkEnvironment: String =
     runModeConfiguration.getOptional[String](path = "microservice.services.if-hod.env").getOrElse("local")
