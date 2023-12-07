@@ -16,16 +16,19 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.pensionschemereturn.utils.JsonUtils
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  memberPayments: Option[MemberPayments]
+import java.time.LocalDate
+
+case class MemberPersonalDetails(
+  firstName: String,
+  lastName: String,
+  ninoOrReason: Either[String, String],
+  dateOfBirth: LocalDate
 )
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object MemberPersonalDetails {
+  private implicit val formatNinoOrReason: Format[Either[String, String]] = JsonUtils.eitherFormat("reason", "nino")
+  implicit val format: Format[MemberPersonalDetails] = Json.format[MemberPersonalDetails]
 }

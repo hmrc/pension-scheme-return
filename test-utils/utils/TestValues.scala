@@ -19,7 +19,7 @@ package utils
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, Standard}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, SectionStatus, Standard}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
@@ -51,11 +51,11 @@ trait TestValues {
       activeMembers = 1,
       deferredMembers = 2,
       pensionerMembers = 3,
-      totalAssetValueStart = None,
+      totalAssetValueStart = Some(12.34),
       totalAssetValueEnd = None,
-      totalCashStart = None,
+      totalCashStart = Some(34.56),
       totalCashEnd = None,
-      totalPayments = None
+      totalPayments = Some(56.78)
     )
   )
 
@@ -63,7 +63,8 @@ trait TestValues {
     minimalRequiredSubmission = sampleMinimalRequiredSubmission,
     checkReturnDates = true,
     loans = None,
-    assets = None
+    assets = None,
+    memberPayments = None
   )
 
   val sampleLoans: Loans = Loans(
@@ -155,7 +156,83 @@ trait TestValues {
     )
   )
 
+  val sampleMemberPayments: MemberPayments = MemberPayments(
+    memberDetails = List(
+      MemberDetails(
+        MemberPersonalDetails(
+          firstName = "test first one",
+          lastName = "test last one",
+          ninoOrReason = Right("nino"),
+          dateOfBirth = sampleToday
+        ),
+        employerContributions = List(
+          EmployerContributions(
+            employerName = "test employer one",
+            employerType = EmployerType.UKCompany(Right("test company id")),
+            totalTransferValue = 12.34
+          ),
+          EmployerContributions(
+            employerName = "test employer two",
+            employerType = EmployerType.UKCompany(Left("test reason")),
+            totalTransferValue = 34.56
+          )
+        )
+      ),
+      MemberDetails(
+        MemberPersonalDetails(
+          firstName = "test first two",
+          lastName = "test last two",
+          ninoOrReason = Left("no nino reason"),
+          dateOfBirth = sampleToday
+        ),
+        employerContributions = List(
+          EmployerContributions(
+            employerName = "test employer three",
+            employerType = EmployerType.Other("test description"),
+            totalTransferValue = 56.78
+          ),
+          EmployerContributions(
+            employerName = "test employer four",
+            employerType = EmployerType.UKPartnership(Right("test partnership id")),
+            totalTransferValue = 78.99
+          )
+        )
+      )
+    )
+  )
+
   // Standard - ETMP
+
+  val sampleEtmpMinimalRequiredSubmission: EtmpMinimalRequiredSubmission = EtmpMinimalRequiredSubmission(
+    EtmpReportDetails(
+      pstr = None,
+      psrStatus = Compiled,
+      periodStart = sampleToday,
+      periodEnd = sampleToday
+    ),
+    EtmpAccountingPeriodDetails(
+      recordVersion = None,
+      accountingPeriods = List(
+        EtmpAccountingPeriod(
+          accPeriodStart = sampleToday,
+          accPeriodEnd = sampleToday
+        )
+      )
+    ),
+    EtmpSchemeDesignatory(
+      recordVersion = None,
+      openBankAccount = "Yes",
+      reasonNoOpenAccount = None,
+      noOfActiveMembers = 1,
+      noOfDeferredMembers = 2,
+      noOfPensionerMembers = 3,
+      totalAssetValueStart = Some(12.34),
+      totalAssetValueEnd = None,
+      totalCashStart = Some(34.56),
+      totalCashEnd = None,
+      totalPayments = Some(56.78)
+    )
+  )
 
   private val sampleEtmpAccountingPeriodDetails: EtmpAccountingPeriodDetails = EtmpAccountingPeriodDetails(
     recordVersion = Some("002"),
@@ -186,7 +263,7 @@ trait TestValues {
     heldAnyLandOrProperty = "Yes",
     disposeAnyLandOrProperty = "No",
     noOfTransactions = 1,
-    landOrPropertyTransactions = Seq(
+    landOrPropertyTransactions = List(
       EtmpLandOrPropertyTransactions(
         propertyDetails = EtmpPropertyDetails(
           landOrPropertyInUK = "Yes",
@@ -227,6 +304,180 @@ trait TestValues {
       )
     )
   )
+
+  val sampleEtmpLoans: EtmpLoans = EtmpLoans(
+    recordVersion = Some("001"),
+    schemeHadLoans = "Yes",
+    noOfLoans = 1,
+    loanTransactions = List(
+      EtmpLoanTransactions(
+        dateOfLoan = sampleToday,
+        loanRecipientName = "UKPartnershipName",
+        recipientIdentityType = EtmpIdentityType(
+          indivOrOrgType = "03",
+          idNumber = Some("1234567890"),
+          reasonNoIdNumber = None,
+          otherDescription = None
+        ),
+        recipientSponsoringEmployer = "Yes",
+        connectedPartyStatus = "02",
+        loanAmount = Double.MaxValue,
+        loanInterestAmount = Double.MaxValue,
+        loanTotalSchemeAssets = Double.MaxValue,
+        loanPeriodInMonths = Int.MaxValue,
+        equalInstallments = "No",
+        loanInterestRate = Double.MaxValue,
+        securityGiven = "Yes",
+        securityDetails = Some("SecurityGivenDetails"),
+        capRepaymentCY = Double.MaxValue,
+        intReceivedCY = Double.MaxValue,
+        arrearsPrevYears = "No",
+        amountOfArrears = None,
+        amountOutstanding = Double.MaxValue
+      )
+    )
+  )
+
+  val sampleEtmpAssets: EtmpAssets = EtmpAssets(
+    landOrProperty = sampleEtmpLandOrProperty,
+    borrowing = EtmpBorrowing(
+      recordVersion = None,
+      moneyWasBorrowed = "moneyWasBorrowed",
+      noOfBorrows = None,
+      moneyBorrowed = Seq.empty
+    ),
+    bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),
+    otherAssets =
+      EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")
+  )
+
+  val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
+    recordVersion = None,
+    employerContributionMade = false,
+    unallocatedContribsMade = false,
+    unallocatedContribAmount = None,
+    memberContributionMade = false,
+    schemeReceivedTransferIn = false,
+    schemeMadeTransferOut = false,
+    lumpSumReceived = false,
+    pensionReceived = false,
+    surrenderMade = false,
+    memberDetails = List(
+      EtmpMemberDetails(
+        memberStatus = SectionStatus.New,
+        memberPSRVersion = "0",
+        noOfContributions = None,
+        totalContributions = 0,
+        noOfTransfersIn = 0,
+        noOfTransfersOut = 0,
+        pensionAmountReceived = 0,
+        personalDetails = EtmpMemberPersonalDetails(
+          foreName = "test first one",
+          middleName = None,
+          lastName = "test last one",
+          nino = Some("nino"),
+          reasonNoNino = None,
+          dateOfBirth = sampleToday
+        ),
+        memberEmpContribution = List(
+          EtmpEmployerContributions(
+            orgName = "test employer one",
+            organisationIdentity = OrganisationIdentity(
+              orgType = EmployerContributionsOrgType.UKCompany,
+              idNumber = Some("test company id"),
+              reasonNoIdNumber = None,
+              otherDescription = None
+            ),
+            totalContribution = 12.34
+          ),
+          EtmpEmployerContributions(
+            orgName = "test employer two",
+            organisationIdentity = OrganisationIdentity(
+              orgType = EmployerContributionsOrgType.UKCompany,
+              idNumber = None,
+              reasonNoIdNumber = Some("test reason"),
+              otherDescription = None
+            ),
+            totalContribution = 34.56
+          )
+        )
+      ),
+      EtmpMemberDetails(
+        memberStatus = SectionStatus.New,
+        memberPSRVersion = "0",
+        noOfContributions = None,
+        totalContributions = 0,
+        noOfTransfersIn = 0,
+        noOfTransfersOut = 0,
+        pensionAmountReceived = 0,
+        personalDetails = EtmpMemberPersonalDetails(
+          foreName = "test first two",
+          middleName = None,
+          lastName = "test last two",
+          nino = None,
+          reasonNoNino = Some("test reason"),
+          dateOfBirth = sampleToday
+        ),
+        memberEmpContribution = List(
+          EtmpEmployerContributions(
+            orgName = "test employer three",
+            organisationIdentity = OrganisationIdentity(
+              orgType = EmployerContributionsOrgType.UKCompany,
+              idNumber = Some("test company id"),
+              reasonNoIdNumber = None,
+              otherDescription = None
+            ),
+            totalContribution = 56.78
+          ),
+          EtmpEmployerContributions(
+            orgName = "test employer four",
+            organisationIdentity = OrganisationIdentity(
+              orgType = EmployerContributionsOrgType.UKCompany,
+              idNumber = None,
+              reasonNoIdNumber = Some("test reason"),
+              otherDescription = None
+            ),
+            totalContribution = 78.99
+          )
+        )
+      )
+    )
+  )
+
+//        employerContributions = List(
+//          EmployerContributions(
+//            employerName = "test employer one",
+//            employerType = EmployerType.UKCompany(Right("test company id")),
+//            totalTransferValue = 12.34
+//          ),
+//          EmployerContributions(
+//            employerName = "test employer two",
+//            employerType = EmployerType.UKCompany(Left("test reason")),
+//            totalTransferValue = 34.56
+//          )
+//        )
+//      ),
+//      MemberDetails(
+//        MemberPersonalDetails(
+//          firstName = "test first two",
+//          lastName = "test last two",
+//          ninoOrReason = Left("no nino reason"),
+//          dateOfBirth = sampleToday
+//        ),
+//        employerContributions = List(
+//          EmployerContributions(
+//            employerName = "test employer three",
+//            employerType = EmployerType.Other("test description"),
+//            totalTransferValue = 56.78
+//          ),
+//          EmployerContributions(
+//            employerName = "test employer four",
+//            employerType = EmployerType.UKPartnership(Right("test partnership id")),
+//            totalTransferValue = 78.99
+//          )
+//        )
+//      )
+//    )
 
   val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
     EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
@@ -330,7 +581,8 @@ trait TestValues {
       None
     ),
     None,
-    None
+    None,
+    memberPayments = None
   )
 
   // SIPP - PSR
