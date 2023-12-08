@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.transformations
 
-import play.api.libs.json.{Json, OFormat}
-
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  memberPayments: Option[MemberPayments]
-)
-
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+trait ETMPTransformer[In, Out] extends Transformer {
+  def toEtmp(in: In): Out
+  def fromEtmp(out: Out): In
 }

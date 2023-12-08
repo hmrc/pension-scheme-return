@@ -24,7 +24,8 @@ case class PsrSubmissionEtmpRequest(
   accountingPeriodDetails: EtmpAccountingPeriodDetails,
   schemeDesignatory: EtmpSchemeDesignatory,
   loans: Option[EtmpLoans],
-  assets: Option[EtmpAssets]
+  assets: Option[EtmpAssets],
+  memberPayments: Option[EtmpMemberPayments]
 )
 
 object PsrSubmissionEtmpRequest {

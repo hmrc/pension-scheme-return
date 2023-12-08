@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  memberPayments: Option[MemberPayments]
+case class MemberPayments(memberDetails: List[MemberDetails])
+
+case class MemberDetails(
+  personalDetails: MemberPersonalDetails,
+  employerContributions: List[EmployerContributions]
 )
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object MemberPayments {
+  private implicit val formatMemberDetails: Format[MemberDetails] = Json.format[MemberDetails]
+  implicit val format: Format[MemberPayments] = Json.format[MemberPayments]
 }

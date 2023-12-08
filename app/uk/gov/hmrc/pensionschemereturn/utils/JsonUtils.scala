@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.utils
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import cats.syntax.either._
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  memberPayments: Option[MemberPayments]
-)
-
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object JsonUtils {
+  // Creates a Json format for an either value type
+  def eitherFormat[A: Format, B: Format](leftName: String, rightName: String): Format[Either[A, B]] =
+    Format(
+      fjs = (__ \ leftName).read[A].map(_.asLeft[B]) |
+        (__ \ rightName).read[B].map(_.asRight[A]),
+      tjs = _.fold(
+        left => Json.obj(leftName -> left),
+        right => Json.obj(rightName -> right)
+      )
+    )
 }
