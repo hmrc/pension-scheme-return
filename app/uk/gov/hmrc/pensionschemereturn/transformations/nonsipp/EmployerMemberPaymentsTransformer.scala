@@ -18,9 +18,10 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpMemberDetails, EtmpMemberPayments}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.MemberPayments
-import uk.gov.hmrc.pensionschemereturn.transformations.ETMPTransformer
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
+import cats.syntax.traverse._
 
 @Singleton()
 class EmployerMemberPaymentsTransformer @Inject()(
@@ -55,5 +56,17 @@ class EmployerMemberPaymentsTransformer @Inject()(
       }
     )
 
-  override def fromEtmp(out: EtmpMemberPayments): MemberPayments = MemberPayments(Nil)
+  override def fromEtmp(out: EtmpMemberPayments): Either[TransformerError, MemberPayments] = {
+
+    val memberDetails: Either[TransformerError, List[MemberDetails]] = out.memberDetails.traverse { member =>
+      for {
+        memberPersonalDetails <- memberPersonalDetailsTransformer.fromEtmp(member.personalDetails)
+        employerContributions <- member.memberEmpContribution.traverse(employerContributionsTransformer.fromEtmp)
+      } yield MemberDetails(
+        personalDetails = memberPersonalDetails,
+        employerContributions = employerContributions
+      )
+    }
+    memberDetails.map(MemberPayments(_))
+  }
 }

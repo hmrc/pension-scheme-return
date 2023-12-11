@@ -16,7 +16,24 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations
 
-trait ETMPTransformer[In, Out] extends Transformer {
-  def toEtmp(in: In): Out
-  def fromEtmp(out: Out): Either[TransformerError, In]
+import play.api.libs.json.{Json, Writes}
+
+sealed trait TransformerError {
+  val value: String
+}
+
+object TransformerError {
+  case object NoIdOrReason extends TransformerError {
+    val value = "both idNumber and reasonNoIdNumber are empty for UKCompany"
+  }
+
+  case object NoNinoOrReason extends TransformerError {
+    val value = "both nino and reasonNoNino are empty"
+  }
+
+  case object OtherNoDescription extends TransformerError {
+    val value = "Identity is Other but description is missing"
+  }
+
+  implicit val writes: Writes[TransformerError] = err => Json.obj("error" -> err.value)
 }

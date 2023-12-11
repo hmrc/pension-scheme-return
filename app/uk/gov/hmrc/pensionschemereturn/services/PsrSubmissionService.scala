@@ -24,6 +24,7 @@ import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, Header
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
@@ -64,9 +65,8 @@ class PsrSubmissionService @Inject()(
     optPsrVersion: Option[String]
   )(
     implicit headerCarrier: HeaderCarrier,
-    ec: ExecutionContext,
-    request: RequestHeader
-  ): Future[Option[PsrSubmission]] =
+    ec: ExecutionContext
+  ): Future[Option[Either[TransformerError, PsrSubmission]]] =
     psrConnector
       .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
       .map(_.map(standardPsrFromEtmp.transform))
