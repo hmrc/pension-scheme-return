@@ -156,48 +156,60 @@ trait TestValues {
     )
   )
 
+  val sampleEmployerContribution1 = EmployerContributions(
+    employerName = "test employer one",
+    employerType = EmployerType.UKCompany(Right("test company id")),
+    totalTransferValue = 12.34
+  )
+
+  val sampleEmployerContribution2 = EmployerContributions(
+    employerName = "test employer two",
+    employerType = EmployerType.UKCompany(Left("test reason")),
+    totalTransferValue = 34.56
+  )
+
+  val sampleEmployerContribution3 = EmployerContributions(
+    employerName = "test employer three",
+    employerType = EmployerType.Other("test description"),
+    totalTransferValue = 56.78
+  )
+
+  val sampleEmployerContributions4 = EmployerContributions(
+    employerName = "test employer four",
+    employerType = EmployerType.UKPartnership(Right("test partnership id")),
+    totalTransferValue = 78.99
+  )
+
+  val sampleMemberDetails1 = MemberDetails(
+    MemberPersonalDetails(
+      firstName = "test first one",
+      lastName = "test last one",
+      ninoOrReason = Right("nino"),
+      dateOfBirth = sampleToday
+    ),
+    employerContributions = List(
+      sampleEmployerContribution1,
+      sampleEmployerContribution2
+    )
+  )
+
+  val sampleMemberDetails2 = MemberDetails(
+    MemberPersonalDetails(
+      firstName = "test first two",
+      lastName = "test last two",
+      ninoOrReason = Left("no nino reason"),
+      dateOfBirth = sampleToday
+    ),
+    employerContributions = List(
+      sampleEmployerContribution3,
+      sampleEmployerContributions4
+    )
+  )
+
   val sampleMemberPayments: MemberPayments = MemberPayments(
     memberDetails = List(
-      MemberDetails(
-        MemberPersonalDetails(
-          firstName = "test first one",
-          lastName = "test last one",
-          ninoOrReason = Right("nino"),
-          dateOfBirth = sampleToday
-        ),
-        employerContributions = List(
-          EmployerContributions(
-            employerName = "test employer one",
-            employerType = EmployerType.UKCompany(Right("test company id")),
-            totalTransferValue = 12.34
-          ),
-          EmployerContributions(
-            employerName = "test employer two",
-            employerType = EmployerType.UKCompany(Left("test reason")),
-            totalTransferValue = 34.56
-          )
-        )
-      ),
-      MemberDetails(
-        MemberPersonalDetails(
-          firstName = "test first two",
-          lastName = "test last two",
-          ninoOrReason = Left("no nino reason"),
-          dateOfBirth = sampleToday
-        ),
-        employerContributions = List(
-          EmployerContributions(
-            employerName = "test employer three",
-            employerType = EmployerType.Other("test description"),
-            totalTransferValue = 56.78
-          ),
-          EmployerContributions(
-            employerName = "test employer four",
-            employerType = EmployerType.UKPartnership(Right("test partnership id")),
-            totalTransferValue = 78.99
-          )
-        )
-      )
+      sampleMemberDetails1,
+      sampleMemberDetails2
     )
   )
 
@@ -372,16 +384,16 @@ trait TestValues {
         noOfTransfersOut = 0,
         pensionAmountReceived = 0,
         personalDetails = EtmpMemberPersonalDetails(
-          foreName = "test first one",
+          foreName = sampleMemberDetails1.personalDetails.firstName,
           middleName = None,
-          lastName = "test last one",
-          nino = Some("nino"),
+          lastName = sampleMemberDetails1.personalDetails.lastName,
+          nino = sampleMemberDetails1.personalDetails.ninoOrReason.toOption,
           reasonNoNino = None,
           dateOfBirth = sampleToday
         ),
         memberEmpContribution = List(
           EtmpEmployerContributions(
-            orgName = "test employer one",
+            orgName = sampleEmployerContribution1.employerName,
             organisationIdentity = OrganisationIdentity(
               orgType = EmployerContributionsOrgType.UKCompany,
               idNumber = Some("test company id"),
@@ -391,7 +403,7 @@ trait TestValues {
             totalContribution = 12.34
           ),
           EtmpEmployerContributions(
-            orgName = "test employer two",
+            orgName = sampleEmployerContribution2.employerName,
             organisationIdentity = OrganisationIdentity(
               orgType = EmployerContributionsOrgType.UKCompany,
               idNumber = None,
@@ -415,26 +427,26 @@ trait TestValues {
           middleName = None,
           lastName = "test last two",
           nino = None,
-          reasonNoNino = Some("test reason"),
+          reasonNoNino = Some("no nino reason"),
           dateOfBirth = sampleToday
         ),
         memberEmpContribution = List(
           EtmpEmployerContributions(
-            orgName = "test employer three",
+            orgName = sampleEmployerContribution3.employerName,
             organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.UKCompany,
-              idNumber = Some("test company id"),
+              orgType = EmployerContributionsOrgType.Other,
+              idNumber = None,
               reasonNoIdNumber = None,
-              otherDescription = None
+              otherDescription = Some("test description")
             ),
             totalContribution = 56.78
           ),
           EtmpEmployerContributions(
-            orgName = "test employer four",
+            orgName = sampleEmployerContributions4.employerName,
             organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.UKCompany,
-              idNumber = None,
-              reasonNoIdNumber = Some("test reason"),
+              orgType = EmployerContributionsOrgType.UKPartnership,
+              idNumber = Some("test partnership id"),
+              reasonNoIdNumber = None,
               otherDescription = None
             ),
             totalContribution = 78.99
@@ -561,7 +573,8 @@ trait TestValues {
           otherAssetsWereDisposed = "No"
         )
       )
-    )
+    ),
+    memberPayments = None
   )
 
   val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(

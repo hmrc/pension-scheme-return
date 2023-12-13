@@ -58,7 +58,8 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     )
     psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
       case None => NotFound
-      case Some(psrSubmission) => Ok(Json.toJson(psrSubmission))
+      case Some(Right(psrSubmission)) => Ok(Json.toJson(psrSubmission))
+      case Some(Left(error)) => InternalServerError(Json.toJson(error))
     }
   }
 }

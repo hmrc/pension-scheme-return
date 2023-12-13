@@ -16,16 +16,13 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import com.softwaremill.diffx.generic.AutoDerivation
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
-  EtmpAccountingPeriodDetails,
-  EtmpAssets,
-  EtmpLoans,
-  EtmpSchemeDesignatory
-}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.response.{EtmpPsrDetails, EtmpSchemeDetails, PsrSubmissionEtmpResponse}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import utils.TestValues
@@ -35,21 +32,30 @@ class StandardPsrFromEtmpSpec
     with MockitoSugar
     with Transformer
     with BeforeAndAfterEach
+    with DiffShouldMatcher
+    with AutoDerivation
     with TestValues {
 
   override protected def beforeEach(): Unit = {
     reset(mockMinimalRequiredSubmissionFromEtmp)
     reset(mockLoansFromEtmp)
     reset(mockAssetsFromEtmp)
+    reset(mockMemberPayments)
     super.beforeEach()
   }
 
   val mockMinimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp = mock[MinimalRequiredSubmissionFromEtmp]
   val mockLoansFromEtmp: LoansFromEtmp = mock[LoansFromEtmp]
   val mockAssetsFromEtmp: AssetsFromEtmp = mock[AssetsFromEtmp]
+  val mockMemberPayments: EmployerMemberPaymentsTransformer = mock[EmployerMemberPaymentsTransformer]
 
   private val transformation =
-    new StandardPsrFromEtmp(mockMinimalRequiredSubmissionFromEtmp, mockLoansFromEtmp, mockAssetsFromEtmp)
+    new StandardPsrFromEtmp(
+      mockMinimalRequiredSubmissionFromEtmp,
+      mockLoansFromEtmp,
+      mockAssetsFromEtmp,
+      mockMemberPayments
+    )
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails when checkReturnDates is true" in {
 
@@ -61,10 +67,11 @@ class StandardPsrFromEtmpSpec
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
-      assets = None
+      assets = None,
+      memberPayments = None
     )
 
-    transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(samplePsrSubmission)
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
     verify(mockAssetsFromEtmp, never).transform(any())
@@ -83,15 +90,18 @@ class StandardPsrFromEtmpSpec
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
-      assets = None
+      assets = None,
+      memberPayments = None
     )
 
     val updatedReportDetails =
       samplePsrSubmission.minimalRequiredSubmission.reportDetails.copy(periodStart = sampleToday.plusDays(1))
-    transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(
-      minimalRequiredSubmission =
-        samplePsrSubmission.minimalRequiredSubmission.copy(reportDetails = updatedReportDetails),
-      checkReturnDates = false
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
+      samplePsrSubmission.copy(
+        minimalRequiredSubmission =
+          samplePsrSubmission.minimalRequiredSubmission.copy(reportDetails = updatedReportDetails),
+        checkReturnDates = false
+      )
     )
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
@@ -109,10 +119,13 @@ class StandardPsrFromEtmpSpec
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = Some(mock[EtmpLoans]),
-      assets = None
+      assets = None,
+      memberPayments = None
     )
 
-    transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(loans = Some(sampleLoans))
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
+      samplePsrSubmission.copy(loans = Some(sampleLoans))
+    )
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, times(1)).transform(any())
     verify(mockAssetsFromEtmp, never).transform(any())
@@ -129,12 +142,39 @@ class StandardPsrFromEtmpSpec
       accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
-      assets = Some(mock[EtmpAssets])
+      assets = Some(mock[EtmpAssets]),
+      memberPayments = None
     )
 
-    transformation.transform(psrSubmissionResponse) mustEqual samplePsrSubmission.copy(assets = Some(sampleAssets))
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
+      samplePsrSubmission.copy(assets = Some(sampleAssets))
+    )
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
     verify(mockAssetsFromEtmp, times(1)).transform(any())
+  }
+
+  "PSR submission should successfully transform to etmp format with member payments" in {
+
+    when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(sampleMinimalRequiredSubmission)
+    when(mockMemberPayments.fromEtmp(any())).thenReturn(Right(sampleMemberPayments))
+
+    val psrSubmissionResponse = PsrSubmissionEtmpResponse(
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
+      accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
+      schemeDesignatory = mock[EtmpSchemeDesignatory],
+      loans = None,
+      assets = None,
+      memberPayments = Some(mock[EtmpMemberPayments])
+    )
+
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
+      samplePsrSubmission.copy(memberPayments = Some(sampleMemberPayments))
+    )
+    verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
+    verify(mockLoansFromEtmp, never).transform(any())
+    verify(mockAssetsFromEtmp, never).transform(any())
+    verify(mockMemberPayments, times(1)).fromEtmp(any())
   }
 }

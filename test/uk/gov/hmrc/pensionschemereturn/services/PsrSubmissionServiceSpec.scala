@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
+import com.softwaremill.diffx.generic.AutoDerivation
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
@@ -34,7 +36,12 @@ import utils.{BaseSpec, TestValues}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValues {
+class PsrSubmissionServiceSpec
+    extends BaseSpec
+    with MockitoSugar
+    with TestValues
+    with DiffShouldMatcher
+    with AutoDerivation {
 
   override def beforeEach(): Unit = {
     reset(mockPsrConnector)
@@ -63,7 +70,7 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
       when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(None))
 
-      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[PsrSubmission] =>
+      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result =>
         result mustBe None
 
         verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
@@ -75,10 +82,10 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
 
       when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Some(samplePsrSubmissionEtmpResponse)))
-      when(mockStandardPsrFromEtmp.transform(any())).thenReturn(samplePsrSubmission)
+      when(mockStandardPsrFromEtmp.transform(any())).thenReturn(Right(samplePsrSubmission))
 
-      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result: Option[PsrSubmission] =>
-        result mustBe Some(samplePsrSubmission)
+      whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result =>
+        result shouldMatchTo Some(Right(samplePsrSubmission))
 
         verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
         verify(mockStandardPsrFromEtmp, times(1)).transform(any())

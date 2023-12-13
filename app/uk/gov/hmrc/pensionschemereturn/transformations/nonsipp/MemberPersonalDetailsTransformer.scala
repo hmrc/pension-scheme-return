@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpMemberPersonalDetails
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.MemberPersonalDetails
-import uk.gov.hmrc.pensionschemereturn.transformations.ETMPTransformer
+import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
 class MemberPersonalDetailsTransformer @Inject()()
@@ -35,5 +35,13 @@ class MemberPersonalDetailsTransformer @Inject()()
       dateOfBirth = memberPersonalDetails.dateOfBirth
     )
 
-  override def fromEtmp(out: EtmpMemberPersonalDetails): MemberPersonalDetails = ???
+  override def fromEtmp(out: EtmpMemberPersonalDetails): Either[TransformerError, MemberPersonalDetails] =
+    for {
+      ninoOrReason <- (out.reasonNoNino, out.nino).toEither(TransformerError.NoNinoOrReason)
+    } yield MemberPersonalDetails(
+      firstName = out.foreName,
+      lastName = out.lastName,
+      ninoOrReason = ninoOrReason,
+      dateOfBirth = out.dateOfBirth
+    )
 }

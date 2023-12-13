@@ -25,7 +25,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   OrganisationIdentity
 }
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{EmployerContributions, EmployerType, Loans}
-import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, Transformer}
+import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, Transformer, TransformerError}
 
 @Singleton()
 class EmployerContributionsTransformer @Inject()()
@@ -38,7 +38,14 @@ class EmployerContributionsTransformer @Inject()()
       totalContribution = employerContributions.totalTransferValue
     )
 
-  override def fromEtmp(out: EtmpEmployerContributions): EmployerContributions = ???
+  override def fromEtmp(out: EtmpEmployerContributions): Either[TransformerError, EmployerContributions] =
+    for {
+      employerType <- toEmployerType(out.organisationIdentity)
+    } yield EmployerContributions(
+      employerName = out.orgName,
+      employerType = employerType,
+      totalTransferValue = out.totalContribution
+    )
 
   private def toOrgIdentity(employerType: EmployerType): OrganisationIdentity = employerType match {
     case EmployerType.UKCompany(Left(reason)) =>
@@ -53,18 +60,33 @@ class EmployerContributionsTransformer @Inject()()
       )
     case EmployerType.UKPartnership(Left(reason)) =>
       OrganisationIdentity(
-        orgType = EmployerContributionsOrgType.UKCompany,
+        orgType = EmployerContributionsOrgType.UKPartnership,
         reasonNoIdNumber = Some(reason)
       )
     case EmployerType.UKPartnership(Right(id)) =>
       OrganisationIdentity(
-        orgType = EmployerContributionsOrgType.UKCompany,
+        orgType = EmployerContributionsOrgType.UKPartnership,
         idNumber = Some(id)
       )
     case EmployerType.Other(description) =>
       OrganisationIdentity(
-        orgType = EmployerContributionsOrgType.UKCompany,
+        orgType = EmployerContributionsOrgType.Other,
         otherDescription = Some(description)
       )
+  }
+
+  private def toEmployerType(o: OrganisationIdentity): Either[TransformerError, EmployerType] = o.orgType match {
+    case EmployerContributionsOrgType.UKCompany =>
+      (o.reasonNoIdNumber, o.idNumber)
+        .toEither(TransformerError.NoIdOrReason)
+        .map(EmployerType.UKCompany)
+    case EmployerContributionsOrgType.UKPartnership =>
+      (o.reasonNoIdNumber, o.idNumber)
+        .toEither(TransformerError.NoIdOrReason)
+        .map(EmployerType.UKPartnership)
+    case EmployerContributionsOrgType.Other =>
+      o.otherDescription
+        .toRight(TransformerError.OtherNoDescription)
+        .map(EmployerType.Other)
   }
 }

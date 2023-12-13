@@ -33,6 +33,7 @@ trait Transformer {
   protected val Unconnected: String = "02"
 
   protected def toYesNo(condition: Boolean): String = if (condition) Yes else No
+
   protected def optToYesNo(optValue: Option[_]): String = optValue.map(_ => Yes).getOrElse(No)
 
   protected def fromYesNo(value: String): Boolean = value == Yes
@@ -53,4 +54,14 @@ trait Transformer {
   protected def transformToEtmpConnectedPartyStatus(condition: Boolean): String =
     if (condition) Connected else Unconnected
 
+  // Used to easily convert optional ETMP data where 1 is required to an Either
+  // e.g. Nino or Reason for No Nino
+  // returns None if both are empty
+  implicit class Tuple2OptionOps[A, B](tup: (Option[A], Option[B])) {
+    def toEither(error: TransformerError): Either[TransformerError, Either[A, B]] = tup match {
+      case (Some(a), _) => Right(Left(a))
+      case (_, Some(b)) => Right(Right(b))
+      case _ => Left(error)
+    }
+  }
 }

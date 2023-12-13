@@ -22,6 +22,8 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   EtmpAccountingPeriodDetails,
   EtmpAssets,
   EtmpLoans,
+  EtmpMemberDetails,
+  EtmpMemberPayments,
   EtmpSchemeDesignatory
 }
 
@@ -33,7 +35,8 @@ case class PsrSubmissionEtmpResponse(
   accountingPeriodDetails: EtmpAccountingPeriodDetails,
   schemeDesignatory: EtmpSchemeDesignatory,
   loans: Option[EtmpLoans],
-  assets: Option[EtmpAssets]
+  assets: Option[EtmpAssets],
+  memberPayments: Option[EtmpMemberPayments]
 )
 
 case class EtmpSchemeDetails(

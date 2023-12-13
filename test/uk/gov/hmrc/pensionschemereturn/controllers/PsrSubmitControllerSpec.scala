@@ -182,8 +182,8 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
   "GET standard PSR" must {
     "return 200" in {
 
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Some(samplePsrSubmission)))
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(Right(samplePsrSubmission))))
 
       val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(fakeRequest)
       status(result) mustBe Status.OK
@@ -191,7 +191,7 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
 
     "return 404" in {
 
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(None))
 
       val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(fakeRequest)
