@@ -24,12 +24,14 @@ case class Assets(landOrProperty: LandOrProperty, borrowing: Borrowing)
 
 case class LandOrProperty(
   landOrPropertyHeld: Boolean,
+  disposeAnyLandOrProperty: Boolean,
   landOrPropertyTransactions: Seq[LandOrPropertyTransactions]
 )
 
 case class LandOrPropertyTransactions(
   propertyDetails: PropertyDetails,
-  heldPropertyTransaction: HeldPropertyTransaction
+  heldPropertyTransaction: HeldPropertyTransaction,
+  optDisposedPropertyTransaction: Option[Seq[DisposedPropertyTransaction]]
 )
 
 case class PropertyDetails(
@@ -51,6 +53,18 @@ case class HeldPropertyTransaction(
   optLeaseDetails: Option[LeaseDetails],
   landOrPropertyLeased: Boolean,
   totalIncomeOrReceipts: Double
+)
+
+case class DisposedPropertyTransaction(
+  methodOfDisposal: HowDisposed,
+  optOtherMethod: Option[String],
+  optDateOfSale: Option[LocalDate],
+  optNameOfPurchaser: Option[String],
+  optPropertyAcquiredFrom: Option[PropertyAcquiredFrom],
+  optSaleProceeds: Option[Double],
+  optConnectedPartyStatus: Option[Boolean],
+  optIndepValuationSupport: Option[Boolean],
+  portionStillHeld: Boolean
 )
 
 case class PropertyAcquiredFrom(
@@ -88,6 +102,8 @@ object Assets {
   private implicit val formatPropertyAcquiredFrom: OFormat[PropertyAcquiredFrom] = Json.format[PropertyAcquiredFrom]
   private implicit val formatHeldPropertyTransaction: OFormat[HeldPropertyTransaction] =
     Json.format[HeldPropertyTransaction]
+  private implicit val formatDisposedPropertyTransaction: OFormat[DisposedPropertyTransaction] =
+    Json.format[DisposedPropertyTransaction]
   private implicit val formatPropertyDetails: OFormat[PropertyDetails] = Json.format[PropertyDetails]
   private implicit val formatLandOrPropertyTransactions: OFormat[LandOrPropertyTransactions] =
     Json.format[LandOrPropertyTransactions]

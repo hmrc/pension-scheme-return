@@ -115,6 +115,7 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |  "assets": {
           |    "landOrProperty": {
           |      "landOrPropertyHeld": true,
+          |      "disposeAnyLandOrProperty": true,
           |      "landOrPropertyTransactions": [
           |        {
           |          "propertyDetails": {
@@ -151,7 +152,22 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |            },
           |            "landOrPropertyLeased": true,
           |            "totalIncomeOrReceipts": 90
-          |          }
+          |          },
+          |          "disposedPropertyTransaction": [
+          |             {
+          |               "methodOfDisposal": "Sold",
+          |               "optDateOfSale": "2009-03-01",
+          |               "optNameOfPurchaser": "Purchaser-Test",
+          |               "optPropertyAcquiredFrom": {
+          |                 "identityType": "individual",
+          |                 "idNumber": "SX123456D"
+          |               },
+          |               "optSaleProceeds": 1907,
+          |               "optConnectedPartyStatus": true,
+          |               "optIndepValuationSupport": false,
+          |               "portionStillHeld": true
+          |             }
+          |          ]
           |        }
           |      ]
           |    },

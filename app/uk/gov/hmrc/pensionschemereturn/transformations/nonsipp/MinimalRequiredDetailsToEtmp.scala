@@ -23,7 +23,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.MinimalRequiredSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class MinimalRequiredDetailsToEtmp @Inject()() extends Transformer {
+class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
 
   def transform(minimalRequiredSubmission: MinimalRequiredSubmission): EtmpMinimalRequiredSubmission =
     EtmpMinimalRequiredSubmission(

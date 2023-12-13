@@ -20,7 +20,8 @@ import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, SectionStatus, Standard}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.UKCompany
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.Sold
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
@@ -102,6 +103,7 @@ trait TestValues {
   val sampleAssets: Assets = Assets(
     landOrProperty = LandOrProperty(
       landOrPropertyHeld = true,
+      disposeAnyLandOrProperty = true,
       landOrPropertyTransactions = Seq(
         LandOrPropertyTransactions(
           propertyDetails = PropertyDetails(
@@ -136,6 +138,28 @@ trait TestValues {
             ),
             landOrPropertyLeased = true,
             totalIncomeOrReceipts = Double.MaxValue
+          ),
+          optDisposedPropertyTransaction = Some(
+            Seq(
+              DisposedPropertyTransaction(
+                methodOfDisposal = Sold,
+                optOtherMethod = None,
+                optDateOfSale = Some(sampleToday),
+                optNameOfPurchaser = Some("NameOfPurchaser"),
+                optPropertyAcquiredFrom = Some(
+                  PropertyAcquiredFrom(
+                    identityType = Individual,
+                    idNumber = Some("idNumber"),
+                    reasonNoIdNumber = None,
+                    otherDescription = None
+                  )
+                ),
+                optSaleProceeds = Some(Double.MaxValue),
+                optConnectedPartyStatus = Some(true),
+                optIndepValuationSupport = Some(false),
+                portionStillHeld = true
+              )
+            )
           )
         )
       )
@@ -273,7 +297,7 @@ trait TestValues {
   private val sampleEtmpLandOrProperty: EtmpLandOrProperty = EtmpLandOrProperty(
     recordVersion = Some("001"),
     heldAnyLandOrProperty = "Yes",
-    disposeAnyLandOrProperty = "No",
+    disposeAnyLandOrProperty = "Yes",
     noOfTransactions = 1,
     landOrPropertyTransactions = List(
       EtmpLandOrPropertyTransactions(
@@ -312,6 +336,28 @@ trait TestValues {
             )
           ),
           totalIncomeOrReceipts = Double.MaxValue
+        ),
+        disposedPropertyTransaction = Some(
+          List(
+            EtmpDisposedPropertyTransaction(
+              methodOfDisposal = "01",
+              otherMethod = None,
+              dateOfSale = Some(sampleToday),
+              nameOfPurchaser = Some("NameOfPurchaser"),
+              purchaseOrgDetails = Some(
+                EtmpIdentityType(
+                  indivOrOrgType = "01",
+                  idNumber = Some("idNumber"),
+                  reasonNoIdNumber = None,
+                  otherDescription = None
+                )
+              ),
+              saleProceeds = Some(Double.MaxValue),
+              connectedPartyStatus = Some("01"),
+              indepValuationSupport = Some("No"),
+              portionStillHeld = "Yes"
+            )
+          )
         )
       )
     )

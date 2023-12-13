@@ -19,30 +19,32 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Assets
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.howDisposedToString
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.schemeHoldLandPropertyToString
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class AssetsToEtmp @Inject()() extends Transformer {
+class AssetsToEtmp @Inject() extends Transformer {
 
   def transform(assets: Assets): EtmpAssets =
     EtmpAssets(
       landOrProperty = EtmpLandOrProperty(
         recordVersion = None,
         heldAnyLandOrProperty = toYesNo(assets.landOrProperty.landOrPropertyHeld),
-        disposeAnyLandOrProperty = toYesNo(false), //TODO
+        disposeAnyLandOrProperty = toYesNo(assets.landOrProperty.disposeAnyLandOrProperty),
         noOfTransactions = assets.landOrProperty.landOrPropertyTransactions.size,
         landOrPropertyTransactions = assets.landOrProperty.landOrPropertyTransactions.map(
           landOrPropertyTransaction => {
 
             val propertyDetails = landOrPropertyTransaction.propertyDetails
             val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
+            val optDisposedPropertyTransaction = landOrPropertyTransaction.optDisposedPropertyTransaction
             val landRegistryReferenceExist = propertyDetails.landRegistryTitleNumberKey
             val landRegistryReferenceValue = propertyDetails.landRegistryTitleNumberValue
             val addressDetails = propertyDetails.addressDetails
 
             EtmpLandOrPropertyTransactions(
-              EtmpPropertyDetails(
+              propertyDetails = EtmpPropertyDetails(
                 landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                 addressDetails = EtmpAddress(
                   addressLine1 = addressDetails.addressLine1,
@@ -59,7 +61,7 @@ class AssetsToEtmp @Inject()() extends Transformer {
                   Option.when(!landRegistryReferenceExist)(landRegistryReferenceValue)
                 )
               ),
-              EtmpHeldPropertyTransaction(
+              heldPropertyTransaction = EtmpHeldPropertyTransaction(
                 methodOfHolding = schemeHoldLandPropertyToString(heldPropertyTransaction.methodOfHolding),
                 dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
                 propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
@@ -88,6 +90,31 @@ class AssetsToEtmp @Inject()() extends Transformer {
                     )
                 ),
                 totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
+              ),
+              disposedPropertyTransaction = optDisposedPropertyTransaction.map(
+                _.map(
+                  disposedPropertyTransaction =>
+                    EtmpDisposedPropertyTransaction(
+                      methodOfDisposal = howDisposedToString(disposedPropertyTransaction.methodOfDisposal),
+                      otherMethod = disposedPropertyTransaction.optOtherMethod,
+                      dateOfSale = disposedPropertyTransaction.optDateOfSale,
+                      nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
+                      purchaseOrgDetails = disposedPropertyTransaction.optPropertyAcquiredFrom.map(
+                        propertyAcquiredFrom =>
+                          transformToEtmpIdentityType(
+                            identityType = propertyAcquiredFrom.identityType,
+                            optIdNumber = propertyAcquiredFrom.idNumber,
+                            optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                            optOtherDescription = propertyAcquiredFrom.otherDescription
+                          )
+                      ),
+                      saleProceeds = disposedPropertyTransaction.optSaleProceeds,
+                      connectedPartyStatus =
+                        disposedPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                      indepValuationSupport = disposedPropertyTransaction.optIndepValuationSupport.map(toYesNo),
+                      portionStillHeld = toYesNo(disposedPropertyTransaction.portionStillHeld)
+                    )
+                )
               )
             )
           }

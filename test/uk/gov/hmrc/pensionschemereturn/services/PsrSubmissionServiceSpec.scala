@@ -28,7 +28,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
 import utils.{BaseSpec, TestValues}

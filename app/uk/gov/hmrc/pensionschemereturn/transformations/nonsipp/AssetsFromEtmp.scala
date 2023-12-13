@@ -18,23 +18,26 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpAssets
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.stringToHowDisposed
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.stringToIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.stringToSchemeHoldLandProperty
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class AssetsFromEtmp @Inject()() extends Transformer {
+class AssetsFromEtmp @Inject() extends Transformer {
 
   def transform(assets: EtmpAssets): Assets =
     Assets(
       landOrProperty = LandOrProperty(
         landOrPropertyHeld = fromYesNo(assets.landOrProperty.heldAnyLandOrProperty),
+        disposeAnyLandOrProperty = fromYesNo(assets.landOrProperty.disposeAnyLandOrProperty),
         landOrPropertyTransactions = assets.landOrProperty.landOrPropertyTransactions.map(
           landOrPropertyTransaction => {
 
             val propertyDetails = landOrPropertyTransaction.propertyDetails
             val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
+            val disposedPropertyTransaction = landOrPropertyTransaction.disposedPropertyTransaction
             val addressDetails = propertyDetails.addressDetails
 
             LandOrPropertyTransactions(
@@ -82,6 +85,30 @@ class AssetsFromEtmp @Inject()() extends Transformer {
                 ),
                 landOrPropertyLeased = fromYesNo(heldPropertyTransaction.landOrPropertyLeased),
                 totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
+              ),
+              optDisposedPropertyTransaction = disposedPropertyTransaction.map(
+                _.map(
+                  dpt =>
+                    DisposedPropertyTransaction(
+                      methodOfDisposal = stringToHowDisposed(dpt.methodOfDisposal),
+                      optOtherMethod = dpt.otherMethod,
+                      optDateOfSale = dpt.dateOfSale,
+                      optNameOfPurchaser = dpt.nameOfPurchaser,
+                      optPropertyAcquiredFrom = dpt.purchaseOrgDetails.map { etmpIdentityType =>
+                        val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
+                        PropertyAcquiredFrom(
+                          identityType = identityType,
+                          idNumber = etmpIdentityType.idNumber,
+                          reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
+                          otherDescription = etmpIdentityType.otherDescription
+                        )
+                      },
+                      optSaleProceeds = dpt.saleProceeds,
+                      optConnectedPartyStatus = dpt.connectedPartyStatus.map(_ == Connected),
+                      optIndepValuationSupport = dpt.indepValuationSupport.map(fromYesNo),
+                      portionStillHeld = fromYesNo(dpt.portionStillHeld)
+                    )
+                )
               )
             )
           }

@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Loans
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class LoansToEtmp @Inject()() extends Transformer {
+class LoansToEtmp @Inject() extends Transformer {
 
   def transform(loans: Loans): EtmpLoans =
     EtmpLoans(
