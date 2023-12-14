@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.{Other, Sold, Transferred}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -36,7 +37,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
         landOrProperty = EtmpLandOrProperty(
           recordVersion = None,
           heldAnyLandOrProperty = Yes,
-          disposeAnyLandOrProperty = No,
+          disposeAnyLandOrProperty = Yes,
           noOfTransactions = 1,
           landOrPropertyTransactions = Seq(
             EtmpLandOrPropertyTransactions(
@@ -83,6 +84,50 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                   )
                 ),
                 totalIncomeOrReceipts = Double.MaxValue
+              ),
+              disposedPropertyTransaction = Some(
+                Seq(
+                  EtmpDisposedPropertyTransaction(
+                    methodOfDisposal = "01",
+                    otherMethod = None,
+                    dateOfSale = Some(today),
+                    nameOfPurchaser = Some("NameOfPurchaser"),
+                    purchaseOrgDetails = Some(
+                      EtmpIdentityType(
+                        indivOrOrgType = "02",
+                        idNumber = None,
+                        reasonNoIdNumber = Some("NoCrnReason"),
+                        otherDescription = None
+                      )
+                    ),
+                    saleProceeds = Some(Double.MaxValue),
+                    connectedPartyStatus = Some(Connected),
+                    indepValuationSupport = Some(Yes),
+                    portionStillHeld = No
+                  ),
+                  EtmpDisposedPropertyTransaction(
+                    methodOfDisposal = "02",
+                    otherMethod = None,
+                    dateOfSale = None,
+                    nameOfPurchaser = None,
+                    purchaseOrgDetails = None,
+                    saleProceeds = None,
+                    connectedPartyStatus = None,
+                    indepValuationSupport = None,
+                    portionStillHeld = No
+                  ),
+                  EtmpDisposedPropertyTransaction(
+                    methodOfDisposal = "03",
+                    otherMethod = Some("OtherMethod"),
+                    dateOfSale = None,
+                    nameOfPurchaser = None,
+                    purchaseOrgDetails = None,
+                    saleProceeds = None,
+                    connectedPartyStatus = None,
+                    indepValuationSupport = None,
+                    portionStillHeld = Yes
+                  )
+                )
               )
             )
           )
@@ -109,6 +154,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
       val expected = Assets(
         landOrProperty = LandOrProperty(
           landOrPropertyHeld = true,
+          disposeAnyLandOrProperty = true,
           landOrPropertyTransactions = List(
             LandOrPropertyTransactions(
               propertyDetails = PropertyDetails(
@@ -150,6 +196,50 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
                 ),
                 landOrPropertyLeased = true,
                 totalIncomeOrReceipts = Double.MaxValue
+              ),
+              optDisposedPropertyTransaction = Some(
+                Seq(
+                  DisposedPropertyTransaction(
+                    methodOfDisposal = Sold,
+                    optOtherMethod = None,
+                    optDateOfSale = Some(today),
+                    optNameOfPurchaser = Some("NameOfPurchaser"),
+                    optPropertyAcquiredFrom = Some(
+                      PropertyAcquiredFrom(
+                        IdentityType.UKCompany,
+                        None,
+                        Some("NoCrnReason"),
+                        None
+                      )
+                    ),
+                    optSaleProceeds = Some(Double.MaxValue),
+                    optConnectedPartyStatus = Some(true),
+                    optIndepValuationSupport = Some(true),
+                    portionStillHeld = false
+                  ),
+                  DisposedPropertyTransaction(
+                    methodOfDisposal = Transferred,
+                    optOtherMethod = None,
+                    optDateOfSale = None,
+                    optNameOfPurchaser = None,
+                    optPropertyAcquiredFrom = None,
+                    optSaleProceeds = None,
+                    optConnectedPartyStatus = None,
+                    optIndepValuationSupport = None,
+                    portionStillHeld = false
+                  ),
+                  DisposedPropertyTransaction(
+                    methodOfDisposal = Other,
+                    optOtherMethod = Some("OtherMethod"),
+                    optDateOfSale = None,
+                    optNameOfPurchaser = None,
+                    optPropertyAcquiredFrom = None,
+                    optSaleProceeds = None,
+                    optConnectedPartyStatus = None,
+                    optIndepValuationSupport = None,
+                    portionStillHeld = true
+                  )
+                )
               )
             )
           )

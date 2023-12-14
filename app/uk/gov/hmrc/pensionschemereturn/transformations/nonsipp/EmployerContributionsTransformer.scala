@@ -20,15 +20,13 @@ import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
   EmployerContributionsOrgType,
   EtmpEmployerContributions,
-  EtmpLoanTransactions,
-  EtmpLoans,
   OrganisationIdentity
 }
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{EmployerContributions, EmployerType, Loans}
-import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, Transformer, TransformerError}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{EmployerContributions, EmployerType}
+import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
-class EmployerContributionsTransformer @Inject()()
+class EmployerContributionsTransformer @Inject()
     extends ETMPTransformer[EmployerContributions, EtmpEmployerContributions] {
 
   override def toEtmp(employerContributions: EmployerContributions): EtmpEmployerContributions =

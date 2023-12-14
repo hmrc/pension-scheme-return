@@ -937,7 +937,7 @@ object PsrConnectorSpec {
       |        "landOrProperty": {
       |            "recordVersion": "001",
       |            "heldAnyLandOrProperty": "Yes",
-      |            "disposeAnyLandOrProperty": "No",
+      |            "disposeAnyLandOrProperty": "Yes",
       |            "noOfTransactions": 1,
       |            "landOrPropertyTransactions": [
       |                {
@@ -979,16 +979,16 @@ object PsrConnectorSpec {
       |                    "disposedPropertyTransaction": [
       |                        {
       |                            "methodOfDisposal": "01",
-      |                            "dateOfSale": "2022-10-19",
-      |                            "nameOfPurchaser": "Victor Enterprises Inc.",
+      |                            "dateOfSale": "2023-10-19",
+      |                            "nameOfPurchaser": "NameOfPurchaser",
       |                            "purchaseOrgDetails": {
-      |                                "indivOrOrgType": "02",
-      |                                "idNumber": "24896221"
+      |                                "indivOrOrgType": "01",
+      |                                "idNumber": "idNumber"
       |                            },
-      |                            "saleProceeds": 1500000,
+      |                            "saleProceeds": 1.7976931348623157E+308,
       |                            "connectedPartyStatus": "01",
       |                            "indepValuationSupport": "No",
-      |                            "portionStillHeld": "No"
+      |                            "portionStillHeld": "Yes"
       |                        }
       |                    ]
       |                }

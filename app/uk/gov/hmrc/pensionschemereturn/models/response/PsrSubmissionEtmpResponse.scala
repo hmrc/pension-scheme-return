@@ -18,14 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.response
 
 import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
-  EtmpAccountingPeriodDetails,
-  EtmpAssets,
-  EtmpLoans,
-  EtmpMemberDetails,
-  EtmpMemberPayments,
-  EtmpSchemeDesignatory
-}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 
 import java.time.{LocalDate, LocalDateTime}
 

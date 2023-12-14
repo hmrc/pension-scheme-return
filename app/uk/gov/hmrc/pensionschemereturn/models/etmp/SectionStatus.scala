@@ -29,7 +29,7 @@ object SectionStatus {
   case object Changed extends SectionStatus {
     val value = "Changed"
   }
-  case object Deleted extends SectionStatus {
+  private case object Deleted extends SectionStatus {
     val value = "Deleted"
   }
 
@@ -38,7 +38,7 @@ object SectionStatus {
       case JsString(New.value) => JsSuccess(New)
       case JsString(Changed.value) => JsSuccess(Changed)
       case JsString(Deleted.value) => JsSuccess(Deleted)
-      case unknown => JsError(s"Unknown value for SectionStatus ${unknown}")
+      case unknown => JsError(s"Unknown value for SectionStatus $unknown")
     },
     status => JsString(status.value)
   )

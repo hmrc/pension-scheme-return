@@ -63,7 +63,8 @@ case class EtmpOtherAssets(
 
 case class EtmpLandOrPropertyTransactions(
   propertyDetails: EtmpPropertyDetails,
-  heldPropertyTransaction: EtmpHeldPropertyTransaction
+  heldPropertyTransaction: EtmpHeldPropertyTransaction,
+  disposedPropertyTransaction: Option[Seq[EtmpDisposedPropertyTransaction]]
 )
 
 case class EtmpPropertyDetails(
@@ -84,6 +85,18 @@ case class EtmpHeldPropertyTransaction(
   landOrPropertyLeased: String,
   leaseDetails: Option[EtmpLeaseDetails],
   totalIncomeOrReceipts: Double
+)
+
+case class EtmpDisposedPropertyTransaction(
+  methodOfDisposal: String,
+  otherMethod: Option[String],
+  dateOfSale: Option[LocalDate],
+  nameOfPurchaser: Option[String],
+  purchaseOrgDetails: Option[EtmpIdentityType],
+  saleProceeds: Option[Double],
+  connectedPartyStatus: Option[String],
+  indepValuationSupport: Option[String],
+  portionStillHeld: String
 )
 
 case class EtmpLeaseDetails(
@@ -119,6 +132,8 @@ object EtmpAssets {
     Json.format[EtmpAddress]
   private implicit val formatsEtmpHeldPropertyTransaction: OFormat[EtmpHeldPropertyTransaction] =
     Json.format[EtmpHeldPropertyTransaction]
+  private implicit val formatsEtmpDisposedPropertyTransaction: OFormat[EtmpDisposedPropertyTransaction] =
+    Json.format[EtmpDisposedPropertyTransaction]
   private implicit val formatsEtmpPropertyDetails: OFormat[EtmpPropertyDetails] =
     Json.format[EtmpPropertyDetails]
   private implicit val formatsEtmpLandOrPropertyTransactions: OFormat[EtmpLandOrPropertyTransactions] =
