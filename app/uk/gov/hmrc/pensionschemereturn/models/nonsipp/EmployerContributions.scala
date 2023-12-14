@@ -44,7 +44,7 @@ object EmployerType {
       .tupled
       .flatMap {
         case ("UKCompany", either) => Reads.pure(EmployerType.UKCompany(either))
-        case ("UKPartnership", either) => Reads.pure(EmployerType.UKCompany(either))
+        case ("UKPartnership", either) => Reads.pure(EmployerType.UKPartnership(either))
         case ("Other", Right(description)) => Reads.pure(EmployerType.Other(description))
         case unknown => Reads.failed(s"Failed to read EmployerType with unknown pattern $unknown")
       }

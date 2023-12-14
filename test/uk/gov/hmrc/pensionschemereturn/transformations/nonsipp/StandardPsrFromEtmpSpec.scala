@@ -68,7 +68,7 @@ class StandardPsrFromEtmpSpec
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
       assets = None,
-      memberPayments = None
+      membersPayments = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(samplePsrSubmission)
@@ -91,7 +91,7 @@ class StandardPsrFromEtmpSpec
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
       assets = None,
-      memberPayments = None
+      membersPayments = None
     )
 
     val updatedReportDetails =
@@ -120,7 +120,7 @@ class StandardPsrFromEtmpSpec
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = Some(mock[EtmpLoans]),
       assets = None,
-      memberPayments = None
+      membersPayments = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -143,7 +143,7 @@ class StandardPsrFromEtmpSpec
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
       assets = Some(mock[EtmpAssets]),
-      memberPayments = None
+      membersPayments = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -166,11 +166,11 @@ class StandardPsrFromEtmpSpec
       schemeDesignatory = mock[EtmpSchemeDesignatory],
       loans = None,
       assets = None,
-      memberPayments = Some(mock[EtmpMemberPayments])
+      membersPayments = Some(mock[EtmpMemberPayments])
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
-      samplePsrSubmission.copy(memberPayments = Some(sampleMemberPayments))
+      samplePsrSubmission.copy(membersPayments = Some(sampleMemberPayments))
     )
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())

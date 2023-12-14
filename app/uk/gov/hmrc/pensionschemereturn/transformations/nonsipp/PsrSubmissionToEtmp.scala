@@ -37,7 +37,7 @@ class PsrSubmissionToEtmp @Inject()(
       etmpMinimalRequiredSubmission.schemeDesignatory,
       loans = psrSubmission.loans.map(loansToEtmp.transform),
       assets = psrSubmission.assets.map(assetsToEtmp.transform),
-      memberPayments = psrSubmission.memberPayments.map(memberPaymentsTransformer.toEtmp)
+      memberPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp)
     )
   }
 

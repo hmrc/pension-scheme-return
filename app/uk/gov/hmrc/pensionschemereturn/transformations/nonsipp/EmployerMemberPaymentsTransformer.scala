@@ -32,7 +32,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = None,
-      employerContributionMade = false,
+      employerContributionMade = memberPayments.memberDetails.exists(_.employerContributions.nonEmpty),
       unallocatedContribsMade = false,
       unallocatedContribAmount = None,
       memberContributionMade = false,
@@ -49,7 +49,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
           totalContributions = 0,
           noOfTransfersIn = 0,
           noOfTransfersOut = 0,
-          pensionAmountReceived = 0,
+          pensionAmountReceived = None,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
           memberEmpContribution = memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp)
         )

@@ -26,12 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
-import uk.gov.hmrc.pensionschemereturn.models.response.{
-  PsrOverviewEtmpResponse,
-  PsrSubmissionEtmpResponse,
-  PsrVersionsEtmpResponse,
-  SippPsrSubmissionEtmpResponse
-}
+import uk.gov.hmrc.pensionschemereturn.models.response._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -66,7 +61,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           )
         )
 
-        result mustBe sampleOverviewResponse
+        result shouldMatchTo sampleOverviewResponse
       }
     }
 
@@ -278,7 +273,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
             getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber"))
           )
 
-          result mustBe Some(samplePsrSubmissionEtmpResponse)
+          result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -298,7 +293,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
               )
             )
           )
-          result mustBe Some(samplePsrSubmissionEtmpResponse)
+          result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -1112,6 +1107,7 @@ object PsrConnectorSpec {
       |    }
       |}
       |""".stripMargin
+
   val sampleSippPsrResponseAsJsonString: String =
     """
       |{

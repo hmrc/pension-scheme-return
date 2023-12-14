@@ -17,18 +17,17 @@
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.pensionschemereturn.utils.JsonUtils
 
 import java.time.LocalDate
 
 case class MemberPersonalDetails(
   firstName: String,
   lastName: String,
-  ninoOrReason: Either[String, String],
+  nino: Option[String],
+  reasonNoNINO: Option[String],
   dateOfBirth: LocalDate
 )
 
 object MemberPersonalDetails {
-  private implicit val formatNinoOrReason: Format[Either[String, String]] = JsonUtils.eitherFormat("reason", "nino")
   implicit val format: Format[MemberPersonalDetails] = Json.format[MemberPersonalDetails]
 }

@@ -54,7 +54,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         checkReturnDates = false,
         loans = None,
         assets = None,
-        memberPayments = None
+        membersPayments = None
       )
 
       val expected = PsrSubmissionEtmpRequest(
@@ -85,7 +85,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         checkReturnDates = false,
         loans = Some(mock[Loans]),
         assets = Some(mock[Assets]),
-        memberPayments = Some(mock[MemberPayments])
+        membersPayments = Some(mock[MemberPayments])
       )
 
       val expected = PsrSubmissionEtmpRequest(

@@ -38,7 +38,7 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
     val psrSubmission = requiredBody.as[PsrSubmission]
-    logger.debug(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
+    logger.info(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
     psrSubmissionService
       .submitStandardPsr(psrSubmission)
       .map(response => {
