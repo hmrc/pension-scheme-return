@@ -34,7 +34,7 @@ class StandardPsrFromEtmp @Inject()(
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): Either[TransformerError, PsrSubmission] =
     for {
-      memberPayments <- psrSubmissionResponse.memberPayments.traverse(memberPaymentsTransformer.fromEtmp)
+      memberPayments <- psrSubmissionResponse.membersPayments.traverse(memberPaymentsTransformer.fromEtmp)
       minimalRequiredSubmission = minimalRequiredSubmissionFromEtmp.transform(psrSubmissionResponse)
     } yield PsrSubmission(
       minimalRequiredSubmission = minimalRequiredSubmission,
@@ -42,7 +42,7 @@ class StandardPsrFromEtmp @Inject()(
         isCheckReturnDates(minimalRequiredSubmission.reportDetails, minimalRequiredSubmission.accountingPeriods.head),
       loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
       assets = psrSubmissionResponse.assets.map(assetsFromEtmp.transform),
-      memberPayments = memberPayments
+      membersPayments = memberPayments
     )
 
   private def isCheckReturnDates(reportDetails: ReportDetails, accountingPeriods: (LocalDate, LocalDate)): Boolean =

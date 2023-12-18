@@ -19,14 +19,14 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpMemberPersonalDetails
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.MemberPersonalDetails
-import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
 class MemberPersonalDetailsTransformerSpec extends EtmpTransformerSpec {
 
   private val memberPersonalDetails = MemberPersonalDetails(
     firstName = "test first one",
     lastName = "test last one",
-    ninoOrReason = Right("nino"),
+    nino = Some("nino"),
+    reasonNoNINO = None,
     dateOfBirth = sampleToday
   )
 
@@ -35,7 +35,7 @@ class MemberPersonalDetailsTransformerSpec extends EtmpTransformerSpec {
     middleName = None,
     lastName = "test last one",
     nino = Some("nino"),
-    reasonNoNino = None,
+    reasonNoNINO = None,
     dateOfBirth = sampleToday
   )
 
@@ -50,21 +50,6 @@ class MemberPersonalDetailsTransformerSpec extends EtmpTransformerSpec {
       val result = memberPersonalDetailsTransformer.fromEtmp(etmpMemberPersonalDetails)
 
       result shouldMatchTo Right(memberPersonalDetails)
-    }
-
-    "fail to transform from ETMP format when both nino and no nino reason are missing" in {
-      val incorrectEtmpMemberPersonalDetails = EtmpMemberPersonalDetails(
-        foreName = "test first one",
-        middleName = None,
-        lastName = "test last one",
-        nino = None,
-        reasonNoNino = None,
-        dateOfBirth = sampleToday
-      )
-
-      val result = memberPersonalDetailsTransformer.fromEtmp(incorrectEtmpMemberPersonalDetails)
-
-      result shouldMatchTo Left(TransformerError.NoNinoOrReason)
     }
   }
 }

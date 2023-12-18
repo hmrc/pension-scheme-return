@@ -17,21 +17,21 @@
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{SectionStatus, YesNo}
 
 import java.time.LocalDate
 
 case class EtmpMemberPayments(
   recordVersion: Option[String],
-  employerContributionMade: Boolean,
-  unallocatedContribsMade: Boolean,
+  employerContributionMade: YesNo,
+  unallocatedContribsMade: YesNo,
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: Boolean,
-  schemeReceivedTransferIn: Boolean,
-  schemeMadeTransferOut: Boolean,
-  lumpSumReceived: Boolean,
-  pensionReceived: Boolean,
-  surrenderMade: Boolean,
+  memberContributionMade: YesNo,
+  schemeReceivedTransferIn: YesNo,
+  schemeMadeTransferOut: YesNo,
+  lumpSumReceived: YesNo,
+  pensionReceived: YesNo,
+  surrenderMade: YesNo,
   memberDetails: List[EtmpMemberDetails]
 )
 
@@ -42,7 +42,7 @@ case class EtmpMemberDetails(
   totalContributions: Double,
   noOfTransfersIn: Int,
   noOfTransfersOut: Int,
-  pensionAmountReceived: Double,
+  pensionAmountReceived: Option[Double],
   personalDetails: EtmpMemberPersonalDetails,
   memberEmpContribution: List[EtmpEmployerContributions]
 )
@@ -52,7 +52,7 @@ case class EtmpMemberPersonalDetails(
   middleName: Option[String],
   lastName: String,
   nino: Option[String],
-  reasonNoNino: Option[String],
+  reasonNoNINO: Option[String],
   dateOfBirth: LocalDate
 )
 

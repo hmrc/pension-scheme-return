@@ -30,18 +30,19 @@ class MemberPersonalDetailsTransformer @Inject()()
       foreName = memberPersonalDetails.firstName,
       middleName = None,
       lastName = memberPersonalDetails.lastName,
-      nino = memberPersonalDetails.ninoOrReason.toOption,
-      reasonNoNino = memberPersonalDetails.ninoOrReason.swap.toOption,
+      nino = memberPersonalDetails.nino,
+      reasonNoNINO = memberPersonalDetails.reasonNoNINO,
       dateOfBirth = memberPersonalDetails.dateOfBirth
     )
 
   override def fromEtmp(out: EtmpMemberPersonalDetails): Either[TransformerError, MemberPersonalDetails] =
-    for {
-      ninoOrReason <- (out.reasonNoNino, out.nino).toEither(TransformerError.NoNinoOrReason)
-    } yield MemberPersonalDetails(
-      firstName = out.foreName,
-      lastName = out.lastName,
-      ninoOrReason = ninoOrReason,
-      dateOfBirth = out.dateOfBirth
+    Right(
+      MemberPersonalDetails(
+        firstName = out.foreName,
+        lastName = out.lastName,
+        nino = out.nino,
+        reasonNoNINO = out.reasonNoNINO,
+        dateOfBirth = out.dateOfBirth
+      )
     )
 }

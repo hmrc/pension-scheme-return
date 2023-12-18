@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations
 
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
@@ -64,4 +65,6 @@ trait Transformer {
       case _ => Left(error)
     }
   }
+
+  implicit def implicitToYesNo(bool: Boolean): YesNo = YesNo(bool)
 }

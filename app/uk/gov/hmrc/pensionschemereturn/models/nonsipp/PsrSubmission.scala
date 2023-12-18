@@ -23,7 +23,7 @@ case class PsrSubmission(
   checkReturnDates: Boolean,
   loans: Option[Loans],
   assets: Option[Assets],
-  memberPayments: Option[MemberPayments]
+  membersPayments: Option[MemberPayments]
 )
 
 object PsrSubmission {
