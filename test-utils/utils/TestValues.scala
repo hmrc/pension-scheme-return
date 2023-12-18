@@ -237,7 +237,8 @@ trait TestValues {
     memberDetails = List(
       sampleMemberDetails1,
       sampleMemberDetails2
-    )
+    ),
+    employerContributionsCompleted = true
   )
 
   // Standard - ETMP
@@ -427,7 +428,7 @@ trait TestValues {
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
         memberPSRVersion = "0",
-        noOfContributions = None,
+        noOfContributions = Some(2),
         totalContributions = 0,
         noOfTransfersIn = 0,
         noOfTransfersOut = 0,
@@ -466,7 +467,7 @@ trait TestValues {
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
         memberPSRVersion = "0",
-        noOfContributions = None,
+        noOfContributions = Some(2),
         totalContributions = 0,
         noOfTransfersIn = 0,
         noOfTransfersOut = 0,

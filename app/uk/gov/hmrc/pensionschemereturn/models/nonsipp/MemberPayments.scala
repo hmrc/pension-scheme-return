@@ -18,7 +18,10 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Format, Json}
 
-case class MemberPayments(memberDetails: List[MemberDetails])
+case class MemberPayments(
+  memberDetails: List[MemberDetails],
+  employerContributionsCompleted: Boolean
+)
 
 case class MemberDetails(
   personalDetails: MemberPersonalDetails,
