@@ -234,6 +234,8 @@ trait TestValues {
   )
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
+    unallocatedContribsMade = true,
+    unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberDetails = List(
       sampleMemberDetails1,
       sampleMemberDetails2
@@ -416,8 +418,8 @@ trait TestValues {
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
     recordVersion = None,
     employerContributionMade = Yes,
-    unallocatedContribsMade = No,
-    unallocatedContribAmount = None,
+    unallocatedContribsMade = Yes,
+    unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberContributionMade = No,
     schemeReceivedTransferIn = No,
     schemeMadeTransferOut = No,
@@ -794,4 +796,6 @@ trait TestValues {
       )
     )
   )
+
+  val sampleUnallocatedContribAmount = 201.34
 }

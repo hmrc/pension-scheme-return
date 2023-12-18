@@ -32,6 +32,8 @@ object YesNo {
 
   def apply(bool: Boolean): YesNo = if (bool) Yes else No
 
+  def unapply(yesNo: YesNo): Boolean = yesNo == Yes
+
   implicit val writes: Writes[YesNo] = yesNo => JsString(yesNo.value)
   implicit val reads: Reads[YesNo] = Reads {
     case JsString(Yes.value) => JsSuccess(Yes)

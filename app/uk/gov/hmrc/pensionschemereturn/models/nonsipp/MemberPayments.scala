@@ -20,7 +20,9 @@ import play.api.libs.json.{Format, Json}
 
 case class MemberPayments(
   memberDetails: List[MemberDetails],
-  employerContributionsCompleted: Boolean
+  employerContributionsCompleted: Boolean,
+  unallocatedContribsMade: Boolean,
+  unallocatedContribAmount: Option[Double]
 )
 
 case class MemberDetails(
