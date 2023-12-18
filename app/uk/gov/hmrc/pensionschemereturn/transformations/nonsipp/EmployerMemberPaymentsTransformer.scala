@@ -32,7 +32,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = None,
-      employerContributionMade = memberPayments.memberDetails.exists(_.employerContributions.nonEmpty),
+      employerContributionMade = memberPayments.employerContributionsCompleted,
       unallocatedContribsMade = false,
       unallocatedContribAmount = None,
       memberContributionMade = false,
@@ -45,7 +45,8 @@ class EmployerMemberPaymentsTransformer @Inject()(
         EtmpMemberDetails(
           memberStatus = SectionStatus.New,
           memberPSRVersion = "0",
-          noOfContributions = None,
+          noOfContributions =
+            if (memberPayments.employerContributionsCompleted) Some(memberDetails.employerContributions.size) else None,
           totalContributions = 0,
           noOfTransfersIn = 0,
           noOfTransfersOut = 0,
@@ -67,6 +68,13 @@ class EmployerMemberPaymentsTransformer @Inject()(
         employerContributions = employerContributions
       )
     }
-    memberDetails.map(MemberPayments(_))
+
+    memberDetails.map(
+      details =>
+        MemberPayments(
+          memberDetails = details,
+          employerContributionsCompleted = out.memberDetails.exists(_.noOfContributions.nonEmpty)
+        )
+    )
   }
 }
