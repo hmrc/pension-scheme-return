@@ -262,5 +262,139 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
 
       transformation.transform(assets) mustEqual expected
     }
+
+    "as an Other for LandOrProperty with an empty optDisposedPropertyTransaction sequence" in {
+      val assets = Assets(
+        landOrProperty = LandOrProperty(
+          landOrPropertyHeld = true,
+          disposeAnyLandOrProperty = true,
+          landOrPropertyTransactions = List(
+            LandOrPropertyTransactions(
+              propertyDetails = PropertyDetails(
+                landOrPropertyInUK = true,
+                addressDetails = Address(
+                  "testAddressLine1",
+                  None,
+                  Some("testAddressLine3"),
+                  "town",
+                  Some("GB135HG"),
+                  "GB"
+                ),
+                landRegistryTitleNumberKey = true,
+                landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
+              ),
+              heldPropertyTransaction = HeldPropertyTransaction(
+                methodOfHolding = SchemeHoldLandProperty.Acquisition,
+                dateOfAcquisitionOrContribution = Some(today),
+                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                optPropertyAcquiredFrom = Some(
+                  PropertyAcquiredFrom(
+                    IdentityType.Other,
+                    None,
+                    None,
+                    Some("Other Desc")
+                  )
+                ),
+                optConnectedPartyStatus = Some(false),
+                totalCostOfLandOrProperty = Double.MaxValue,
+                optIndepValuationSupport = Some(false),
+                isLandOrPropertyResidential = false,
+                optLeaseDetails = None,
+                landOrPropertyLeased = false,
+                totalIncomeOrReceipts = Double.MaxValue
+              ),
+              optDisposedPropertyTransaction = Some(
+                Seq.empty
+              )
+            )
+          )
+        ),
+        borrowing = Borrowing(
+          moneyWasBorrowed = true,
+          moneyBorrowed = Seq(
+            MoneyBorrowed(
+              dateOfBorrow = today,
+              schemeAssetsValue = Double.MinPositiveValue,
+              amountBorrowed = Double.MaxValue,
+              interestRate = Double.MaxValue,
+              borrowingFromName = "borrowingFromName",
+              connectedPartyStatus = true,
+              reasonForBorrow = "reasonForBorrow"
+            )
+          )
+        )
+      )
+
+      val expected = EtmpAssets(
+        landOrProperty = EtmpLandOrProperty(
+          recordVersion = None,
+          heldAnyLandOrProperty = Yes,
+          disposeAnyLandOrProperty = Yes,
+          noOfTransactions = 1,
+          landOrPropertyTransactions = Seq(
+            EtmpLandOrPropertyTransactions(
+              propertyDetails = EtmpPropertyDetails(
+                landOrPropertyInUK = Yes,
+                addressDetails = EtmpAddress(
+                  addressLine1 = "testAddressLine1",
+                  addressLine2 = "town",
+                  addressLine3 = Some("testAddressLine3"),
+                  addressLine4 = None,
+                  addressLine5 = None,
+                  ukPostCode = Some("GB135HG"),
+                  countryCode = "GB"
+                ),
+                landRegistryDetails = EtmpLandRegistryDetails(
+                  landRegistryReferenceExists = Yes,
+                  landRegistryReference = Some("landRegistryTitleNumberValue"),
+                  reasonNoReference = None
+                )
+              ),
+              heldPropertyTransaction = EtmpHeldPropertyTransaction(
+                methodOfHolding = "01",
+                dateOfAcquisitionOrContribution = Some(today),
+                propertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                propertyAcquiredFrom = Some(
+                  EtmpIdentityType(
+                    indivOrOrgType = "04",
+                    idNumber = None,
+                    reasonNoIdNumber = None,
+                    otherDescription = Some("Other Desc")
+                  )
+                ),
+                connectedPartyStatus = Some(Unconnected),
+                totalCostOfLandOrProperty = Double.MaxValue,
+                indepValuationSupport = Some(No),
+                residentialSchedule29A = No,
+                landOrPropertyLeased = No,
+                leaseDetails = None,
+                totalIncomeOrReceipts = Double.MaxValue
+              ),
+              disposedPropertyTransaction = None
+            )
+          )
+        ),
+        borrowing = EtmpBorrowing(
+          recordVersion = None,
+          moneyWasBorrowed = Yes,
+          noOfBorrows = Some(1),
+          moneyBorrowed = Seq(
+            EtmpMoneyBorrowed(
+              dateOfBorrow = today,
+              schemeAssetsValue = Double.MinPositiveValue,
+              amountBorrowed = Double.MaxValue,
+              interestRate = Double.MaxValue,
+              borrowingFromName = "borrowingFromName",
+              connectedPartyStatus = Connected,
+              reasonForBorrow = "reasonForBorrow"
+            )
+          )
+        ),
+        bonds = EtmpBonds(bondsWereAdded = No, bondsWereDisposed = No),
+        otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
+      )
+
+      transformation.transform(assets) mustEqual expected
+    }
   }
 }
