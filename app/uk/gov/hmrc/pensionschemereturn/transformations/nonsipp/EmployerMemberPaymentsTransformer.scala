@@ -22,6 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 import cats.syntax.traverse._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 
 @Singleton()
 class EmployerMemberPaymentsTransformer @Inject()(
@@ -33,8 +34,9 @@ class EmployerMemberPaymentsTransformer @Inject()(
     EtmpMemberPayments(
       recordVersion = None,
       employerContributionMade = memberPayments.employerContributionsCompleted,
-      unallocatedContribsMade = false,
-      unallocatedContribAmount = None,
+      unallocatedContribsMade = memberPayments.unallocatedContribsMade,
+      unallocatedContribAmount =
+        if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
       memberContributionMade = false,
       schemeReceivedTransferIn = false,
       schemeMadeTransferOut = false,
@@ -68,12 +70,13 @@ class EmployerMemberPaymentsTransformer @Inject()(
         employerContributions = employerContributions
       )
     }
-
     memberDetails.map(
       details =>
         MemberPayments(
           memberDetails = details,
-          employerContributionsCompleted = out.memberDetails.exists(_.noOfContributions.nonEmpty)
+          employerContributionsCompleted = out.memberDetails.exists(_.noOfContributions.nonEmpty),
+          unallocatedContribsMade = unapply(out.unallocatedContribsMade),
+          unallocatedContribAmount = out.unallocatedContribAmount
         )
     )
   }
