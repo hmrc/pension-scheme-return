@@ -91,31 +91,33 @@ class AssetsToEtmp @Inject() extends Transformer {
                 ),
                 totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
               ),
-              disposedPropertyTransaction = optDisposedPropertyTransaction.map(
-                _.map(
-                  disposedPropertyTransaction =>
-                    EtmpDisposedPropertyTransaction(
-                      methodOfDisposal = howDisposedToString(disposedPropertyTransaction.methodOfDisposal),
-                      otherMethod = disposedPropertyTransaction.optOtherMethod,
-                      dateOfSale = disposedPropertyTransaction.optDateOfSale,
-                      nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
-                      purchaseOrgDetails = disposedPropertyTransaction.optPropertyAcquiredFrom.map(
-                        propertyAcquiredFrom =>
-                          transformToEtmpIdentityType(
-                            identityType = propertyAcquiredFrom.identityType,
-                            optIdNumber = propertyAcquiredFrom.idNumber,
-                            optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-                            optOtherDescription = propertyAcquiredFrom.otherDescription
-                          )
-                      ),
-                      saleProceeds = disposedPropertyTransaction.optSaleProceeds,
-                      connectedPartyStatus =
-                        disposedPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
-                      indepValuationSupport = disposedPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                      portionStillHeld = toYesNo(disposedPropertyTransaction.portionStillHeld)
-                    )
+              disposedPropertyTransaction = optDisposedPropertyTransaction
+                .map(
+                  _.map(
+                    disposedPropertyTransaction =>
+                      EtmpDisposedPropertyTransaction(
+                        methodOfDisposal = howDisposedToString(disposedPropertyTransaction.methodOfDisposal),
+                        otherMethod = disposedPropertyTransaction.optOtherMethod,
+                        dateOfSale = disposedPropertyTransaction.optDateOfSale,
+                        nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
+                        purchaseOrgDetails = disposedPropertyTransaction.optPropertyAcquiredFrom.map(
+                          propertyAcquiredFrom =>
+                            transformToEtmpIdentityType(
+                              identityType = propertyAcquiredFrom.identityType,
+                              optIdNumber = propertyAcquiredFrom.idNumber,
+                              optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                              optOtherDescription = propertyAcquiredFrom.otherDescription
+                            )
+                        ),
+                        saleProceeds = disposedPropertyTransaction.optSaleProceeds,
+                        connectedPartyStatus =
+                          disposedPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                        indepValuationSupport = disposedPropertyTransaction.optIndepValuationSupport.map(toYesNo),
+                        portionStillHeld = toYesNo(disposedPropertyTransaction.portionStillHeld)
+                      )
+                  )
                 )
-              )
+                .filter(_.nonEmpty)
             )
           }
         )
