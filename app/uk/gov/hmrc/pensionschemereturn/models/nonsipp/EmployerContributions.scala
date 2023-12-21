@@ -73,7 +73,7 @@ object EmployerType {
       )
     case Other(description) =>
       Json.obj(
-        "employerType" -> "UKPartnership",
+        "employerType" -> "Other",
         "value" -> description
       )
   }
