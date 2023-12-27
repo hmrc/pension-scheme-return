@@ -27,8 +27,8 @@ object TransformerError {
     val value = "both idNumber and reasonNoIdNumber are empty for UKCompany"
   }
 
-  case object NoNinoOrReason extends TransformerError {
-    val value = "both nino and reasonNoNino are empty"
+  case class UnknownError(msg: String) extends TransformerError {
+    val value = msg
   }
 
   case object OtherNoDescription extends TransformerError {

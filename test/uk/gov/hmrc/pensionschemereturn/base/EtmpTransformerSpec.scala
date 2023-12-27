@@ -26,7 +26,8 @@ import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{
   EmployerContributionsTransformer,
   EmployerMemberPaymentsTransformer,
   MemberPersonalDetailsTransformer,
-  MinimalRequiredDetailsToEtmp
+  MinimalRequiredDetailsToEtmp,
+  TransferInTransformer
 }
 import utils.TestValues
 
@@ -43,9 +44,11 @@ trait EtmpTransformerSpec
   val minimalRequiredDetailsToEtmp = new MinimalRequiredDetailsToEtmp()
   val employerContributionsTransformer = new EmployerContributionsTransformer()
   val memberPersonalDetailsTransformer = new MemberPersonalDetailsTransformer()
+  val transferInTransformer = new TransferInTransformer()
 
   val employerMemberPaymentsTransformer = new EmployerMemberPaymentsTransformer(
     employerContributionsTransformer,
-    memberPersonalDetailsTransformer
+    memberPersonalDetailsTransformer,
+    transferInTransformer
   )
 }

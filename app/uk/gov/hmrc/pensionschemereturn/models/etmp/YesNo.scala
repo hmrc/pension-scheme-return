@@ -20,14 +20,17 @@ import play.api.libs.json.{JsError, JsString, JsSuccess, Reads, Writes}
 
 sealed trait YesNo {
   val value: String
+  val boolean: Boolean
 }
 
 object YesNo {
   case object Yes extends YesNo {
     val value = "Yes"
+    val boolean = true
   }
   case object No extends YesNo {
     val value = "No"
+    val boolean = false
   }
 
   def apply(bool: Boolean): YesNo = if (bool) Yes else No
