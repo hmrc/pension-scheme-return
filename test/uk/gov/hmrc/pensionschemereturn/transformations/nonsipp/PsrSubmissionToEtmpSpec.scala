@@ -27,21 +27,21 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
     reset(mockMinimalRequiredDetailsToEtmp)
     reset(mockLoansToEtmp)
     reset(mockAssetsToEtmp)
-    reset(mockEmployerMemberPaymentsTransformer)
+    reset(mockMemberPaymentsTransformer)
     super.beforeEach()
   }
 
   private val mockMinimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp = mock[MinimalRequiredDetailsToEtmp]
   private val mockLoansToEtmp: LoansToEtmp = mock[LoansToEtmp]
   private val mockAssetsToEtmp: AssetsToEtmp = mock[AssetsToEtmp]
-  private val mockEmployerMemberPaymentsTransformer = mock[EmployerMemberPaymentsTransformer]
+  private val mockMemberPaymentsTransformer = mock[MemberPaymentsTransformer]
 
   private val transformation: PsrSubmissionToEtmp =
     new PsrSubmissionToEtmp(
       mockMinimalRequiredDetailsToEtmp,
       mockLoansToEtmp,
       mockAssetsToEtmp,
-      mockEmployerMemberPaymentsTransformer
+      mockMemberPaymentsTransformer
     )
 
   "PsrSubmissionToEtmp" should {
@@ -71,6 +71,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
       verify(mockLoansToEtmp, never).transform(any())
       verify(mockAssetsToEtmp, never).transform(any())
       verify(mockAssetsToEtmp, never).transform(any())
+      verify(mockMemberPaymentsTransformer, never).toEtmp(any())
     }
 
     "PSR submission should successfully transform to etmp format" in {
@@ -78,7 +79,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
       when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
       when(mockLoansToEtmp.transform(any())).thenReturn(sampleEtmpLoans)
       when(mockAssetsToEtmp.transform(any())).thenReturn(sampleEtmpAssets)
-      when(mockEmployerMemberPaymentsTransformer.toEtmp(any())).thenReturn(sampleEtmpMemberPayments)
+      when(mockMemberPaymentsTransformer.toEtmp(any())).thenReturn(sampleEtmpMemberPayments)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
@@ -101,6 +102,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
       verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any())
       verify(mockLoansToEtmp, times(1)).transform(any())
       verify(mockAssetsToEtmp, times(1)).transform(any())
+      verify(mockMemberPaymentsTransformer, times(1)).toEtmp(any())
     }
   }
 }

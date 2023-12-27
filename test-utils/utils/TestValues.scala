@@ -181,25 +181,25 @@ trait TestValues {
     )
   )
 
-  val sampleEmployerContribution1 = EmployerContributions(
+  val sampleEmployerContribution1: EmployerContributions = EmployerContributions(
     employerName = "test employer one",
     employerType = EmployerType.UKCompany(Right("test company id")),
     totalTransferValue = 12.34
   )
 
-  val sampleEmployerContribution2 = EmployerContributions(
+  val sampleEmployerContribution2: EmployerContributions = EmployerContributions(
     employerName = "test employer two",
     employerType = EmployerType.UKCompany(Left("test reason")),
     totalTransferValue = 34.56
   )
 
-  val sampleEmployerContribution3 = EmployerContributions(
+  val sampleEmployerContribution3: EmployerContributions = EmployerContributions(
     employerName = "test employer three",
     employerType = EmployerType.Other("test description"),
     totalTransferValue = 56.78
   )
 
-  val sampleEmployerContributions4 = EmployerContributions(
+  val sampleEmployerContributions4: EmployerContributions = EmployerContributions(
     employerName = "test employer four",
     employerType = EmployerType.UKPartnership(Right("test partnership id")),
     totalTransferValue = 78.99
@@ -221,7 +221,7 @@ trait TestValues {
     transferIncludedAsset = false
   )
 
-  val sampleMemberDetails1 = MemberDetails(
+  val sampleMemberDetails1: MemberDetails = MemberDetails(
     MemberPersonalDetails(
       firstName = "test first one",
       lastName = "test last one",
@@ -233,12 +233,13 @@ trait TestValues {
       sampleEmployerContribution1,
       sampleEmployerContribution2
     ),
+    totalContributions = Some(Double.MaxValue),
     transfersIn = List(
       sampleTransfersIn1
     )
   )
 
-  val sampleMemberDetails2 = MemberDetails(
+  val sampleMemberDetails2: MemberDetails = MemberDetails(
     MemberPersonalDetails(
       firstName = "test first two",
       lastName = "test last two",
@@ -250,6 +251,7 @@ trait TestValues {
       sampleEmployerContribution3,
       sampleEmployerContributions4
     ),
+    totalContributions = None,
     transfersIn = List(
       sampleTransfersIn2
     )
@@ -263,6 +265,7 @@ trait TestValues {
       sampleMemberDetails2
     ),
     employerContributionsCompleted = true,
+    memberContributionMade = true,
     transfersInCompleted = true
   )
 
@@ -443,7 +446,7 @@ trait TestValues {
     employerContributionMade = Yes,
     unallocatedContribsMade = Yes,
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
-    memberContributionMade = No,
+    memberContributionMade = Yes,
     schemeReceivedTransferIn = Yes,
     schemeMadeTransferOut = No,
     lumpSumReceived = No,
@@ -454,7 +457,7 @@ trait TestValues {
         memberStatus = SectionStatus.New,
         memberPSRVersion = "0",
         noOfContributions = Some(2),
-        totalContributions = 0,
+        totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
         noOfTransfersOut = 0,
         pensionAmountReceived = None,
@@ -502,7 +505,7 @@ trait TestValues {
         memberStatus = SectionStatus.New,
         memberPSRVersion = "0",
         noOfContributions = Some(2),
-        totalContributions = 0,
+        totalContributions = None,
         noOfTransfersIn = Some(1),
         noOfTransfersOut = 0,
         pensionAmountReceived = None,
@@ -649,7 +652,7 @@ trait TestValues {
             memberStatus = SectionStatus.Changed,
             memberPSRVersion = "001",
             noOfContributions = Some(2),
-            totalContributions = 30000.0,
+            totalContributions = Some(30000.0),
             noOfTransfersIn = Some(2),
             noOfTransfersOut = 2,
             pensionAmountReceived = Some(12000.0),
@@ -704,7 +707,7 @@ trait TestValues {
             memberStatus = SectionStatus.Changed,
             memberPSRVersion = "001",
             noOfContributions = Some(2),
-            totalContributions = 20000.0,
+            totalContributions = Some(20000.0),
             noOfTransfersIn = Some(2),
             noOfTransfersOut = 2,
             pensionAmountReceived = None,
@@ -821,7 +824,7 @@ trait TestValues {
     "schemaPath"
   )
 
-  val sampleOverviewResponse = Seq(
+  val sampleOverviewResponse: Seq[PsrOverviewEtmpResponse] = Seq(
     PsrOverviewEtmpResponse(
       periodStartDate = LocalDate.parse("2022-04-06"),
       periodEndDate = LocalDate.parse("2023-04-05"),
@@ -844,7 +847,7 @@ trait TestValues {
     )
   )
 
-  val sampleVersionsResponse = Seq(
+  val sampleVersionsResponse: Seq[PsrVersionsEtmpResponse] = Seq(
     PsrVersionsEtmpResponse(
       reportFormBundleNumber = "123456785012",
       reportVersion = 1,
@@ -870,5 +873,5 @@ trait TestValues {
     )
   )
 
-  val sampleUnallocatedContribAmount = 201.34
+  val sampleUnallocatedContribAmount: Double = 201.34
 }

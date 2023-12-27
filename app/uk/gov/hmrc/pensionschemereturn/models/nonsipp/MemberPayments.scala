@@ -23,12 +23,14 @@ case class MemberPayments(
   employerContributionsCompleted: Boolean,
   transfersInCompleted: Boolean,
   unallocatedContribsMade: Boolean,
-  unallocatedContribAmount: Option[Double]
+  unallocatedContribAmount: Option[Double],
+  memberContributionMade: Boolean
 )
 
 case class MemberDetails(
   personalDetails: MemberPersonalDetails,
   employerContributions: List[EmployerContributions],
+  totalContributions: Option[Double],
   transfersIn: List[TransfersIn]
 )
 

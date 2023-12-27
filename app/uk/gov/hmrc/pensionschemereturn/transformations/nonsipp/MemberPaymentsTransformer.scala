@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import cats.syntax.traverse._
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
-import cats.syntax.traverse._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 
 @Singleton()
-class EmployerMemberPaymentsTransformer @Inject()(
+class MemberPaymentsTransformer @Inject()(
   employerContributionsTransformer: EmployerContributionsTransformer,
   memberPersonalDetailsTransformer: MemberPersonalDetailsTransformer,
   transferInTransformer: TransferInTransformer
@@ -38,7 +38,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount =
         if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
-      memberContributionMade = false,
+      memberContributionMade = memberPayments.memberContributionMade,
       schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
       schemeMadeTransferOut = false,
       lumpSumReceived = false,
@@ -50,7 +50,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
           memberPSRVersion = "0",
           noOfContributions =
             if (memberPayments.employerContributionsCompleted) Some(memberDetails.employerContributions.size) else None,
-          totalContributions = 0,
+          totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = 0,
           pensionAmountReceived = None,
@@ -71,6 +71,7 @@ class EmployerMemberPaymentsTransformer @Inject()(
       } yield MemberDetails(
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
+        totalContributions = member.totalContributions,
         transfersIn = transfersIn
       )
     }
@@ -81,7 +82,8 @@ class EmployerMemberPaymentsTransformer @Inject()(
           employerContributionsCompleted = out.memberDetails.forall(_.noOfContributions.nonEmpty),
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           unallocatedContribsMade = unapply(out.unallocatedContribsMade),
-          unallocatedContribAmount = out.unallocatedContribAmount
+          unallocatedContribAmount = out.unallocatedContribAmount,
+          memberContributionMade = unapply(out.memberContributionMade)
         )
     )
   }

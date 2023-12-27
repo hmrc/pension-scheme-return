@@ -25,7 +25,7 @@ class PsrSubmissionToEtmp @Inject()(
   minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp,
   loansToEtmp: LoansToEtmp,
   assetsToEtmp: AssetsToEtmp,
-  memberPaymentsTransformer: EmployerMemberPaymentsTransformer
+  memberPaymentsTransformer: MemberPaymentsTransformer
 ) {
 
   def transform(psrSubmission: PsrSubmission): PsrSubmissionEtmpRequest = {

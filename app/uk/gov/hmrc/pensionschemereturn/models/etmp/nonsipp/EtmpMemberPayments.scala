@@ -39,7 +39,7 @@ case class EtmpMemberDetails(
   memberStatus: SectionStatus,
   memberPSRVersion: String,
   noOfContributions: Option[Int],
-  totalContributions: Double,
+  totalContributions: Option[Double],
   noOfTransfersIn: Option[Int],
   noOfTransfersOut: Int,
   pensionAmountReceived: Option[Double],
