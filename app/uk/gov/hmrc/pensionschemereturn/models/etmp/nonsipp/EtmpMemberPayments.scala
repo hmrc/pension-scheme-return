@@ -40,11 +40,12 @@ case class EtmpMemberDetails(
   memberPSRVersion: String,
   noOfContributions: Option[Int],
   totalContributions: Double,
-  noOfTransfersIn: Int,
+  noOfTransfersIn: Option[Int],
   noOfTransfersOut: Int,
   pensionAmountReceived: Option[Double],
   personalDetails: EtmpMemberPersonalDetails,
-  memberEmpContribution: List[EtmpEmployerContributions]
+  memberEmpContribution: List[EtmpEmployerContributions],
+  memberTransfersIn: List[EtmpTransfersIn]
 )
 
 case class EtmpMemberPersonalDetails(

@@ -18,21 +18,16 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Format, Json}
 
-case class MemberPayments(
-  memberDetails: List[MemberDetails],
-  employerContributionsCompleted: Boolean,
-  transfersInCompleted: Boolean,
-  unallocatedContribsMade: Boolean,
-  unallocatedContribAmount: Option[Double]
+import java.time.LocalDate
+
+case class TransfersIn(
+  schemeName: String,
+  dateOfTransfer: LocalDate,
+  transferSchemeType: PensionSchemeType,
+  transferValue: Double,
+  transferIncludedAsset: Boolean
 )
 
-case class MemberDetails(
-  personalDetails: MemberPersonalDetails,
-  employerContributions: List[EmployerContributions],
-  transfersIn: List[TransfersIn]
-)
-
-object MemberPayments {
-  private implicit val formatMemberDetails: Format[MemberDetails] = Json.format[MemberDetails]
-  implicit val format: Format[MemberPayments] = Json.format[MemberPayments]
+object TransfersIn {
+  implicit val format: Format[TransfersIn] = Json.format[TransfersIn]
 }

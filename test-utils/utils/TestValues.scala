@@ -205,6 +205,22 @@ trait TestValues {
     totalTransferValue = 78.99
   )
 
+  val sampleTransfersIn1 = TransfersIn(
+    schemeName = "test scheme name one",
+    dateOfTransfer = LocalDate.of(2010, 10, 10),
+    transferSchemeType = PensionSchemeType.RegisteredPS("some pension scheme"),
+    transferValue = 12.34,
+    transferIncludedAsset = true
+  )
+
+  val sampleTransfersIn2 = TransfersIn(
+    schemeName = "test scheme name two",
+    dateOfTransfer = LocalDate.of(2013, 4, 10),
+    transferSchemeType = PensionSchemeType.QualifyingRecognisedOverseasPS("some overseas scheme"),
+    transferValue = 34.56,
+    transferIncludedAsset = false
+  )
+
   val sampleMemberDetails1 = MemberDetails(
     MemberPersonalDetails(
       firstName = "test first one",
@@ -216,6 +232,9 @@ trait TestValues {
     employerContributions = List(
       sampleEmployerContribution1,
       sampleEmployerContribution2
+    ),
+    transfersIn = List(
+      sampleTransfersIn1
     )
   )
 
@@ -230,6 +249,9 @@ trait TestValues {
     employerContributions = List(
       sampleEmployerContribution3,
       sampleEmployerContributions4
+    ),
+    transfersIn = List(
+      sampleTransfersIn2
     )
   )
 
@@ -240,7 +262,8 @@ trait TestValues {
       sampleMemberDetails1,
       sampleMemberDetails2
     ),
-    employerContributionsCompleted = true
+    employerContributionsCompleted = true,
+    transfersInCompleted = true
   )
 
   // Standard - ETMP
@@ -421,7 +444,7 @@ trait TestValues {
     unallocatedContribsMade = Yes,
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberContributionMade = No,
-    schemeReceivedTransferIn = No,
+    schemeReceivedTransferIn = Yes,
     schemeMadeTransferOut = No,
     lumpSumReceived = No,
     pensionReceived = No,
@@ -432,7 +455,7 @@ trait TestValues {
         memberPSRVersion = "0",
         noOfContributions = Some(2),
         totalContributions = 0,
-        noOfTransfersIn = 0,
+        noOfTransfersIn = Some(1),
         noOfTransfersOut = 0,
         pensionAmountReceived = None,
         personalDetails = EtmpMemberPersonalDetails(
@@ -464,6 +487,15 @@ trait TestValues {
             ),
             totalContribution = 34.56
           )
+        ),
+        memberTransfersIn = List(
+          EtmpTransfersIn(
+            schemeName = sampleTransfersIn1.schemeName,
+            dateOfTransfer = sampleTransfersIn1.dateOfTransfer,
+            transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme"),
+            transferValue = 12.34,
+            transferIncludedAsset = Yes
+          )
         )
       ),
       EtmpMemberDetails(
@@ -471,7 +503,7 @@ trait TestValues {
         memberPSRVersion = "0",
         noOfContributions = Some(2),
         totalContributions = 0,
-        noOfTransfersIn = 0,
+        noOfTransfersIn = Some(1),
         noOfTransfersOut = 0,
         pensionAmountReceived = None,
         personalDetails = EtmpMemberPersonalDetails(
@@ -502,6 +534,15 @@ trait TestValues {
               otherDescription = None
             ),
             totalContribution = 78.99
+          )
+        ),
+        memberTransfersIn = List(
+          EtmpTransfersIn(
+            schemeName = sampleTransfersIn2.schemeName,
+            dateOfTransfer = sampleTransfersIn2.dateOfTransfer,
+            transferSchemeType = TransferSchemeType.qrops("some overseas scheme"),
+            transferValue = 34.56,
+            transferIncludedAsset = No
           )
         )
       )
@@ -609,7 +650,7 @@ trait TestValues {
             memberPSRVersion = "001",
             noOfContributions = Some(2),
             totalContributions = 30000.0,
-            noOfTransfersIn = 2,
+            noOfTransfersIn = Some(2),
             noOfTransfersOut = 2,
             pensionAmountReceived = Some(12000.0),
             personalDetails = EtmpMemberPersonalDetails(
@@ -641,6 +682,22 @@ trait TestValues {
                 ),
                 totalContribution = 10000.0
               )
+            ),
+            memberTransfersIn = List(
+              EtmpTransfersIn(
+                schemeName = "The Happy Retirement Scheme",
+                dateOfTransfer = LocalDate.of(2022, 8, 8),
+                transferSchemeType = TransferSchemeType.qrops("Q123456"),
+                transferValue = 10000.0,
+                transferIncludedAsset = No
+              ),
+              EtmpTransfersIn(
+                schemeName = "The Happy Retirement Scheme",
+                dateOfTransfer = LocalDate.of(2022, 11, 27),
+                transferSchemeType = TransferSchemeType.qrops("Q123456"),
+                transferValue = 8000.0,
+                transferIncludedAsset = No
+              )
             )
           ),
           EtmpMemberDetails(
@@ -648,7 +705,7 @@ trait TestValues {
             memberPSRVersion = "001",
             noOfContributions = Some(2),
             totalContributions = 20000.0,
-            noOfTransfersIn = 2,
+            noOfTransfersIn = Some(2),
             noOfTransfersOut = 2,
             pensionAmountReceived = None,
             personalDetails = EtmpMemberPersonalDetails(
@@ -679,6 +736,22 @@ trait TestValues {
                   otherDescription = None
                 ),
                 totalContribution = 10000.0
+              )
+            ),
+            memberTransfersIn = List(
+              EtmpTransfersIn(
+                schemeName = "Golden Years Pension Scheme",
+                dateOfTransfer = LocalDate.of(2022, 12, 2),
+                transferSchemeType = TransferSchemeType.registeredScheme("88390774ZZ"),
+                transferValue = 50000.0,
+                transferIncludedAsset = Yes
+              ),
+              EtmpTransfersIn(
+                schemeName = "Golden Goose Egg Laying Scheme",
+                dateOfTransfer = LocalDate.of(2022, 10, 30),
+                transferSchemeType = TransferSchemeType.qrops("Q654321"),
+                transferValue = 2000.0,
+                transferIncludedAsset = No
               )
             )
           )

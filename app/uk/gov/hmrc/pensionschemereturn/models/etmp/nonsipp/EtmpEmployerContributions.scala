@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, Reads, Writes}
+import play.api.libs.json.{Format, Json}
 
 case class EtmpEmployerContributions(
   orgName: String,
@@ -24,40 +24,6 @@ case class EtmpEmployerContributions(
   totalContribution: Double
 )
 
-case class OrganisationIdentity(
-  orgType: EmployerContributionsOrgType,
-  idNumber: Option[String] = None,
-  reasonNoIdNumber: Option[String] = None,
-  otherDescription: Option[String] = None
-)
-
-sealed trait EmployerContributionsOrgType {
-  val value: String
-}
-
-object EmployerContributionsOrgType {
-  case object UKCompany extends EmployerContributionsOrgType {
-    val value = "01"
-  }
-
-  case object UKPartnership extends EmployerContributionsOrgType {
-    val value = "02"
-  }
-
-  case object Other extends EmployerContributionsOrgType {
-    val value = "03"
-  }
-
-  implicit val writes: Writes[EmployerContributionsOrgType] = Writes(orgType => JsString(orgType.value))
-  implicit val reads: Reads[EmployerContributionsOrgType] = Reads {
-    case JsString(UKCompany.value) => JsSuccess(UKCompany)
-    case JsString(UKPartnership.value) => JsSuccess(UKPartnership)
-    case JsString(Other.value) => JsSuccess(Other)
-    case unknown => JsError(s"Failed to read EmployeeContributionsOrgType with unknown json $unknown")
-  }
-}
-
 object EtmpEmployerContributions {
-  private implicit val formatOrganisationIdentity: Format[OrganisationIdentity] = Json.format[OrganisationIdentity]
   implicit val format: Format[EtmpEmployerContributions] = Json.format[EtmpEmployerContributions]
 }
