@@ -29,7 +29,7 @@ class StandardPsrFromEtmp @Inject()(
   minimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp,
   loansFromEtmp: LoansFromEtmp,
   assetsFromEtmp: AssetsFromEtmp,
-  memberPaymentsTransformer: EmployerMemberPaymentsTransformer
+  memberPaymentsTransformer: MemberPaymentsTransformer
 ) extends Transformer {
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): Either[TransformerError, PsrSubmission] =

@@ -21,6 +21,8 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
 
+import scala.language.implicitConversions
+
 trait Transformer {
 
   protected val Sponsoring: String = "sponsoring"

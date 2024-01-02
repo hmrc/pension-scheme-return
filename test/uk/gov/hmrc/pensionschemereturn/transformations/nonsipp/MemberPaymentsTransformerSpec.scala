@@ -18,17 +18,17 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 
-class EmployerMemberPaymentsTransformerSpec extends EtmpTransformerSpec {
+class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
-  "EmployerMemberPaymentsTransformer" should {
+  "MemberPaymentsTransformer" should {
     "successfully transform to ETMP format" in {
-      val result = employerMemberPaymentsTransformer.toEtmp(sampleMemberPayments)
+      val result = memberPaymentsTransformer.toEtmp(sampleMemberPayments)
 
       result shouldMatchTo sampleEtmpMemberPayments
     }
 
     "successfully transform from ETMP format" in {
-      val result = employerMemberPaymentsTransformer.fromEtmp(sampleEtmpMemberPayments)
+      val result = memberPaymentsTransformer.fromEtmp(sampleEtmpMemberPayments)
 
       result shouldMatchTo Right(sampleMemberPayments)
     }

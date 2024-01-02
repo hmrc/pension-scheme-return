@@ -22,13 +22,7 @@ import org.mockito.MockitoSugar
 import org.scalatest.{AppendedClues, BeforeAndAfterEach}
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{
-  EmployerContributionsTransformer,
-  EmployerMemberPaymentsTransformer,
-  MemberPersonalDetailsTransformer,
-  MinimalRequiredDetailsToEtmp,
-  TransferInTransformer
-}
+import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp._
 import utils.TestValues
 
 trait EtmpTransformerSpec
@@ -41,12 +35,11 @@ trait EtmpTransformerSpec
     with AutoDerivation
     with AppendedClues {
 
-  val minimalRequiredDetailsToEtmp = new MinimalRequiredDetailsToEtmp()
   val employerContributionsTransformer = new EmployerContributionsTransformer()
   val memberPersonalDetailsTransformer = new MemberPersonalDetailsTransformer()
   val transferInTransformer = new TransferInTransformer()
 
-  val employerMemberPaymentsTransformer = new EmployerMemberPaymentsTransformer(
+  val memberPaymentsTransformer = new MemberPaymentsTransformer(
     employerContributionsTransformer,
     memberPersonalDetailsTransformer,
     transferInTransformer

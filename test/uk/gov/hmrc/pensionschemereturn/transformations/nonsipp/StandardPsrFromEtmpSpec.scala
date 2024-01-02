@@ -47,7 +47,7 @@ class StandardPsrFromEtmpSpec
   val mockMinimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp = mock[MinimalRequiredSubmissionFromEtmp]
   val mockLoansFromEtmp: LoansFromEtmp = mock[LoansFromEtmp]
   val mockAssetsFromEtmp: AssetsFromEtmp = mock[AssetsFromEtmp]
-  val mockMemberPayments: EmployerMemberPaymentsTransformer = mock[EmployerMemberPaymentsTransformer]
+  val mockMemberPayments: MemberPaymentsTransformer = mock[MemberPaymentsTransformer]
 
   private val transformation =
     new StandardPsrFromEtmp(
@@ -75,6 +75,7 @@ class StandardPsrFromEtmpSpec
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
     verify(mockAssetsFromEtmp, never).transform(any())
+    verify(mockMemberPayments, never).fromEtmp(any())
   }
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails checkReturnDates is false" in {
@@ -106,6 +107,7 @@ class StandardPsrFromEtmpSpec
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
     verify(mockAssetsFromEtmp, never).transform(any())
+    verify(mockMemberPayments, never).fromEtmp(any())
   }
 
   "PSR submission should successfully transform to etmp format with Loans" in {
@@ -129,6 +131,7 @@ class StandardPsrFromEtmpSpec
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, times(1)).transform(any())
     verify(mockAssetsFromEtmp, never).transform(any())
+    verify(mockMemberPayments, never).fromEtmp(any())
   }
 
   "PSR submission should successfully transform to etmp format with Assets" in {
@@ -152,6 +155,7 @@ class StandardPsrFromEtmpSpec
     verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
     verify(mockLoansFromEtmp, never).transform(any())
     verify(mockAssetsFromEtmp, times(1)).transform(any())
+    verify(mockMemberPayments, never).fromEtmp(any())
   }
 
   "PSR submission should successfully transform to etmp format with member payments" in {
