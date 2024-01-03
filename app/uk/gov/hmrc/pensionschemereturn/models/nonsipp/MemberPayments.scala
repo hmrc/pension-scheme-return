@@ -24,17 +24,25 @@ case class MemberPayments(
   transfersInCompleted: Boolean,
   unallocatedContribsMade: Boolean,
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: Boolean
+  memberContributionMade: Boolean,
+  lumpSumReceived: Boolean
 )
 
 case class MemberDetails(
   personalDetails: MemberPersonalDetails,
   employerContributions: List[EmployerContributions],
   totalContributions: Option[Double],
-  transfersIn: List[TransfersIn]
+  transfersIn: List[TransfersIn],
+  memberLumpSumReceived: Option[MemberLumpSumReceived]
+)
+
+case class MemberLumpSumReceived(
+  lumpSumAmount: Double,
+  designatedPensionAmount: Double
 )
 
 object MemberPayments {
+  private implicit val formatMemberLumpSumReceived: Format[MemberLumpSumReceived] = Json.format[MemberLumpSumReceived]
   private implicit val formatMemberDetails: Format[MemberDetails] = Json.format[MemberDetails]
   implicit val format: Format[MemberPayments] = Json.format[MemberPayments]
 }
