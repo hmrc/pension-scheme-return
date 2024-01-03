@@ -221,6 +221,18 @@ trait TestValues {
     transferIncludedAsset = false
   )
 
+  val sampleTransfersOut1 = TransfersOut(
+    schemeName = "test scheme name one out",
+    dateOfTransfer = LocalDate.of(2010, 10, 10),
+    transferSchemeType = PensionSchemeType.RegisteredPS("some pension scheme")
+  )
+
+  val sampleTransfersOut2 = TransfersOut(
+    schemeName = "test scheme name two out",
+    dateOfTransfer = LocalDate.of(2013, 4, 10),
+    transferSchemeType = PensionSchemeType.QualifyingRecognisedOverseasPS("some overseas scheme")
+  )
+
   val sampleMemberDetails1: MemberDetails = MemberDetails(
     MemberPersonalDetails(
       firstName = "test first one",
@@ -237,7 +249,10 @@ trait TestValues {
     transfersIn = List(
       sampleTransfersIn1
     ),
-    memberLumpSumReceived = Some(MemberLumpSumReceived(Double.MaxValue, Double.MaxValue))
+    memberLumpSumReceived = Some(MemberLumpSumReceived(Double.MaxValue, Double.MaxValue)),
+    transfersOut = List(
+      sampleTransfersOut1
+    )
   )
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
@@ -256,8 +271,13 @@ trait TestValues {
     transfersIn = List(
       sampleTransfersIn2
     ),
-    memberLumpSumReceived = None
+    memberLumpSumReceived = None,
+    transfersOut = List(
+      sampleTransfersOut2
+    )
   )
+
+  val sampleUnallocatedContribAmount: Double = 201.34
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
     unallocatedContribsMade = true,
@@ -269,6 +289,7 @@ trait TestValues {
     employerContributionsCompleted = true,
     memberContributionMade = true,
     transfersInCompleted = true,
+    transfersOutCompleted = true,
     lumpSumReceived = true
   )
 
@@ -451,7 +472,7 @@ trait TestValues {
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberContributionMade = Yes,
     schemeReceivedTransferIn = Yes,
-    schemeMadeTransferOut = No,
+    schemeMadeTransferOut = Yes,
     lumpSumReceived = Yes,
     pensionReceived = No,
     surrenderMade = No,
@@ -462,7 +483,7 @@ trait TestValues {
         noOfContributions = Some(2),
         totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
-        noOfTransfersOut = 0,
+        noOfTransfersOut = Some(1),
         pensionAmountReceived = None,
         personalDetails = EtmpMemberPersonalDetails(
           foreName = sampleMemberDetails1.personalDetails.firstName,
@@ -503,6 +524,13 @@ trait TestValues {
             transferIncludedAsset = Yes
           )
         ),
+        memberTransfersOut = List(
+          EtmpTransfersOut(
+            schemeName = sampleTransfersOut1.schemeName,
+            dateOfTransfer = sampleTransfersOut1.dateOfTransfer,
+            transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
+          )
+        ),
         memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue)))
       ),
       EtmpMemberDetails(
@@ -511,7 +539,7 @@ trait TestValues {
         noOfContributions = Some(2),
         totalContributions = None,
         noOfTransfersIn = Some(1),
-        noOfTransfersOut = 0,
+        noOfTransfersOut = Some(1),
         pensionAmountReceived = None,
         personalDetails = EtmpMemberPersonalDetails(
           foreName = "test first two",
@@ -550,6 +578,13 @@ trait TestValues {
             transferSchemeType = TransferSchemeType.qrops("some overseas scheme"),
             transferValue = 34.56,
             transferIncludedAsset = No
+          )
+        ),
+        memberTransfersOut = List(
+          EtmpTransfersOut(
+            schemeName = sampleTransfersOut2.schemeName,
+            dateOfTransfer = sampleTransfersOut2.dateOfTransfer,
+            transferSchemeType = TransferSchemeType.qrops("some overseas scheme")
           )
         ),
         memberLumpSumReceived = None
@@ -659,7 +694,7 @@ trait TestValues {
             noOfContributions = Some(2),
             totalContributions = Some(30000.0),
             noOfTransfersIn = Some(2),
-            noOfTransfersOut = 2,
+            noOfTransfersOut = Some(2),
             pensionAmountReceived = Some(12000.0),
             personalDetails = EtmpMemberPersonalDetails(
               foreName = "Ferdinand",
@@ -707,6 +742,18 @@ trait TestValues {
                 transferIncludedAsset = No
               )
             ),
+            memberTransfersOut = List(
+              EtmpTransfersOut(
+                schemeName = "The Golden Egg Scheme",
+                dateOfTransfer = LocalDate.of(2022, 9, 30),
+                transferSchemeType = TransferSchemeType.registeredScheme("76509173AA")
+              ),
+              EtmpTransfersOut(
+                schemeName = "The Golden Egg Scheme",
+                dateOfTransfer = LocalDate.of(2022, 12, 20),
+                transferSchemeType = TransferSchemeType.registeredScheme("76509173AB")
+              )
+            ),
             memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(30000.0, 20000.00)))
           ),
           EtmpMemberDetails(
@@ -715,7 +762,7 @@ trait TestValues {
             noOfContributions = Some(2),
             totalContributions = Some(20000.0),
             noOfTransfersIn = Some(2),
-            noOfTransfersOut = 2,
+            noOfTransfersOut = Some(2),
             pensionAmountReceived = None,
             personalDetails = EtmpMemberPersonalDetails(
               foreName = "Johnny",
@@ -761,6 +808,18 @@ trait TestValues {
                 transferSchemeType = TransferSchemeType.qrops("Q654321"),
                 transferValue = 2000.0,
                 transferIncludedAsset = No
+              )
+            ),
+            memberTransfersOut = List(
+              EtmpTransfersOut(
+                schemeName = "Dodgy Pensions Ltd",
+                dateOfTransfer = LocalDate.of(2022, 5, 30),
+                transferSchemeType = TransferSchemeType.other("Unknown identifier")
+              ),
+              EtmpTransfersOut(
+                schemeName = "My back pocket Pension Scheme",
+                dateOfTransfer = LocalDate.of(2022, 7, 31),
+                transferSchemeType = TransferSchemeType.qrops("Q000002")
               )
             ),
             memberLumpSumReceived = None
@@ -879,6 +938,4 @@ trait TestValues {
       )
     )
   )
-
-  val sampleUnallocatedContribAmount: Double = 201.34
 }

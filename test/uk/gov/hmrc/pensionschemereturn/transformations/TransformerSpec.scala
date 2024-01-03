@@ -44,13 +44,13 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
     }
 
     "successfully transform to EtmpIdentityType - Individual" in {
-      transformToEtmpIdentityType(IdentityType.Individual, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.Individual, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "01",
         Some("IdNumber"),
         None,
         None
       )
-      transformToEtmpIdentityType(IdentityType.Individual, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.Individual, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "01",
         None,
         Some("ReasonNoIdNumber"),
@@ -59,13 +59,13 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
     }
 
     "successfully transform to EtmpIdentityType - Company" in {
-      transformToEtmpIdentityType(IdentityType.UKCompany, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.UKCompany, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "02",
         Some("IdNumber"),
         None,
         None
       )
-      transformToEtmpIdentityType(IdentityType.UKCompany, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.UKCompany, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "02",
         None,
         Some("ReasonNoIdNumber"),
@@ -74,13 +74,13 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
     }
 
     "successfully transform to EtmpIdentityType - Partnership" in {
-      transformToEtmpIdentityType(IdentityType.UKPartnership, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.UKPartnership, Some("IdNumber"), None, None) mustEqual EtmpIdentityType(
         "03",
         Some("IdNumber"),
         None,
         None
       )
-      transformToEtmpIdentityType(IdentityType.UKPartnership, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.UKPartnership, None, Some("ReasonNoIdNumber"), None) mustEqual EtmpIdentityType(
         "03",
         None,
         Some("ReasonNoIdNumber"),
@@ -89,7 +89,7 @@ class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
     }
 
     "successfully transform to EtmpIdentityType - Other" in {
-      transformToEtmpIdentityType(IdentityType.Other, None, None, Some("OtherDescription")) mustEqual EtmpIdentityType(
+      toEtmpIdentityType(IdentityType.Other, None, None, Some("OtherDescription")) mustEqual EtmpIdentityType(
         "04",
         None,
         None,

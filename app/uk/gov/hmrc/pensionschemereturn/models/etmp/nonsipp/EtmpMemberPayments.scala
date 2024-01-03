@@ -41,12 +41,13 @@ case class EtmpMemberDetails(
   noOfContributions: Option[Int],
   totalContributions: Option[Double],
   noOfTransfersIn: Option[Int],
-  noOfTransfersOut: Int,
+  noOfTransfersOut: Option[Int],
   pensionAmountReceived: Option[Double],
   personalDetails: EtmpMemberPersonalDetails,
   memberEmpContribution: List[EtmpEmployerContributions],
   memberTransfersIn: List[EtmpTransfersIn],
-  memberLumpSumReceived: Option[List[EtmpMemberLumpSumReceived]]
+  memberLumpSumReceived: Option[List[EtmpMemberLumpSumReceived]],
+  memberTransfersOut: List[EtmpTransfersOut]
 )
 
 case class EtmpMemberPersonalDetails(

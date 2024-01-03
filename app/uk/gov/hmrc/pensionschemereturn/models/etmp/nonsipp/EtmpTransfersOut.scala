@@ -21,14 +21,12 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 
 import java.time.LocalDate
 
-case class EtmpTransfersIn(
+case class EtmpTransfersOut(
   schemeName: String,
   dateOfTransfer: LocalDate,
-  transferSchemeType: TransferSchemeType,
-  transferValue: Double,
-  transferIncludedAsset: YesNo
+  transferSchemeType: TransferSchemeType
 )
 
-object EtmpTransfersIn {
-  implicit val format: Format[EtmpTransfersIn] = Json.format[EtmpTransfersIn]
+object EtmpTransfersOut {
+  implicit val format: Format[EtmpTransfersOut] = Json.format[EtmpTransfersOut]
 }
