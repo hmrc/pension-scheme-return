@@ -236,7 +236,8 @@ trait TestValues {
     totalContributions = Some(Double.MaxValue),
     transfersIn = List(
       sampleTransfersIn1
-    )
+    ),
+    memberLumpSumReceived = Some(MemberLumpSumReceived(Double.MaxValue, Double.MaxValue))
   )
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
@@ -254,7 +255,8 @@ trait TestValues {
     totalContributions = None,
     transfersIn = List(
       sampleTransfersIn2
-    )
+    ),
+    memberLumpSumReceived = None
   )
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
@@ -266,7 +268,8 @@ trait TestValues {
     ),
     employerContributionsCompleted = true,
     memberContributionMade = true,
-    transfersInCompleted = true
+    transfersInCompleted = true,
+    lumpSumReceived = true
   )
 
   // Standard - ETMP
@@ -449,7 +452,7 @@ trait TestValues {
     memberContributionMade = Yes,
     schemeReceivedTransferIn = Yes,
     schemeMadeTransferOut = No,
-    lumpSumReceived = No,
+    lumpSumReceived = Yes,
     pensionReceived = No,
     surrenderMade = No,
     memberDetails = List(
@@ -499,7 +502,8 @@ trait TestValues {
             transferValue = 12.34,
             transferIncludedAsset = Yes
           )
-        )
+        ),
+        memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue)))
       ),
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
@@ -547,22 +551,23 @@ trait TestValues {
             transferValue = 34.56,
             transferIncludedAsset = No
           )
-        )
+        ),
+        memberLumpSumReceived = None
       )
     )
   )
 
   val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
-    EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
-    EtmpPsrDetails(
+    schemeDetails = EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
+    psrDetails = EtmpPsrDetails(
       fbVersion = "001",
       fbstatus = Compiled,
       periodStart = LocalDate.parse("2023-04-06"),
       periodEnd = LocalDate.parse("2024-04-05"),
       compilationOrSubmissionDate = LocalDateTime.parse("2023-12-17T09:30:47Z", DateTimeFormatter.ISO_DATE_TIME)
     ),
-    sampleEtmpAccountingPeriodDetails,
-    EtmpSchemeDesignatory(
+    accountingPeriodDetails = sampleEtmpAccountingPeriodDetails,
+    schemeDesignatory = EtmpSchemeDesignatory(
       recordVersion = Some("002"),
       openBankAccount = "Yes",
       reasonNoOpenAccount = None,
@@ -575,7 +580,7 @@ trait TestValues {
       totalCashEnd = Some(2800000),
       totalPayments = Some(2000000)
     ),
-    Some(
+    loans = Some(
       EtmpLoans(
         recordVersion = Some("003"),
         schemeHadLoans = "Yes",
@@ -609,7 +614,7 @@ trait TestValues {
         )
       )
     ),
-    Some(
+    assets = Some(
       EtmpAssets(
         landOrProperty = sampleEtmpLandOrProperty,
         borrowing = EtmpBorrowing(
@@ -701,7 +706,8 @@ trait TestValues {
                 transferValue = 8000.0,
                 transferIncludedAsset = No
               )
-            )
+            ),
+            memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(30000.0, 20000.00)))
           ),
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
@@ -756,7 +762,8 @@ trait TestValues {
                 transferValue = 2000.0,
                 transferIncludedAsset = No
               )
-            )
+            ),
+            memberLumpSumReceived = None
           )
         )
       )

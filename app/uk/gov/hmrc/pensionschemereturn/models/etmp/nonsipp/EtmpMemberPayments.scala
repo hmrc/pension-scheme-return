@@ -45,7 +45,8 @@ case class EtmpMemberDetails(
   pensionAmountReceived: Option[Double],
   personalDetails: EtmpMemberPersonalDetails,
   memberEmpContribution: List[EtmpEmployerContributions],
-  memberTransfersIn: List[EtmpTransfersIn]
+  memberTransfersIn: List[EtmpTransfersIn],
+  memberLumpSumReceived: Option[List[EtmpMemberLumpSumReceived]]
 )
 
 case class EtmpMemberPersonalDetails(
@@ -57,7 +58,14 @@ case class EtmpMemberPersonalDetails(
   dateOfBirth: LocalDate
 )
 
+case class EtmpMemberLumpSumReceived(
+  lumpSumAmount: Double,
+  designatedPensionAmount: Double
+)
+
 object EtmpMemberPayments {
+  private implicit val formatEtmpMemberLumpSumReceived: Format[EtmpMemberLumpSumReceived] =
+    Json.format[EtmpMemberLumpSumReceived]
   private implicit val formatEtmpMemberPersonalDetails: Format[EtmpMemberPersonalDetails] =
     Json.format[EtmpMemberPersonalDetails]
   private implicit val formatEtmpMemberDetails: Format[EtmpMemberDetails] = Json.format[EtmpMemberDetails]

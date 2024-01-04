@@ -637,12 +637,8 @@ object PsrConnectorSpec {
       |                ],
       |                "memberLumpSumReceived": [
       |                    {
-      |                        "lumpSumAmount": 1000,
-      |                        "designatedPensionAmount": 100000
-      |                    },
-      |                    {
-      |                        "lumpSumAmount": 2000,
-      |                        "designatedPensionAmount": 99000
+      |                        "lumpSumAmount": 30000,
+      |                        "designatedPensionAmount": 20000
       |                    }
       |                ],
       |                "pensionAmountReceived": 12000,

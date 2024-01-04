@@ -41,7 +41,7 @@ class MemberPaymentsTransformer @Inject()(
       memberContributionMade = memberPayments.memberContributionMade,
       schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
       schemeMadeTransferOut = false,
-      lumpSumReceived = false,
+      lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = false,
       surrenderMade = false,
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
@@ -56,7 +56,10 @@ class MemberPaymentsTransformer @Inject()(
           pensionAmountReceived = None,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
           memberEmpContribution = memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp),
-          memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp)
+          memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp),
+          memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(
+            x => List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
+          )
         )
       }
     )
@@ -72,7 +75,11 @@ class MemberPaymentsTransformer @Inject()(
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
         totalContributions = member.totalContributions,
-        transfersIn = transfersIn
+        transfersIn = transfersIn,
+        memberLumpSumReceived = member.memberLumpSumReceived.map(t => {
+          val head = t.head
+          MemberLumpSumReceived(head.lumpSumAmount, head.designatedPensionAmount)
+        })
       )
     }
     memberDetails.map(
@@ -83,7 +90,8 @@ class MemberPaymentsTransformer @Inject()(
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           unallocatedContribsMade = unapply(out.unallocatedContribsMade),
           unallocatedContribAmount = out.unallocatedContribAmount,
-          memberContributionMade = unapply(out.memberContributionMade)
+          memberContributionMade = unapply(out.memberContributionMade),
+          lumpSumReceived = unapply(out.lumpSumReceived)
         )
     )
   }
