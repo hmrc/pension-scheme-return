@@ -22,6 +22,7 @@ case class MemberPayments(
   memberDetails: List[MemberDetails],
   employerContributionsCompleted: Boolean,
   transfersInCompleted: Boolean,
+  transfersOutCompleted: Boolean,
   unallocatedContribsMade: Boolean,
   unallocatedContribAmount: Option[Double],
   memberContributionMade: Boolean,
@@ -33,7 +34,8 @@ case class MemberDetails(
   employerContributions: List[EmployerContributions],
   totalContributions: Option[Double],
   transfersIn: List[TransfersIn],
-  memberLumpSumReceived: Option[MemberLumpSumReceived]
+  memberLumpSumReceived: Option[MemberLumpSumReceived],
+  transfersOut: List[TransfersOut]
 )
 
 case class MemberLumpSumReceived(

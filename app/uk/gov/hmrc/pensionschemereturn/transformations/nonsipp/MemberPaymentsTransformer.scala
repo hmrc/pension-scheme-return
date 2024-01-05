@@ -28,7 +28,8 @@ import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, Transfo
 class MemberPaymentsTransformer @Inject()(
   employerContributionsTransformer: EmployerContributionsTransformer,
   memberPersonalDetailsTransformer: MemberPersonalDetailsTransformer,
-  transferInTransformer: TransferInTransformer
+  transferInTransformer: TransferInTransformer,
+  transferOutTransformer: TransferOutTransformer
 ) extends ETMPTransformer[MemberPayments, EtmpMemberPayments] {
 
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
@@ -40,7 +41,7 @@ class MemberPaymentsTransformer @Inject()(
         if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
       memberContributionMade = memberPayments.memberContributionMade,
       schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
-      schemeMadeTransferOut = false,
+      schemeMadeTransferOut = memberPayments.memberDetails.exists(_.transfersOut.nonEmpty),
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = false,
       surrenderMade = false,
@@ -52,14 +53,15 @@ class MemberPaymentsTransformer @Inject()(
             if (memberPayments.employerContributionsCompleted) Some(memberDetails.employerContributions.size) else None,
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
-          noOfTransfersOut = 0,
+          noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
           pensionAmountReceived = None,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
           memberEmpContribution = memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp),
           memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp),
           memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(
             x => List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
-          )
+          ),
+          memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp)
         )
       }
     )
@@ -71,6 +73,7 @@ class MemberPaymentsTransformer @Inject()(
         memberPersonalDetails <- memberPersonalDetailsTransformer.fromEtmp(member.personalDetails)
         employerContributions <- member.memberEmpContribution.traverse(employerContributionsTransformer.fromEtmp)
         transfersIn <- member.memberTransfersIn.traverse(transferInTransformer.fromEtmp)
+        transfersOut <- member.memberTransfersOut.traverse(transferOutTransformer.fromEtmp)
       } yield MemberDetails(
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
@@ -79,7 +82,8 @@ class MemberPaymentsTransformer @Inject()(
         memberLumpSumReceived = member.memberLumpSumReceived.map(t => {
           val head = t.head
           MemberLumpSumReceived(head.lumpSumAmount, head.designatedPensionAmount)
-        })
+        }),
+        transfersOut = transfersOut
       )
     }
     memberDetails.map(
@@ -88,6 +92,7 @@ class MemberPaymentsTransformer @Inject()(
           memberDetails = details,
           employerContributionsCompleted = out.memberDetails.forall(_.noOfContributions.nonEmpty),
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
+          transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
           unallocatedContribsMade = unapply(out.unallocatedContribsMade),
           unallocatedContribAmount = out.unallocatedContribAmount,
           memberContributionMade = unapply(out.memberContributionMade),

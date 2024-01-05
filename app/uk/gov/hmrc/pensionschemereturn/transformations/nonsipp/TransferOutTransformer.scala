@@ -17,30 +17,27 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpTransfersIn
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.TransfersIn
+import org.slf4j.LoggerFactory
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpTransfersOut, TransferSchemeType}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{PensionSchemeType, TransfersIn, TransfersOut}
+import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError.UnknownError
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
-class TransferInTransformer @Inject() extends ETMPTransformer[TransfersIn, EtmpTransfersIn] {
-
-  override def toEtmp(in: TransfersIn): EtmpTransfersIn =
-    EtmpTransfersIn(
+class TransferOutTransformer @Inject() extends ETMPTransformer[TransfersOut, EtmpTransfersOut] {
+  override def toEtmp(in: TransfersOut): EtmpTransfersOut =
+    EtmpTransfersOut(
       schemeName = in.schemeName,
       dateOfTransfer = in.dateOfTransfer,
-      transferSchemeType = toTransferSchemeType(in.transferSchemeType),
-      transferValue = in.transferValue,
-      transferIncludedAsset = in.transferIncludedAsset
+      transferSchemeType = toTransferSchemeType(in.transferSchemeType)
     )
 
-  override def fromEtmp(out: EtmpTransfersIn): Either[TransformerError, TransfersIn] =
+  override def fromEtmp(out: EtmpTransfersOut): Either[TransformerError, TransfersOut] =
     for {
       schemeType <- toPensionSchemeType(out.transferSchemeType)
-    } yield TransfersIn(
+    } yield TransfersOut(
       schemeName = out.schemeName,
       dateOfTransfer = out.dateOfTransfer,
-      transferSchemeType = schemeType,
-      transferValue = out.transferValue,
-      transferIncludedAsset = out.transferIncludedAsset.boolean
+      transferSchemeType = schemeType
     )
 }

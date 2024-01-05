@@ -17,9 +17,10 @@
 package uk.gov.hmrc.pensionschemereturn.transformations
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpIdentityType
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpIdentityType, TransferSchemeType}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{IdentityType, PensionSchemeType}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
+import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError.UnknownError
 
 import scala.language.implicitConversions
 
@@ -41,7 +42,7 @@ trait Transformer {
 
   protected def fromYesNo(value: String): Boolean = value == Yes
 
-  protected def transformToEtmpIdentityType(
+  protected def toEtmpIdentityType(
     identityType: IdentityType,
     optIdNumber: Option[String],
     optReasonNoIdNumber: Option[String],
@@ -54,8 +55,21 @@ trait Transformer {
       otherDescription = optOtherDescription
     )
 
+  protected def toPensionSchemeType(o: TransferSchemeType): Either[TransformerError, PensionSchemeType] = o match {
+    case TransferSchemeType("01", Some(ref), None) => Right(PensionSchemeType.RegisteredPS(ref))
+    case TransferSchemeType("02", Some(ref), None) => Right(PensionSchemeType.QualifyingRecognisedOverseasPS(ref))
+    case TransferSchemeType("03", None, Some(description)) => Right(PensionSchemeType.Other(description))
+    case unknown => Left(UnknownError(s"toPensionSchemeType unknown pattern $unknown"))
+  }
+
   protected def transformToEtmpConnectedPartyStatus(condition: Boolean): String =
     if (condition) Connected else Unconnected
+
+  protected def toTransferSchemeType(o: PensionSchemeType): TransferSchemeType = o match {
+    case PensionSchemeType.RegisteredPS(ref) => TransferSchemeType.registeredScheme(ref)
+    case PensionSchemeType.QualifyingRecognisedOverseasPS(ref) => TransferSchemeType.qrops(ref)
+    case PensionSchemeType.Other(description) => TransferSchemeType.other(description)
+  }
 
   // Used to easily convert optional ETMP data where 1 is required to an Either
   // e.g. Nino or Reason for No Nino

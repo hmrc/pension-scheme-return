@@ -33,7 +33,7 @@ class LoansToEtmp @Inject() extends Transformer {
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
-          recipientIdentityType = transformToEtmpIdentityType(
+          recipientIdentityType = toEtmpIdentityType(
             loanTransaction.recipientIdentityType.identityType,
             loanTransaction.recipientIdentityType.idNumber,
             loanTransaction.recipientIdentityType.reasonNoIdNumber,

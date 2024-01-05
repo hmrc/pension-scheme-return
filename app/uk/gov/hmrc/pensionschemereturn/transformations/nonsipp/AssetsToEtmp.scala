@@ -67,7 +67,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                 propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
                 propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(
                   propertyAcquiredFrom =>
-                    transformToEtmpIdentityType(
+                    toEtmpIdentityType(
                       identityType = propertyAcquiredFrom.identityType,
                       optIdNumber = propertyAcquiredFrom.idNumber,
                       optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
@@ -102,7 +102,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                         nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
                         purchaseOrgDetails = disposedPropertyTransaction.optPropertyAcquiredFrom.map(
                           propertyAcquiredFrom =>
-                            transformToEtmpIdentityType(
+                            toEtmpIdentityType(
                               identityType = propertyAcquiredFrom.identityType,
                               optIdNumber = propertyAcquiredFrom.idNumber,
                               optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
