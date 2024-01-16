@@ -17,10 +17,8 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import org.slf4j.LoggerFactory
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpTransfersOut, TransferSchemeType}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{PensionSchemeType, TransfersIn, TransfersOut}
-import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError.UnknownError
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpTransfersOut
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.TransfersOut
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
