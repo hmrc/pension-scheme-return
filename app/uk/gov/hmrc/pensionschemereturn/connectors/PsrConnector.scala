@@ -52,6 +52,9 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
 
+    // TODO : Remove after debugging in QA
+    logger.info(s"Header Carrier for the POST submitStandardPsr : ${Json.stringify(Json.toJson(hc.extraHeaders))}")
+
     http
       .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
       .map { response =>
@@ -78,6 +81,9 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     logger.info(logMessage)
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
+
+    // TODO : Remove after debugging in QA
+    logger.info(s"Header Carrier for the GET getStandardPsr : ${Json.stringify(Json.toJson(hc.extraHeaders))}")
 
     http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
       response.status match {
