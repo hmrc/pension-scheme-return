@@ -39,11 +39,13 @@ trait EtmpTransformerSpec
   val memberPersonalDetailsTransformer = new MemberPersonalDetailsTransformer()
   val transferInTransformer = new TransferInTransformer()
   val transferOutTransformer = new TransferOutTransformer()
+  val surrenderTransformer = new PensionSurrenderTransformer()
 
   val memberPaymentsTransformer = new MemberPaymentsTransformer(
     employerContributionsTransformer,
     memberPersonalDetailsTransformer,
     transferInTransformer,
-    transferOutTransformer
+    transferOutTransformer,
+    surrenderTransformer
   )
 }
