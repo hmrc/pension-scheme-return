@@ -458,7 +458,7 @@ trait TestValues {
       recordVersion = None,
       moneyWasBorrowed = "moneyWasBorrowed",
       noOfBorrows = None,
-      moneyBorrowed = Seq.empty
+      moneyBorrowed = None
     ),
     bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),
     otherAssets =
@@ -656,15 +656,17 @@ trait TestValues {
           recordVersion = Some("164"),
           moneyWasBorrowed = "Yes",
           noOfBorrows = Some(1),
-          moneyBorrowed = Seq(
-            EtmpMoneyBorrowed(
-              dateOfBorrow = sampleToday,
-              schemeAssetsValue = Double.MaxValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MaxValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = "01",
-              reasonForBorrow = "reasonForBorrow"
+          moneyBorrowed = Some(
+            Seq(
+              EtmpMoneyBorrowed(
+                dateOfBorrow = sampleToday,
+                schemeAssetsValue = Double.MaxValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MaxValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = "01",
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         ),

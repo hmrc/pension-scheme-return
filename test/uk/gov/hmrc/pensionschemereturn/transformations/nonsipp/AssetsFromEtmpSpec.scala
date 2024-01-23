@@ -136,15 +136,17 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
           recordVersion = None,
           moneyWasBorrowed = Yes,
           noOfBorrows = Some(1),
-          moneyBorrowed = Seq(
-            EtmpMoneyBorrowed(
-              dateOfBorrow = today,
-              schemeAssetsValue = Double.MaxValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MinPositiveValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = Unconnected,
-              reasonForBorrow = "reasonForBorrow"
+          moneyBorrowed = Some(
+            Seq(
+              EtmpMoneyBorrowed(
+                dateOfBorrow = today,
+                schemeAssetsValue = Double.MaxValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MinPositiveValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = Unconnected,
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         ),

@@ -39,7 +39,7 @@ case class EtmpBorrowing(
   recordVersion: Option[String],
   moneyWasBorrowed: String,
   noOfBorrows: Option[Int],
-  moneyBorrowed: Seq[EtmpMoneyBorrowed]
+  moneyBorrowed: Option[Seq[EtmpMoneyBorrowed]]
 )
 
 case class EtmpMoneyBorrowed(
