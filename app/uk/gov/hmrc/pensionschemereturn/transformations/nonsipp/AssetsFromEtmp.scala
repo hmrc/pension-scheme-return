@@ -116,18 +116,20 @@ class AssetsFromEtmp @Inject() extends Transformer {
       ),
       borrowing = Borrowing(
         moneyWasBorrowed = fromYesNo(assets.borrowing.moneyWasBorrowed),
-        moneyBorrowed = assets.borrowing.moneyBorrowed.map(
-          mb =>
-            MoneyBorrowed(
-              dateOfBorrow = mb.dateOfBorrow,
-              schemeAssetsValue = mb.schemeAssetsValue,
-              amountBorrowed = mb.amountBorrowed,
-              interestRate = mb.interestRate,
-              borrowingFromName = mb.borrowingFromName,
-              connectedPartyStatus = mb.connectedPartyStatus == Connected,
-              reasonForBorrow = mb.reasonForBorrow
-            )
-        )
+        moneyBorrowed = assets.borrowing.moneyBorrowed
+          .getOrElse(Seq.empty)
+          .map(
+            mb =>
+              MoneyBorrowed(
+                dateOfBorrow = mb.dateOfBorrow,
+                schemeAssetsValue = mb.schemeAssetsValue,
+                amountBorrowed = mb.amountBorrowed,
+                interestRate = mb.interestRate,
+                borrowingFromName = mb.borrowingFromName,
+                connectedPartyStatus = mb.connectedPartyStatus == Connected,
+                reasonForBorrow = mb.reasonForBorrow
+              )
+          )
       )
     )
 }

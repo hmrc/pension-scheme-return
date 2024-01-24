@@ -244,15 +244,17 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
           recordVersion = None,
           moneyWasBorrowed = Yes,
           noOfBorrows = Some(1),
-          moneyBorrowed = Seq(
-            EtmpMoneyBorrowed(
-              dateOfBorrow = today,
-              schemeAssetsValue = Double.MinPositiveValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MaxValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = Connected,
-              reasonForBorrow = "reasonForBorrow"
+          moneyBorrowed = Some(
+            Seq(
+              EtmpMoneyBorrowed(
+                dateOfBorrow = today,
+                schemeAssetsValue = Double.MinPositiveValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MaxValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = Connected,
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         ),
@@ -378,15 +380,17 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
           recordVersion = None,
           moneyWasBorrowed = Yes,
           noOfBorrows = Some(1),
-          moneyBorrowed = Seq(
-            EtmpMoneyBorrowed(
-              dateOfBorrow = today,
-              schemeAssetsValue = Double.MinPositiveValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MaxValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = Connected,
-              reasonForBorrow = "reasonForBorrow"
+          moneyBorrowed = Some(
+            Seq(
+              EtmpMoneyBorrowed(
+                dateOfBorrow = today,
+                schemeAssetsValue = Double.MinPositiveValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MaxValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = Connected,
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         ),

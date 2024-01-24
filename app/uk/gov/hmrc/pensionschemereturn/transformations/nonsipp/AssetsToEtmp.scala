@@ -126,17 +126,19 @@ class AssetsToEtmp @Inject() extends Transformer {
         recordVersion = None,
         moneyWasBorrowed = toYesNo(assets.borrowing.moneyWasBorrowed),
         noOfBorrows = Option.when(assets.borrowing.moneyWasBorrowed)(assets.borrowing.moneyBorrowed.size),
-        moneyBorrowed = assets.borrowing.moneyBorrowed.map(
-          mb =>
-            EtmpMoneyBorrowed(
-              dateOfBorrow = mb.dateOfBorrow,
-              schemeAssetsValue = mb.schemeAssetsValue,
-              amountBorrowed = mb.amountBorrowed,
-              interestRate = mb.interestRate,
-              borrowingFromName = mb.borrowingFromName,
-              connectedPartyStatus = transformToEtmpConnectedPartyStatus(mb.connectedPartyStatus),
-              reasonForBorrow = mb.reasonForBorrow
-            )
+        moneyBorrowed = Option.when(assets.borrowing.moneyWasBorrowed)(
+          assets.borrowing.moneyBorrowed.map(
+            mb =>
+              EtmpMoneyBorrowed(
+                dateOfBorrow = mb.dateOfBorrow,
+                schemeAssetsValue = mb.schemeAssetsValue,
+                amountBorrowed = mb.amountBorrowed,
+                interestRate = mb.interestRate,
+                borrowingFromName = mb.borrowingFromName,
+                connectedPartyStatus = transformToEtmpConnectedPartyStatus(mb.connectedPartyStatus),
+                reasonForBorrow = mb.reasonForBorrow
+              )
+          )
         )
       ),
       bonds = EtmpBonds(
