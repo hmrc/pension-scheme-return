@@ -849,7 +849,7 @@ trait TestValues {
     ),
     None,
     None,
-    memberPayments = None
+    membersPayments = None
   )
 
   // SIPP - PSR

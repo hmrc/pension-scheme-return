@@ -20,12 +20,12 @@ import play.api.libs.json.{Json, OWrites}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 
 case class PsrSubmissionEtmpRequest(
-  reportDetails: EtmpReportDetails,
-  accountingPeriodDetails: EtmpAccountingPeriodDetails,
-  schemeDesignatory: EtmpSchemeDesignatory,
-  loans: Option[EtmpLoans],
-  assets: Option[EtmpAssets],
-  memberPayments: Option[EtmpMemberPayments]
+                                     reportDetails: EtmpReportDetails,
+                                     accountingPeriodDetails: EtmpAccountingPeriodDetails,
+                                     schemeDesignatory: EtmpSchemeDesignatory,
+                                     loans: Option[EtmpLoans],
+                                     assets: Option[EtmpAssets],
+                                     membersPayments: Option[EtmpMemberPayments]
 )
 
 object PsrSubmissionEtmpRequest {
