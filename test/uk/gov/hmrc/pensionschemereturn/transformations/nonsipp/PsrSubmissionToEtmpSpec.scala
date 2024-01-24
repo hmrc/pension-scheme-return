@@ -63,7 +63,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
         loans = None,
         assets = None,
-        memberPayments = None
+        membersPayments = None
       )
 
       transformation.transform(psrSubmission) shouldMatchTo expected
@@ -95,7 +95,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         schemeDesignatory = sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
         loans = Some(sampleEtmpLoans),
         assets = Some(sampleEtmpAssets),
-        memberPayments = Some(sampleEtmpMemberPayments)
+        membersPayments = Some(sampleEtmpMemberPayments)
       )
 
       transformation.transform(psrSubmission) shouldMatchTo expected
