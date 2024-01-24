@@ -479,7 +479,7 @@ trait TestValues {
     memberDetails = List(
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "0",
+        memberPSRVersion = "001",
         noOfContributions = Some(2),
         totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
@@ -535,7 +535,7 @@ trait TestValues {
       ),
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "0",
+        memberPSRVersion = "001",
         noOfContributions = Some(2),
         totalContributions = None,
         noOfTransfersIn = Some(1),

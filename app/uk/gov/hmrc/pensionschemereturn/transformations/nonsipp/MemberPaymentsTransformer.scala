@@ -48,7 +48,7 @@ class MemberPaymentsTransformer @Inject()(
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
           memberStatus = SectionStatus.New,
-          memberPSRVersion = "0",
+          memberPSRVersion = "001",
           noOfContributions =
             if (memberPayments.employerContributionsCompleted) Some(memberDetails.employerContributions.size) else None,
           totalContributions = memberDetails.totalContributions,
