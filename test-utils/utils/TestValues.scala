@@ -354,64 +354,66 @@ trait TestValues {
     recordVersion = Some("001"),
     heldAnyLandOrProperty = "Yes",
     disposeAnyLandOrProperty = "Yes",
-    noOfTransactions = 1,
-    landOrPropertyTransactions = List(
-      EtmpLandOrPropertyTransactions(
-        propertyDetails = EtmpPropertyDetails(
-          landOrPropertyInUK = "Yes",
-          addressDetails = etmpAddress,
-          landRegistryDetails = EtmpLandRegistryDetails(
-            landRegistryReferenceExists = "Yes",
-            landRegistryReference = Some("landRegistryTitleNumberValue"),
-            reasonNoReference = None
-          )
-        ),
-        heldPropertyTransaction = EtmpHeldPropertyTransaction(
-          methodOfHolding = "01",
-          dateOfAcquisitionOrContribution = Some(sampleToday),
-          propertyAcquiredFromName = Some("PropertyAcquiredFromName"),
-          propertyAcquiredFrom = Some(
-            EtmpIdentityType(
-              indivOrOrgType = "02",
-              idNumber = Some("idNumber"),
-              reasonNoIdNumber = None,
-              otherDescription = None
+    noOfTransactions = Some(1),
+    landOrPropertyTransactions = Some(
+      List(
+        EtmpLandOrPropertyTransactions(
+          propertyDetails = EtmpPropertyDetails(
+            landOrPropertyInUK = "Yes",
+            addressDetails = etmpAddress,
+            landRegistryDetails = EtmpLandRegistryDetails(
+              landRegistryReferenceExists = "Yes",
+              landRegistryReference = Some("landRegistryTitleNumberValue"),
+              reasonNoReference = None
             )
           ),
-          connectedPartyStatus = Some("01"),
-          totalCostOfLandOrProperty = Double.MaxValue,
-          indepValuationSupport = Some("Yes"),
-          residentialSchedule29A = "Yes",
-          landOrPropertyLeased = "Yes",
-          leaseDetails = Some(
-            EtmpLeaseDetails(
-              lesseeName = "lesseeName",
-              connectedPartyStatus = "01",
-              leaseGrantDate = sampleToday,
-              annualLeaseAmount = Double.MaxValue
-            )
+          heldPropertyTransaction = EtmpHeldPropertyTransaction(
+            methodOfHolding = "01",
+            dateOfAcquisitionOrContribution = Some(sampleToday),
+            propertyAcquiredFromName = Some("PropertyAcquiredFromName"),
+            propertyAcquiredFrom = Some(
+              EtmpIdentityType(
+                indivOrOrgType = "02",
+                idNumber = Some("idNumber"),
+                reasonNoIdNumber = None,
+                otherDescription = None
+              )
+            ),
+            connectedPartyStatus = Some("01"),
+            totalCostOfLandOrProperty = Double.MaxValue,
+            indepValuationSupport = Some("Yes"),
+            residentialSchedule29A = "Yes",
+            landOrPropertyLeased = "Yes",
+            leaseDetails = Some(
+              EtmpLeaseDetails(
+                lesseeName = "lesseeName",
+                connectedPartyStatus = "01",
+                leaseGrantDate = sampleToday,
+                annualLeaseAmount = Double.MaxValue
+              )
+            ),
+            totalIncomeOrReceipts = Double.MaxValue
           ),
-          totalIncomeOrReceipts = Double.MaxValue
-        ),
-        disposedPropertyTransaction = Some(
-          List(
-            EtmpDisposedPropertyTransaction(
-              methodOfDisposal = "01",
-              otherMethod = None,
-              dateOfSale = Some(sampleToday),
-              nameOfPurchaser = Some("NameOfPurchaser"),
-              purchaseOrgDetails = Some(
-                EtmpIdentityType(
-                  indivOrOrgType = "01",
-                  idNumber = Some("idNumber"),
-                  reasonNoIdNumber = None,
-                  otherDescription = None
-                )
-              ),
-              saleProceeds = Some(Double.MaxValue),
-              connectedPartyStatus = Some("01"),
-              indepValuationSupport = Some("No"),
-              portionStillHeld = "Yes"
+          disposedPropertyTransaction = Some(
+            List(
+              EtmpDisposedPropertyTransaction(
+                methodOfDisposal = "01",
+                otherMethod = None,
+                dateOfSale = Some(sampleToday),
+                nameOfPurchaser = Some("NameOfPurchaser"),
+                purchaseOrgDetails = Some(
+                  EtmpIdentityType(
+                    indivOrOrgType = "01",
+                    idNumber = Some("idNumber"),
+                    reasonNoIdNumber = None,
+                    otherDescription = None
+                  )
+                ),
+                saleProceeds = Some(Double.MaxValue),
+                connectedPartyStatus = Some("01"),
+                indepValuationSupport = Some("No"),
+                portionStillHeld = "Yes"
+              )
             )
           )
         )

@@ -38,94 +38,96 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
           recordVersion = None,
           heldAnyLandOrProperty = Yes,
           disposeAnyLandOrProperty = Yes,
-          noOfTransactions = 1,
-          landOrPropertyTransactions = Seq(
-            EtmpLandOrPropertyTransactions(
-              propertyDetails = EtmpPropertyDetails(
-                landOrPropertyInUK = Yes,
-                addressDetails = EtmpAddress(
-                  addressLine1 = "testAddressLine1",
-                  addressLine2 = "testAddressLine2",
-                  addressLine3 = Some("testAddressLine3"),
-                  addressLine4 = Some("town"),
-                  addressLine5 = None,
-                  ukPostCode = Some("GB135HG"),
-                  countryCode = "GB"
-                ),
-                landRegistryDetails = EtmpLandRegistryDetails(
-                  landRegistryReferenceExists = Yes,
-                  landRegistryReference = Some("landRegistryTitleNumberValue"),
-                  reasonNoReference = None
-                )
-              ),
-              heldPropertyTransaction = EtmpHeldPropertyTransaction(
-                methodOfHolding = "01",
-                dateOfAcquisitionOrContribution = Some(today),
-                propertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                propertyAcquiredFrom = Some(
-                  EtmpIdentityType(
-                    indivOrOrgType = "01",
-                    idNumber = None,
-                    reasonNoIdNumber = Some("NoNinoReason"),
-                    otherDescription = None
+          noOfTransactions = Some(1),
+          landOrPropertyTransactions = Some(
+            Seq(
+              EtmpLandOrPropertyTransactions(
+                propertyDetails = EtmpPropertyDetails(
+                  landOrPropertyInUK = Yes,
+                  addressDetails = EtmpAddress(
+                    addressLine1 = "testAddressLine1",
+                    addressLine2 = "testAddressLine2",
+                    addressLine3 = Some("testAddressLine3"),
+                    addressLine4 = Some("town"),
+                    addressLine5 = None,
+                    ukPostCode = Some("GB135HG"),
+                    countryCode = "GB"
+                  ),
+                  landRegistryDetails = EtmpLandRegistryDetails(
+                    landRegistryReferenceExists = Yes,
+                    landRegistryReference = Some("landRegistryTitleNumberValue"),
+                    reasonNoReference = None
                   )
                 ),
-                connectedPartyStatus = Some(Connected),
-                totalCostOfLandOrProperty = Double.MaxValue,
-                indepValuationSupport = Some(Yes),
-                residentialSchedule29A = Yes,
-                landOrPropertyLeased = Yes,
-                leaseDetails = Some(
-                  EtmpLeaseDetails(
-                    lesseeName = "lesseeName",
-                    connectedPartyStatus = Unconnected,
-                    leaseGrantDate = today,
-                    annualLeaseAmount = Double.MaxValue
-                  )
+                heldPropertyTransaction = EtmpHeldPropertyTransaction(
+                  methodOfHolding = "01",
+                  dateOfAcquisitionOrContribution = Some(today),
+                  propertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                  propertyAcquiredFrom = Some(
+                    EtmpIdentityType(
+                      indivOrOrgType = "01",
+                      idNumber = None,
+                      reasonNoIdNumber = Some("NoNinoReason"),
+                      otherDescription = None
+                    )
+                  ),
+                  connectedPartyStatus = Some(Connected),
+                  totalCostOfLandOrProperty = Double.MaxValue,
+                  indepValuationSupport = Some(Yes),
+                  residentialSchedule29A = Yes,
+                  landOrPropertyLeased = Yes,
+                  leaseDetails = Some(
+                    EtmpLeaseDetails(
+                      lesseeName = "lesseeName",
+                      connectedPartyStatus = Unconnected,
+                      leaseGrantDate = today,
+                      annualLeaseAmount = Double.MaxValue
+                    )
+                  ),
+                  totalIncomeOrReceipts = Double.MaxValue
                 ),
-                totalIncomeOrReceipts = Double.MaxValue
-              ),
-              disposedPropertyTransaction = Some(
-                Seq(
-                  EtmpDisposedPropertyTransaction(
-                    methodOfDisposal = "01",
-                    otherMethod = None,
-                    dateOfSale = Some(today),
-                    nameOfPurchaser = Some("NameOfPurchaser"),
-                    purchaseOrgDetails = Some(
-                      EtmpIdentityType(
-                        indivOrOrgType = "02",
-                        idNumber = None,
-                        reasonNoIdNumber = Some("NoCrnReason"),
-                        otherDescription = None
-                      )
+                disposedPropertyTransaction = Some(
+                  Seq(
+                    EtmpDisposedPropertyTransaction(
+                      methodOfDisposal = "01",
+                      otherMethod = None,
+                      dateOfSale = Some(today),
+                      nameOfPurchaser = Some("NameOfPurchaser"),
+                      purchaseOrgDetails = Some(
+                        EtmpIdentityType(
+                          indivOrOrgType = "02",
+                          idNumber = None,
+                          reasonNoIdNumber = Some("NoCrnReason"),
+                          otherDescription = None
+                        )
+                      ),
+                      saleProceeds = Some(Double.MaxValue),
+                      connectedPartyStatus = Some(Connected),
+                      indepValuationSupport = Some(Yes),
+                      portionStillHeld = No
                     ),
-                    saleProceeds = Some(Double.MaxValue),
-                    connectedPartyStatus = Some(Connected),
-                    indepValuationSupport = Some(Yes),
-                    portionStillHeld = No
-                  ),
-                  EtmpDisposedPropertyTransaction(
-                    methodOfDisposal = "02",
-                    otherMethod = None,
-                    dateOfSale = None,
-                    nameOfPurchaser = None,
-                    purchaseOrgDetails = None,
-                    saleProceeds = None,
-                    connectedPartyStatus = None,
-                    indepValuationSupport = None,
-                    portionStillHeld = No
-                  ),
-                  EtmpDisposedPropertyTransaction(
-                    methodOfDisposal = "03",
-                    otherMethod = Some("OtherMethod"),
-                    dateOfSale = None,
-                    nameOfPurchaser = None,
-                    purchaseOrgDetails = None,
-                    saleProceeds = None,
-                    connectedPartyStatus = None,
-                    indepValuationSupport = None,
-                    portionStillHeld = Yes
+                    EtmpDisposedPropertyTransaction(
+                      methodOfDisposal = "02",
+                      otherMethod = None,
+                      dateOfSale = None,
+                      nameOfPurchaser = None,
+                      purchaseOrgDetails = None,
+                      saleProceeds = None,
+                      connectedPartyStatus = None,
+                      indepValuationSupport = None,
+                      portionStillHeld = No
+                    ),
+                    EtmpDisposedPropertyTransaction(
+                      methodOfDisposal = "03",
+                      otherMethod = Some("OtherMethod"),
+                      dateOfSale = None,
+                      nameOfPurchaser = None,
+                      purchaseOrgDetails = None,
+                      saleProceeds = None,
+                      connectedPartyStatus = None,
+                      indepValuationSupport = None,
+                      portionStillHeld = Yes
+                    )
                   )
                 )
               )

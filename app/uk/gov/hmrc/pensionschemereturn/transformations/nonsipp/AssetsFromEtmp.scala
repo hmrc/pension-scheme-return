@@ -32,87 +32,90 @@ class AssetsFromEtmp @Inject() extends Transformer {
       landOrProperty = LandOrProperty(
         landOrPropertyHeld = fromYesNo(assets.landOrProperty.heldAnyLandOrProperty),
         disposeAnyLandOrProperty = fromYesNo(assets.landOrProperty.disposeAnyLandOrProperty),
-        landOrPropertyTransactions = assets.landOrProperty.landOrPropertyTransactions.map(
-          landOrPropertyTransaction => {
+        landOrPropertyTransactions = assets.landOrProperty.landOrPropertyTransactions
+          .getOrElse(Seq.empty)
+          .map(
+            landOrPropertyTransaction => {
 
-            val propertyDetails = landOrPropertyTransaction.propertyDetails
-            val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
-            val disposedPropertyTransaction = landOrPropertyTransaction.disposedPropertyTransaction
-            val addressDetails = propertyDetails.addressDetails
+              val propertyDetails = landOrPropertyTransaction.propertyDetails
+              val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
+              val disposedPropertyTransaction = landOrPropertyTransaction.disposedPropertyTransaction
+              val addressDetails = propertyDetails.addressDetails
 
-            LandOrPropertyTransactions(
-              propertyDetails = PropertyDetails(
-                landOrPropertyInUK = fromYesNo(propertyDetails.landOrPropertyInUK),
-                addressDetails = Address(
-                  addressLine1 = addressDetails.addressLine1,
-                  addressLine2 = addressDetails.addressLine4.map(_ => addressDetails.addressLine2),
-                  addressLine3 = addressDetails.addressLine3,
-                  town = addressDetails.addressLine4.getOrElse(addressDetails.addressLine2),
-                  postCode = addressDetails.ukPostCode,
-                  countryCode = addressDetails.countryCode
+              LandOrPropertyTransactions(
+                propertyDetails = PropertyDetails(
+                  landOrPropertyInUK = fromYesNo(propertyDetails.landOrPropertyInUK),
+                  addressDetails = Address(
+                    addressLine1 = addressDetails.addressLine1,
+                    addressLine2 = addressDetails.addressLine4.map(_ => addressDetails.addressLine2),
+                    addressLine3 = addressDetails.addressLine3,
+                    town = addressDetails.addressLine4.getOrElse(addressDetails.addressLine2),
+                    postCode = addressDetails.ukPostCode,
+                    countryCode = addressDetails.countryCode
+                  ),
+                  landRegistryTitleNumberKey =
+                    fromYesNo(propertyDetails.landRegistryDetails.landRegistryReferenceExists),
+                  landRegistryTitleNumberValue = Seq(
+                    propertyDetails.landRegistryDetails.landRegistryReference,
+                    propertyDetails.landRegistryDetails.reasonNoReference
+                  ).flatten.headOption.get
                 ),
-                landRegistryTitleNumberKey = fromYesNo(propertyDetails.landRegistryDetails.landRegistryReferenceExists),
-                landRegistryTitleNumberValue = Seq(
-                  propertyDetails.landRegistryDetails.landRegistryReference,
-                  propertyDetails.landRegistryDetails.reasonNoReference
-                ).flatten.headOption.get
-              ),
-              heldPropertyTransaction = HeldPropertyTransaction(
-                methodOfHolding = stringToSchemeHoldLandProperty(heldPropertyTransaction.methodOfHolding),
-                dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
-                optPropertyAcquiredFromName = heldPropertyTransaction.propertyAcquiredFromName,
-                optPropertyAcquiredFrom = heldPropertyTransaction.propertyAcquiredFrom.map { etmpIdentityType =>
-                  val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
-                  PropertyAcquiredFrom(
-                    identityType = identityType,
-                    idNumber = etmpIdentityType.idNumber,
-                    reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
-                    otherDescription = etmpIdentityType.otherDescription
+                heldPropertyTransaction = HeldPropertyTransaction(
+                  methodOfHolding = stringToSchemeHoldLandProperty(heldPropertyTransaction.methodOfHolding),
+                  dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
+                  optPropertyAcquiredFromName = heldPropertyTransaction.propertyAcquiredFromName,
+                  optPropertyAcquiredFrom = heldPropertyTransaction.propertyAcquiredFrom.map { etmpIdentityType =>
+                    val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
+                    PropertyAcquiredFrom(
+                      identityType = identityType,
+                      idNumber = etmpIdentityType.idNumber,
+                      reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
+                      otherDescription = etmpIdentityType.otherDescription
+                    )
+                  },
+                  optConnectedPartyStatus = heldPropertyTransaction.connectedPartyStatus.map(_ == Connected),
+                  totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
+                  optIndepValuationSupport = heldPropertyTransaction.indepValuationSupport.map(fromYesNo),
+                  isLandOrPropertyResidential = fromYesNo(heldPropertyTransaction.residentialSchedule29A),
+                  optLeaseDetails = heldPropertyTransaction.leaseDetails.map(
+                    leaseDetail =>
+                      LeaseDetails(
+                        lesseeName = leaseDetail.lesseeName,
+                        leaseGrantDate = leaseDetail.leaseGrantDate,
+                        annualLeaseAmount = leaseDetail.annualLeaseAmount,
+                        connectedPartyStatus = leaseDetail.connectedPartyStatus == Connected
+                      )
+                  ),
+                  landOrPropertyLeased = fromYesNo(heldPropertyTransaction.landOrPropertyLeased),
+                  totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
+                ),
+                optDisposedPropertyTransaction = disposedPropertyTransaction.map(
+                  _.map(
+                    dpt =>
+                      DisposedPropertyTransaction(
+                        methodOfDisposal = stringToHowDisposed(dpt.methodOfDisposal),
+                        optOtherMethod = dpt.otherMethod,
+                        optDateOfSale = dpt.dateOfSale,
+                        optNameOfPurchaser = dpt.nameOfPurchaser,
+                        optPropertyAcquiredFrom = dpt.purchaseOrgDetails.map { etmpIdentityType =>
+                          val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
+                          PropertyAcquiredFrom(
+                            identityType = identityType,
+                            idNumber = etmpIdentityType.idNumber,
+                            reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
+                            otherDescription = etmpIdentityType.otherDescription
+                          )
+                        },
+                        optSaleProceeds = dpt.saleProceeds,
+                        optConnectedPartyStatus = dpt.connectedPartyStatus.map(_ == Connected),
+                        optIndepValuationSupport = dpt.indepValuationSupport.map(fromYesNo),
+                        portionStillHeld = fromYesNo(dpt.portionStillHeld)
+                      )
                   )
-                },
-                optConnectedPartyStatus = heldPropertyTransaction.connectedPartyStatus.map(_ == Connected),
-                totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
-                optIndepValuationSupport = heldPropertyTransaction.indepValuationSupport.map(fromYesNo),
-                isLandOrPropertyResidential = fromYesNo(heldPropertyTransaction.residentialSchedule29A),
-                optLeaseDetails = heldPropertyTransaction.leaseDetails.map(
-                  leaseDetail =>
-                    LeaseDetails(
-                      lesseeName = leaseDetail.lesseeName,
-                      leaseGrantDate = leaseDetail.leaseGrantDate,
-                      annualLeaseAmount = leaseDetail.annualLeaseAmount,
-                      connectedPartyStatus = leaseDetail.connectedPartyStatus == Connected
-                    )
-                ),
-                landOrPropertyLeased = fromYesNo(heldPropertyTransaction.landOrPropertyLeased),
-                totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
-              ),
-              optDisposedPropertyTransaction = disposedPropertyTransaction.map(
-                _.map(
-                  dpt =>
-                    DisposedPropertyTransaction(
-                      methodOfDisposal = stringToHowDisposed(dpt.methodOfDisposal),
-                      optOtherMethod = dpt.otherMethod,
-                      optDateOfSale = dpt.dateOfSale,
-                      optNameOfPurchaser = dpt.nameOfPurchaser,
-                      optPropertyAcquiredFrom = dpt.purchaseOrgDetails.map { etmpIdentityType =>
-                        val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
-                        PropertyAcquiredFrom(
-                          identityType = identityType,
-                          idNumber = etmpIdentityType.idNumber,
-                          reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
-                          otherDescription = etmpIdentityType.otherDescription
-                        )
-                      },
-                      optSaleProceeds = dpt.saleProceeds,
-                      optConnectedPartyStatus = dpt.connectedPartyStatus.map(_ == Connected),
-                      optIndepValuationSupport = dpt.indepValuationSupport.map(fromYesNo),
-                      portionStillHeld = fromYesNo(dpt.portionStillHeld)
-                    )
                 )
               )
-            )
-          }
-        )
+            }
+          )
       ),
       borrowing = Borrowing(
         moneyWasBorrowed = fromYesNo(assets.borrowing.moneyWasBorrowed),
