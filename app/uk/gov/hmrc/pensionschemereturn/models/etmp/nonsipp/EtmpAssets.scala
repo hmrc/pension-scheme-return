@@ -31,8 +31,8 @@ case class EtmpLandOrProperty(
   recordVersion: Option[String],
   heldAnyLandOrProperty: String,
   disposeAnyLandOrProperty: String,
-  noOfTransactions: Int,
-  landOrPropertyTransactions: Seq[EtmpLandOrPropertyTransactions]
+  noOfTransactions: Option[Int],
+  landOrPropertyTransactions: Option[Seq[EtmpLandOrPropertyTransactions]]
 )
 
 case class EtmpBorrowing(
