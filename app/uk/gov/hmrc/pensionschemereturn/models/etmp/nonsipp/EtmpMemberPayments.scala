@@ -35,6 +35,8 @@ case class EtmpMemberPayments(
   memberDetails: List[EtmpMemberDetails]
 )
 
+// Using Option[List[?]] as the data items are optional in ETMP,
+// this means that when we read them as a List[?] and the field doesn't exist in the response, it will blow up
 case class EtmpMemberDetails(
   memberStatus: SectionStatus,
   memberPSRVersion: String,
@@ -47,7 +49,8 @@ case class EtmpMemberDetails(
   memberEmpContribution: List[EtmpEmployerContributions],
   memberTransfersIn: List[EtmpTransfersIn],
   memberLumpSumReceived: Option[List[EtmpMemberLumpSumReceived]],
-  memberTransfersOut: List[EtmpTransfersOut]
+  memberTransfersOut: List[EtmpTransfersOut],
+  memberPensionSurrender: Option[List[EtmpPensionSurrender]]
 )
 
 case class EtmpMemberPersonalDetails(

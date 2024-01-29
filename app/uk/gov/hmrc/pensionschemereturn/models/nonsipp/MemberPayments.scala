@@ -18,6 +18,11 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Format, Json}
 
+case class SectionDetails(
+  made: Boolean,
+  completed: Boolean
+)
+
 case class MemberPayments(
   memberDetails: List[MemberDetails],
   employerContributionsCompleted: Boolean,
@@ -26,7 +31,8 @@ case class MemberPayments(
   unallocatedContribsMade: Boolean,
   unallocatedContribAmount: Option[Double],
   memberContributionMade: Boolean,
-  lumpSumReceived: Boolean
+  lumpSumReceived: Boolean,
+  benefitsSurrenderedDetails: SectionDetails
 )
 
 case class MemberDetails(
@@ -35,7 +41,8 @@ case class MemberDetails(
   totalContributions: Option[Double],
   transfersIn: List[TransfersIn],
   memberLumpSumReceived: Option[MemberLumpSumReceived],
-  transfersOut: List[TransfersOut]
+  transfersOut: List[TransfersOut],
+  benefitsSurrendered: Option[PensionSurrender]
 )
 
 case class MemberLumpSumReceived(
@@ -44,6 +51,7 @@ case class MemberLumpSumReceived(
 )
 
 object MemberPayments {
+  private implicit val formatSectionDetails: Format[SectionDetails] = Json.format[SectionDetails]
   private implicit val formatMemberLumpSumReceived: Format[MemberLumpSumReceived] = Json.format[MemberLumpSumReceived]
   private implicit val formatMemberDetails: Format[MemberDetails] = Json.format[MemberDetails]
   implicit val format: Format[MemberPayments] = Json.format[MemberPayments]

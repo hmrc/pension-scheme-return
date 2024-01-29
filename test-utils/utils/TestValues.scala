@@ -252,6 +252,13 @@ trait TestValues {
     memberLumpSumReceived = Some(MemberLumpSumReceived(Double.MaxValue, Double.MaxValue)),
     transfersOut = List(
       sampleTransfersOut1
+    ),
+    benefitsSurrendered = Some(
+      PensionSurrender(
+        totalSurrendered = 12.34,
+        dateOfSurrender = LocalDate.of(2022, 12, 12),
+        surrenderReason = "some reason"
+      )
     )
   )
 
@@ -274,6 +281,13 @@ trait TestValues {
     memberLumpSumReceived = None,
     transfersOut = List(
       sampleTransfersOut2
+    ),
+    benefitsSurrendered = Some(
+      PensionSurrender(
+        totalSurrendered = 12.34,
+        dateOfSurrender = LocalDate.of(2022, 12, 12),
+        surrenderReason = "some reason"
+      )
     )
   )
 
@@ -290,7 +304,8 @@ trait TestValues {
     memberContributionMade = true,
     transfersInCompleted = true,
     transfersOutCompleted = true,
-    lumpSumReceived = true
+    lumpSumReceived = true,
+    benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
   // Standard - ETMP
@@ -477,7 +492,7 @@ trait TestValues {
     schemeMadeTransferOut = Yes,
     lumpSumReceived = Yes,
     pensionReceived = No,
-    surrenderMade = No,
+    surrenderMade = Yes,
     memberDetails = List(
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
@@ -533,7 +548,16 @@ trait TestValues {
             transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
           )
         ),
-        memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue)))
+        memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue))),
+        memberPensionSurrender = Some(
+          List(
+            EtmpPensionSurrender(
+              totalSurrendered = 12.34,
+              dateOfSurrender = LocalDate.of(2022, 12, 12),
+              surrenderReason = "some reason"
+            )
+          )
+        )
       ),
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
@@ -589,7 +613,16 @@ trait TestValues {
             transferSchemeType = TransferSchemeType.qrops("some overseas scheme")
           )
         ),
-        memberLumpSumReceived = None
+        memberLumpSumReceived = None,
+        memberPensionSurrender = Some(
+          List(
+            EtmpPensionSurrender(
+              totalSurrendered = 12.34,
+              dateOfSurrender = LocalDate.of(2022, 12, 12),
+              surrenderReason = "some reason"
+            )
+          )
+        )
       )
     )
   )
@@ -758,7 +791,21 @@ trait TestValues {
                 transferSchemeType = TransferSchemeType.registeredScheme("76509173AB")
               )
             ),
-            memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(30000.0, 20000.00)))
+            memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(30000.0, 20000.00))),
+            memberPensionSurrender = Some(
+              List(
+                EtmpPensionSurrender(
+                  totalSurrendered = 1000.0,
+                  dateOfSurrender = LocalDate.of(2022, 12, 19),
+                  surrenderReason = "ABC"
+                ),
+                EtmpPensionSurrender(
+                  totalSurrendered = 2000.0,
+                  dateOfSurrender = LocalDate.of(2023, 2, 8),
+                  surrenderReason = "I felt like giving money away..."
+                )
+              )
+            )
           ),
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
@@ -826,7 +873,8 @@ trait TestValues {
                 transferSchemeType = TransferSchemeType.qrops("Q000002")
               )
             ),
-            memberLumpSumReceived = None
+            memberLumpSumReceived = None,
+            memberPensionSurrender = None
           )
         )
       )

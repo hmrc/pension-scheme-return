@@ -29,7 +29,8 @@ class MemberPaymentsTransformer @Inject()(
   employerContributionsTransformer: EmployerContributionsTransformer,
   memberPersonalDetailsTransformer: MemberPersonalDetailsTransformer,
   transferInTransformer: TransferInTransformer,
-  transferOutTransformer: TransferOutTransformer
+  transferOutTransformer: TransferOutTransformer,
+  pensionSurrenderTransformer: PensionSurrenderTransformer
 ) extends ETMPTransformer[MemberPayments, EtmpMemberPayments] {
 
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
@@ -44,7 +45,12 @@ class MemberPaymentsTransformer @Inject()(
       schemeMadeTransferOut = memberPayments.memberDetails.exists(_.transfersOut.nonEmpty),
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = false,
-      surrenderMade = false,
+      surrenderMade = memberPayments.benefitsSurrenderedDetails match {
+        case SectionDetails(made @ true, completed @ true) => true
+        case SectionDetails(made @ true, completed @ false) => false
+        case SectionDetails(made @ false, completed @ true) => false
+        case SectionDetails(made @ false, completed @ false) => false // shouldn't happen but adding just in case
+      },
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
           memberStatus = SectionStatus.New,
@@ -61,7 +67,13 @@ class MemberPaymentsTransformer @Inject()(
           memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(
             x => List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
           ),
-          memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp)
+          memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp),
+          memberPensionSurrender = Option.when(memberPayments.benefitsSurrenderedDetails.made)(
+            memberDetails.benefitsSurrendered.map(pensionSurrenderTransformer.toEtmp) match {
+              case Some(surrender) => List(surrender)
+              case None => Nil
+            }
+          )
         )
       }
     )
@@ -74,6 +86,7 @@ class MemberPaymentsTransformer @Inject()(
         employerContributions <- member.memberEmpContribution.traverse(employerContributionsTransformer.fromEtmp)
         transfersIn <- member.memberTransfersIn.traverse(transferInTransformer.fromEtmp)
         transfersOut <- member.memberTransfersOut.traverse(transferOutTransformer.fromEtmp)
+        pensionSurrenders <- member.memberPensionSurrender.toList.flatten.traverse(pensionSurrenderTransformer.fromEtmp)
       } yield MemberDetails(
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
@@ -83,7 +96,8 @@ class MemberPaymentsTransformer @Inject()(
           val head = t.head
           MemberLumpSumReceived(head.lumpSumAmount, head.designatedPensionAmount)
         }),
-        transfersOut = transfersOut
+        transfersOut = transfersOut,
+        benefitsSurrendered = pensionSurrenders.headOption
       )
     }
     memberDetails.map(
@@ -96,7 +110,16 @@ class MemberPaymentsTransformer @Inject()(
           unallocatedContribsMade = unapply(out.unallocatedContribsMade),
           unallocatedContribAmount = out.unallocatedContribAmount,
           memberContributionMade = unapply(out.memberContributionMade),
-          lumpSumReceived = unapply(out.lumpSumReceived)
+          lumpSumReceived = unapply(out.lumpSumReceived),
+          benefitsSurrenderedDetails =
+            (out.surrenderMade.boolean, out.memberDetails.map(_.memberPensionSurrender)) match {
+              case (false, List(Some(Nil))) => SectionDetails(made = true, completed = false)
+              case (true, List(Some(Nil))) => SectionDetails(made = true, completed = true)
+              case (false, List(None)) => SectionDetails(made = false, completed = true)
+              case (true, List(None)) => SectionDetails(made = true, completed = true) // this case shouldn't happen
+              case (true, _) => SectionDetails(made = true, completed = true)
+              case (false, _) => SectionDetails(made = false, completed = true)
+            }
         )
     )
   }

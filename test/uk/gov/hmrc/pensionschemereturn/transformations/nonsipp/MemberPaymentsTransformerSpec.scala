@@ -17,8 +17,15 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpMemberPayments, EtmpPensionSurrender}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MemberPayments, PensionSurrender, SectionDetails}
+
+import java.time.LocalDate
 
 class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
+
+  private val pensionSurrender = PensionSurrender(12.34, LocalDate.of(2022, 12, 12), "some reason")
+  private val etmpPensionSurrender = EtmpPensionSurrender(12.34, LocalDate.of(2022, 12, 12), "some reason")
 
   "MemberPaymentsTransformer" should {
     "successfully transform to ETMP format" in {
@@ -32,5 +39,158 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
       result shouldMatchTo Right(sampleMemberPayments)
     }
+
+    "successfully transform surrenderedBenefits section to ETMP format" when {
+
+      "surrenders made is TRUE, completed is TRUE and BOTH surrendered benefits are provided" in {
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = true,
+          completed = true,
+          surrenderedBenefits = Some(pensionSurrender)
+        )
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = true,
+          surrenderedBenefits = Some(List(etmpPensionSurrender))
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "surrenders made is TRUE, completed is FALSE and BOTH surrendered benefits are provided" in {
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = true,
+          completed = false,
+          surrenderedBenefits = Some(pensionSurrender)
+        )
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = false,
+          surrenderedBenefits = Some(List(etmpPensionSurrender))
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "surrenders made is TRUE, completed is TRUE and NO surrendered benefits are provided" in {
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = true,
+          completed = true,
+          surrenderedBenefits = None
+        )
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = true,
+          surrenderedBenefits = Some(Nil)
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "surrenders made is FALSE, completed is TRUE and NO surrendered benefits are provided" in {
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = false,
+          completed = true,
+          surrenderedBenefits = None
+        )
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = false,
+          surrenderedBenefits = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+    }
+
+    "successfully transform surrenderedBenefits section from ETMP format" when {
+      "surrenders made is TRUE, BOTH surrendered benefits are provided" in {
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = true,
+          surrenderedBenefits = Some(List(etmpPensionSurrender))
+        )
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = true,
+          completed = true,
+          surrenderedBenefits = Some(pensionSurrender)
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "surrenders made is TRUE, NO surrendered benefits are provided" in {
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = true,
+          surrenderedBenefits = Some(Nil)
+        )
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = true,
+          completed = true,
+          surrenderedBenefits = None
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "surrenders made is FALSE and BOTH surrendered benefits are provided" in {
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = false,
+          surrenderedBenefits = Some(List(etmpPensionSurrender))
+        )
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = false,
+          completed = true,
+          surrenderedBenefits = Some(pensionSurrender)
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+    }
   }
+
+  private def transformSurrenderedBenefits(
+    made: Boolean,
+    completed: Boolean,
+    surrenderedBenefits: Option[PensionSurrender]
+  ): MemberPayments =
+    sampleMemberPayments.copy(
+      benefitsSurrenderedDetails = SectionDetails(
+        made = made,
+        completed = completed
+      ),
+      memberDetails = sampleMemberPayments.memberDetails.map(_.copy(benefitsSurrendered = surrenderedBenefits))
+    )
+
+  private def transformEtmpSurrenderedBenefits(
+    surrenderMade: Boolean,
+    surrenderedBenefits: Option[List[EtmpPensionSurrender]]
+  ): EtmpMemberPayments =
+    sampleEtmpMemberPayments.copy(
+      surrenderMade = surrenderMade,
+      memberDetails = sampleEtmpMemberPayments.memberDetails.map(_.copy(memberPensionSurrender = surrenderedBenefits))
+    )
 }
