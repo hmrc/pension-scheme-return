@@ -32,6 +32,7 @@ case class MemberPayments(
   unallocatedContribAmount: Option[Double],
   memberContributionMade: Boolean,
   lumpSumReceived: Boolean,
+  pensionReceived: Boolean,
   benefitsSurrenderedDetails: SectionDetails
 )
 
@@ -42,7 +43,8 @@ case class MemberDetails(
   transfersIn: List[TransfersIn],
   memberLumpSumReceived: Option[MemberLumpSumReceived],
   transfersOut: List[TransfersOut],
-  benefitsSurrendered: Option[PensionSurrender]
+  benefitsSurrendered: Option[PensionSurrender],
+  pensionAmountReceived: Option[Double]
 )
 
 case class MemberLumpSumReceived(

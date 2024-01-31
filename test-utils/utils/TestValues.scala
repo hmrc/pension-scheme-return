@@ -259,7 +259,8 @@ trait TestValues {
         dateOfSurrender = LocalDate.of(2022, 12, 12),
         surrenderReason = "some reason"
       )
-    )
+    ),
+    pensionAmountReceived = Some(12.34)
   )
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
@@ -288,7 +289,8 @@ trait TestValues {
         dateOfSurrender = LocalDate.of(2022, 12, 12),
         surrenderReason = "some reason"
       )
-    )
+    ),
+    pensionAmountReceived = Some(12.34)
   )
 
   val sampleUnallocatedContribAmount: Double = 201.34
@@ -305,6 +307,7 @@ trait TestValues {
     transfersInCompleted = true,
     transfersOutCompleted = true,
     lumpSumReceived = true,
+    pensionReceived = true,
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
@@ -491,7 +494,7 @@ trait TestValues {
     schemeReceivedTransferIn = Yes,
     schemeMadeTransferOut = Yes,
     lumpSumReceived = Yes,
-    pensionReceived = No,
+    pensionReceived = Yes,
     surrenderMade = Yes,
     memberDetails = List(
       EtmpMemberDetails(
@@ -501,7 +504,7 @@ trait TestValues {
         totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
         noOfTransfersOut = Some(1),
-        pensionAmountReceived = None,
+        pensionAmountReceived = Some(12.34),
         personalDetails = EtmpMemberPersonalDetails(
           foreName = sampleMemberDetails1.personalDetails.firstName,
           middleName = None,
@@ -566,7 +569,7 @@ trait TestValues {
         totalContributions = None,
         noOfTransfersIn = Some(1),
         noOfTransfersOut = Some(1),
-        pensionAmountReceived = None,
+        pensionAmountReceived = Some(12.34),
         personalDetails = EtmpMemberPersonalDetails(
           foreName = "test first two",
           middleName = None,

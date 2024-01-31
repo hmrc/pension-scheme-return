@@ -44,7 +44,7 @@ class MemberPaymentsTransformer @Inject()(
       schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
       schemeMadeTransferOut = memberPayments.memberDetails.exists(_.transfersOut.nonEmpty),
       lumpSumReceived = memberPayments.lumpSumReceived,
-      pensionReceived = false,
+      pensionReceived = memberPayments.pensionReceived,
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
         case SectionDetails(made @ true, completed @ true) => true
         case SectionDetails(made @ true, completed @ false) => false
@@ -60,7 +60,7 @@ class MemberPaymentsTransformer @Inject()(
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
-          pensionAmountReceived = None,
+          pensionAmountReceived = memberDetails.pensionAmountReceived,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
           memberEmpContribution = memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp),
           memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp),
@@ -97,7 +97,8 @@ class MemberPaymentsTransformer @Inject()(
           MemberLumpSumReceived(head.lumpSumAmount, head.designatedPensionAmount)
         }),
         transfersOut = transfersOut,
-        benefitsSurrendered = pensionSurrenders.headOption
+        benefitsSurrendered = pensionSurrenders.headOption,
+        pensionAmountReceived = member.pensionAmountReceived
       )
     }
     memberDetails.map(
@@ -111,6 +112,7 @@ class MemberPaymentsTransformer @Inject()(
           unallocatedContribAmount = out.unallocatedContribAmount,
           memberContributionMade = unapply(out.memberContributionMade),
           lumpSumReceived = unapply(out.lumpSumReceived),
+          pensionReceived = unapply(out.pensionReceived),
           benefitsSurrenderedDetails =
             (out.surrenderMade.boolean, out.memberDetails.map(_.memberPensionSurrender)) match {
               case (false, List(Some(Nil))) => SectionDetails(made = true, completed = false)
