@@ -28,6 +28,6 @@ class SippPsrSubmissionToEtmp @Inject()(
   def transform(sippPsrSubmission: SippPsrSubmission): SippPsrSubmissionEtmpRequest = {
     val etmpSippReportDetails =
       sippReportDetailsToEtmp.transform(sippPsrSubmission.reportDetails)
-    SippPsrSubmissionEtmpRequest(etmpSippReportDetails)
+    SippPsrSubmissionEtmpRequest(etmpSippReportDetails, None, None, None)
   }
 }

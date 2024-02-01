@@ -29,12 +29,12 @@ import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.sipp.{SippPsrFromEtmp, SippPsrSubmissionToEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
-import utils.{BaseSpec, TestValues}
+import utils.{BaseSpec, SippEtmpTestValues, TestValues}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SippPsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValues {
+class SippPsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValues with SippEtmpTestValues {
 
   override def beforeEach(): Unit = {
     reset(mockPsrConnector)
@@ -92,6 +92,24 @@ class SippPsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestV
       val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
 
       when(mockSippPsrSubmissionToEtmp.transform(any())).thenReturn(sampleSippPsrSubmissionEtmpRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set.empty))
+      when(mockPsrConnector.submitSippPsr(any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponse))
+
+      whenReady(service.submitSippPsr(sampleSippPsrSubmission)) { result: HttpResponse =>
+        result mustEqual expectedResponse
+
+        verify(mockSippPsrSubmissionToEtmp, times(1)).transform(any())
+        verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+        verify(mockPsrConnector, times(1)).submitSippPsr(any(), any())(any(), any(), any())
+      }
+    }
+
+    "successfully submit for max SIPP submission details" in {
+      val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
+
+      when(mockSippPsrSubmissionToEtmp.transform(any())).thenReturn(fullSippPsrSubmissionEtmpRequest)
       when(mockJSONSchemaValidator.validatePayload(any(), any()))
         .thenReturn(SchemaValidationResult(Set.empty))
       when(mockPsrConnector.submitSippPsr(any(), any())(any(), any(), any()))

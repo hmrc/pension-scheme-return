@@ -920,7 +920,10 @@ trait TestValues {
   // SIPP - ETMP
 
   val sampleSippPsrSubmissionEtmpRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
-    EtmpSippReportDetails(None, Compiled, sampleToday, sampleToday, "Yes", None, None)
+    reportDetails = EtmpSippReportDetails(None, Compiled, sampleToday, sampleToday, "Yes", None, None),
+    accountingPeriodDetails = None,
+    memberAndTransactions = None,
+    psrDeclaration = None
   )
 
   val sampleSippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse = SippPsrSubmissionEtmpResponse(

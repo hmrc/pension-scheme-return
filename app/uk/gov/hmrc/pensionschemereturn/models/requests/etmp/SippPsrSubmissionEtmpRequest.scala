@@ -17,12 +17,25 @@
 package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
 
 import play.api.libs.json.{Json, OWrites}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
+import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.{
+  EtmpSippAccountingPeriodDetails,
+  EtmpSippMemberAndTransactions,
+  EtmpSippPsrDeclaration,
+  EtmpSippReportDetails
+}
 
 case class SippPsrSubmissionEtmpRequest(
-  reportDetails: EtmpSippReportDetails
+  reportDetails: EtmpSippReportDetails,
+  accountingPeriodDetails: Option[EtmpSippAccountingPeriodDetails],
+  memberAndTransactions: Option[List[EtmpSippMemberAndTransactions]],
+  psrDeclaration: Option[EtmpSippPsrDeclaration]
 )
 
 object SippPsrSubmissionEtmpRequest {
+  import EtmpSippReportDetails._
+  import EtmpSippAccountingPeriodDetails._
+  import EtmpSippMemberAndTransactions._
+  import EtmpSippPsrDeclaration._
+
   implicit val writes: OWrites[SippPsrSubmissionEtmpRequest] = Json.writes[SippPsrSubmissionEtmpRequest]
 }
