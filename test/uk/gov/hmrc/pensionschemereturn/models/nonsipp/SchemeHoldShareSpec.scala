@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, OFormat}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldShare.{
+  stringToSchemeHoldShare,
+  Acquisition,
+  Contribution,
+  Transfer
+}
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  membersPayments: Option[MemberPayments],
-  shares: Option[Shares]
-)
+class SchemeHoldShareSpec extends AnyWordSpec with Matchers {
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+  "SchemeHoldShare" should {
+
+    "successfully convert from SchemeHoldShare to String" in {
+      stringToSchemeHoldShare("01") shouldEqual Acquisition
+      stringToSchemeHoldShare("02") shouldEqual Contribution
+      stringToSchemeHoldShare("03") shouldEqual Transfer
+    }
+  }
 }

@@ -66,7 +66,8 @@ trait TestValues {
     checkReturnDates = true,
     loans = None,
     assets = None,
-    membersPayments = None
+    membersPayments = None,
+    shares = None
   )
 
   val sampleLoans: Loans = Loans(
@@ -205,7 +206,7 @@ trait TestValues {
     totalTransferValue = 78.99
   )
 
-  val sampleTransfersIn1 = TransfersIn(
+  val sampleTransfersIn1: TransfersIn = TransfersIn(
     schemeName = "test scheme name one",
     dateOfTransfer = LocalDate.of(2010, 10, 10),
     transferSchemeType = PensionSchemeType.RegisteredPS("some pension scheme"),
@@ -213,7 +214,7 @@ trait TestValues {
     transferIncludedAsset = true
   )
 
-  val sampleTransfersIn2 = TransfersIn(
+  val sampleTransfersIn2: TransfersIn = TransfersIn(
     schemeName = "test scheme name two",
     dateOfTransfer = LocalDate.of(2013, 4, 10),
     transferSchemeType = PensionSchemeType.QualifyingRecognisedOverseasPS("some overseas scheme"),
@@ -221,13 +222,13 @@ trait TestValues {
     transferIncludedAsset = false
   )
 
-  val sampleTransfersOut1 = TransfersOut(
+  val sampleTransfersOut1: TransfersOut = TransfersOut(
     schemeName = "test scheme name one out",
     dateOfTransfer = LocalDate.of(2010, 10, 10),
     transferSchemeType = PensionSchemeType.RegisteredPS("some pension scheme")
   )
 
-  val sampleTransfersOut2 = TransfersOut(
+  val sampleTransfersOut2: TransfersOut = TransfersOut(
     schemeName = "test scheme name two out",
     dateOfTransfer = LocalDate.of(2013, 4, 10),
     transferSchemeType = PensionSchemeType.QualifyingRecognisedOverseasPS("some overseas scheme")
@@ -310,6 +311,8 @@ trait TestValues {
     pensionReceived = true,
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
+
+  val sampleShares: Shares = Shares(optShareTransactions = None)
 
   // Standard - ETMP
 
@@ -630,6 +633,51 @@ trait TestValues {
     )
   )
 
+  val sampleEtmpShares: EtmpShares = EtmpShares(
+    recordVersion = Some("001"),
+    sponsorEmployerSharesWereHeld = Yes,
+    noOfSponsEmplyrShareTransactions = Some(1),
+    unquotedSharesWereHeld = Yes,
+    noOfUnquotedShareTransactions = Some(1),
+    connectedPartySharesWereHeld = Yes,
+    noOfConnPartyTransactions = Some(1),
+    sponsorEmployerSharesWereDisposed = No,
+    unquotedSharesWereDisposed = No,
+    connectedPartySharesWereDisposed = No,
+    shareTransactions = Some(
+      List(
+        EtmpShareTransaction(
+          typeOfSharesHeld = "01",
+          shareIdentification = EtmpShareIdentification(
+            nameOfSharesCompany = "AppleSauce Inc.",
+            crnNumber = None,
+            reasonNoCRN = Some("Not able to locate Company on Companies House"),
+            classOfShares = Some("Ordinary Shares")
+          ),
+          heldSharesTransaction = EtmpHeldSharesTransaction(
+            methodOfHolding = "01",
+            dateOfAcqOrContrib = Some(sampleToday),
+            totalShares = 200,
+            acquiredFromName = "Fredd Bloggs",
+            acquiredFromType = EtmpIdentityType(
+              indivOrOrgType = "01",
+              idNumber = Some("JE123176A"),
+              reasonNoIdNumber = None,
+              otherDescription = None
+            ),
+            connectedPartyStatus = Some("02"),
+            costOfShares = 10000,
+            supportedByIndepValuation = Yes,
+            totalAssetValue = Some(2000),
+            totalDividendsOrReceipts = 500
+          ),
+          disposedSharesTransaction = None
+        )
+      )
+    ),
+    totalValueQuotedShares = 0.00
+  )
+
   val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
     schemeDetails = EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
     psrDetails = EtmpPsrDetails(
@@ -881,6 +929,106 @@ trait TestValues {
           )
         )
       )
+    ),
+    shares = Some(
+      EtmpShares(
+        recordVersion = Some("001"),
+        sponsorEmployerSharesWereHeld = Yes,
+        noOfSponsEmplyrShareTransactions = Some(1),
+        unquotedSharesWereHeld = Yes,
+        noOfUnquotedShareTransactions = Some(1),
+        connectedPartySharesWereHeld = Yes,
+        noOfConnPartyTransactions = Some(1),
+        sponsorEmployerSharesWereDisposed = No,
+        unquotedSharesWereDisposed = No,
+        connectedPartySharesWereDisposed = No,
+        shareTransactions = Some(
+          List(
+            EtmpShareTransaction(
+              typeOfSharesHeld = "01",
+              shareIdentification = EtmpShareIdentification(
+                nameOfSharesCompany = "AppleSauce Inc.",
+                crnNumber = None,
+                reasonNoCRN = Some("Not able to locate Company on Companies House"),
+                classOfShares = Some("Ordinary Shares")
+              ),
+              heldSharesTransaction = EtmpHeldSharesTransaction(
+                methodOfHolding = "01",
+                dateOfAcqOrContrib = Some(sampleToday),
+                totalShares = 200,
+                acquiredFromName = "Fredd Bloggs",
+                acquiredFromType = EtmpIdentityType(
+                  indivOrOrgType = "01",
+                  idNumber = Some("JE123176A"),
+                  reasonNoIdNumber = None,
+                  otherDescription = None
+                ),
+                connectedPartyStatus = Some("02"),
+                costOfShares = 10000,
+                supportedByIndepValuation = Yes,
+                totalAssetValue = Some(2000),
+                totalDividendsOrReceipts = 500
+              ),
+              disposedSharesTransaction = None
+            ),
+            EtmpShareTransaction(
+              typeOfSharesHeld = "03",
+              shareIdentification = EtmpShareIdentification(
+                nameOfSharesCompany = "Pear Computers Inc.",
+                crnNumber = Some("LP289157"),
+                reasonNoCRN = None,
+                classOfShares = Some("Preferred Shares")
+              ),
+              heldSharesTransaction = EtmpHeldSharesTransaction(
+                methodOfHolding = "01",
+                dateOfAcqOrContrib = Some(sampleToday),
+                totalShares = 10000,
+                acquiredFromName = "Golden Investments Ltd.",
+                acquiredFromType = EtmpIdentityType(
+                  indivOrOrgType = "03",
+                  idNumber = Some("28130262"),
+                  reasonNoIdNumber = None,
+                  otherDescription = None
+                ),
+                connectedPartyStatus = Some("02"),
+                costOfShares = 50000,
+                supportedByIndepValuation = Yes,
+                totalAssetValue = Some(40000),
+                totalDividendsOrReceipts = 200
+              ),
+              disposedSharesTransaction = None
+            ),
+            EtmpShareTransaction(
+              typeOfSharesHeld = "03",
+              shareIdentification = EtmpShareIdentification(
+                nameOfSharesCompany = "Connected Party Inc.",
+                crnNumber = Some("LP289157"),
+                reasonNoCRN = None,
+                classOfShares = Some("Convertible Preference Shares")
+              ),
+              heldSharesTransaction = EtmpHeldSharesTransaction(
+                methodOfHolding = "02",
+                dateOfAcqOrContrib = Some(sampleToday),
+                totalShares = 1000,
+                acquiredFromName = "Investec Inc.",
+                acquiredFromType = EtmpIdentityType(
+                  indivOrOrgType = "02",
+                  idNumber = Some("0000123456"),
+                  reasonNoIdNumber = None,
+                  otherDescription = None
+                ),
+                connectedPartyStatus = Some("02"),
+                costOfShares = 120220.34,
+                supportedByIndepValuation = Yes,
+                totalAssetValue = Some(10000),
+                totalDividendsOrReceipts = 599.99
+              ),
+              disposedSharesTransaction = None
+            )
+          )
+        ),
+        totalValueQuotedShares = 0.00
+      )
     )
   )
 
@@ -902,7 +1050,8 @@ trait TestValues {
     ),
     None,
     None,
-    membersPayments = None
+    membersPayments = None,
+    shares = None
   )
 
   // SIPP - PSR

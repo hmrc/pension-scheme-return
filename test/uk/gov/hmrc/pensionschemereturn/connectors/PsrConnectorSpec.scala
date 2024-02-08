@@ -513,7 +513,7 @@ object PsrConnectorSpec {
       |]
       |""".stripMargin
 
-  val sampleStandardPsrResponseAsJsonString: String =
+  val sampleStandardPsrResponseAsJsonStringWithDisposedSharesTransaction: String =
     """
       |{
       |    "schemeDetails": {
@@ -763,13 +763,13 @@ object PsrConnectorSpec {
       |        "recordVersion": "001",
       |        "sponsorEmployerSharesWereHeld": "Yes",
       |        "noOfSponsEmplyrShareTransactions": 1,
-      |        "unquotedSharesWereHeld": "No",
+      |        "unquotedSharesWereHeld": "Yes",
       |        "noOfUnquotedShareTransactions": 1,
       |        "connectedPartySharesWereHeld": "Yes",
       |        "noOfConnPartyTransactions": 1,
-      |        "sponsorEmployerSharesWereDisposed": "Yes",
-      |        "unquotedSharesWereDisposed": "Yes",
-      |        "connectedPartySharesWereDisposed": "Yes",
+      |        "sponsorEmployerSharesWereDisposed": "No",
+      |        "unquotedSharesWereDisposed": "No",
+      |        "connectedPartySharesWereDisposed": "No",
       |        "shareTransactions": [
       |            {
       |                "typeOfSharesHeld": "01",
@@ -780,7 +780,7 @@ object PsrConnectorSpec {
       |                },
       |                "heldSharesTransaction": {
       |                    "methodOfHolding": "01",
-      |                    "dateOfAcqOrContrib": "2022-10-29",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
       |                    "totalShares": 200,
       |                    "acquiredFromName": "Fredd Bloggs",
       |                    "acquiredFromType": {
@@ -830,7 +830,7 @@ object PsrConnectorSpec {
       |                },
       |                "heldSharesTransaction": {
       |                    "methodOfHolding": "01",
-      |                    "dateOfAcqOrContrib": "2023-02-23",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
       |                    "totalShares": 10000,
       |                    "acquiredFromName": "Golden Investments Ltd.",
       |                    "acquiredFromType": {
@@ -880,7 +880,7 @@ object PsrConnectorSpec {
       |                },
       |                "heldSharesTransaction": {
       |                    "methodOfHolding": "02",
-      |                    "dateOfAcqOrContrib": "2023-02-23",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
       |                    "totalShares": 1000,
       |                    "acquiredFromName": "Investec Inc.",
       |                    "acquiredFromType": {
@@ -922,7 +922,7 @@ object PsrConnectorSpec {
       |                ]
       |            }
       |        ],
-      |        "totalValueQuotedShares": 5600000
+      |        "totalValueQuotedShares": 0.0
       |    },
       |    "assets": {
       |        "landOrProperty": {
@@ -1102,6 +1102,517 @@ object PsrConnectorSpec {
       |        }
       |    }
       |}
+      |""".stripMargin // TODO : We can replace this with sampleStandardPsrResponseAsJsonString when we implement disposedSharesTransaction
+
+  val sampleStandardPsrResponseAsJsonString: String =
+    """
+      |{
+      |  "schemeDetails": {
+      |    "pstr": "12345678AA",
+      |    "schemeName": "My Golden Egg scheme"
+      |  },
+      |  "psrDetails": {
+      |    "fbVersion": "001",
+      |    "fbstatus": "Compiled",
+      |    "periodStart": "2023-04-06",
+      |    "periodEnd": "2024-04-05",
+      |    "compilationOrSubmissionDate": "2023-12-17T09:30:47Z"
+      |  },
+      |  "accountingPeriodDetails": {
+      |    "recordVersion": "002",
+      |    "accountingPeriods": [
+      |      {
+      |        "accPeriodStart": "2022-04-06",
+      |        "accPeriodEnd": "2022-12-31"
+      |      },
+      |      {
+      |        "accPeriodStart": "2023-01-01",
+      |        "accPeriodEnd": "2023-04-05"
+      |      }
+      |    ]
+      |  },
+      |  "schemeDesignatory": {
+      |    "recordVersion": "002",
+      |    "openBankAccount": "Yes",
+      |    "noOfActiveMembers": 5,
+      |    "noOfDeferredMembers": 2,
+      |    "noOfPensionerMembers": 10,
+      |    "totalAssetValueStart": 10000000,
+      |    "totalAssetValueEnd": 11000000,
+      |    "totalCashStart": 2500000,
+      |    "totalCashEnd": 2800000,
+      |    "totalPayments": 2000000
+      |  },
+      |  "membersPayments": {
+      |    "recordVersion": "002",
+      |    "employerContributionMade": "Yes",
+      |    "unallocatedContribsMade": "No",
+      |    "memberContributionMade": "Yes",
+      |    "schemeReceivedTransferIn": "Yes",
+      |    "schemeMadeTransferOut": "Yes",
+      |    "lumpSumReceived": "Yes",
+      |    "pensionReceived": "Yes",
+      |    "surrenderMade": "Yes",
+      |    "memberDetails": [
+      |      {
+      |        "memberStatus": "Changed",
+      |        "memberPSRVersion": "001",
+      |        "personalDetails": {
+      |          "foreName": "Ferdinand",
+      |          "middleName": "Felix",
+      |          "lastName": "Bull",
+      |          "nino": "EB103145A",
+      |          "dateOfBirth": "1960-05-31"
+      |        },
+      |        "noOfContributions": 2,
+      |        "memberEmpContribution": [
+      |          {
+      |            "orgName": "Acme Ltd",
+      |            "organisationIdentity": {
+      |              "orgType": "01",
+      |              "idNumber": "AC123456"
+      |            },
+      |            "totalContribution": 20000
+      |          },
+      |          {
+      |            "orgName": "UK Company Ltd",
+      |            "organisationIdentity": {
+      |              "orgType": "01",
+      |              "idNumber": "AC123456"
+      |            },
+      |            "totalContribution": 10000
+      |          }
+      |        ],
+      |        "totalContributions": 30000,
+      |        "noOfTransfersIn": 2,
+      |        "memberTransfersIn": [
+      |          {
+      |            "dateOfTransfer": "2022-08-08",
+      |            "schemeName": "The Happy Retirement Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "02",
+      |              "refNumber": "Q123456"
+      |            },
+      |            "transferValue": 10000,
+      |            "transferIncludedAsset": "No"
+      |          },
+      |          {
+      |            "dateOfTransfer": "2022-11-27",
+      |            "schemeName": "The Happy Retirement Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "02",
+      |              "refNumber": "Q123456"
+      |            },
+      |            "transferValue": 8000,
+      |            "transferIncludedAsset": "No"
+      |          }
+      |        ],
+      |        "noOfTransfersOut": 2,
+      |        "memberTransfersOut": [
+      |          {
+      |            "dateOfTransfer": "2022-09-30",
+      |            "schemeName": "The Golden Egg Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "01",
+      |              "refNumber": "76509173AA"
+      |            }
+      |          },
+      |          {
+      |            "dateOfTransfer": "2022-12-20",
+      |            "schemeName": "The Golden Egg Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "01",
+      |              "refNumber": "76509173AB"
+      |            }
+      |          }
+      |        ],
+      |        "memberLumpSumReceived": [
+      |          {
+      |            "lumpSumAmount": 30000,
+      |            "designatedPensionAmount": 20000
+      |          }
+      |        ],
+      |        "pensionAmountReceived": 12000,
+      |        "memberPensionSurrender": [
+      |          {
+      |            "totalSurrendered": 1000,
+      |            "dateOfSurrender": "2022-12-19",
+      |            "surrenderReason": "ABC"
+      |          },
+      |          {
+      |            "totalSurrendered": 2000,
+      |            "dateOfSurrender": "2023-02-08",
+      |            "surrenderReason": "I felt like giving money away..."
+      |          }
+      |        ]
+      |      },
+      |      {
+      |        "memberStatus": "Changed",
+      |        "memberPSRVersion": "001",
+      |        "personalDetails": {
+      |          "foreName": "Johnny",
+      |          "middleName": "Be",
+      |          "lastName": "Quicke",
+      |          "reasonNoNINO": "Could not find it on record.",
+      |          "dateOfBirth": "1940-10-31"
+      |        },
+      |        "noOfContributions": 2,
+      |        "memberEmpContribution": [
+      |          {
+      |            "orgName": "Sofa Inc.",
+      |            "organisationIdentity": {
+      |              "orgType": "03",
+      |              "otherDescription": "Found it down back of my sofa"
+      |            },
+      |            "totalContribution": 10000
+      |          },
+      |          {
+      |            "orgName": "UK Company XYZ Ltd.",
+      |            "organisationIdentity": {
+      |              "orgType": "01",
+      |              "idNumber": "CC123456"
+      |            },
+      |            "totalContribution": 10000
+      |          }
+      |        ],
+      |        "totalContributions": 20000,
+      |        "noOfTransfersIn": 2,
+      |        "memberTransfersIn": [
+      |          {
+      |            "dateOfTransfer": "2022-12-02",
+      |            "schemeName": "Golden Years Pension Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "01",
+      |              "refNumber": "88390774ZZ"
+      |            },
+      |            "transferValue": 50000,
+      |            "transferIncludedAsset": "Yes"
+      |          },
+      |          {
+      |            "dateOfTransfer": "2022-10-30",
+      |            "schemeName": "Golden Goose Egg Laying Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "02",
+      |              "refNumber": "Q654321"
+      |            },
+      |            "transferValue": 2000,
+      |            "transferIncludedAsset": "No"
+      |          }
+      |        ],
+      |        "noOfTransfersOut": 2,
+      |        "memberTransfersOut": [
+      |          {
+      |            "dateOfTransfer": "2022-05-30",
+      |            "schemeName": "Dodgy Pensions Ltd",
+      |            "transferSchemeType": {
+      |              "schemeType": "03",
+      |              "otherDescription": "Unknown identifier"
+      |            }
+      |          },
+      |          {
+      |            "dateOfTransfer": "2022-07-31",
+      |            "schemeName": "My back pocket Pension Scheme",
+      |            "transferSchemeType": {
+      |              "schemeType": "02",
+      |              "refNumber": "Q000002"
+      |            }
+      |          }
+      |        ]
+      |      }
+      |    ]
+      |  },
+      |  "loans": {
+      |    "recordVersion": "003",
+      |    "schemeHadLoans": "Yes",
+      |    "noOfLoans": 1,
+      |    "loanTransactions": [
+      |      {
+      |        "dateOfLoan": "2023-03-30",
+      |        "loanRecipientName": "Electric Car Co.",
+      |        "recipientIdentityType": {
+      |          "indivOrOrgType": "01",
+      |          "otherDescription": "Identification not on record."
+      |        },
+      |        "recipientSponsoringEmployer": "No",
+      |        "connectedPartyStatus": "01",
+      |        "loanAmount": 10000,
+      |        "loanInterestAmount": 2000,
+      |        "loanTotalSchemeAssets": 2000,
+      |        "loanPeriodInMonths": 24,
+      |        "equalInstallments": "Yes",
+      |        "loanInterestRate": 5.55,
+      |        "securityGiven": "Yes",
+      |        "securityDetails": "Japanese ming vase #344343444.",
+      |        "capRepaymentCY": 5000,
+      |        "intReceivedCY": 555,
+      |        "arrearsPrevYears": "No",
+      |        "amountOutstanding": 5000
+      |      }
+      |    ]
+      |  },
+      |  "shares": {
+      |    "recordVersion": "001",
+      |    "sponsorEmployerSharesWereHeld": "Yes",
+      |    "noOfSponsEmplyrShareTransactions": 1,
+      |    "unquotedSharesWereHeld": "Yes",
+      |    "noOfUnquotedShareTransactions": 1,
+      |    "connectedPartySharesWereHeld": "Yes",
+      |    "noOfConnPartyTransactions": 1,
+      |    "sponsorEmployerSharesWereDisposed": "No",
+      |    "unquotedSharesWereDisposed": "No",
+      |    "connectedPartySharesWereDisposed": "No",
+      |    "shareTransactions": [
+      |      {
+      |        "typeOfSharesHeld": "01",
+      |        "shareIdentification": {
+      |          "nameOfSharesCompany": "AppleSauce Inc.",
+      |          "reasonNoCRN": "Not able to locate Company on Companies House",
+      |          "classOfShares": "Ordinary Shares"
+      |        },
+      |        "heldSharesTransaction": {
+      |          "methodOfHolding": "01",
+      |          "dateOfAcqOrContrib": "2023-10-19",
+      |          "totalShares": 200,
+      |          "acquiredFromName": "Fredd Bloggs",
+      |          "acquiredFromType": {
+      |            "indivOrOrgType": "01",
+      |            "idNumber": "JE123176A"
+      |          },
+      |          "connectedPartyStatus": "02",
+      |          "costOfShares": 10000,
+      |          "supportedByIndepValuation": "Yes",
+      |          "totalAssetValue": 2000,
+      |          "totalDividendsOrReceipts": 500
+      |        }
+      |      },
+      |      {
+      |        "typeOfSharesHeld": "03",
+      |        "shareIdentification": {
+      |          "nameOfSharesCompany": "Pear Computers Inc.",
+      |          "crnNumber": "LP289157",
+      |          "classOfShares": "Preferred Shares"
+      |        },
+      |        "heldSharesTransaction": {
+      |          "methodOfHolding": "01",
+      |          "dateOfAcqOrContrib": "2023-10-19",
+      |          "totalShares": 10000,
+      |          "acquiredFromName": "Golden Investments Ltd.",
+      |          "acquiredFromType": {
+      |            "indivOrOrgType": "03",
+      |            "idNumber": "28130262"
+      |          },
+      |          "connectedPartyStatus": "02",
+      |          "costOfShares": 50000,
+      |          "supportedByIndepValuation": "Yes",
+      |          "totalAssetValue": 40000,
+      |          "totalDividendsOrReceipts": 200
+      |        }
+      |      },
+      |      {
+      |        "typeOfSharesHeld": "03",
+      |        "shareIdentification": {
+      |          "nameOfSharesCompany": "Connected Party Inc.",
+      |          "crnNumber": "LP289157",
+      |          "classOfShares": "Convertible Preference Shares"
+      |        },
+      |        "heldSharesTransaction": {
+      |          "methodOfHolding": "02",
+      |          "dateOfAcqOrContrib": "2023-10-19",
+      |          "totalShares": 1000,
+      |          "acquiredFromName": "Investec Inc.",
+      |          "acquiredFromType": {
+      |            "indivOrOrgType": "02",
+      |            "idNumber": "0000123456"
+      |          },
+      |          "connectedPartyStatus": "02",
+      |          "costOfShares": 120220.34,
+      |          "supportedByIndepValuation": "Yes",
+      |          "totalAssetValue": 10000,
+      |          "totalDividendsOrReceipts": 599.99
+      |        }
+      |      }
+      |    ],
+      |    "totalValueQuotedShares": 0.0
+      |  },
+      |  "assets": {
+      |    "landOrProperty": {
+      |      "recordVersion": "001",
+      |      "heldAnyLandOrProperty": "Yes",
+      |      "disposeAnyLandOrProperty": "Yes",
+      |      "noOfTransactions": 1,
+      |      "landOrPropertyTransactions": [
+      |        {
+      |          "propertyDetails": {
+      |            "landOrPropertyInUK": "Yes",
+      |            "addressDetails": {
+      |              "addressLine1": "testAddressLine1",
+      |              "addressLine2": "testAddressLine2",
+      |              "addressLine3": "testAddressLine3",
+      |              "ukPostCode": "GB135HG",
+      |              "countryCode": "GB"
+      |            },
+      |            "landRegistryDetails": {
+      |              "landRegistryReferenceExists": "Yes",
+      |              "landRegistryReference": "landRegistryTitleNumberValue"
+      |            }
+      |          },
+      |          "heldPropertyTransaction": {
+      |            "methodOfHolding": "01",
+      |            "dateOfAcquisitionOrContribution": "2023-10-19",
+      |            "propertyAcquiredFromName": "PropertyAcquiredFromName",
+      |            "propertyAcquiredFrom": {
+      |              "indivOrOrgType": "02",
+      |              "idNumber": "idNumber"
+      |            },
+      |            "connectedPartyStatus": "01",
+      |            "totalCostOfLandOrProperty": 1.7976931348623157E+308,
+      |            "indepValuationSupport": "Yes",
+      |            "residentialSchedule29A": "Yes",
+      |            "landOrPropertyLeased": "Yes",
+      |            "leaseDetails": {
+      |              "lesseeName": "lesseeName",
+      |              "connectedPartyStatus": "01",
+      |              "leaseGrantDate": "2023-10-19",
+      |              "annualLeaseAmount": 1.7976931348623157E+308
+      |            },
+      |            "totalIncomeOrReceipts": 1.7976931348623157E+308
+      |          },
+      |          "disposedPropertyTransaction": [
+      |            {
+      |              "methodOfDisposal": "01",
+      |              "dateOfSale": "2023-10-19",
+      |              "nameOfPurchaser": "NameOfPurchaser",
+      |              "purchaseOrgDetails": {
+      |                "indivOrOrgType": "01",
+      |                "idNumber": "idNumber"
+      |              },
+      |              "saleProceeds": 1.7976931348623157E+308,
+      |              "connectedPartyStatus": "01",
+      |              "indepValuationSupport": "No",
+      |              "portionStillHeld": "Yes"
+      |            }
+      |          ]
+      |        }
+      |      ]
+      |    },
+      |    "borrowing": {
+      |      "recordVersion": "164",
+      |      "moneyWasBorrowed": "Yes",
+      |      "noOfBorrows": 1,
+      |      "moneyBorrowed": [
+      |        {
+      |          "dateOfBorrow": "2023-10-19",
+      |          "amountBorrowed": 1.7976931348623157E+308,
+      |          "schemeAssetsValue": 1.7976931348623157E+308,
+      |          "interestRate": 1.7976931348623157E+308,
+      |          "borrowingFromName": "borrowingFromName",
+      |          "connectedPartyStatus": "01",
+      |          "reasonForBorrow": "reasonForBorrow"
+      |        }
+      |      ]
+      |    },
+      |    "bonds": {
+      |      "recordVersion": "528",
+      |      "bondsWereAdded": "No",
+      |      "bondsWereDisposed": "No",
+      |      "noOfTransactions": 2,
+      |      "bondTransactions": [
+      |        {
+      |          "nameOfBonds": "Xenex Bonds",
+      |          "methodOfHolding": "01",
+      |          "dateOfAcqOrContrib": "2022-10-06",
+      |          "costOfBonds": 10234.56,
+      |          "connectedPartyStatus": "02",
+      |          "bondsUnregulated": "No",
+      |          "totalIncomeOrReceipts": 50,
+      |          "bondsDisposed": [
+      |            {
+      |              "methodOfDisposal": "01",
+      |              "dateSold": "2022-11-30",
+      |              "amountReceived": 12333.59,
+      |              "bondsPurchaserName": "Happy Bond Buyers Inc.",
+      |              "connectedPartyStatus": "02",
+      |              "totalNowHeld": 120
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "nameOfBonds": "Really Goods Bonds ABC",
+      |          "methodOfHolding": "03",
+      |          "dateOfAcqOrContrib": "2022-07-30",
+      |          "costOfBonds": 2000.5,
+      |          "connectedPartyStatus": "02",
+      |          "bondsUnregulated": "No",
+      |          "totalIncomeOrReceipts": 300,
+      |          "bondsDisposed": [
+      |            {
+      |              "methodOfDisposal": "01",
+      |              "dateSold": "2022-08-31",
+      |              "amountReceived": 3333.33,
+      |              "bondsPurchaserName": "Bonds Buyers (PTY) Ltd",
+      |              "connectedPartyStatus": "01",
+      |              "totalNowHeld": 50
+      |            }
+      |          ]
+      |        }
+      |      ]
+      |    },
+      |    "otherAssets": {
+      |      "recordVersion": "002",
+      |      "otherAssetsWereHeld": "No",
+      |      "otherAssetsWereDisposed": "No",
+      |      "noOfTransactions": 2,
+      |      "otherAssetTransactions": [
+      |        {
+      |          "assetDescription": "Box of matches",
+      |          "methodOfHolding": "02",
+      |          "dateOfAcqOrContrib": "2022-09-30",
+      |          "costOfAsset": 100000,
+      |          "acquiredFromName": "Dodgy Den Match Co.",
+      |          "acquiredFromType": {
+      |            "indivOrOrgType": "04",
+      |            "idNumber": "TS315528"
+      |          },
+      |          "connectedStatus": "01",
+      |          "supportedByIndepValuation": "No",
+      |          "movableSchedule29A": "No",
+      |          "totalIncomeOrReceipts": 0,
+      |          "assetsDisposed": [
+      |            {
+      |              "methodOfDisposal": "01",
+      |              "dateSold": "2022-12-30",
+      |              "purchaserName": "Acme Express Ltd.",
+      |              "purchaserType": {
+      |                "indivOrOrgType": "04",
+      |                "otherDescription": "Foreign purchaser"
+      |              },
+      |              "totalAmountReceived": 150000,
+      |              "connectedStatus": "02",
+      |              "supportedByIndepValuation": "Yes",
+      |              "fullyDisposedOf": "Yes"
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "assetDescription": "10kg Gold bars",
+      |          "methodOfHolding": "03",
+      |          "dateOfAcqOrContrib": "2023-04-30",
+      |          "costOfAsset": 2400000,
+      |          "acquiredFromName": "GoldBullion.co.uk",
+      |          "acquiredFromType": {
+      |            "indivOrOrgType": "02",
+      |            "idNumber": "SC123456"
+      |          },
+      |          "connectedStatus": "02",
+      |          "supportedByIndepValuation": "No",
+      |          "movableSchedule29A": "No",
+      |          "totalIncomeOrReceipts": 0
+      |        }
+      |      ]
+      |    }
+      |  }
+      |}
+      |
       |""".stripMargin
 
   val sampleSippPsrResponseAsJsonString: String =

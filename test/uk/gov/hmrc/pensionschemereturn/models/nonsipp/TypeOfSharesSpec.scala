@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, OFormat}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.TypeOfShares.{
+  stringToTypeOfShares,
+  ConnectedParty,
+  SponsoringEmployer,
+  Unquoted
+}
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  membersPayments: Option[MemberPayments],
-  shares: Option[Shares]
-)
+class TypeOfSharesSpec extends AnyWordSpec with Matchers {
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+  "TypeOfShares" should {
+
+    "successfully convert from TypeOfShares to String" in {
+      stringToTypeOfShares("01") shouldEqual SponsoringEmployer
+      stringToTypeOfShares("02") shouldEqual Unquoted
+      stringToTypeOfShares("03") shouldEqual ConnectedParty
+    }
+  }
 }

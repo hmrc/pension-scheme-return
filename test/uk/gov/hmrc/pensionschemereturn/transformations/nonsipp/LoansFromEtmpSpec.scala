@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpIdentityType, EtmpLoanTransactions, EtmpLoans}
@@ -23,7 +25,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import utils.TestValues
 
-class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with TestValues {
+class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with TestValues with DiffShouldMatcher {
 
   private val transformation = new LoansFromEtmp()
 
@@ -85,7 +87,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           )
         )
       )
-      transformation.transform(etmpLoans) mustEqual expected
+      transformation.transform(etmpLoans) shouldMatchTo expected
     }
 
     "for UKCompany" in {
@@ -145,7 +147,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         )
       )
 
-      transformation.transform(etmpLoans) mustEqual expected
+      transformation.transform(etmpLoans) shouldMatchTo expected
     }
 
     "for UKPartnership" in {
@@ -206,7 +208,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         )
       )
 
-      transformation.transform(etmpLoans) mustEqual expected
+      transformation.transform(etmpLoans) shouldMatchTo expected
     }
 
     "for Other" in {
@@ -266,7 +268,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
           )
         )
       )
-      transformation.transform(etmpLoans) mustEqual expected
+      transformation.transform(etmpLoans) shouldMatchTo expected
     }
   }
 
