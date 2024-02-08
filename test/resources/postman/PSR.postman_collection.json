@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d25e5731-974a-4b9e-860f-3c7efa331064",
+		"_postman_id": "7e94bd38-28e1-4ab8-a929-f74be2133c61",
 		"name": "PSR",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17267595",
-		"_collection_link": "https://restless-rocket-104352.postman.co/workspace/HMRC~9e5089b4-0cdb-47d6-9ee5-ad032f917396/collection/17267595-d25e5731-974a-4b9e-860f-3c7efa331064?action=share&source=collection_link&creator=17267595"
+		"_exporter_id": "31531877"
 	},
 	"item": [
 		{
@@ -994,7 +993,7 @@
 			"response": []
 		},
 		{
-			"name": "Versions - Organisation - Success",
+			"name": "Versions - Organisation 2021 - Success",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -1037,6 +1036,131 @@
 						{
 							"key": "startDate",
 							"value": "2021-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Organisation 2022 - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/24000001IN?startDate=2022-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2022-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions - Organisation 2017-2023 - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/years/24000001IN?startDates=2023-04-06&startDates=2022-04-06&startDates=2021-04-06&startDates=2020-04-06&startDates=2019-04-06&startDates=2018-04-06&startDates=2017-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"years",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDates",
+							"value": "2023-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2022-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2021-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2020-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2019-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2018-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2017-04-06"
 						}
 					]
 				}
