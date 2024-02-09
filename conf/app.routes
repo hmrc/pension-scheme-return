@@ -2,6 +2,7 @@
 
 GET         /psr/overview/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrOverviewController.getOverview(pstr: String, fromDate: String, toDate: String)
 GET         /psr/versions/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersions(pstr: String, startDate: String)
+GET         /psr/versions/years/:pstr  uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersionsForYears(pstr: String, startDates: Seq[String])
 
 POST        /psr/standard              uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
 GET         /psr/standard/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.getStandardPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
