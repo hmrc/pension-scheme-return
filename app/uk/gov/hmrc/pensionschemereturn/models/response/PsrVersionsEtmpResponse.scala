@@ -26,8 +26,8 @@ case class PsrVersionsEtmpResponse(
   reportVersion: Int,
   reportStatus: ReportStatus,
   compilationOrSubmissionDate: LocalDateTime,
-  reportSubmitterDetails: ReportSubmitterDetails,
-  psaDetails: PsaDetails
+  reportSubmitterDetails: Option[ReportSubmitterDetails],
+  psaDetails: Option[PsaDetails]
 )
 
 case class ReportSubmitterDetails(

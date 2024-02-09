@@ -1093,81 +1093,6 @@
 			"response": []
 		},
 		{
-			"name": "Versions - Organisation 2017-2023 - Success",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{pension-scheme-return}}/psr/versions/years/24000001IN?startDates=2023-04-06&startDates=2022-04-06&startDates=2021-04-06&startDates=2020-04-06&startDates=2019-04-06&startDates=2018-04-06&startDates=2017-04-06",
-					"host": [
-						"{{pension-scheme-return}}"
-					],
-					"path": [
-						"psr",
-						"versions",
-						"years",
-						"24000001IN"
-					],
-					"query": [
-						{
-							"key": "startDates",
-							"value": "2023-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2022-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2021-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2020-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2019-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2018-04-06"
-						},
-						{
-							"key": "startDates",
-							"value": "2017-04-06"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Versions - Individual - Success",
 			"event": [
 				{
@@ -1361,6 +1286,81 @@
 						{
 							"key": "startDate",
 							"value": "2050-04-06"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Versions for Years - Organisation 2017-2023 - Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{pension-scheme-return}}/psr/versions/years/24000001IN?startDates=2023-04-06&startDates=2022-04-06&startDates=2021-04-06&startDates=2020-04-06&startDates=2019-04-06&startDates=2018-04-06&startDates=2017-04-06",
+					"host": [
+						"{{pension-scheme-return}}"
+					],
+					"path": [
+						"psr",
+						"versions",
+						"years",
+						"24000001IN"
+					],
+					"query": [
+						{
+							"key": "startDates",
+							"value": "2023-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2022-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2021-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2020-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2019-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2018-04-06"
+						},
+						{
+							"key": "startDates",
+							"value": "2017-04-06"
 						}
 					]
 				}
