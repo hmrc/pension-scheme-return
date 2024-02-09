@@ -974,22 +974,26 @@ trait TestValues {
       reportVersion = 1,
       reportStatus = ReportStatusCompiled,
       compilationOrSubmissionDate = LocalDateTime.parse("2023-04-02T09:30:47"),
-      reportSubmitterDetails = ReportSubmitterDetails(
-        reportSubmittedBy = "PSP",
-        organisationOrPartnershipDetails = Some(
-          OrganisationOrPartnershipDetails(
-            organisationOrPartnershipName = "ABC Limited"
-          )
-        ),
-        individualDetails = None
+      reportSubmitterDetails = Some(
+        ReportSubmitterDetails(
+          reportSubmittedBy = "PSP",
+          organisationOrPartnershipDetails = Some(
+            OrganisationOrPartnershipDetails(
+              organisationOrPartnershipName = "ABC Limited"
+            )
+          ),
+          individualDetails = None
+        )
       ),
-      psaDetails = PsaDetails(
-        psaOrganisationOrPartnershipDetails = Some(
-          PsaOrganisationOrPartnershipDetails(
-            organisationOrPartnershipName = "XYZ Limited"
-          )
-        ),
-        psaIndividualDetails = None
+      psaDetails = Some(
+        PsaDetails(
+          psaOrganisationOrPartnershipDetails = Some(
+            PsaOrganisationOrPartnershipDetails(
+              organisationOrPartnershipName = "XYZ Limited"
+            )
+          ),
+          psaIndividualDetails = None
+        )
       )
     )
   )
