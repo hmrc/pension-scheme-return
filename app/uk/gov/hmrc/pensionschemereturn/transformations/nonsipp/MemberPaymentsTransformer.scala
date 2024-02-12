@@ -62,12 +62,22 @@ class MemberPaymentsTransformer @Inject()(
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
           pensionAmountReceived = memberDetails.pensionAmountReceived,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
-          memberEmpContribution = memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp),
-          memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp),
+          memberEmpContribution =
+            memberDetails.employerContributions.map(employerContributionsTransformer.toEtmp) match {
+              case Nil => None
+              case list => Some(list)
+            },
+          memberTransfersIn = memberDetails.transfersIn.map(transferInTransformer.toEtmp) match {
+            case Nil => None
+            case list => Some(list)
+          },
           memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(
             x => List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
           ),
-          memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp),
+          memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp) match {
+            case Nil => None
+            case list => Some(list)
+          },
           memberPensionSurrender = Option.when(memberPayments.benefitsSurrenderedDetails.made)(
             memberDetails.benefitsSurrendered.map(pensionSurrenderTransformer.toEtmp) match {
               case Some(surrender) => List(surrender)
@@ -83,9 +93,10 @@ class MemberPaymentsTransformer @Inject()(
     val memberDetails: Either[TransformerError, List[MemberDetails]] = out.memberDetails.traverse { member =>
       for {
         memberPersonalDetails <- memberPersonalDetailsTransformer.fromEtmp(member.personalDetails)
-        employerContributions <- member.memberEmpContribution.traverse(employerContributionsTransformer.fromEtmp)
-        transfersIn <- member.memberTransfersIn.traverse(transferInTransformer.fromEtmp)
-        transfersOut <- member.memberTransfersOut.traverse(transferOutTransformer.fromEtmp)
+        employerContributions <- member.memberEmpContribution.toList.flatten
+          .traverse(employerContributionsTransformer.fromEtmp)
+        transfersIn <- member.memberTransfersIn.toList.flatten.traverse(transferInTransformer.fromEtmp)
+        transfersOut <- member.memberTransfersOut.toList.flatten.traverse(transferOutTransformer.fromEtmp)
         pensionSurrenders <- member.memberPensionSurrender.toList.flatten.traverse(pensionSurrenderTransformer.fromEtmp)
       } yield MemberDetails(
         personalDetails = memberPersonalDetails,

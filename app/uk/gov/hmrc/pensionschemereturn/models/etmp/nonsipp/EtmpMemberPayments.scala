@@ -46,10 +46,10 @@ case class EtmpMemberDetails(
   noOfTransfersOut: Option[Int],
   pensionAmountReceived: Option[Double],
   personalDetails: EtmpMemberPersonalDetails,
-  memberEmpContribution: List[EtmpEmployerContributions],
-  memberTransfersIn: List[EtmpTransfersIn],
+  memberEmpContribution: Option[List[EtmpEmployerContributions]],
+  memberTransfersIn: Option[List[EtmpTransfersIn]],
   memberLumpSumReceived: Option[List[EtmpMemberLumpSumReceived]],
-  memberTransfersOut: List[EtmpTransfersOut],
+  memberTransfersOut: Option[List[EtmpTransfersOut]],
   memberPensionSurrender: Option[List[EtmpPensionSurrender]]
 )
 
