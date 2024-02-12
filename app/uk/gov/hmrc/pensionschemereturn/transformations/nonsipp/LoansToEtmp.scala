@@ -28,7 +28,7 @@ class LoansToEtmp @Inject() extends Transformer {
     EtmpLoans(
       recordVersion = None,
       schemeHadLoans = toYesNo(loans.schemeHadLoans),
-      noOfLoans = loans.loanTransactions.size,
+      noOfLoans = Option.when(loans.schemeHadLoans)(loans.loanTransactions.size),
       loanTransactions = loans.loanTransactions.map { loanTransaction =>
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,

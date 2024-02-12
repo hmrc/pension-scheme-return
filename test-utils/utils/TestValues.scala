@@ -442,7 +442,7 @@ trait TestValues {
   val sampleEtmpLoans: EtmpLoans = EtmpLoans(
     recordVersion = Some("001"),
     schemeHadLoans = "Yes",
-    noOfLoans = 1,
+    noOfLoans = Some(1),
     loanTransactions = List(
       EtmpLoanTransactions(
         dateOfLoan = sampleToday,
@@ -657,7 +657,7 @@ trait TestValues {
       EtmpLoans(
         recordVersion = Some("003"),
         schemeHadLoans = "Yes",
-        noOfLoans = 1,
+        noOfLoans = Some(1),
         loanTransactions = Seq(
           EtmpLoanTransactions(
             dateOfLoan = LocalDate.parse("2023-03-30"),

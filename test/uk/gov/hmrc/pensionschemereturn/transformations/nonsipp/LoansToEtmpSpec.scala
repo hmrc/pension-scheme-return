@@ -63,7 +63,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
           val expected = EtmpLoans(
             recordVersion = None,
             schemeHadLoans = Yes,
-            noOfLoans = 1,
+            noOfLoans = Some(1),
             loanTransactions = List(
               EtmpLoanTransactions(
                 dateOfLoan = today,
