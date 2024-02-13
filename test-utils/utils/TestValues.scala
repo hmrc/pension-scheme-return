@@ -513,42 +513,48 @@ trait TestValues {
           reasonNoNINO = None,
           dateOfBirth = sampleToday
         ),
-        memberEmpContribution = List(
-          EtmpEmployerContributions(
-            orgName = sampleEmployerContribution1.employerName,
-            organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.UKCompany,
-              idNumber = Some("test company id"),
-              reasonNoIdNumber = None,
-              otherDescription = None
+        memberEmpContribution = Some(
+          List(
+            EtmpEmployerContributions(
+              orgName = sampleEmployerContribution1.employerName,
+              organisationIdentity = OrganisationIdentity(
+                orgType = EmployerContributionsOrgType.UKCompany,
+                idNumber = Some("test company id"),
+                reasonNoIdNumber = None,
+                otherDescription = None
+              ),
+              totalContribution = 12.34
             ),
-            totalContribution = 12.34
-          ),
-          EtmpEmployerContributions(
-            orgName = sampleEmployerContribution2.employerName,
-            organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.UKCompany,
-              idNumber = None,
-              reasonNoIdNumber = Some("test reason"),
-              otherDescription = None
-            ),
-            totalContribution = 34.56
+            EtmpEmployerContributions(
+              orgName = sampleEmployerContribution2.employerName,
+              organisationIdentity = OrganisationIdentity(
+                orgType = EmployerContributionsOrgType.UKCompany,
+                idNumber = None,
+                reasonNoIdNumber = Some("test reason"),
+                otherDescription = None
+              ),
+              totalContribution = 34.56
+            )
           )
         ),
-        memberTransfersIn = List(
-          EtmpTransfersIn(
-            schemeName = sampleTransfersIn1.schemeName,
-            dateOfTransfer = sampleTransfersIn1.dateOfTransfer,
-            transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme"),
-            transferValue = 12.34,
-            transferIncludedAsset = Yes
+        memberTransfersIn = Some(
+          List(
+            EtmpTransfersIn(
+              schemeName = sampleTransfersIn1.schemeName,
+              dateOfTransfer = sampleTransfersIn1.dateOfTransfer,
+              transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme"),
+              transferValue = 12.34,
+              transferIncludedAsset = Yes
+            )
           )
         ),
-        memberTransfersOut = List(
-          EtmpTransfersOut(
-            schemeName = sampleTransfersOut1.schemeName,
-            dateOfTransfer = sampleTransfersOut1.dateOfTransfer,
-            transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
+        memberTransfersOut = Some(
+          List(
+            EtmpTransfersOut(
+              schemeName = sampleTransfersOut1.schemeName,
+              dateOfTransfer = sampleTransfersOut1.dateOfTransfer,
+              transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
+            )
           )
         ),
         memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue))),
@@ -578,42 +584,48 @@ trait TestValues {
           reasonNoNINO = Some("no nino reason"),
           dateOfBirth = sampleToday
         ),
-        memberEmpContribution = List(
-          EtmpEmployerContributions(
-            orgName = sampleEmployerContribution3.employerName,
-            organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.Other,
-              idNumber = None,
-              reasonNoIdNumber = None,
-              otherDescription = Some("test description")
+        memberEmpContribution = Some(
+          List(
+            EtmpEmployerContributions(
+              orgName = sampleEmployerContribution3.employerName,
+              organisationIdentity = OrganisationIdentity(
+                orgType = EmployerContributionsOrgType.Other,
+                idNumber = None,
+                reasonNoIdNumber = None,
+                otherDescription = Some("test description")
+              ),
+              totalContribution = 56.78
             ),
-            totalContribution = 56.78
-          ),
-          EtmpEmployerContributions(
-            orgName = sampleEmployerContributions4.employerName,
-            organisationIdentity = OrganisationIdentity(
-              orgType = EmployerContributionsOrgType.UKPartnership,
-              idNumber = Some("test partnership id"),
-              reasonNoIdNumber = None,
-              otherDescription = None
-            ),
-            totalContribution = 78.99
+            EtmpEmployerContributions(
+              orgName = sampleEmployerContributions4.employerName,
+              organisationIdentity = OrganisationIdentity(
+                orgType = EmployerContributionsOrgType.UKPartnership,
+                idNumber = Some("test partnership id"),
+                reasonNoIdNumber = None,
+                otherDescription = None
+              ),
+              totalContribution = 78.99
+            )
           )
         ),
-        memberTransfersIn = List(
-          EtmpTransfersIn(
-            schemeName = sampleTransfersIn2.schemeName,
-            dateOfTransfer = sampleTransfersIn2.dateOfTransfer,
-            transferSchemeType = TransferSchemeType.qrops("some overseas scheme"),
-            transferValue = 34.56,
-            transferIncludedAsset = No
+        memberTransfersIn = Some(
+          List(
+            EtmpTransfersIn(
+              schemeName = sampleTransfersIn2.schemeName,
+              dateOfTransfer = sampleTransfersIn2.dateOfTransfer,
+              transferSchemeType = TransferSchemeType.qrops("some overseas scheme"),
+              transferValue = 34.56,
+              transferIncludedAsset = No
+            )
           )
         ),
-        memberTransfersOut = List(
-          EtmpTransfersOut(
-            schemeName = sampleTransfersOut2.schemeName,
-            dateOfTransfer = sampleTransfersOut2.dateOfTransfer,
-            transferSchemeType = TransferSchemeType.qrops("some overseas scheme")
+        memberTransfersOut = Some(
+          List(
+            EtmpTransfersOut(
+              schemeName = sampleTransfersOut2.schemeName,
+              dateOfTransfer = sampleTransfersOut2.dateOfTransfer,
+              transferSchemeType = TransferSchemeType.qrops("some overseas scheme")
+            )
           )
         ),
         memberLumpSumReceived = None,
@@ -744,54 +756,60 @@ trait TestValues {
               reasonNoNINO = None,
               dateOfBirth = LocalDate.of(1960, 5, 31)
             ),
-            memberEmpContribution = List(
-              EtmpEmployerContributions(
-                orgName = "Acme Ltd",
-                organisationIdentity = OrganisationIdentity(
-                  orgType = EmployerContributionsOrgType.UKCompany,
-                  idNumber = Some("AC123456"),
-                  reasonNoIdNumber = None,
-                  otherDescription = None
+            memberEmpContribution = Some(
+              List(
+                EtmpEmployerContributions(
+                  orgName = "Acme Ltd",
+                  organisationIdentity = OrganisationIdentity(
+                    orgType = EmployerContributionsOrgType.UKCompany,
+                    idNumber = Some("AC123456"),
+                    reasonNoIdNumber = None,
+                    otherDescription = None
+                  ),
+                  totalContribution = 20000.0
                 ),
-                totalContribution = 20000.0
-              ),
-              EtmpEmployerContributions(
-                orgName = "UK Company Ltd",
-                organisationIdentity = OrganisationIdentity(
-                  orgType = EmployerContributionsOrgType.UKCompany,
-                  idNumber = Some("AC123456"),
-                  reasonNoIdNumber = None,
-                  otherDescription = None
-                ),
-                totalContribution = 10000.0
+                EtmpEmployerContributions(
+                  orgName = "UK Company Ltd",
+                  organisationIdentity = OrganisationIdentity(
+                    orgType = EmployerContributionsOrgType.UKCompany,
+                    idNumber = Some("AC123456"),
+                    reasonNoIdNumber = None,
+                    otherDescription = None
+                  ),
+                  totalContribution = 10000.0
+                )
               )
             ),
-            memberTransfersIn = List(
-              EtmpTransfersIn(
-                schemeName = "The Happy Retirement Scheme",
-                dateOfTransfer = LocalDate.of(2022, 8, 8),
-                transferSchemeType = TransferSchemeType.qrops("Q123456"),
-                transferValue = 10000.0,
-                transferIncludedAsset = No
-              ),
-              EtmpTransfersIn(
-                schemeName = "The Happy Retirement Scheme",
-                dateOfTransfer = LocalDate.of(2022, 11, 27),
-                transferSchemeType = TransferSchemeType.qrops("Q123456"),
-                transferValue = 8000.0,
-                transferIncludedAsset = No
+            memberTransfersIn = Some(
+              List(
+                EtmpTransfersIn(
+                  schemeName = "The Happy Retirement Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 8, 8),
+                  transferSchemeType = TransferSchemeType.qrops("Q123456"),
+                  transferValue = 10000.0,
+                  transferIncludedAsset = No
+                ),
+                EtmpTransfersIn(
+                  schemeName = "The Happy Retirement Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 11, 27),
+                  transferSchemeType = TransferSchemeType.qrops("Q123456"),
+                  transferValue = 8000.0,
+                  transferIncludedAsset = No
+                )
               )
             ),
-            memberTransfersOut = List(
-              EtmpTransfersOut(
-                schemeName = "The Golden Egg Scheme",
-                dateOfTransfer = LocalDate.of(2022, 9, 30),
-                transferSchemeType = TransferSchemeType.registeredScheme("76509173AA")
-              ),
-              EtmpTransfersOut(
-                schemeName = "The Golden Egg Scheme",
-                dateOfTransfer = LocalDate.of(2022, 12, 20),
-                transferSchemeType = TransferSchemeType.registeredScheme("76509173AB")
+            memberTransfersOut = Some(
+              List(
+                EtmpTransfersOut(
+                  schemeName = "The Golden Egg Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 9, 30),
+                  transferSchemeType = TransferSchemeType.registeredScheme("76509173AA")
+                ),
+                EtmpTransfersOut(
+                  schemeName = "The Golden Egg Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 12, 20),
+                  transferSchemeType = TransferSchemeType.registeredScheme("76509173AB")
+                )
               )
             ),
             memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(30000.0, 20000.00))),
@@ -826,54 +844,60 @@ trait TestValues {
               reasonNoNINO = Some("Could not find it on record."),
               dateOfBirth = LocalDate.of(1940, 10, 31)
             ),
-            memberEmpContribution = List(
-              EtmpEmployerContributions(
-                orgName = "Sofa Inc.",
-                organisationIdentity = OrganisationIdentity(
-                  orgType = EmployerContributionsOrgType.Other,
-                  idNumber = None,
-                  reasonNoIdNumber = None,
-                  otherDescription = Some("Found it down back of my sofa")
+            memberEmpContribution = Some(
+              List(
+                EtmpEmployerContributions(
+                  orgName = "Sofa Inc.",
+                  organisationIdentity = OrganisationIdentity(
+                    orgType = EmployerContributionsOrgType.Other,
+                    idNumber = None,
+                    reasonNoIdNumber = None,
+                    otherDescription = Some("Found it down back of my sofa")
+                  ),
+                  totalContribution = 10000.0
                 ),
-                totalContribution = 10000.0
-              ),
-              EtmpEmployerContributions(
-                orgName = "UK Company XYZ Ltd.",
-                organisationIdentity = OrganisationIdentity(
-                  orgType = EmployerContributionsOrgType.UKCompany,
-                  idNumber = Some("CC123456"),
-                  reasonNoIdNumber = None,
-                  otherDescription = None
-                ),
-                totalContribution = 10000.0
+                EtmpEmployerContributions(
+                  orgName = "UK Company XYZ Ltd.",
+                  organisationIdentity = OrganisationIdentity(
+                    orgType = EmployerContributionsOrgType.UKCompany,
+                    idNumber = Some("CC123456"),
+                    reasonNoIdNumber = None,
+                    otherDescription = None
+                  ),
+                  totalContribution = 10000.0
+                )
               )
             ),
-            memberTransfersIn = List(
-              EtmpTransfersIn(
-                schemeName = "Golden Years Pension Scheme",
-                dateOfTransfer = LocalDate.of(2022, 12, 2),
-                transferSchemeType = TransferSchemeType.registeredScheme("88390774ZZ"),
-                transferValue = 50000.0,
-                transferIncludedAsset = Yes
-              ),
-              EtmpTransfersIn(
-                schemeName = "Golden Goose Egg Laying Scheme",
-                dateOfTransfer = LocalDate.of(2022, 10, 30),
-                transferSchemeType = TransferSchemeType.qrops("Q654321"),
-                transferValue = 2000.0,
-                transferIncludedAsset = No
+            memberTransfersIn = Some(
+              List(
+                EtmpTransfersIn(
+                  schemeName = "Golden Years Pension Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 12, 2),
+                  transferSchemeType = TransferSchemeType.registeredScheme("88390774ZZ"),
+                  transferValue = 50000.0,
+                  transferIncludedAsset = Yes
+                ),
+                EtmpTransfersIn(
+                  schemeName = "Golden Goose Egg Laying Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 10, 30),
+                  transferSchemeType = TransferSchemeType.qrops("Q654321"),
+                  transferValue = 2000.0,
+                  transferIncludedAsset = No
+                )
               )
             ),
-            memberTransfersOut = List(
-              EtmpTransfersOut(
-                schemeName = "Dodgy Pensions Ltd",
-                dateOfTransfer = LocalDate.of(2022, 5, 30),
-                transferSchemeType = TransferSchemeType.other("Unknown identifier")
-              ),
-              EtmpTransfersOut(
-                schemeName = "My back pocket Pension Scheme",
-                dateOfTransfer = LocalDate.of(2022, 7, 31),
-                transferSchemeType = TransferSchemeType.qrops("Q000002")
+            memberTransfersOut = Some(
+              List(
+                EtmpTransfersOut(
+                  schemeName = "Dodgy Pensions Ltd",
+                  dateOfTransfer = LocalDate.of(2022, 5, 30),
+                  transferSchemeType = TransferSchemeType.other("Unknown identifier")
+                ),
+                EtmpTransfersOut(
+                  schemeName = "My back pocket Pension Scheme",
+                  dateOfTransfer = LocalDate.of(2022, 7, 31),
+                  transferSchemeType = TransferSchemeType.qrops("Q000002")
+                )
               )
             ),
             memberLumpSumReceived = None,
