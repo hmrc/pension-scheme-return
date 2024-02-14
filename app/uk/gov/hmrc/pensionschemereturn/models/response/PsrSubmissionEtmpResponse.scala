@@ -29,7 +29,8 @@ case class PsrSubmissionEtmpResponse(
   schemeDesignatory: EtmpSchemeDesignatory,
   loans: Option[EtmpLoans],
   assets: Option[EtmpAssets],
-  membersPayments: Option[EtmpMemberPayments]
+  membersPayments: Option[EtmpMemberPayments],
+  shares: Option[EtmpShares]
 )
 
 case class EtmpSchemeDetails(

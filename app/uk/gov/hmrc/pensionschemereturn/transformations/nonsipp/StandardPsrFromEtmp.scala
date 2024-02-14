@@ -16,20 +16,21 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import cats.syntax.traverse._
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import uk.gov.hmrc.pensionschemereturn.transformations.{Transformer, TransformerError}
 
 import java.time.LocalDate
-import cats.syntax.traverse._
 
 @Singleton()
 class StandardPsrFromEtmp @Inject()(
   minimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp,
   loansFromEtmp: LoansFromEtmp,
   assetsFromEtmp: AssetsFromEtmp,
-  memberPaymentsTransformer: MemberPaymentsTransformer
+  memberPaymentsTransformer: MemberPaymentsTransformer,
+  sharesFromEtmp: SharesFromEtmp
 ) extends Transformer {
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): Either[TransformerError, PsrSubmission] =
@@ -42,7 +43,8 @@ class StandardPsrFromEtmp @Inject()(
         isCheckReturnDates(minimalRequiredSubmission.reportDetails, minimalRequiredSubmission.accountingPeriods.head),
       loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
       assets = psrSubmissionResponse.assets.map(assetsFromEtmp.transform),
-      membersPayments = memberPayments
+      membersPayments = memberPayments,
+      shares = psrSubmissionResponse.shares.map(sharesFromEtmp.transform)
     )
 
   private def isCheckReturnDates(reportDetails: ReportDetails, accountingPeriods: (LocalDate, LocalDate)): Boolean =

@@ -25,7 +25,8 @@ class PsrSubmissionToEtmp @Inject()(
   minimalRequiredDetailsToEtmp: MinimalRequiredDetailsToEtmp,
   loansToEtmp: LoansToEtmp,
   assetsToEtmp: AssetsToEtmp,
-  memberPaymentsTransformer: MemberPaymentsTransformer
+  memberPaymentsTransformer: MemberPaymentsTransformer,
+  sharesToEtmp: SharesToEtmp
 ) {
 
   def transform(psrSubmission: PsrSubmission): PsrSubmissionEtmpRequest = {
@@ -37,7 +38,8 @@ class PsrSubmissionToEtmp @Inject()(
       etmpMinimalRequiredSubmission.schemeDesignatory,
       loans = psrSubmission.loans.map(loansToEtmp.transform),
       assets = psrSubmission.assets.map(assetsToEtmp.transform),
-      membersPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp)
+      membersPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp),
+      shares = psrSubmission.shares.map(sharesToEtmp.transform)
     )
   }
 

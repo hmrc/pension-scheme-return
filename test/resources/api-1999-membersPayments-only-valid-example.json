@@ -1,0 +1,173 @@
+{
+  "reportDetails": {
+    "psrStatus": "Compiled",
+    "periodStart": "2023-04-06",
+    "periodEnd": "2024-04-05"
+  },
+  "accountingPeriodDetails": {
+    "accountingPeriods": [
+      {
+        "accPeriodStart": "2023-04-06",
+        "accPeriodEnd": "2024-04-05"
+      }
+    ]
+  },
+  "schemeDesignatory": {
+    "openBankAccount": "Yes",
+    "noOfActiveMembers": 23,
+    "noOfDeferredMembers": 45,
+    "noOfPensionerMembers": 6,
+    "totalPayments": 74
+  },
+  "membersPayments": {
+    "employerContributionMade": "Yes",
+    "unallocatedContribsMade": "No",
+    "memberContributionMade": "Yes",
+    "schemeReceivedTransferIn": "Yes",
+    "schemeMadeTransferOut": "Yes",
+    "lumpSumReceived": "Yes",
+    "pensionReceived": "Yes",
+    "surrenderMade": "Yes",
+    "memberDetails": [
+      {
+        "memberStatus": "New",
+        "memberPSRVersion": "001",
+        "noOfContributions": 2,
+        "noOfTransfersIn": 1,
+        "noOfTransfersOut": 1,
+        "pensionAmountReceived": 12.34,
+        "personalDetails": {
+          "foreName": "John",
+          "lastName": "Doe",
+          "nino": "AB123456A",
+          "dateOfBirth": "1990-10-10"
+        },
+        "memberEmpContribution": [
+          {
+            "orgName": "Acme Ltd",
+            "organisationIdentity": {
+              "orgType": "01",
+              "idNumber": "11108499"
+            },
+            "totalContribution": 12.34
+          },
+          {
+            "orgName": "Slack Ltd",
+            "organisationIdentity": {
+              "orgType": "02",
+              "idNumber": "A1230849"
+            },
+            "totalContribution": 102.88
+          }
+        ],
+        "memberTransfersIn": [
+          {
+            "schemeName": "Test pension scheme",
+            "dateOfTransfer": "2023-02-12",
+            "transferSchemeType": {
+              "schemeType": "01",
+              "refNumber": "88390774ZZ"
+            },
+            "transferValue": 12.34,
+            "transferIncludedAsset": "Yes"
+          }
+        ],
+        "memberTransfersOut": [
+          {
+            "schemeName": "Test pension scheme out",
+            "dateOfTransfer": "2023-02-12",
+            "transferSchemeType": {
+              "schemeType": "01",
+              "refNumber": "76509173AA"
+            }
+          }
+        ],
+        "memberPensionSurrender": [
+          {
+            "totalSurrendered": 12.34,
+            "dateOfSurrender": "2022-12-12",
+            "surrenderReason": "some reason"
+          }
+        ]
+      },
+      {
+        "memberStatus": "New",
+        "memberPSRVersion": "001",
+        "noOfContributions": 2,
+        "noOfTransfersIn": 2,
+        "noOfTransfersOut": 2,
+        "pensionAmountReceived": 12.34,
+        "personalDetails": {
+          "foreName": "Jane",
+          "lastName": "Dean",
+          "dateOfBirth": "1995-06-01"
+        },
+        "memberEmpContribution": [
+          {
+            "orgName": "Test Ltd",
+            "organisationIdentity": {
+              "orgType": "01",
+              "idNumber": "67308411"
+            },
+            "totalContribution": 23.35
+          },
+          {
+            "orgName": "Legal Ltd",
+            "organisationIdentity": {
+              "orgType": "03",
+              "otherDescription": "some description"
+            },
+            "totalContribution": 553.01
+          }
+        ],
+        "memberTransfersIn": [
+          {
+            "schemeName": "overseas pension scheme",
+            "dateOfTransfer": "2020-10-04",
+            "transferSchemeType": {
+              "schemeType": "02",
+              "refNumber": "Q654321"
+            },
+            "transferValue": 45.67,
+            "transferIncludedAsset": "No"
+          },
+          {
+            "schemeName": "Test pension scheme",
+            "dateOfTransfer": "2021-08-21",
+            "transferSchemeType": {
+              "schemeType": "03",
+              "otherDescription": "other value"
+            },
+            "transferValue": 67.89,
+            "transferIncludedAsset": "Yes"
+          }
+        ],
+        "memberTransfersOut": [
+          {
+            "schemeName": "overseas pension scheme out",
+            "dateOfTransfer": "2020-10-04",
+            "transferSchemeType": {
+              "schemeType": "02",
+              "refNumber": "Q000002"
+            }
+          },
+          {
+            "schemeName": "Test pension scheme out",
+            "dateOfTransfer": "2021-08-21",
+            "transferSchemeType": {
+              "schemeType": "03",
+              "otherDescription": "other value"
+            }
+          }
+        ],
+        "memberPensionSurrender": [
+          {
+            "totalSurrendered": 12.34,
+            "dateOfSurrender": "2022-12-12",
+            "surrenderReason": "some reason"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
@@ -25,7 +27,7 @@ import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 import java.time.LocalDate
 
-class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
+class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with DiffShouldMatcher {
 
   private val transformation: AssetsToEtmp = new AssetsToEtmp()
   val today: LocalDate = LocalDate.now
@@ -264,7 +266,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
         otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
       )
 
-      transformation.transform(assets) mustEqual expected
+      transformation.transform(assets) shouldMatchTo expected
     }
 
     "as an Other for LandOrProperty with an empty optDisposedPropertyTransaction sequence" in {
@@ -402,7 +404,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer {
         otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
       )
 
-      transformation.transform(assets) mustEqual expected
+      transformation.transform(assets) shouldMatchTo expected
     }
   }
 }

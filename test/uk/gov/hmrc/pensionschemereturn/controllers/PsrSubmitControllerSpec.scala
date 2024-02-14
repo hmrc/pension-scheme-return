@@ -60,134 +60,349 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
       val requestJson: JsValue = Json.parse(
         """
           |{
-          |  "minimalRequiredSubmission": {
-          |    "reportDetails": {
-          |      "pstr": "00000042IN",
-          |      "periodStart": "2024-04-05",
-          |      "periodEnd": "2023-04-06"
-          |    },
-          |    "accountingPeriods": [
-          |      [
-          |        "2023-04-06",
-          |        "2024-04-05"
-          |      ]
-          |    ],
-          |    "schemeDesignatory": {
-          |      "openBankAccount": true,
-          |      "activeMembers": 23,
-          |      "deferredMembers": 45,
-          |      "pensionerMembers": 6,
-          |      "totalPayments": 74
-          |    }
-          |  },
-          |  "checkReturnDates": true,
-          |  "loans": {
-          |    "schemeHadLoans": true,
-          |    "loanTransactions": [
-          |      {
-          |        "recipientIdentityType": {
-          |          "identityType": "individual",
-          |          "reasonNoIdNumber": "sdfsdf"
+          |    "minimalRequiredSubmission": {
+          |        "reportDetails": {
+          |            "pstr": "00000042IN",
+          |            "periodStart": "2023-04-06",
+          |            "periodEnd": "2024-04-05"
           |        },
-          |        "loanRecipientName": "sdfsdfds",
-          |        "connectedPartyStatus": true,
-          |        "datePeriodLoanDetails": {
-          |          "dateOfLoan": "2023-02-12",
-          |          "loanTotalSchemeAssets": 3,
-          |          "loanPeriodInMonths": 9
-          |        },
-          |        "loanAmountDetails": {
-          |          "loanAmount": 9,
-          |          "capRepaymentCY": 8,
-          |          "amountOutstanding": 7
-          |        },
-          |        "equalInstallments": true,
-          |        "loanInterestDetails": {
-          |          "loanInterestAmount": 8,
-          |          "loanInterestRate": 8,
-          |          "intReceivedCY": 6
-          |        },
-          |        "optSecurityGivenDetails": "kjsdfvsd",
-          |        "optOutstandingArrearsOnLoan": 273
-          |      }
-          |    ]
-          |  },
-          |  "assets": {
-          |    "landOrProperty": {
-          |      "landOrPropertyHeld": true,
-          |      "disposeAnyLandOrProperty": true,
-          |      "landOrPropertyTransactions": [
-          |        {
-          |          "propertyDetails": {
-          |            "landOrPropertyInUK": true,
-          |            "addressDetails": {
-          |              "addressLine1": "Flat 2",
-          |              "addressLine2": "7 Other Place",
-          |              "addressLine3": "Some District",
-          |              "town": "Anytown",
-          |              "postCode": "ZZ1 1ZZ",
-          |              "country": "United Kingdom",
-          |              "countryCode": "GB"
-          |            },
-          |            "landRegistryTitleNumberKey": true,
-          |            "landRegistryTitleNumberValue": "MS123456"
-          |          },
-          |          "heldPropertyTransaction": {
-          |            "methodOfHolding": "Acquisition",
-          |            "dateOfAcquisitionOrContribution": "2009-03-01",
-          |            "optPropertyAcquiredFromName": "Seller-Test",
-          |            "optPropertyAcquiredFrom": {
-          |              "identityType": "individual",
-          |              "idNumber": "SX123456D"
-          |            },
-          |            "optConnectedPartyStatus": true,
-          |            "totalCostOfLandOrProperty": 87,
-          |            "optIndepValuationSupport": true,
-          |            "isLandOrPropertyResidential": true,
-          |            "optLeaseDetails": {
-          |              "lesseeName": "Lessee-Test",
-          |              "leaseGrantDate": "2008-07-06",
-          |              "annualLeaseAmount": 98,
-          |              "connectedPartyStatus": false
-          |            },
-          |            "landOrPropertyLeased": true,
-          |            "totalIncomeOrReceipts": 90
-          |          },
-          |          "disposedPropertyTransaction": [
-          |             {
-          |               "methodOfDisposal": "Sold",
-          |               "optDateOfSale": "2009-03-01",
-          |               "optNameOfPurchaser": "Purchaser-Test",
-          |               "optPropertyAcquiredFrom": {
-          |                 "identityType": "individual",
-          |                 "idNumber": "SX123456D"
-          |               },
-          |               "optSaleProceeds": 1907,
-          |               "optConnectedPartyStatus": true,
-          |               "optIndepValuationSupport": false,
-          |               "portionStillHeld": true
-          |             }
-          |          ]
+          |        "accountingPeriods": [
+          |            [
+          |                "2023-04-06",
+          |                "2024-04-05"
+          |            ]
+          |        ],
+          |        "schemeDesignatory": {
+          |            "openBankAccount": true,
+          |            "activeMembers": 23,
+          |            "deferredMembers": 45,
+          |            "pensionerMembers": 6,
+          |            "totalPayments": 74
           |        }
-          |      ]
           |    },
-          |    "borrowing": {
-          |      "moneyWasBorrowed": true,
-          |      "moneyBorrowed": [
-          |        {
-          |          "dateOfBorrow": "2023-10-19",
-          |          "amountBorrowed": 2,
-          |          "schemeAssetsValue": 3,
-          |          "interestRate": 4,
-          |          "borrowingFromName": "borrowingFromName",
-          |          "connectedPartyStatus": true,
-          |          "reasonForBorrow": "reasonForBorrow"
+          |    "checkReturnDates": true,
+          |    "loans": {
+          |        "schemeHadLoans": true,
+          |        "loanTransactions": [
+          |            {
+          |                "recipientIdentityType": {
+          |                    "identityType": "individual",
+          |                    "reasonNoIdNumber": "sdfsdf"
+          |                },
+          |                "loanRecipientName": "sdfsdfds",
+          |                "connectedPartyStatus": true,
+          |                "datePeriodLoanDetails": {
+          |                    "dateOfLoan": "2023-02-12",
+          |                    "loanTotalSchemeAssets": 3,
+          |                    "loanPeriodInMonths": 9
+          |                },
+          |                "loanAmountDetails": {
+          |                    "loanAmount": 9,
+          |                    "capRepaymentCY": 8,
+          |                    "amountOutstanding": 7
+          |                },
+          |                "equalInstallments": true,
+          |                "loanInterestDetails": {
+          |                    "loanInterestAmount": 8,
+          |                    "loanInterestRate": 8,
+          |                    "intReceivedCY": 6
+          |                },
+          |                "optSecurityGivenDetails": "kjsdfvsd",
+          |                "optOutstandingArrearsOnLoan": 273
+          |            }
+          |        ]
+          |    },
+          |    "assets": {
+          |        "landOrProperty": {
+          |            "landOrPropertyHeld": true,
+          |            "disposeAnyLandOrProperty": true,
+          |            "landOrPropertyTransactions": [
+          |                {
+          |                    "propertyDetails": {
+          |                        "landOrPropertyInUK": true,
+          |                        "addressDetails": {
+          |                            "addressLine1": "Flat 2",
+          |                            "addressLine2": "7 Other Place",
+          |                            "addressLine3": "Some District",
+          |                            "town": "Anytown",
+          |                            "postCode": "ZZ1 1ZZ",
+          |                            "country": "United Kingdom",
+          |                            "countryCode": "GB"
+          |                        },
+          |                        "landRegistryTitleNumberKey": true,
+          |                        "landRegistryTitleNumberValue": "MS123456"
+          |                    },
+          |                    "heldPropertyTransaction": {
+          |                        "methodOfHolding": "Acquisition",
+          |                        "dateOfAcquisitionOrContribution": "2009-03-01",
+          |                        "optPropertyAcquiredFromName": "Seller-Test",
+          |                        "optPropertyAcquiredFrom": {
+          |                            "identityType": "individual",
+          |                            "idNumber": "SX123456D"
+          |                        },
+          |                        "optConnectedPartyStatus": true,
+          |                        "totalCostOfLandOrProperty": 87,
+          |                        "optIndepValuationSupport": true,
+          |                        "isLandOrPropertyResidential": true,
+          |                        "optLeaseDetails": {
+          |                            "lesseeName": "Lessee-Test",
+          |                            "leaseGrantDate": "2008-07-06",
+          |                            "annualLeaseAmount": 98,
+          |                            "connectedPartyStatus": false
+          |                        },
+          |                        "landOrPropertyLeased": true,
+          |                        "totalIncomeOrReceipts": 90
+          |                    },
+          |                    "optDisposedPropertyTransaction": [
+          |                        {
+          |                            "methodOfDisposal": "Sold",
+          |                            "optDateOfSale": "2009-03-01",
+          |                            "optNameOfPurchaser": "Purchaser-Test",
+          |                            "optPropertyAcquiredFrom": {
+          |                                "identityType": "individual",
+          |                                "idNumber": "SX123456D"
+          |                            },
+          |                            "optSaleProceeds": 1907,
+          |                            "optConnectedPartyStatus": true,
+          |                            "optIndepValuationSupport": false,
+          |                            "portionStillHeld": true
+          |                        }
+          |                    ]
+          |                }
+          |            ]
+          |        },
+          |        "borrowing": {
+          |            "moneyWasBorrowed": true,
+          |            "moneyBorrowed": [
+          |                {
+          |                    "dateOfBorrow": "2023-10-19",
+          |                    "amountBorrowed": 2,
+          |                    "schemeAssetsValue": 3,
+          |                    "interestRate": 4,
+          |                    "borrowingFromName": "borrowingFromName",
+          |                    "connectedPartyStatus": true,
+          |                    "reasonForBorrow": "reasonForBorrow"
+          |                }
+          |            ]
           |        }
-          |      ]
+          |    },
+          |    "membersPayments": {
+          |        "employerContributionMade": false,
+          |        "unallocatedContribsMade": false,
+          |        "employerContributionsCompleted": true,
+          |        "transfersInCompleted": true,
+          |        "transfersOutCompleted": true,
+          |        "lumpSumReceived": true,
+          |        "memberContributionMade": true,
+          |        "pensionReceived": true,
+          |        "benefitsSurrenderedDetails": {
+          |            "made": true,
+          |            "completed": true
+          |        },
+          |        "memberDetails": [
+          |            {
+          |                "personalDetails": {
+          |                    "firstName": "John",
+          |                    "lastName": "Doe",
+          |                    "dateOfBirth": "1990-10-10",
+          |                    "nino": "AB123456A"
+          |                },
+          |                "employerContributions": [
+          |                    {
+          |                        "employerName": "Acme Ltd",
+          |                        "employerType": {
+          |                            "employerType": "UKCompany",
+          |                            "value": "11108499"
+          |                        },
+          |                        "totalTransferValue": 12.34
+          |                    },
+          |                    {
+          |                        "employerName": "Slack Ltd",
+          |                        "employerType": {
+          |                            "employerType": "UKPartnership",
+          |                            "value": "A1230849"
+          |                        },
+          |                        "totalTransferValue": 102.88
+          |                    }
+          |                ],
+          |                "transfersIn": [
+          |                    {
+          |                        "schemeName": "Test pension scheme",
+          |                        "dateOfTransfer": "2023-02-12",
+          |                        "transferValue": 12.34,
+          |                        "transferIncludedAsset": true,
+          |                        "transferSchemeType": {
+          |                            "key": "registeredPS",
+          |                            "value": "88390774ZZ"
+          |                        }
+          |                    }
+          |                ],
+          |                "transfersOut": [
+          |                    {
+          |                        "schemeName": "Test pension scheme out",
+          |                        "dateOfTransfer": "2023-02-12",
+          |                        "transferSchemeType": {
+          |                            "key": "registeredPS",
+          |                            "value": "76509173AA"
+          |                        }
+          |                    }
+          |                ],
+          |                "benefitsSurrendered": {
+          |                    "totalSurrendered": 12.34,
+          |                    "dateOfSurrender": "2022-12-12",
+          |                    "surrenderReason": "some reason"
+          |                },
+          |                "pensionAmountReceived": 12.34
+          |            },
+          |            {
+          |                "personalDetails": {
+          |                    "firstName": "Jane",
+          |                    "lastName": "Dean",
+          |                    "dateOfBirth": "1995-06-01",
+          |                    "noNinoReason": "some reason"
+          |                },
+          |                "employerContributions": [
+          |                    {
+          |                        "employerName": "Test Ltd",
+          |                        "employerType": {
+          |                            "employerType": "UKCompany",
+          |                            "value": "67308411"
+          |                        },
+          |                        "totalTransferValue": 23.35
+          |                    },
+          |                    {
+          |                        "employerName": "Legal Ltd",
+          |                        "employerType": {
+          |                            "employerType": "Other",
+          |                            "value": "some description"
+          |                        },
+          |                        "totalTransferValue": 553.01
+          |                    }
+          |                ],
+          |                "transfersIn": [
+          |                    {
+          |                        "schemeName": "overseas pension scheme",
+          |                        "dateOfTransfer": "2020-10-04",
+          |                        "transferValue": 45.67,
+          |                        "transferIncludedAsset": false,
+          |                        "transferSchemeType": {
+          |                            "key": "qualifyingRecognisedOverseasPS",
+          |                            "value": "Q654321"
+          |                        }
+          |                    },
+          |                    {
+          |                        "schemeName": "Test pension scheme",
+          |                        "dateOfTransfer": "2021-08-21",
+          |                        "transferValue": 67.89,
+          |                        "transferIncludedAsset": true,
+          |                        "transferSchemeType": {
+          |                            "key": "other",
+          |                            "value": "other value"
+          |                        }
+          |                    }
+          |                ],
+          |                "transfersOut": [
+          |                    {
+          |                        "schemeName": "overseas pension scheme out",
+          |                        "dateOfTransfer": "2020-10-04",
+          |                        "transferSchemeType": {
+          |                            "key": "qualifyingRecognisedOverseasPS",
+          |                            "value": "Q000002"
+          |                        }
+          |                    },
+          |                    {
+          |                        "schemeName": "Test pension scheme out",
+          |                        "dateOfTransfer": "2021-08-21",
+          |                        "transferSchemeType": {
+          |                            "key": "other",
+          |                            "value": "other value"
+          |                        }
+          |                    }
+          |                ],
+          |                "benefitsSurrendered": {
+          |                    "totalSurrendered": 12.34,
+          |                    "dateOfSurrender": "2022-12-12",
+          |                    "surrenderReason": "some reason"
+          |                },
+          |                "pensionAmountReceived": 12.34
+          |            }
+          |        ]
+          |    },
+          |    "shares": {
+          |        "optShareTransactions": [
+          |            {
+          |                "typeOfSharesHeld": "01",
+          |                "shareIdentification": {
+          |                    "nameOfSharesCompany": "AppleSauce Inc.",
+          |                    "optReasonNoCRN": "Not able to locate Company on Companies House",
+          |                    "classOfShares": "Ordinary Shares"
+          |                },
+          |                "heldSharesTransaction": {
+          |                    "schemeHoldShare": "01",
+          |                    "optDateOfAcqOrContrib": "2022-10-29",
+          |                    "totalShares": 200,
+          |                    "optAcquiredFromName": "Fredd Bloggs",
+          |                    "optPropertyAcquiredFrom": {
+          |                        "identityType": "individual",
+          |                        "idNumber": "JE123176A"
+          |                    },
+          |                    "optConnectedPartyStatus": false,
+          |                    "costOfShares": 10000,
+          |                    "supportedByIndepValuation": true,
+          |                    "optTotalAssetValue": 2000,
+          |                    "totalDividendsOrReceipts": 500
+          |                }
+          |            },
+          |            {
+          |                "typeOfSharesHeld": "03",
+          |                "shareIdentification": {
+          |                    "nameOfSharesCompany": "Pear Computers Inc.",
+          |                    "optCrnNumber": "LP289157",
+          |                    "classOfShares": "Preferred Shares"
+          |                },
+          |                "heldSharesTransaction": {
+          |                    "schemeHoldShare": "01",
+          |                    "optDateOfAcqOrContrib": "2023-02-23",
+          |                    "totalShares": 10000,
+          |                    "optAcquiredFromName": "Golden Investments Ltd.",
+          |                    "optPropertyAcquiredFrom": {
+          |                        "identityType": "ukPartnership",
+          |                        "idNumber": "28130262"
+          |                    },
+          |                    "optConnectedPartyStatus": false,
+          |                    "costOfShares": 50000,
+          |                    "supportedByIndepValuation": true,
+          |                    "optTotalAssetValue": 40000,
+          |                    "totalDividendsOrReceipts": 200
+          |                }
+          |            },
+          |            {
+          |                "typeOfSharesHeld": "03",
+          |                "shareIdentification": {
+          |                    "nameOfSharesCompany": "Connected Party Inc.",
+          |                    "optCrnNumber": "LP289157",
+          |                    "classOfShares": "Convertible Preference Shares"
+          |                },
+          |                "heldSharesTransaction": {
+          |                    "schemeHoldShare": "02",
+          |                    "optDateOfAcqOrContrib": "2023-02-23",
+          |                    "totalShares": 1000,
+          |                    "optAcquiredFromName": "Investec Inc.",
+          |                    "optPropertyAcquiredFrom": {
+          |                        "identityType": "ukCompany",
+          |                        "idNumber": "0000123456"
+          |                    },
+          |                    "optConnectedPartyStatus": false,
+          |                    "costOfShares": 120220.34,
+          |                    "supportedByIndepValuation": true,
+          |                    "optTotalAssetValue": 10000,
+          |                    "totalDividendsOrReceipts": 599.99
+          |                }
+          |            }
+          |        ]
           |    }
-          |  }
           |}
-          """.stripMargin
+          |""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
       val result = controller.submitStandardPsr(postRequest)
