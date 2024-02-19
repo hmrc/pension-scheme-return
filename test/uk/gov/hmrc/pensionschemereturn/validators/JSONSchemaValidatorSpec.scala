@@ -54,8 +54,26 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
       result.hasErrors mustBe false
     }
 
-    "Behaviour for valid payload for API 1999 assets only" in {
-      val json = readJsonFromFile("/api-1999-assets-only-valid-example.json")
+    "Behaviour for valid payload for API 1999 land-or-property only" in {
+      val json = readJsonFromFile("/api-1999-land-or-property-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
+      result.hasErrors mustBe false
+    }
+
+    "Behaviour for valid payload for API 1999 borrowing only" in {
+      val json = readJsonFromFile("/api-1999-borrowing-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
+      result.hasErrors mustBe false
+    }
+
+    "Behaviour for valid payload for API 1999 bonds only" in {
+      val json = readJsonFromFile("/api-1999-bonds-only-valid-example.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
+      result.hasErrors mustBe false
+    }
+
+    "Behaviour for valid payload for API 1999 other assets only" in {
+      val json = readJsonFromFile("/api-1999-other-assets-only-valid-example.json")
       val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe false
     }

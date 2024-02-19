@@ -24,7 +24,7 @@ case class EtmpLoans(
   recordVersion: Option[String],
   schemeHadLoans: String,
   noOfLoans: Option[Int],
-  loanTransactions: Seq[EtmpLoanTransactions]
+  loanTransactions: Option[Seq[EtmpLoanTransactions]]
 )
 
 case class EtmpLoanTransactions(

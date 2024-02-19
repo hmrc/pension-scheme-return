@@ -23,50 +23,52 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class LoansFromEtmp @Inject()() extends Transformer {
+class LoansFromEtmp @Inject() extends Transformer {
 
   def transform(loans: EtmpLoans): Loans =
     Loans(
       schemeHadLoans = fromYesNo(loans.schemeHadLoans),
-      loanTransactions = loans.loanTransactions.map(
-        loanTransaction => {
-          val connectedPartyStatus = loanTransaction.connectedPartyStatus == Connected
-          val identityType = stringToIdentityType(loanTransaction.recipientIdentityType.indivOrOrgType)
-          LoanTransactions(
-            recipientIdentityType = RecipientIdentityType(
-              identityType = identityType,
-              idNumber = loanTransaction.recipientIdentityType.idNumber,
-              reasonNoIdNumber = loanTransaction.recipientIdentityType.reasonNoIdNumber,
-              otherDescription = loanTransaction.recipientIdentityType.otherDescription
-            ),
-            loanRecipientName = loanTransaction.loanRecipientName,
-            connectedPartyStatus = connectedPartyStatus,
-            optRecipientSponsoringEmployer = Option.when(identityType != Individual)(
-              if (loanTransaction.recipientSponsoringEmployer == Yes) Sponsoring
-              else {
-                if (connectedPartyStatus) ConnectedParty else Neither
-              }
-            ),
-            datePeriodLoanDetails = LoanPeriod(
-              dateOfLoan = loanTransaction.dateOfLoan,
-              loanTotalSchemeAssets = loanTransaction.loanTotalSchemeAssets,
-              loanPeriodInMonths = loanTransaction.loanPeriodInMonths
-            ),
-            loanAmountDetails = LoanAmountDetails(
-              loanAmount = loanTransaction.loanAmount,
-              capRepaymentCY = loanTransaction.capRepaymentCY,
-              amountOutstanding = loanTransaction.amountOutstanding
-            ),
-            equalInstallments = fromYesNo(loanTransaction.equalInstallments),
-            loanInterestDetails = LoanInterestDetails(
-              loanInterestAmount = loanTransaction.loanInterestAmount,
-              loanInterestRate = loanTransaction.loanInterestRate,
-              intReceivedCY = loanTransaction.intReceivedCY
-            ),
-            optSecurityGivenDetails = loanTransaction.securityDetails,
-            optOutstandingArrearsOnLoan = loanTransaction.amountOfArrears
-          )
-        }
-      )
+      loanTransactions = loans.loanTransactions
+        .getOrElse(Seq.empty)
+        .map(
+          loanTransaction => {
+            val connectedPartyStatus = loanTransaction.connectedPartyStatus == Connected
+            val identityType = stringToIdentityType(loanTransaction.recipientIdentityType.indivOrOrgType)
+            LoanTransactions(
+              recipientIdentityType = RecipientIdentityType(
+                identityType = identityType,
+                idNumber = loanTransaction.recipientIdentityType.idNumber,
+                reasonNoIdNumber = loanTransaction.recipientIdentityType.reasonNoIdNumber,
+                otherDescription = loanTransaction.recipientIdentityType.otherDescription
+              ),
+              loanRecipientName = loanTransaction.loanRecipientName,
+              connectedPartyStatus = connectedPartyStatus,
+              optRecipientSponsoringEmployer = Option.when(identityType != Individual)(
+                if (loanTransaction.recipientSponsoringEmployer == Yes) Sponsoring
+                else {
+                  if (connectedPartyStatus) ConnectedParty else Neither
+                }
+              ),
+              datePeriodLoanDetails = LoanPeriod(
+                dateOfLoan = loanTransaction.dateOfLoan,
+                loanTotalSchemeAssets = loanTransaction.loanTotalSchemeAssets,
+                loanPeriodInMonths = loanTransaction.loanPeriodInMonths
+              ),
+              loanAmountDetails = LoanAmountDetails(
+                loanAmount = loanTransaction.loanAmount,
+                capRepaymentCY = loanTransaction.capRepaymentCY,
+                amountOutstanding = loanTransaction.amountOutstanding
+              ),
+              equalInstallments = fromYesNo(loanTransaction.equalInstallments),
+              loanInterestDetails = LoanInterestDetails(
+                loanInterestAmount = loanTransaction.loanInterestAmount,
+                loanInterestRate = loanTransaction.loanInterestRate,
+                intReceivedCY = loanTransaction.intReceivedCY
+              ),
+              optSecurityGivenDetails = loanTransaction.securityDetails,
+              optOutstandingArrearsOnLoan = loanTransaction.amountOfArrears
+            )
+          }
+        )
     )
 }

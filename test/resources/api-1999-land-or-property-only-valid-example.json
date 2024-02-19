@@ -73,29 +73,6 @@
           }
         }
       ]
-    },
-    "borrowing": {
-      "moneyWasBorrowed": "Yes",
-      "noOfBorrows": 1,
-      "moneyBorrowed": [
-        {
-          "dateOfBorrow": "2009-03-01",
-          "amountBorrowed": 9.9999999999E8,
-          "schemeAssetsValue": 9.9999999999E8,
-          "interestRate": 999.99,
-          "borrowingFromName": "borrowingFromName",
-          "connectedPartyStatus": "01",
-          "reasonForBorrow": "reasonForBorrow"
-        }
-      ]
-    },
-    "bonds": {
-      "bondsWereAdded": "No",
-      "bondsWereDisposed": "No"
-    },
-    "otherAssets": {
-      "otherAssetsWereHeld": "No",
-      "otherAssetsWereDisposed": "No"
     }
   }
 }
