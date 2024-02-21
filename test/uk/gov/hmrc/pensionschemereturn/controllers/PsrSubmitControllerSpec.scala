@@ -187,7 +187,10 @@ class PsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndA
           |        }
           |    },
           |    "membersPayments": {
-          |        "employerContributionMade": false,
+          |        "employerContributionsDetails": {
+          |          "made": true,
+          |          "completed": true
+          |        },
           |        "unallocatedContribsMade": false,
           |        "employerContributionsCompleted": true,
           |        "transfersInCompleted": true,

@@ -303,7 +303,7 @@ trait TestValues {
       sampleMemberDetails1,
       sampleMemberDetails2
     ),
-    employerContributionsCompleted = true,
+    employerContributionsDetails = SectionDetails(made = true, completed = true),
     memberContributionMade = true,
     transfersInCompleted = true,
     transfersOutCompleted = true,

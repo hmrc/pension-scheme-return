@@ -36,7 +36,7 @@ class MemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = None,
-      employerContributionMade = memberPayments.employerContributionsCompleted,
+      employerContributionMade = memberPayments.employerContributionsDetails.made,
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount =
         if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
@@ -56,7 +56,8 @@ class MemberPaymentsTransformer @Inject()(
           memberStatus = SectionStatus.New,
           memberPSRVersion = "001",
           noOfContributions =
-            if (memberPayments.employerContributionsCompleted) Some(memberDetails.employerContributions.size) else None,
+            if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
+            else None,
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
@@ -116,7 +117,10 @@ class MemberPaymentsTransformer @Inject()(
       details =>
         MemberPayments(
           memberDetails = details,
-          employerContributionsCompleted = out.memberDetails.forall(_.noOfContributions.nonEmpty),
+          employerContributionsDetails = SectionDetails(
+            made = out.employerContributionMade.boolean,
+            completed = out.memberDetails.forall(_.noOfContributions.nonEmpty)
+          ),
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
           unallocatedContribsMade = unapply(out.unallocatedContribsMade),
