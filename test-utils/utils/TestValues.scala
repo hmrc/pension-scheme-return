@@ -103,80 +103,84 @@ trait TestValues {
   )
 
   val sampleAssets: Assets = Assets(
-    landOrProperty = LandOrProperty(
-      landOrPropertyHeld = true,
-      disposeAnyLandOrProperty = true,
-      landOrPropertyTransactions = Seq(
-        LandOrPropertyTransactions(
-          propertyDetails = PropertyDetails(
-            landOrPropertyInUK = true,
-            addressDetails = sampleAddress,
-            landRegistryTitleNumberKey = true,
-            landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
-          ),
-          heldPropertyTransaction = HeldPropertyTransaction(
-            methodOfHolding = Acquisition,
-            dateOfAcquisitionOrContribution = Some(sampleToday),
-            optPropertyAcquiredFromName = Some("PropertyAcquiredFromName"),
-            optPropertyAcquiredFrom = Some(
-              PropertyAcquiredFrom(
-                identityType = UKCompany,
-                idNumber = Some("idNumber"),
-                reasonNoIdNumber = None,
-                otherDescription = None
-              )
+    optLandOrProperty = Some(
+      LandOrProperty(
+        landOrPropertyHeld = true,
+        disposeAnyLandOrProperty = true,
+        landOrPropertyTransactions = Seq(
+          LandOrPropertyTransactions(
+            propertyDetails = PropertyDetails(
+              landOrPropertyInUK = true,
+              addressDetails = sampleAddress,
+              landRegistryTitleNumberKey = true,
+              landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
             ),
-            optConnectedPartyStatus = Some(true),
-            totalCostOfLandOrProperty = Double.MaxValue,
-            optIndepValuationSupport = Some(true),
-            isLandOrPropertyResidential = true,
-            optLeaseDetails = Some(
-              LeaseDetails(
-                lesseeName = "lesseeName",
-                leaseGrantDate = sampleToday,
-                annualLeaseAmount = Double.MaxValue,
-                connectedPartyStatus = true
-              )
+            heldPropertyTransaction = HeldPropertyTransaction(
+              methodOfHolding = Acquisition,
+              dateOfAcquisitionOrContribution = Some(sampleToday),
+              optPropertyAcquiredFromName = Some("PropertyAcquiredFromName"),
+              optPropertyAcquiredFrom = Some(
+                PropertyAcquiredFrom(
+                  identityType = UKCompany,
+                  idNumber = Some("idNumber"),
+                  reasonNoIdNumber = None,
+                  otherDescription = None
+                )
+              ),
+              optConnectedPartyStatus = Some(true),
+              totalCostOfLandOrProperty = Double.MaxValue,
+              optIndepValuationSupport = Some(true),
+              isLandOrPropertyResidential = true,
+              optLeaseDetails = Some(
+                LeaseDetails(
+                  lesseeName = "lesseeName",
+                  leaseGrantDate = sampleToday,
+                  annualLeaseAmount = Double.MaxValue,
+                  connectedPartyStatus = true
+                )
+              ),
+              landOrPropertyLeased = true,
+              totalIncomeOrReceipts = Double.MaxValue
             ),
-            landOrPropertyLeased = true,
-            totalIncomeOrReceipts = Double.MaxValue
-          ),
-          optDisposedPropertyTransaction = Some(
-            Seq(
-              DisposedPropertyTransaction(
-                methodOfDisposal = Sold,
-                optOtherMethod = None,
-                optDateOfSale = Some(sampleToday),
-                optNameOfPurchaser = Some("NameOfPurchaser"),
-                optPropertyAcquiredFrom = Some(
-                  PropertyAcquiredFrom(
-                    identityType = Individual,
-                    idNumber = Some("idNumber"),
-                    reasonNoIdNumber = None,
-                    otherDescription = None
-                  )
-                ),
-                optSaleProceeds = Some(Double.MaxValue),
-                optConnectedPartyStatus = Some(true),
-                optIndepValuationSupport = Some(false),
-                portionStillHeld = true
+            optDisposedPropertyTransaction = Some(
+              Seq(
+                DisposedPropertyTransaction(
+                  methodOfDisposal = Sold,
+                  optOtherMethod = None,
+                  optDateOfSale = Some(sampleToday),
+                  optNameOfPurchaser = Some("NameOfPurchaser"),
+                  optPropertyAcquiredFrom = Some(
+                    PropertyAcquiredFrom(
+                      identityType = Individual,
+                      idNumber = Some("idNumber"),
+                      reasonNoIdNumber = None,
+                      otherDescription = None
+                    )
+                  ),
+                  optSaleProceeds = Some(Double.MaxValue),
+                  optConnectedPartyStatus = Some(true),
+                  optIndepValuationSupport = Some(false),
+                  portionStillHeld = true
+                )
               )
             )
           )
         )
       )
     ),
-    borrowing = Borrowing(
-      moneyWasBorrowed = true,
-      moneyBorrowed = Seq(
-        MoneyBorrowed(
-          dateOfBorrow = sampleToday,
-          schemeAssetsValue = Double.MaxValue,
-          amountBorrowed = Double.MaxValue,
-          interestRate = Double.MaxValue,
-          borrowingFromName = "borrowingFromName",
-          connectedPartyStatus = true,
-          reasonForBorrow = "reasonForBorrow"
+    optBorrowing = Some(
+      Borrowing(
+        moneyWasBorrowed = true,
+        moneyBorrowed = Seq(
+          MoneyBorrowed(
+            dateOfBorrow = sampleToday,
+            schemeAssetsValue = Double.MaxValue,
+            amountBorrowed = Double.MaxValue,
+            interestRate = Double.MaxValue,
+            borrowingFromName = "borrowingFromName",
+            connectedPartyStatus = true,
+            reasonForBorrow = "reasonForBorrow"
+          )
         )
       )
     )
@@ -446,46 +450,51 @@ trait TestValues {
     recordVersion = Some("001"),
     schemeHadLoans = "Yes",
     noOfLoans = Some(1),
-    loanTransactions = List(
-      EtmpLoanTransactions(
-        dateOfLoan = sampleToday,
-        loanRecipientName = "UKPartnershipName",
-        recipientIdentityType = EtmpIdentityType(
-          indivOrOrgType = "03",
-          idNumber = Some("1234567890"),
-          reasonNoIdNumber = None,
-          otherDescription = None
-        ),
-        recipientSponsoringEmployer = "Yes",
-        connectedPartyStatus = "02",
-        loanAmount = Double.MaxValue,
-        loanInterestAmount = Double.MaxValue,
-        loanTotalSchemeAssets = Double.MaxValue,
-        loanPeriodInMonths = Int.MaxValue,
-        equalInstallments = "No",
-        loanInterestRate = Double.MaxValue,
-        securityGiven = "Yes",
-        securityDetails = Some("SecurityGivenDetails"),
-        capRepaymentCY = Double.MaxValue,
-        intReceivedCY = Double.MaxValue,
-        arrearsPrevYears = "No",
-        amountOfArrears = None,
-        amountOutstanding = Double.MaxValue
+    loanTransactions = Some(
+      List(
+        EtmpLoanTransactions(
+          dateOfLoan = sampleToday,
+          loanRecipientName = "UKPartnershipName",
+          recipientIdentityType = EtmpIdentityType(
+            indivOrOrgType = "03",
+            idNumber = Some("1234567890"),
+            reasonNoIdNumber = None,
+            otherDescription = None
+          ),
+          recipientSponsoringEmployer = "Yes",
+          connectedPartyStatus = "02",
+          loanAmount = Double.MaxValue,
+          loanInterestAmount = Double.MaxValue,
+          loanTotalSchemeAssets = Double.MaxValue,
+          loanPeriodInMonths = Int.MaxValue,
+          equalInstallments = "No",
+          loanInterestRate = Double.MaxValue,
+          securityGiven = "Yes",
+          securityDetails = Some("SecurityGivenDetails"),
+          capRepaymentCY = Double.MaxValue,
+          intReceivedCY = Double.MaxValue,
+          arrearsPrevYears = "No",
+          amountOfArrears = None,
+          amountOutstanding = Double.MaxValue
+        )
       )
     )
   )
 
   val sampleEtmpAssets: EtmpAssets = EtmpAssets(
-    landOrProperty = sampleEtmpLandOrProperty,
-    borrowing = EtmpBorrowing(
-      recordVersion = None,
-      moneyWasBorrowed = "moneyWasBorrowed",
-      noOfBorrows = None,
-      moneyBorrowed = None
+    landOrProperty = Some(sampleEtmpLandOrProperty),
+    borrowing = Some(
+      EtmpBorrowing(
+        recordVersion = None,
+        moneyWasBorrowed = "moneyWasBorrowed",
+        noOfBorrows = None,
+        moneyBorrowed = None
+      )
     ),
-    bonds = EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed"),
-    otherAssets =
+    bonds = Some(EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed")),
+    otherAssets = Some(
       EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")
+    )
   )
 
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
@@ -718,60 +727,66 @@ trait TestValues {
         recordVersion = Some("003"),
         schemeHadLoans = "Yes",
         noOfLoans = Some(1),
-        loanTransactions = Seq(
-          EtmpLoanTransactions(
-            dateOfLoan = LocalDate.parse("2023-03-30"),
-            loanRecipientName = "Electric Car Co.",
-            recipientIdentityType = EtmpIdentityType(
-              indivOrOrgType = "01",
-              idNumber = None,
-              reasonNoIdNumber = None,
-              otherDescription = Some("Identification not on record.")
-            ),
-            recipientSponsoringEmployer = "No",
-            connectedPartyStatus = "01",
-            loanAmount = 10000,
-            loanInterestAmount = 2000,
-            loanTotalSchemeAssets = 2000,
-            loanPeriodInMonths = 24,
-            equalInstallments = "Yes",
-            loanInterestRate = 5.55,
-            securityGiven = "Yes",
-            securityDetails = Some("Japanese ming vase #344343444."),
-            capRepaymentCY = 5000,
-            intReceivedCY = 555,
-            arrearsPrevYears = "No",
-            amountOfArrears = None,
-            amountOutstanding = 5000
+        loanTransactions = Some(
+          Seq(
+            EtmpLoanTransactions(
+              dateOfLoan = LocalDate.parse("2023-03-30"),
+              loanRecipientName = "Electric Car Co.",
+              recipientIdentityType = EtmpIdentityType(
+                indivOrOrgType = "01",
+                idNumber = None,
+                reasonNoIdNumber = None,
+                otherDescription = Some("Identification not on record.")
+              ),
+              recipientSponsoringEmployer = "No",
+              connectedPartyStatus = "01",
+              loanAmount = 10000,
+              loanInterestAmount = 2000,
+              loanTotalSchemeAssets = 2000,
+              loanPeriodInMonths = 24,
+              equalInstallments = "Yes",
+              loanInterestRate = 5.55,
+              securityGiven = "Yes",
+              securityDetails = Some("Japanese ming vase #344343444."),
+              capRepaymentCY = 5000,
+              intReceivedCY = 555,
+              arrearsPrevYears = "No",
+              amountOfArrears = None,
+              amountOutstanding = 5000
+            )
           )
         )
       )
     ),
     assets = Some(
       EtmpAssets(
-        landOrProperty = sampleEtmpLandOrProperty,
-        borrowing = EtmpBorrowing(
-          recordVersion = Some("164"),
-          moneyWasBorrowed = "Yes",
-          noOfBorrows = Some(1),
-          moneyBorrowed = Some(
-            Seq(
-              EtmpMoneyBorrowed(
-                dateOfBorrow = sampleToday,
-                schemeAssetsValue = Double.MaxValue,
-                amountBorrowed = Double.MaxValue,
-                interestRate = Double.MaxValue,
-                borrowingFromName = "borrowingFromName",
-                connectedPartyStatus = "01",
-                reasonForBorrow = "reasonForBorrow"
+        landOrProperty = Some(sampleEtmpLandOrProperty),
+        borrowing = Some(
+          EtmpBorrowing(
+            recordVersion = Some("164"),
+            moneyWasBorrowed = "Yes",
+            noOfBorrows = Some(1),
+            moneyBorrowed = Some(
+              Seq(
+                EtmpMoneyBorrowed(
+                  dateOfBorrow = sampleToday,
+                  schemeAssetsValue = Double.MaxValue,
+                  amountBorrowed = Double.MaxValue,
+                  interestRate = Double.MaxValue,
+                  borrowingFromName = "borrowingFromName",
+                  connectedPartyStatus = "01",
+                  reasonForBorrow = "reasonForBorrow"
+                )
               )
             )
           )
         ),
-        bonds = EtmpBonds(bondsWereAdded = "No", bondsWereDisposed = "No"),
-        otherAssets = EtmpOtherAssets(
-          otherAssetsWereHeld = "No",
-          otherAssetsWereDisposed = "No"
+        bonds = Some(EtmpBonds(bondsWereAdded = "No", bondsWereDisposed = "No")),
+        otherAssets = Some(
+          EtmpOtherAssets(
+            otherAssetsWereHeld = "No",
+            otherAssetsWereDisposed = "No"
+          )
         )
       )
     ),

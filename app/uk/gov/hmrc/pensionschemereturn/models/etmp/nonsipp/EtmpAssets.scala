@@ -21,10 +21,10 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class EtmpAssets(
-  landOrProperty: EtmpLandOrProperty,
-  borrowing: EtmpBorrowing,
-  bonds: EtmpBonds,
-  otherAssets: EtmpOtherAssets
+  landOrProperty: Option[EtmpLandOrProperty],
+  borrowing: Option[EtmpBorrowing],
+  bonds: Option[EtmpBonds],
+  otherAssets: Option[EtmpOtherAssets]
 )
 
 case class EtmpLandOrProperty(

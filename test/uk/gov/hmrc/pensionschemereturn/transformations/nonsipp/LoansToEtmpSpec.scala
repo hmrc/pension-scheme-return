@@ -66,37 +66,55 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
             recordVersion = None,
             schemeHadLoans = Yes,
             noOfLoans = Some(1),
-            loanTransactions = List(
-              EtmpLoanTransactions(
-                dateOfLoan = today,
-                loanRecipientName = "IndividualName",
-                recipientIdentityType = EtmpIdentityType(
-                  indivOrOrgType = "01",
-                  idNumber = None,
-                  reasonNoIdNumber = Some("NoNinoReason"),
-                  otherDescription = None
-                ),
-                recipientSponsoringEmployer = resultRecipientSponsoringEmployer,
-                connectedPartyStatus = Connected,
-                loanAmount = Double.MaxValue,
-                loanInterestAmount = Double.MaxValue,
-                loanTotalSchemeAssets = Double.MaxValue,
-                loanPeriodInMonths = Int.MaxValue,
-                equalInstallments = Yes,
-                loanInterestRate = Double.MaxValue,
-                securityGiven = No,
-                securityDetails = None,
-                capRepaymentCY = Double.MaxValue,
-                intReceivedCY = Double.MaxValue,
-                arrearsPrevYears = Yes,
-                amountOfArrears = Some(Double.MaxValue),
-                amountOutstanding = Double.MaxValue
+            loanTransactions = Some(
+              List(
+                EtmpLoanTransactions(
+                  dateOfLoan = today,
+                  loanRecipientName = "IndividualName",
+                  recipientIdentityType = EtmpIdentityType(
+                    indivOrOrgType = "01",
+                    idNumber = None,
+                    reasonNoIdNumber = Some("NoNinoReason"),
+                    otherDescription = None
+                  ),
+                  recipientSponsoringEmployer = resultRecipientSponsoringEmployer,
+                  connectedPartyStatus = Connected,
+                  loanAmount = Double.MaxValue,
+                  loanInterestAmount = Double.MaxValue,
+                  loanTotalSchemeAssets = Double.MaxValue,
+                  loanPeriodInMonths = Int.MaxValue,
+                  equalInstallments = Yes,
+                  loanInterestRate = Double.MaxValue,
+                  securityGiven = No,
+                  securityDetails = None,
+                  capRepaymentCY = Double.MaxValue,
+                  intReceivedCY = Double.MaxValue,
+                  arrearsPrevYears = Yes,
+                  amountOfArrears = Some(Double.MaxValue),
+                  amountOutstanding = Double.MaxValue
+                )
               )
             )
           )
 
           transformation.transform(loans) shouldMatchTo expected
         }
+    }
+
+    s"when schemeHadLoans is false and loanTransactions is empty" in {
+      val loans: Loans = Loans(
+        schemeHadLoans = false,
+        loanTransactions = List.empty
+      )
+
+      val expected = EtmpLoans(
+        recordVersion = None,
+        schemeHadLoans = No,
+        noOfLoans = None,
+        loanTransactions = None
+      )
+
+      transformation.transform(loans) shouldMatchTo expected
     }
   }
 }

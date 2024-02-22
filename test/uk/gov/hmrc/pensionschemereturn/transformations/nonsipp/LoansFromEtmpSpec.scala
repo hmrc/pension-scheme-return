@@ -30,37 +30,56 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
   private val transformation = new LoansFromEtmp()
 
   "LoansFromEtmp - PSR Loans should successfully transform from etmp format" should {
+
+    "for schemeHadLoans is false loanTransactions is empty" in {
+
+      val etmpLoans = EtmpLoans(
+        recordVersion = Some("001"),
+        schemeHadLoans = No,
+        noOfLoans = None,
+        loanTransactions = None
+      )
+
+      val expected: Loans = Loans(
+        schemeHadLoans = false,
+        loanTransactions = List.empty
+      )
+      transformation.transform(etmpLoans) shouldMatchTo expected
+    }
+
     "for Individual" in {
 
       val etmpLoans = EtmpLoans(
         recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = Some(1),
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = sampleToday,
-            loanRecipientName = "IndividualName",
-            recipientIdentityType = EtmpIdentityType(
-              indivOrOrgType = "01",
-              idNumber = None,
-              reasonNoIdNumber = Some("NoNinoReason"),
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "01",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = Yes,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = No,
-            securityDetails = None,
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = Yes,
-            amountOfArrears = Some(Double.MaxValue),
-            amountOutstanding = Double.MaxValue
+        loanTransactions = Some(
+          List(
+            EtmpLoanTransactions(
+              dateOfLoan = sampleToday,
+              loanRecipientName = "IndividualName",
+              recipientIdentityType = EtmpIdentityType(
+                indivOrOrgType = "01",
+                idNumber = None,
+                reasonNoIdNumber = Some("NoNinoReason"),
+                otherDescription = None
+              ),
+              recipientSponsoringEmployer = No,
+              connectedPartyStatus = "01",
+              loanAmount = Double.MaxValue,
+              loanInterestAmount = Double.MaxValue,
+              loanTotalSchemeAssets = Double.MaxValue,
+              loanPeriodInMonths = Int.MaxValue,
+              equalInstallments = Yes,
+              loanInterestRate = Double.MaxValue,
+              securityGiven = No,
+              securityDetails = None,
+              capRepaymentCY = Double.MaxValue,
+              intReceivedCY = Double.MaxValue,
+              arrearsPrevYears = Yes,
+              amountOfArrears = Some(Double.MaxValue),
+              amountOutstanding = Double.MaxValue
+            )
           )
         )
       )
@@ -95,31 +114,33 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = Some(1),
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = sampleToday,
-            loanRecipientName = "UKCompanyName",
-            recipientIdentityType = EtmpIdentityType(
-              indivOrOrgType = "02",
-              idNumber = None,
-              reasonNoIdNumber = Some("NoCrnReason"),
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "01",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = Yes,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = No,
-            securityDetails = None,
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = Yes,
-            amountOfArrears = Some(Double.MaxValue),
-            amountOutstanding = Double.MaxValue
+        loanTransactions = Some(
+          List(
+            EtmpLoanTransactions(
+              dateOfLoan = sampleToday,
+              loanRecipientName = "UKCompanyName",
+              recipientIdentityType = EtmpIdentityType(
+                indivOrOrgType = "02",
+                idNumber = None,
+                reasonNoIdNumber = Some("NoCrnReason"),
+                otherDescription = None
+              ),
+              recipientSponsoringEmployer = No,
+              connectedPartyStatus = "01",
+              loanAmount = Double.MaxValue,
+              loanInterestAmount = Double.MaxValue,
+              loanTotalSchemeAssets = Double.MaxValue,
+              loanPeriodInMonths = Int.MaxValue,
+              equalInstallments = Yes,
+              loanInterestRate = Double.MaxValue,
+              securityGiven = No,
+              securityDetails = None,
+              capRepaymentCY = Double.MaxValue,
+              intReceivedCY = Double.MaxValue,
+              arrearsPrevYears = Yes,
+              amountOfArrears = Some(Double.MaxValue),
+              amountOutstanding = Double.MaxValue
+            )
           )
         )
       )
@@ -156,31 +177,33 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = Some(1),
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = sampleToday,
-            loanRecipientName = "UKPartnershipName",
-            recipientIdentityType = EtmpIdentityType(
-              indivOrOrgType = "03",
-              idNumber = Some("1234567890"),
-              reasonNoIdNumber = None,
-              otherDescription = None
-            ),
-            recipientSponsoringEmployer = Yes,
-            connectedPartyStatus = "02",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = No,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = Yes,
-            securityDetails = Some("SecurityGivenDetails"),
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = No,
-            amountOfArrears = None,
-            amountOutstanding = Double.MaxValue
+        loanTransactions = Some(
+          List(
+            EtmpLoanTransactions(
+              dateOfLoan = sampleToday,
+              loanRecipientName = "UKPartnershipName",
+              recipientIdentityType = EtmpIdentityType(
+                indivOrOrgType = "03",
+                idNumber = Some("1234567890"),
+                reasonNoIdNumber = None,
+                otherDescription = None
+              ),
+              recipientSponsoringEmployer = Yes,
+              connectedPartyStatus = "02",
+              loanAmount = Double.MaxValue,
+              loanInterestAmount = Double.MaxValue,
+              loanTotalSchemeAssets = Double.MaxValue,
+              loanPeriodInMonths = Int.MaxValue,
+              equalInstallments = No,
+              loanInterestRate = Double.MaxValue,
+              securityGiven = Yes,
+              securityDetails = Some("SecurityGivenDetails"),
+              capRepaymentCY = Double.MaxValue,
+              intReceivedCY = Double.MaxValue,
+              arrearsPrevYears = No,
+              amountOfArrears = None,
+              amountOutstanding = Double.MaxValue
+            )
           )
         )
       )
@@ -217,31 +240,33 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         recordVersion = Some("001"),
         schemeHadLoans = Yes,
         noOfLoans = Some(1),
-        loanTransactions = List(
-          EtmpLoanTransactions(
-            dateOfLoan = sampleToday,
-            loanRecipientName = "OtherName",
-            recipientIdentityType = EtmpIdentityType(
-              indivOrOrgType = "04",
-              idNumber = None,
-              reasonNoIdNumber = None,
-              otherDescription = Some("otherDescription")
-            ),
-            recipientSponsoringEmployer = No,
-            connectedPartyStatus = "02",
-            loanAmount = Double.MaxValue,
-            loanInterestAmount = Double.MaxValue,
-            loanTotalSchemeAssets = Double.MaxValue,
-            loanPeriodInMonths = Int.MaxValue,
-            equalInstallments = No,
-            loanInterestRate = Double.MaxValue,
-            securityGiven = Yes,
-            securityDetails = Some("SecurityGivenDetails"),
-            capRepaymentCY = Double.MaxValue,
-            intReceivedCY = Double.MaxValue,
-            arrearsPrevYears = No,
-            amountOfArrears = None,
-            amountOutstanding = Double.MaxValue
+        loanTransactions = Some(
+          List(
+            EtmpLoanTransactions(
+              dateOfLoan = sampleToday,
+              loanRecipientName = "OtherName",
+              recipientIdentityType = EtmpIdentityType(
+                indivOrOrgType = "04",
+                idNumber = None,
+                reasonNoIdNumber = None,
+                otherDescription = Some("otherDescription")
+              ),
+              recipientSponsoringEmployer = No,
+              connectedPartyStatus = "02",
+              loanAmount = Double.MaxValue,
+              loanInterestAmount = Double.MaxValue,
+              loanTotalSchemeAssets = Double.MaxValue,
+              loanPeriodInMonths = Int.MaxValue,
+              equalInstallments = No,
+              loanInterestRate = Double.MaxValue,
+              securityGiven = Yes,
+              securityDetails = Some("SecurityGivenDetails"),
+              capRepaymentCY = Double.MaxValue,
+              intReceivedCY = Double.MaxValue,
+              arrearsPrevYears = No,
+              amountOfArrears = None,
+              amountOutstanding = Double.MaxValue
+            )
           )
         )
       )

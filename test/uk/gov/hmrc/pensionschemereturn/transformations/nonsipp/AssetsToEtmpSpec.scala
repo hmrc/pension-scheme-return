@@ -33,210 +33,233 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
   val today: LocalDate = LocalDate.now
 
   "AssetsToEtmp - PSR Assets should successfully transform to etmp format " should {
+
+    "when optional fields are None" in {
+      val assets = Assets(
+        optLandOrProperty = None,
+        optBorrowing = None
+      )
+
+      val expected = EtmpAssets(
+        landOrProperty = None,
+        borrowing = None,
+        bonds = None,
+        otherAssets = None
+      )
+
+      transformation.transform(assets) shouldMatchTo expected
+    }
+
     "as an Individual for LandOrProperty" in {
       val assets = Assets(
-        landOrProperty = LandOrProperty(
-          landOrPropertyHeld = true,
-          disposeAnyLandOrProperty = true,
-          landOrPropertyTransactions = List(
-            LandOrPropertyTransactions(
-              propertyDetails = PropertyDetails(
-                landOrPropertyInUK = true,
-                addressDetails = Address(
-                  "testAddressLine1",
-                  None,
-                  Some("testAddressLine3"),
-                  "town",
-                  Some("GB135HG"),
-                  "GB"
-                ),
-                landRegistryTitleNumberKey = true,
-                landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
-              ),
-              heldPropertyTransaction = HeldPropertyTransaction(
-                methodOfHolding = SchemeHoldLandProperty.Acquisition,
-                dateOfAcquisitionOrContribution = Some(today),
-                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                optPropertyAcquiredFrom = Some(
-                  PropertyAcquiredFrom(
-                    IdentityType.Individual,
+        optLandOrProperty = Some(
+          LandOrProperty(
+            landOrPropertyHeld = true,
+            disposeAnyLandOrProperty = true,
+            landOrPropertyTransactions = List(
+              LandOrPropertyTransactions(
+                propertyDetails = PropertyDetails(
+                  landOrPropertyInUK = true,
+                  addressDetails = Address(
+                    "testAddressLine1",
                     None,
-                    Some("NoNinoReason"),
-                    None
-                  )
+                    Some("testAddressLine3"),
+                    "town",
+                    Some("GB135HG"),
+                    "GB"
+                  ),
+                  landRegistryTitleNumberKey = true,
+                  landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
                 ),
-                optConnectedPartyStatus = Some(true),
-                totalCostOfLandOrProperty = Double.MaxValue,
-                optIndepValuationSupport = Some(true),
-                isLandOrPropertyResidential = true,
-                optLeaseDetails = Some(
-                  LeaseDetails(
-                    lesseeName = "lesseeName",
-                    leaseGrantDate = today,
-                    annualLeaseAmount = Double.MaxValue,
-                    connectedPartyStatus = false
-                  )
+                heldPropertyTransaction = HeldPropertyTransaction(
+                  methodOfHolding = SchemeHoldLandProperty.Acquisition,
+                  dateOfAcquisitionOrContribution = Some(today),
+                  optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                  optPropertyAcquiredFrom = Some(
+                    PropertyAcquiredFrom(
+                      IdentityType.Individual,
+                      None,
+                      Some("NoNinoReason"),
+                      None
+                    )
+                  ),
+                  optConnectedPartyStatus = Some(true),
+                  totalCostOfLandOrProperty = Double.MaxValue,
+                  optIndepValuationSupport = Some(true),
+                  isLandOrPropertyResidential = true,
+                  optLeaseDetails = Some(
+                    LeaseDetails(
+                      lesseeName = "lesseeName",
+                      leaseGrantDate = today,
+                      annualLeaseAmount = Double.MaxValue,
+                      connectedPartyStatus = false
+                    )
+                  ),
+                  landOrPropertyLeased = true,
+                  totalIncomeOrReceipts = Double.MaxValue
                 ),
-                landOrPropertyLeased = true,
-                totalIncomeOrReceipts = Double.MaxValue
-              ),
-              optDisposedPropertyTransaction = Some(
-                Seq(
-                  DisposedPropertyTransaction(
-                    methodOfDisposal = Sold,
-                    optOtherMethod = None,
-                    optDateOfSale = Some(today),
-                    optNameOfPurchaser = Some("NameOfPurchaser"),
-                    optPropertyAcquiredFrom = Some(
-                      PropertyAcquiredFrom(
-                        IdentityType.Other,
-                        None,
-                        None,
-                        Some("OtherDescription")
-                      )
+                optDisposedPropertyTransaction = Some(
+                  Seq(
+                    DisposedPropertyTransaction(
+                      methodOfDisposal = Sold,
+                      optOtherMethod = None,
+                      optDateOfSale = Some(today),
+                      optNameOfPurchaser = Some("NameOfPurchaser"),
+                      optPropertyAcquiredFrom = Some(
+                        PropertyAcquiredFrom(
+                          IdentityType.Other,
+                          None,
+                          None,
+                          Some("OtherDescription")
+                        )
+                      ),
+                      optSaleProceeds = Some(Double.MaxValue),
+                      optConnectedPartyStatus = Some(true),
+                      optIndepValuationSupport = Some(true),
+                      portionStillHeld = false
                     ),
-                    optSaleProceeds = Some(Double.MaxValue),
-                    optConnectedPartyStatus = Some(true),
-                    optIndepValuationSupport = Some(true),
-                    portionStillHeld = false
-                  ),
-                  DisposedPropertyTransaction(
-                    methodOfDisposal = Transferred,
-                    optOtherMethod = None,
-                    optDateOfSale = None,
-                    optNameOfPurchaser = None,
-                    optPropertyAcquiredFrom = None,
-                    optSaleProceeds = None,
-                    optConnectedPartyStatus = None,
-                    optIndepValuationSupport = None,
-                    portionStillHeld = false
-                  ),
-                  DisposedPropertyTransaction(
-                    methodOfDisposal = Other,
-                    optOtherMethod = Some("OtherMethod"),
-                    optDateOfSale = None,
-                    optNameOfPurchaser = None,
-                    optPropertyAcquiredFrom = None,
-                    optSaleProceeds = None,
-                    optConnectedPartyStatus = None,
-                    optIndepValuationSupport = None,
-                    portionStillHeld = true
+                    DisposedPropertyTransaction(
+                      methodOfDisposal = Transferred,
+                      optOtherMethod = None,
+                      optDateOfSale = None,
+                      optNameOfPurchaser = None,
+                      optPropertyAcquiredFrom = None,
+                      optSaleProceeds = None,
+                      optConnectedPartyStatus = None,
+                      optIndepValuationSupport = None,
+                      portionStillHeld = false
+                    ),
+                    DisposedPropertyTransaction(
+                      methodOfDisposal = Other,
+                      optOtherMethod = Some("OtherMethod"),
+                      optDateOfSale = None,
+                      optNameOfPurchaser = None,
+                      optPropertyAcquiredFrom = None,
+                      optSaleProceeds = None,
+                      optConnectedPartyStatus = None,
+                      optIndepValuationSupport = None,
+                      portionStillHeld = true
+                    )
                   )
                 )
               )
             )
           )
         ),
-        borrowing = Borrowing(
-          moneyWasBorrowed = true,
-          moneyBorrowed = Seq(
-            MoneyBorrowed(
-              dateOfBorrow = today,
-              schemeAssetsValue = Double.MinPositiveValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MaxValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = true,
-              reasonForBorrow = "reasonForBorrow"
+        optBorrowing = Some(
+          Borrowing(
+            moneyWasBorrowed = true,
+            moneyBorrowed = Seq(
+              MoneyBorrowed(
+                dateOfBorrow = today,
+                schemeAssetsValue = Double.MinPositiveValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MaxValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = true,
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         )
       )
 
       val expected = EtmpAssets(
-        landOrProperty = EtmpLandOrProperty(
-          recordVersion = None,
-          heldAnyLandOrProperty = Yes,
-          disposeAnyLandOrProperty = Yes,
-          noOfTransactions = Some(1),
-          landOrPropertyTransactions = Some(
-            Seq(
-              EtmpLandOrPropertyTransactions(
-                propertyDetails = EtmpPropertyDetails(
-                  landOrPropertyInUK = Yes,
-                  addressDetails = EtmpAddress(
-                    addressLine1 = "testAddressLine1",
-                    addressLine2 = "town",
-                    addressLine3 = Some("testAddressLine3"),
-                    addressLine4 = None,
-                    addressLine5 = None,
-                    ukPostCode = Some("GB135HG"),
-                    countryCode = "GB"
-                  ),
-                  landRegistryDetails = EtmpLandRegistryDetails(
-                    landRegistryReferenceExists = Yes,
-                    landRegistryReference = Some("landRegistryTitleNumberValue"),
-                    reasonNoReference = None
-                  )
-                ),
-                heldPropertyTransaction = EtmpHeldPropertyTransaction(
-                  methodOfHolding = "01",
-                  dateOfAcquisitionOrContribution = Some(today),
-                  propertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                  propertyAcquiredFrom = Some(
-                    EtmpIdentityType(
-                      indivOrOrgType = "01",
-                      idNumber = None,
-                      reasonNoIdNumber = Some("NoNinoReason"),
-                      otherDescription = None
+        landOrProperty = Some(
+          EtmpLandOrProperty(
+            recordVersion = None,
+            heldAnyLandOrProperty = Yes,
+            disposeAnyLandOrProperty = Yes,
+            noOfTransactions = Some(1),
+            landOrPropertyTransactions = Some(
+              Seq(
+                EtmpLandOrPropertyTransactions(
+                  propertyDetails = EtmpPropertyDetails(
+                    landOrPropertyInUK = Yes,
+                    addressDetails = EtmpAddress(
+                      addressLine1 = "testAddressLine1",
+                      addressLine2 = "town",
+                      addressLine3 = Some("testAddressLine3"),
+                      addressLine4 = None,
+                      addressLine5 = None,
+                      ukPostCode = Some("GB135HG"),
+                      countryCode = "GB"
+                    ),
+                    landRegistryDetails = EtmpLandRegistryDetails(
+                      landRegistryReferenceExists = Yes,
+                      landRegistryReference = Some("landRegistryTitleNumberValue"),
+                      reasonNoReference = None
                     )
                   ),
-                  connectedPartyStatus = Some(Connected),
-                  totalCostOfLandOrProperty = Double.MaxValue,
-                  indepValuationSupport = Some(Yes),
-                  residentialSchedule29A = Yes,
-                  landOrPropertyLeased = Yes,
-                  leaseDetails = Some(
-                    EtmpLeaseDetails(
-                      lesseeName = "lesseeName",
-                      connectedPartyStatus = Unconnected,
-                      leaseGrantDate = today,
-                      annualLeaseAmount = Double.MaxValue
-                    )
+                  heldPropertyTransaction = EtmpHeldPropertyTransaction(
+                    methodOfHolding = "01",
+                    dateOfAcquisitionOrContribution = Some(today),
+                    propertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                    propertyAcquiredFrom = Some(
+                      EtmpIdentityType(
+                        indivOrOrgType = "01",
+                        idNumber = None,
+                        reasonNoIdNumber = Some("NoNinoReason"),
+                        otherDescription = None
+                      )
+                    ),
+                    connectedPartyStatus = Some(Connected),
+                    totalCostOfLandOrProperty = Double.MaxValue,
+                    indepValuationSupport = Some(Yes),
+                    residentialSchedule29A = Yes,
+                    landOrPropertyLeased = Yes,
+                    leaseDetails = Some(
+                      EtmpLeaseDetails(
+                        lesseeName = "lesseeName",
+                        connectedPartyStatus = Unconnected,
+                        leaseGrantDate = today,
+                        annualLeaseAmount = Double.MaxValue
+                      )
+                    ),
+                    totalIncomeOrReceipts = Double.MaxValue
                   ),
-                  totalIncomeOrReceipts = Double.MaxValue
-                ),
-                disposedPropertyTransaction = Some(
-                  Seq(
-                    EtmpDisposedPropertyTransaction(
-                      methodOfDisposal = "01",
-                      otherMethod = None,
-                      dateOfSale = Some(today),
-                      nameOfPurchaser = Some("NameOfPurchaser"),
-                      purchaseOrgDetails = Some(
-                        EtmpIdentityType(
-                          indivOrOrgType = "04",
-                          idNumber = None,
-                          reasonNoIdNumber = None,
-                          otherDescription = Some("OtherDescription")
-                        )
+                  disposedPropertyTransaction = Some(
+                    Seq(
+                      EtmpDisposedPropertyTransaction(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateOfSale = Some(today),
+                        nameOfPurchaser = Some("NameOfPurchaser"),
+                        purchaseOrgDetails = Some(
+                          EtmpIdentityType(
+                            indivOrOrgType = "04",
+                            idNumber = None,
+                            reasonNoIdNumber = None,
+                            otherDescription = Some("OtherDescription")
+                          )
+                        ),
+                        saleProceeds = Some(Double.MaxValue),
+                        connectedPartyStatus = Some(Connected),
+                        indepValuationSupport = Some(Yes),
+                        portionStillHeld = No
                       ),
-                      saleProceeds = Some(Double.MaxValue),
-                      connectedPartyStatus = Some(Connected),
-                      indepValuationSupport = Some(Yes),
-                      portionStillHeld = No
-                    ),
-                    EtmpDisposedPropertyTransaction(
-                      methodOfDisposal = "02",
-                      otherMethod = None,
-                      dateOfSale = None,
-                      nameOfPurchaser = None,
-                      purchaseOrgDetails = None,
-                      saleProceeds = None,
-                      connectedPartyStatus = None,
-                      indepValuationSupport = None,
-                      portionStillHeld = No
-                    ),
-                    EtmpDisposedPropertyTransaction(
-                      methodOfDisposal = "03",
-                      otherMethod = Some("OtherMethod"),
-                      dateOfSale = None,
-                      nameOfPurchaser = None,
-                      purchaseOrgDetails = None,
-                      saleProceeds = None,
-                      connectedPartyStatus = None,
-                      indepValuationSupport = None,
-                      portionStillHeld = Yes
+                      EtmpDisposedPropertyTransaction(
+                        methodOfDisposal = "02",
+                        otherMethod = None,
+                        dateOfSale = None,
+                        nameOfPurchaser = None,
+                        purchaseOrgDetails = None,
+                        saleProceeds = None,
+                        connectedPartyStatus = None,
+                        indepValuationSupport = None,
+                        portionStillHeld = No
+                      ),
+                      EtmpDisposedPropertyTransaction(
+                        methodOfDisposal = "03",
+                        otherMethod = Some("OtherMethod"),
+                        dateOfSale = None,
+                        nameOfPurchaser = None,
+                        purchaseOrgDetails = None,
+                        saleProceeds = None,
+                        connectedPartyStatus = None,
+                        indepValuationSupport = None,
+                        portionStillHeld = Yes
+                      )
                     )
                   )
                 )
@@ -244,26 +267,28 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             )
           )
         ),
-        borrowing = EtmpBorrowing(
-          recordVersion = None,
-          moneyWasBorrowed = Yes,
-          noOfBorrows = Some(1),
-          moneyBorrowed = Some(
-            Seq(
-              EtmpMoneyBorrowed(
-                dateOfBorrow = today,
-                schemeAssetsValue = Double.MinPositiveValue,
-                amountBorrowed = Double.MaxValue,
-                interestRate = Double.MaxValue,
-                borrowingFromName = "borrowingFromName",
-                connectedPartyStatus = Connected,
-                reasonForBorrow = "reasonForBorrow"
+        borrowing = Some(
+          EtmpBorrowing(
+            recordVersion = None,
+            moneyWasBorrowed = Yes,
+            noOfBorrows = Some(1),
+            moneyBorrowed = Some(
+              Seq(
+                EtmpMoneyBorrowed(
+                  dateOfBorrow = today,
+                  schemeAssetsValue = Double.MinPositiveValue,
+                  amountBorrowed = Double.MaxValue,
+                  interestRate = Double.MaxValue,
+                  borrowingFromName = "borrowingFromName",
+                  connectedPartyStatus = Connected,
+                  reasonForBorrow = "reasonForBorrow"
+                )
               )
             )
           )
         ),
-        bonds = EtmpBonds(bondsWereAdded = No, bondsWereDisposed = No),
-        otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
+        bonds = None,
+        otherAssets = None
       )
 
       transformation.transform(assets) shouldMatchTo expected
@@ -271,137 +296,145 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
     "as an Other for LandOrProperty with an empty optDisposedPropertyTransaction sequence" in {
       val assets = Assets(
-        landOrProperty = LandOrProperty(
-          landOrPropertyHeld = true,
-          disposeAnyLandOrProperty = true,
-          landOrPropertyTransactions = List(
-            LandOrPropertyTransactions(
-              propertyDetails = PropertyDetails(
-                landOrPropertyInUK = true,
-                addressDetails = Address(
-                  "testAddressLine1",
-                  None,
-                  Some("testAddressLine3"),
-                  "town",
-                  Some("GB135HG"),
-                  "GB"
-                ),
-                landRegistryTitleNumberKey = true,
-                landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
-              ),
-              heldPropertyTransaction = HeldPropertyTransaction(
-                methodOfHolding = SchemeHoldLandProperty.Acquisition,
-                dateOfAcquisitionOrContribution = Some(today),
-                optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                optPropertyAcquiredFrom = Some(
-                  PropertyAcquiredFrom(
-                    IdentityType.Other,
+        optLandOrProperty = Some(
+          LandOrProperty(
+            landOrPropertyHeld = true,
+            disposeAnyLandOrProperty = true,
+            landOrPropertyTransactions = List(
+              LandOrPropertyTransactions(
+                propertyDetails = PropertyDetails(
+                  landOrPropertyInUK = true,
+                  addressDetails = Address(
+                    "testAddressLine1",
                     None,
-                    None,
-                    Some("Other Desc")
-                  )
+                    Some("testAddressLine3"),
+                    "town",
+                    Some("GB135HG"),
+                    "GB"
+                  ),
+                  landRegistryTitleNumberKey = true,
+                  landRegistryTitleNumberValue = "landRegistryTitleNumberValue"
                 ),
-                optConnectedPartyStatus = Some(false),
-                totalCostOfLandOrProperty = Double.MaxValue,
-                optIndepValuationSupport = Some(false),
-                isLandOrPropertyResidential = false,
-                optLeaseDetails = None,
-                landOrPropertyLeased = false,
-                totalIncomeOrReceipts = Double.MaxValue
-              ),
-              optDisposedPropertyTransaction = Some(
-                Seq.empty
+                heldPropertyTransaction = HeldPropertyTransaction(
+                  methodOfHolding = SchemeHoldLandProperty.Acquisition,
+                  dateOfAcquisitionOrContribution = Some(today),
+                  optPropertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                  optPropertyAcquiredFrom = Some(
+                    PropertyAcquiredFrom(
+                      IdentityType.Other,
+                      None,
+                      None,
+                      Some("Other Desc")
+                    )
+                  ),
+                  optConnectedPartyStatus = Some(false),
+                  totalCostOfLandOrProperty = Double.MaxValue,
+                  optIndepValuationSupport = Some(false),
+                  isLandOrPropertyResidential = false,
+                  optLeaseDetails = None,
+                  landOrPropertyLeased = false,
+                  totalIncomeOrReceipts = Double.MaxValue
+                ),
+                optDisposedPropertyTransaction = Some(
+                  Seq.empty
+                )
               )
             )
           )
         ),
-        borrowing = Borrowing(
-          moneyWasBorrowed = true,
-          moneyBorrowed = Seq(
-            MoneyBorrowed(
-              dateOfBorrow = today,
-              schemeAssetsValue = Double.MinPositiveValue,
-              amountBorrowed = Double.MaxValue,
-              interestRate = Double.MaxValue,
-              borrowingFromName = "borrowingFromName",
-              connectedPartyStatus = true,
-              reasonForBorrow = "reasonForBorrow"
+        optBorrowing = Some(
+          Borrowing(
+            moneyWasBorrowed = true,
+            moneyBorrowed = Seq(
+              MoneyBorrowed(
+                dateOfBorrow = today,
+                schemeAssetsValue = Double.MinPositiveValue,
+                amountBorrowed = Double.MaxValue,
+                interestRate = Double.MaxValue,
+                borrowingFromName = "borrowingFromName",
+                connectedPartyStatus = true,
+                reasonForBorrow = "reasonForBorrow"
+              )
             )
           )
         )
       )
 
       val expected = EtmpAssets(
-        landOrProperty = EtmpLandOrProperty(
-          recordVersion = None,
-          heldAnyLandOrProperty = Yes,
-          disposeAnyLandOrProperty = Yes,
-          noOfTransactions = Some(1),
-          landOrPropertyTransactions = Some(
-            Seq(
-              EtmpLandOrPropertyTransactions(
-                propertyDetails = EtmpPropertyDetails(
-                  landOrPropertyInUK = Yes,
-                  addressDetails = EtmpAddress(
-                    addressLine1 = "testAddressLine1",
-                    addressLine2 = "town",
-                    addressLine3 = Some("testAddressLine3"),
-                    addressLine4 = None,
-                    addressLine5 = None,
-                    ukPostCode = Some("GB135HG"),
-                    countryCode = "GB"
-                  ),
-                  landRegistryDetails = EtmpLandRegistryDetails(
-                    landRegistryReferenceExists = Yes,
-                    landRegistryReference = Some("landRegistryTitleNumberValue"),
-                    reasonNoReference = None
-                  )
-                ),
-                heldPropertyTransaction = EtmpHeldPropertyTransaction(
-                  methodOfHolding = "01",
-                  dateOfAcquisitionOrContribution = Some(today),
-                  propertyAcquiredFromName = Some("propertyAcquiredFromName"),
-                  propertyAcquiredFrom = Some(
-                    EtmpIdentityType(
-                      indivOrOrgType = "04",
-                      idNumber = None,
-                      reasonNoIdNumber = None,
-                      otherDescription = Some("Other Desc")
+        landOrProperty = Some(
+          EtmpLandOrProperty(
+            recordVersion = None,
+            heldAnyLandOrProperty = Yes,
+            disposeAnyLandOrProperty = Yes,
+            noOfTransactions = Some(1),
+            landOrPropertyTransactions = Some(
+              Seq(
+                EtmpLandOrPropertyTransactions(
+                  propertyDetails = EtmpPropertyDetails(
+                    landOrPropertyInUK = Yes,
+                    addressDetails = EtmpAddress(
+                      addressLine1 = "testAddressLine1",
+                      addressLine2 = "town",
+                      addressLine3 = Some("testAddressLine3"),
+                      addressLine4 = None,
+                      addressLine5 = None,
+                      ukPostCode = Some("GB135HG"),
+                      countryCode = "GB"
+                    ),
+                    landRegistryDetails = EtmpLandRegistryDetails(
+                      landRegistryReferenceExists = Yes,
+                      landRegistryReference = Some("landRegistryTitleNumberValue"),
+                      reasonNoReference = None
                     )
                   ),
-                  connectedPartyStatus = Some(Unconnected),
-                  totalCostOfLandOrProperty = Double.MaxValue,
-                  indepValuationSupport = Some(No),
-                  residentialSchedule29A = No,
-                  landOrPropertyLeased = No,
-                  leaseDetails = None,
-                  totalIncomeOrReceipts = Double.MaxValue
-                ),
-                disposedPropertyTransaction = None
+                  heldPropertyTransaction = EtmpHeldPropertyTransaction(
+                    methodOfHolding = "01",
+                    dateOfAcquisitionOrContribution = Some(today),
+                    propertyAcquiredFromName = Some("propertyAcquiredFromName"),
+                    propertyAcquiredFrom = Some(
+                      EtmpIdentityType(
+                        indivOrOrgType = "04",
+                        idNumber = None,
+                        reasonNoIdNumber = None,
+                        otherDescription = Some("Other Desc")
+                      )
+                    ),
+                    connectedPartyStatus = Some(Unconnected),
+                    totalCostOfLandOrProperty = Double.MaxValue,
+                    indepValuationSupport = Some(No),
+                    residentialSchedule29A = No,
+                    landOrPropertyLeased = No,
+                    leaseDetails = None,
+                    totalIncomeOrReceipts = Double.MaxValue
+                  ),
+                  disposedPropertyTransaction = None
+                )
               )
             )
           )
         ),
-        borrowing = EtmpBorrowing(
-          recordVersion = None,
-          moneyWasBorrowed = Yes,
-          noOfBorrows = Some(1),
-          moneyBorrowed = Some(
-            Seq(
-              EtmpMoneyBorrowed(
-                dateOfBorrow = today,
-                schemeAssetsValue = Double.MinPositiveValue,
-                amountBorrowed = Double.MaxValue,
-                interestRate = Double.MaxValue,
-                borrowingFromName = "borrowingFromName",
-                connectedPartyStatus = Connected,
-                reasonForBorrow = "reasonForBorrow"
+        borrowing = Some(
+          EtmpBorrowing(
+            recordVersion = None,
+            moneyWasBorrowed = Yes,
+            noOfBorrows = Some(1),
+            moneyBorrowed = Some(
+              Seq(
+                EtmpMoneyBorrowed(
+                  dateOfBorrow = today,
+                  schemeAssetsValue = Double.MinPositiveValue,
+                  amountBorrowed = Double.MaxValue,
+                  interestRate = Double.MaxValue,
+                  borrowingFromName = "borrowingFromName",
+                  connectedPartyStatus = Connected,
+                  reasonForBorrow = "reasonForBorrow"
+                )
               )
             )
           )
         ),
-        bonds = EtmpBonds(bondsWereAdded = No, bondsWereDisposed = No),
-        otherAssets = EtmpOtherAssets(otherAssetsWereHeld = No, otherAssetsWereDisposed = No)
+        bonds = None,
+        otherAssets = None
       )
 
       transformation.transform(assets) shouldMatchTo expected
