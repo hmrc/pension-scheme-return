@@ -692,7 +692,17 @@ trait TestValues {
             totalAssetValue = Some(2000),
             totalDividendsOrReceipts = 500
           ),
-          disposedSharesTransaction = None
+          disposedSharesTransaction = Some(
+            List(
+              EtmpDisposedSharesTransaction(
+                methodOfDisposal = "04",
+                otherMethod = Some("otherMethod"),
+                salesQuestions = None,
+                redemptionQuestions = None,
+                totalSharesNowHeld = 2
+              )
+            )
+          )
         )
       )
     ),
@@ -1008,7 +1018,45 @@ trait TestValues {
                 totalAssetValue = Some(2000),
                 totalDividendsOrReceipts = 500
               ),
-              disposedSharesTransaction = None
+              disposedSharesTransaction = Some(
+                List(
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "01",
+                    otherMethod = None,
+                    salesQuestions = Some(
+                      EtmpSalesQuestions(
+                        dateOfSale = LocalDate.of(2023, 2, 16),
+                        noOfSharesSold = 50,
+                        amountReceived = 8000.0,
+                        nameOfPurchaser = "Sharebuyers Inc.",
+                        purchaserType = EtmpIdentityType(
+                          indivOrOrgType = "01",
+                          idNumber = Some("0008503350"),
+                          reasonNoIdNumber = None,
+                          otherDescription = None
+                        ),
+                        connectedPartyStatus = "02",
+                        supportedByIndepValuation = Yes
+                      )
+                    ),
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = 150
+                  ),
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "02",
+                    otherMethod = None,
+                    salesQuestions = None,
+                    redemptionQuestions = Some(
+                      EtmpRedemptionQuestions(
+                        dateOfRedemption = LocalDate.of(2023, 3, 6),
+                        noOfSharesRedeemed = 50,
+                        amountReceived = 7600.0
+                      )
+                    ),
+                    totalSharesNowHeld = 100
+                  )
+                )
+              )
             ),
             EtmpShareTransaction(
               typeOfSharesHeld = "03",
@@ -1035,7 +1083,45 @@ trait TestValues {
                 totalAssetValue = Some(40000),
                 totalDividendsOrReceipts = 200
               ),
-              disposedSharesTransaction = None
+              disposedSharesTransaction = Some(
+                List(
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "01",
+                    otherMethod = None,
+                    salesQuestions = Some(
+                      EtmpSalesQuestions(
+                        dateOfSale = LocalDate.of(2022, 10, 31),
+                        noOfSharesSold = 1100,
+                        amountReceived = 30000,
+                        nameOfPurchaser = "Share Acquisitions Inc.",
+                        purchaserType = EtmpIdentityType(
+                          indivOrOrgType = "01",
+                          idNumber = Some("JJ507888A"),
+                          reasonNoIdNumber = None,
+                          otherDescription = None
+                        ),
+                        connectedPartyStatus = "02",
+                        supportedByIndepValuation = Yes
+                      )
+                    ),
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = 8000
+                  ),
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "02",
+                    otherMethod = None,
+                    salesQuestions = None,
+                    redemptionQuestions = Some(
+                      EtmpRedemptionQuestions(
+                        dateOfRedemption = LocalDate.of(2022, 12, 20),
+                        noOfSharesRedeemed = 900,
+                        amountReceived = 27005.78
+                      )
+                    ),
+                    totalSharesNowHeld = 8000
+                  )
+                )
+              )
             ),
             EtmpShareTransaction(
               typeOfSharesHeld = "03",
@@ -1062,7 +1148,45 @@ trait TestValues {
                 totalAssetValue = Some(10000),
                 totalDividendsOrReceipts = 599.99
               ),
-              disposedSharesTransaction = None
+              disposedSharesTransaction = Some(
+                List(
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "02",
+                    otherMethod = None,
+                    salesQuestions = None,
+                    redemptionQuestions = Some(
+                      EtmpRedemptionQuestions(
+                        dateOfRedemption = LocalDate.of(2022, 11, 3),
+                        noOfSharesRedeemed = 200,
+                        amountReceived = 50000
+                      )
+                    ),
+                    totalSharesNowHeld = 800
+                  ),
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "01",
+                    otherMethod = None,
+                    salesQuestions = Some(
+                      EtmpSalesQuestions(
+                        dateOfSale = LocalDate.of(2022, 12, 31),
+                        noOfSharesSold = 200,
+                        amountReceived = 52000,
+                        nameOfPurchaser = "Sam Smithsonian",
+                        purchaserType = EtmpIdentityType(
+                          indivOrOrgType = "01",
+                          idNumber = Some("JE443364A"),
+                          reasonNoIdNumber = None,
+                          otherDescription = None
+                        ),
+                        connectedPartyStatus = "01",
+                        supportedByIndepValuation = Yes
+                      )
+                    ),
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = 400
+                  )
+                )
+              )
             )
           )
         ),

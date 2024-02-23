@@ -64,10 +64,34 @@ case class EtmpHeldSharesTransaction(
 )
 
 case class EtmpDisposedSharesTransaction(
-  otherMethod: Option[String]
+  methodOfDisposal: String,
+  otherMethod: Option[String],
+  salesQuestions: Option[EtmpSalesQuestions],
+  redemptionQuestions: Option[EtmpRedemptionQuestions],
+  totalSharesNowHeld: Int
+)
+
+case class EtmpSalesQuestions(
+  dateOfSale: LocalDate,
+  noOfSharesSold: Int,
+  amountReceived: Double,
+  nameOfPurchaser: String,
+  purchaserType: EtmpIdentityType,
+  connectedPartyStatus: String,
+  supportedByIndepValuation: YesNo
+)
+
+case class EtmpRedemptionQuestions(
+  dateOfRedemption: LocalDate,
+  noOfSharesRedeemed: Int,
+  amountReceived: Double
 )
 
 object EtmpShares {
+  private implicit val formatEtmpRedemptionQuestions: Format[EtmpRedemptionQuestions] =
+    Json.format[EtmpRedemptionQuestions]
+  private implicit val formatEtmpSalesQuestions: Format[EtmpSalesQuestions] =
+    Json.format[EtmpSalesQuestions]
   private implicit val formatEtmpDisposedSharesTransaction: Format[EtmpDisposedSharesTransaction] =
     Json.format[EtmpDisposedSharesTransaction]
   private implicit val formatEtmpHeldSharesTransaction: Format[EtmpHeldSharesTransaction] =

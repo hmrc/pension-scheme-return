@@ -22,6 +22,7 @@ import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowSharesDisposed.{Other, Redeemed, Sold, Transferred}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -43,8 +44,8 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         noOfUnquotedShareTransactions = Some(1),
         connectedPartySharesWereHeld = YesNo.Yes,
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = YesNo.No,
-        unquotedSharesWereDisposed = YesNo.No,
+        sponsorEmployerSharesWereDisposed = YesNo.Yes,
+        unquotedSharesWereDisposed = YesNo.Yes,
         connectedPartySharesWereDisposed = YesNo.No,
         shareTransactions = Some(
           List(
@@ -73,7 +74,39 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 totalAssetValue = Some(Double.MaxValue),
                 totalDividendsOrReceipts = Double.MaxValue
               ),
-              disposedSharesTransaction = None
+              disposedSharesTransaction = Some(
+                List(
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "01",
+                    otherMethod = None,
+                    salesQuestions = Some(
+                      EtmpSalesQuestions(
+                        dateOfSale = today,
+                        noOfSharesSold = Int.MaxValue,
+                        amountReceived = Double.MaxValue,
+                        nameOfPurchaser = "nameOfPurchaser",
+                        purchaserType = EtmpIdentityType(
+                          indivOrOrgType = "04",
+                          idNumber = None,
+                          reasonNoIdNumber = None,
+                          otherDescription = Some("Other")
+                        ),
+                        connectedPartyStatus = "01",
+                        supportedByIndepValuation = YesNo.No
+                      )
+                    ),
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  ),
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "03",
+                    otherMethod = None,
+                    salesQuestions = None,
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  )
+                )
+              )
             ),
             EtmpShareTransaction(
               typeOfSharesHeld = "02",
@@ -100,7 +133,30 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 totalAssetValue = None,
                 totalDividendsOrReceipts = Double.MaxValue
               ),
-              disposedSharesTransaction = None
+              disposedSharesTransaction = Some(
+                List(
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "02",
+                    otherMethod = None,
+                    salesQuestions = None,
+                    redemptionQuestions = Some(
+                      EtmpRedemptionQuestions(
+                        dateOfRedemption = today,
+                        noOfSharesRedeemed = Int.MaxValue,
+                        amountReceived = Double.MaxValue
+                      )
+                    ),
+                    totalSharesNowHeld = Int.MaxValue
+                  ),
+                  EtmpDisposedSharesTransaction(
+                    methodOfDisposal = "04",
+                    otherMethod = Some("OtherMethod"),
+                    salesQuestions = None,
+                    redemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  )
+                )
+              )
             ),
             EtmpShareTransaction(
               typeOfSharesHeld = "03",
@@ -162,6 +218,39 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 supportedByIndepValuation = false,
                 optTotalAssetValue = Some(Double.MaxValue),
                 totalDividendsOrReceipts = Double.MaxValue
+              ),
+              optDisposedSharesTransaction = Some(
+                Seq(
+                  DisposedSharesTransaction(
+                    methodOfDisposal = Sold,
+                    optOtherMethod = None,
+                    optSalesQuestions = Some(
+                      SalesQuestions(
+                        dateOfSale = today,
+                        noOfSharesSold = Int.MaxValue,
+                        amountReceived = Double.MaxValue,
+                        nameOfPurchaser = "nameOfPurchaser",
+                        purchaserType = PropertyAcquiredFrom(
+                          IdentityType.Other,
+                          None,
+                          None,
+                          Some("Other")
+                        ),
+                        connectedPartyStatus = true,
+                        supportedByIndepValuation = false
+                      )
+                    ),
+                    optRedemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  ),
+                  DisposedSharesTransaction(
+                    methodOfDisposal = Transferred,
+                    optOtherMethod = None,
+                    optSalesQuestions = None,
+                    optRedemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  )
+                )
               )
             ),
             ShareTransaction(
@@ -190,6 +279,30 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 supportedByIndepValuation = false,
                 optTotalAssetValue = None,
                 totalDividendsOrReceipts = Double.MaxValue
+              ),
+              optDisposedSharesTransaction = Some(
+                Seq(
+                  DisposedSharesTransaction(
+                    methodOfDisposal = Redeemed,
+                    optOtherMethod = None,
+                    optSalesQuestions = None,
+                    optRedemptionQuestions = Some(
+                      RedemptionQuestions(
+                        dateOfRedemption = today,
+                        noOfSharesRedeemed = Int.MaxValue,
+                        amountReceived = Double.MaxValue
+                      )
+                    ),
+                    totalSharesNowHeld = Int.MaxValue
+                  ),
+                  DisposedSharesTransaction(
+                    methodOfDisposal = Other,
+                    optOtherMethod = Some("OtherMethod"),
+                    optSalesQuestions = None,
+                    optRedemptionQuestions = None,
+                    totalSharesNowHeld = Int.MaxValue
+                  )
+                )
               )
             ),
             ShareTransaction(
@@ -218,7 +331,8 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 supportedByIndepValuation = false,
                 optTotalAssetValue = None,
                 totalDividendsOrReceipts = Double.MaxValue
-              )
+              ),
+              optDisposedSharesTransaction = None
             )
           )
         )

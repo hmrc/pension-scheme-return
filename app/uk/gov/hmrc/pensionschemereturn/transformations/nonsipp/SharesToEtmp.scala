@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowSharesDisposed.howSharesDisposedToString
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{ShareTransaction, Shares, TypeOfShares}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -27,31 +28,56 @@ class SharesToEtmp @Inject() extends Transformer {
 
   def transform(shares: Shares): EtmpShares = {
 
-    val sponsoringEmployerCount =
-      shares.optShareTransactions.fold(0)(_.count(_.typeOfSharesHeld == TypeOfShares.SponsoringEmployer))
-    val unquotedCount = shares.optShareTransactions.fold(0)(_.count(_.typeOfSharesHeld == TypeOfShares.Unquoted))
-    val connectedPartyCount =
-      shares.optShareTransactions.fold(0)(_.count(_.typeOfSharesHeld == TypeOfShares.ConnectedParty))
+    val optShareTransactions = shares.optShareTransactions
 
-    val sponsorEmployerSharesWereHeld = sponsoringEmployerCount > 0
-    val unquotedSharesWereHeld = unquotedCount > 0
-    val connectedPartySharesWereHeld = connectedPartyCount > 0
+    val (sponsoringEmployerFlag, sponsoringEmployerCount) =
+      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.SponsoringEmployer)
+    val (unquotedFlag, unquotedCount) =
+      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.Unquoted)
+    val (connectedPartyFlag, connectedPartyCount) =
+      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.ConnectedParty)
 
     EtmpShares(
       recordVersion = None,
-      sponsorEmployerSharesWereHeld = YesNo(sponsorEmployerSharesWereHeld),
-      noOfSponsEmplyrShareTransactions = Option.when(sponsorEmployerSharesWereHeld)(sponsoringEmployerCount),
-      unquotedSharesWereHeld = YesNo(unquotedSharesWereHeld),
-      noOfUnquotedShareTransactions = Option.when(unquotedSharesWereHeld)(unquotedCount),
-      connectedPartySharesWereHeld = YesNo(connectedPartySharesWereHeld),
-      noOfConnPartyTransactions = Option.when(connectedPartySharesWereHeld)(connectedPartyCount),
-      sponsorEmployerSharesWereDisposed = YesNo.No,
-      unquotedSharesWereDisposed = YesNo.No,
-      connectedPartySharesWereDisposed = YesNo.No,
-      shareTransactions = shares.optShareTransactions.map(_.map(transformShareTransactions)),
+      sponsorEmployerSharesWereHeld = YesNo(sponsoringEmployerFlag),
+      noOfSponsEmplyrShareTransactions = Option.when(sponsoringEmployerFlag)(sponsoringEmployerCount),
+      unquotedSharesWereHeld = YesNo(unquotedFlag),
+      noOfUnquotedShareTransactions = Option.when(unquotedFlag)(unquotedCount),
+      connectedPartySharesWereHeld = YesNo(connectedPartyFlag),
+      noOfConnPartyTransactions = Option.when(connectedPartyFlag)(connectedPartyCount),
+      sponsorEmployerSharesWereDisposed =
+        transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.SponsoringEmployer),
+      unquotedSharesWereDisposed = transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted),
+      connectedPartySharesWereDisposed =
+        transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty),
+      shareTransactions = optShareTransactions.map(_.map(transformShareTransactions)),
       totalValueQuotedShares = 0.00 // TODO: Waiting confirmation from Josh
     )
   }
+
+  private def transformToSharesFlagCountTuple(
+    optShareTransactions: Option[List[ShareTransaction]],
+    typeOfShares: TypeOfShares
+  ): (Boolean, Int) = {
+    val count = optShareTransactions.fold(0)(_.count(_.typeOfSharesHeld == typeOfShares))
+    val flag = count > 0
+    (flag, count)
+  }
+
+  private def transformToSharesDisposalFlag(
+    optShareTransactions: Option[List[ShareTransaction]],
+    typeOfShares: TypeOfShares
+  ): YesNo =
+    YesNo(
+      optShareTransactions.fold(false)(
+        shareTransactions =>
+          shareTransactions
+            .exists(
+              shareTransaction =>
+                (shareTransaction.typeOfSharesHeld == typeOfShares) && shareTransaction.optDisposedSharesTransaction.nonEmpty && shareTransaction.optDisposedSharesTransaction.get.nonEmpty
+            )
+      )
+    )
 
   private def transformShareTransactions(sharesTransaction: ShareTransaction): EtmpShareTransaction = {
     val shareIdentification = sharesTransaction.shareIdentification
@@ -93,7 +119,43 @@ class SharesToEtmp @Inject() extends Transformer {
         totalAssetValue = heldSharesTransaction.optTotalAssetValue,
         totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
       ),
-      disposedSharesTransaction = None
+      disposedSharesTransaction = sharesTransaction.optDisposedSharesTransaction
+        .map(
+          _.map(
+            disposedSharesTransaction =>
+              EtmpDisposedSharesTransaction(
+                methodOfDisposal = howSharesDisposedToString(disposedSharesTransaction.methodOfDisposal),
+                otherMethod = disposedSharesTransaction.optOtherMethod,
+                salesQuestions = disposedSharesTransaction.optSalesQuestions.map(
+                  salesQuestions =>
+                    EtmpSalesQuestions(
+                      dateOfSale = salesQuestions.dateOfSale,
+                      noOfSharesSold = salesQuestions.noOfSharesSold,
+                      amountReceived = salesQuestions.amountReceived,
+                      nameOfPurchaser = salesQuestions.nameOfPurchaser,
+                      purchaserType = toEtmpIdentityType(
+                        identityType = salesQuestions.purchaserType.identityType,
+                        optIdNumber = salesQuestions.purchaserType.idNumber,
+                        optReasonNoIdNumber = salesQuestions.purchaserType.reasonNoIdNumber,
+                        optOtherDescription = salesQuestions.purchaserType.otherDescription
+                      ),
+                      connectedPartyStatus = transformToEtmpConnectedPartyStatus(salesQuestions.connectedPartyStatus),
+                      supportedByIndepValuation = salesQuestions.supportedByIndepValuation
+                    )
+                ),
+                redemptionQuestions = disposedSharesTransaction.optRedemptionQuestions.map(
+                  redemptionQuestions =>
+                    EtmpRedemptionQuestions(
+                      dateOfRedemption = redemptionQuestions.dateOfRedemption,
+                      noOfSharesRedeemed = redemptionQuestions.noOfSharesRedeemed,
+                      amountReceived = redemptionQuestions.amountReceived
+                    )
+                ),
+                totalSharesNowHeld = disposedSharesTransaction.totalSharesNowHeld
+              )
+          ).toList
+        )
+        .filter(_.nonEmpty)
     )
   }
 }
