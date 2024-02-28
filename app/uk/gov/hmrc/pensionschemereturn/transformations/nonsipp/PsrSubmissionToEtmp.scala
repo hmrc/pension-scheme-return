@@ -33,9 +33,9 @@ class PsrSubmissionToEtmp @Inject()(
     val etmpMinimalRequiredSubmission =
       minimalRequiredDetailsToEtmp.transform(psrSubmission.minimalRequiredSubmission)
     PsrSubmissionEtmpRequest(
-      etmpMinimalRequiredSubmission.reportDetails,
-      etmpMinimalRequiredSubmission.accountingPeriodDetails,
-      etmpMinimalRequiredSubmission.schemeDesignatory,
+      reportDetails = etmpMinimalRequiredSubmission.reportDetails,
+      accountingPeriodDetails = etmpMinimalRequiredSubmission.accountingPeriodDetails,
+      schemeDesignatory = etmpMinimalRequiredSubmission.schemeDesignatory,
       loans = psrSubmission.loans.map(loansToEtmp.transform),
       assets = psrSubmission.assets.map(assetsToEtmp.transform),
       membersPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp),

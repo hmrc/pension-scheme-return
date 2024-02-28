@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpShareTransaction, EtmpShares}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowSharesDisposed.stringToHowSharesDisposed
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.stringToIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldShare.stringToSchemeHoldShare
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.TypeOfShares.stringToTypeOfShares
@@ -65,6 +66,44 @@ class SharesFromEtmp @Inject() extends Transformer {
         supportedByIndepValuation = YesNo.unapply(heldSharesTransaction.supportedByIndepValuation),
         optTotalAssetValue = heldSharesTransaction.totalAssetValue,
         totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
+      ),
+      optDisposedSharesTransaction = shareTransactions.disposedSharesTransaction.map(
+        _.map(
+          dst =>
+            DisposedSharesTransaction(
+              methodOfDisposal = stringToHowSharesDisposed(dst.methodOfDisposal),
+              optOtherMethod = dst.otherMethod,
+              optSalesQuestions = dst.salesQuestions.map(
+                sq => {
+                  val purchaserType = sq.purchaserType
+                  SalesQuestions(
+                    dateOfSale = sq.dateOfSale,
+                    noOfSharesSold = sq.noOfSharesSold,
+                    amountReceived = sq.amountReceived,
+                    nameOfPurchaser = sq.nameOfPurchaser,
+                    purchaserType = PropertyAcquiredFrom(
+                      identityType = stringToIdentityType(purchaserType.indivOrOrgType),
+                      idNumber = purchaserType.idNumber,
+                      reasonNoIdNumber = purchaserType.reasonNoIdNumber,
+                      otherDescription = purchaserType.otherDescription
+                    ),
+                    connectedPartyStatus = sq.connectedPartyStatus == Connected,
+                    supportedByIndepValuation = YesNo.unapply(sq.supportedByIndepValuation)
+                  )
+                }
+              ),
+              optRedemptionQuestions = dst.redemptionQuestions
+                .map(
+                  rq =>
+                    RedemptionQuestions(
+                      dateOfRedemption = rq.dateOfRedemption,
+                      noOfSharesRedeemed = rq.noOfSharesRedeemed,
+                      amountReceived = rq.amountReceived
+                    )
+                ),
+              totalSharesNowHeld = dst.totalSharesNowHeld
+            )
+        )
       )
     )
   }
