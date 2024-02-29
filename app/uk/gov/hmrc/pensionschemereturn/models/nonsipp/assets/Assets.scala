@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
+case class Assets(optLandOrProperty: Option[LandOrProperty], optBorrowing: Option[Borrowing])
 
-case class TransfersIn(
-  schemeName: String,
-  dateOfTransfer: LocalDate,
-  transferSchemeType: PensionSchemeType,
-  transferValue: Double,
-  transferIncludedAsset: Boolean
-)
-
-object TransfersIn {
-  implicit val format: Format[TransfersIn] = Json.format[TransfersIn]
+object Assets {
+  implicit val formats: OFormat[Assets] = Json.format[Assets]
 }

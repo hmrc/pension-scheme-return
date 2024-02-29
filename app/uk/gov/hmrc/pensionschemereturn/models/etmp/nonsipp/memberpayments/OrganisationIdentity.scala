@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments
 
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, Reads, Writes}
+import play.api.libs.json._
 
 case class OrganisationIdentity(
   orgType: EmployerContributionsOrgType,

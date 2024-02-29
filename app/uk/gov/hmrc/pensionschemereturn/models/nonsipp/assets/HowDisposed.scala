@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
 import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.utils.WithName

@@ -18,6 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
 
 import play.api.libs.json.{Json, OWrites}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMemberPayments
 
 case class PsrSubmissionEtmpRequest(
   reportDetails: EtmpReportDetails,

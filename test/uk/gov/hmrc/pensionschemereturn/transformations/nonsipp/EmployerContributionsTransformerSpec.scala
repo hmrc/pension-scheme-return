@@ -17,12 +17,12 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
   EmployerContributionsOrgType,
   EtmpEmployerContributions,
   OrganisationIdentity
 }
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{EmployerContributions, EmployerType}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.{EmployerContributions, EmployerType}
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
 class EmployerContributionsTransformerSpec extends EtmpTransformerSpec {

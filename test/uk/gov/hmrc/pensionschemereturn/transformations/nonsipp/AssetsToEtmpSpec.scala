@@ -20,9 +20,11 @@ import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.{Other, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 import java.time.LocalDate

@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.{
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{
   howDisposedToString,
   stringToHowDisposed,
   Other,

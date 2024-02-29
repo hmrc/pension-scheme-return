@@ -1003,14 +1003,14 @@ object PsrConnectorSpec {
       |        },
       |        "bonds": {
       |            "recordVersion": "528",
-      |            "bondsWereAdded": "No",
+      |            "bondsWereAdded": "Yes",
       |            "bondsWereDisposed": "No",
       |            "noOfTransactions": 2,
       |            "bondTransactions": [
       |                {
       |                    "nameOfBonds": "Xenex Bonds",
       |                    "methodOfHolding": "01",
-      |                    "dateOfAcqOrContrib": "2022-10-06",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
       |                    "costOfBonds": 10234.56,
       |                    "connectedPartyStatus": "02",
       |                    "bondsUnregulated": "No",
@@ -1018,7 +1018,7 @@ object PsrConnectorSpec {
       |                    "bondsDisposed": [
       |                        {
       |                            "methodOfDisposal": "01",
-      |                            "dateSold": "2022-11-30",
+      |                            "dateSold": "2023-10-19",
       |                            "amountReceived": 12333.59,
       |                            "bondsPurchaserName": "Happy Bond Buyers Inc.",
       |                            "connectedPartyStatus": "02",
@@ -1029,7 +1029,7 @@ object PsrConnectorSpec {
       |                {
       |                    "nameOfBonds": "Really Goods Bonds ABC",
       |                    "methodOfHolding": "03",
-      |                    "dateOfAcqOrContrib": "2022-07-30",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
       |                    "costOfBonds": 2000.5,
       |                    "connectedPartyStatus": "02",
       |                    "bondsUnregulated": "No",
@@ -1037,7 +1037,7 @@ object PsrConnectorSpec {
       |                    "bondsDisposed": [
       |                        {
       |                            "methodOfDisposal": "01",
-      |                            "dateSold": "2022-08-31",
+      |                            "dateSold": "2023-10-19",
       |                            "amountReceived": 3333.33,
       |                            "bondsPurchaserName": "Bonds Buyers (PTY) Ltd",
       |                            "connectedPartyStatus": "01",

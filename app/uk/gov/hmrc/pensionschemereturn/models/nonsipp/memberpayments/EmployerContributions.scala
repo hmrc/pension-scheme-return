@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments
 
-import play.api.libs.json.Reads
+import cats.syntax.either._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import cats.syntax.either._
 
 case class EmployerContributions(
   employerName: String,

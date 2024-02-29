@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments
 
 import play.api.libs.json.{Format, Json}
 

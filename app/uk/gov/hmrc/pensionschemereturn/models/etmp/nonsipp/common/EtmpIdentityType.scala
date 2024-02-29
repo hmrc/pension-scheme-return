@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPayments
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  membersPayments: Option[MemberPayments],
-  shares: Option[Shares]
+case class EtmpIdentityType(
+  indivOrOrgType: String,
+  idNumber: Option[String],
+  reasonNoIdNumber: Option[String],
+  otherDescription: Option[String]
 )
-
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object EtmpIdentityType {
+  implicit val formatsIdentityType: OFormat[EtmpIdentityType] =
+    Json.format[EtmpIdentityType]
 }
