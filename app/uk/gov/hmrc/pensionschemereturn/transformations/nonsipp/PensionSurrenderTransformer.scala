@@ -17,8 +17,8 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpPensionSurrender
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PensionSurrender
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpPensionSurrender
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.PensionSurrender
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()

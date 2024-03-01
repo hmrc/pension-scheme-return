@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PropertyAcquiredFrom
 
 import java.time.LocalDate
-
-case class Assets(optLandOrProperty: Option[LandOrProperty], optBorrowing: Option[Borrowing])
 
 case class LandOrProperty(
   landOrPropertyHeld: Boolean,
@@ -74,23 +73,7 @@ case class LeaseDetails(
   connectedPartyStatus: Boolean
 )
 
-case class Borrowing(moneyWasBorrowed: Boolean, moneyBorrowed: Seq[MoneyBorrowed])
-
-case class MoneyBorrowed(
-  dateOfBorrow: LocalDate,
-  schemeAssetsValue: Double,
-  amountBorrowed: Double,
-  interestRate: Double,
-  borrowingFromName: String,
-  connectedPartyStatus: Boolean,
-  reasonForBorrow: String
-)
-
-object Assets {
-
-  private implicit val formatMoneyBorrowed: OFormat[MoneyBorrowed] = Json.format[MoneyBorrowed]
-  private implicit val formatBorrowing: OFormat[Borrowing] = Json.format[Borrowing]
-
+object LandOrProperty {
   private implicit val formatLeaseDetails: OFormat[LeaseDetails] = Json.format[LeaseDetails]
   private implicit val formatHeldPropertyTransaction: OFormat[HeldPropertyTransaction] =
     Json.format[HeldPropertyTransaction]
@@ -99,7 +82,5 @@ object Assets {
   private implicit val formatPropertyDetails: OFormat[PropertyDetails] = Json.format[PropertyDetails]
   private implicit val formatLandOrPropertyTransactions: OFormat[LandOrPropertyTransactions] =
     Json.format[LandOrPropertyTransactions]
-  private implicit val formatLandOrProperty: OFormat[LandOrProperty] = Json.format[LandOrProperty]
-
-  implicit val formats: OFormat[Assets] = Json.format[Assets]
+  implicit val format: OFormat[LandOrProperty] = Json.format[LandOrProperty]
 }

@@ -19,8 +19,9 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowSharesDisposed.howSharesDisposedToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{ShareTransaction, Shares, TypeOfShares}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.HowSharesDisposed.howSharesDisposedToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.{ShareTransaction, Shares, TypeOfShares}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()

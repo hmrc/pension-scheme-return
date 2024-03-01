@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 
-case class EtmpEmployerContributions(
-  orgName: String,
-  organisationIdentity: OrganisationIdentity,
-  totalContribution: Double
+import java.time.LocalDate
+
+case class EtmpTransfersIn(
+  schemeName: String,
+  dateOfTransfer: LocalDate,
+  transferSchemeType: TransferSchemeType,
+  transferValue: Double,
+  transferIncludedAsset: YesNo
 )
 
-object EtmpEmployerContributions {
-  implicit val format: Format[EtmpEmployerContributions] = Json.format[EtmpEmployerContributions]
+object EtmpTransfersIn {
+  implicit val format: Format[EtmpTransfersIn] = Json.format[EtmpTransfersIn]
 }

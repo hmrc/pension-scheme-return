@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PropertyAcquiredFrom
 
 import java.time.LocalDate
 

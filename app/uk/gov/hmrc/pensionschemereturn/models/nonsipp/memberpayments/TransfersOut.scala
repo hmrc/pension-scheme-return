@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments
 
 import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 
-case class MemberPersonalDetails(
-  firstName: String,
-  lastName: String,
-  nino: Option[String],
-  reasonNoNINO: Option[String],
-  dateOfBirth: LocalDate
+case class TransfersOut(
+  schemeName: String,
+  dateOfTransfer: LocalDate,
+  transferSchemeType: PensionSchemeType
 )
 
-object MemberPersonalDetails {
-  implicit val format: Format[MemberPersonalDetails] = Json.format[MemberPersonalDetails]
+object TransfersOut {
+  implicit val format: Format[TransfersOut] = Json.format[TransfersOut]
 }

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Address(
-  addressLine1: String,
-  addressLine2: Option[String],
-  addressLine3: Option[String],
-  town: String,
-  postCode: Option[String],
-  countryCode: String
+case class EtmpAssets(
+  landOrProperty: Option[EtmpLandOrProperty],
+  borrowing: Option[EtmpBorrowing],
+  bonds: Option[EtmpBonds],
+  otherAssets: Option[EtmpOtherAssets]
 )
 
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
+object EtmpAssets {
+  implicit val formats: OFormat[EtmpAssets] = Json.format[EtmpAssets]
 }

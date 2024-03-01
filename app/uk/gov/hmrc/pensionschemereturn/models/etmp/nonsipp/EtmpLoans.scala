@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 
 import java.time.LocalDate
 

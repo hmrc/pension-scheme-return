@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 
 import java.time.LocalDate
-
-case class EtmpAssets(
-  landOrProperty: Option[EtmpLandOrProperty],
-  borrowing: Option[EtmpBorrowing],
-  bonds: Option[EtmpBonds],
-  otherAssets: Option[EtmpOtherAssets]
-)
 
 case class EtmpLandOrProperty(
   recordVersion: Option[String],
@@ -33,32 +27,6 @@ case class EtmpLandOrProperty(
   disposeAnyLandOrProperty: String,
   noOfTransactions: Option[Int],
   landOrPropertyTransactions: Option[Seq[EtmpLandOrPropertyTransactions]]
-)
-
-case class EtmpBorrowing(
-  recordVersion: Option[String],
-  moneyWasBorrowed: String,
-  noOfBorrows: Option[Int],
-  moneyBorrowed: Option[Seq[EtmpMoneyBorrowed]]
-)
-
-case class EtmpMoneyBorrowed(
-  dateOfBorrow: LocalDate,
-  schemeAssetsValue: Double,
-  amountBorrowed: Double,
-  interestRate: Double,
-  borrowingFromName: String,
-  connectedPartyStatus: String,
-  reasonForBorrow: String
-)
-case class EtmpBonds(
-  bondsWereAdded: String,
-  bondsWereDisposed: String
-)
-
-case class EtmpOtherAssets(
-  otherAssetsWereHeld: String,
-  otherAssetsWereDisposed: String
 )
 
 case class EtmpLandOrPropertyTransactions(
@@ -122,8 +90,7 @@ case class EtmpLandRegistryDetails(
   reasonNoReference: Option[String]
 )
 
-object EtmpAssets {
-
+object EtmpLandOrProperty {
   private implicit val formatsEtmpLeaseDetails: OFormat[EtmpLeaseDetails] =
     Json.format[EtmpLeaseDetails]
   private implicit val formatsEtmpLandRegistryDetails: OFormat[EtmpLandRegistryDetails] =
@@ -138,18 +105,6 @@ object EtmpAssets {
     Json.format[EtmpPropertyDetails]
   private implicit val formatsEtmpLandOrPropertyTransactions: OFormat[EtmpLandOrPropertyTransactions] =
     Json.format[EtmpLandOrPropertyTransactions]
-  private implicit val formatsEtmpLandOrProperty: OFormat[EtmpLandOrProperty] =
+  implicit val formats: OFormat[EtmpLandOrProperty] =
     Json.format[EtmpLandOrProperty]
-
-  private implicit val formatsEtmpOtherAssets: OFormat[EtmpOtherAssets] =
-    Json.format[EtmpOtherAssets]
-  private implicit val formatsEtmpBonds: OFormat[EtmpBonds] =
-    Json.format[EtmpBonds]
-
-  private implicit val formatsEtmpMoneyBorrowed: OFormat[EtmpMoneyBorrowed] =
-    Json.format[EtmpMoneyBorrowed]
-  private implicit val formatsEtmpBorrowing: OFormat[EtmpBorrowing] =
-    Json.format[EtmpBorrowing]
-
-  implicit val formats: OFormat[EtmpAssets] = Json.format[EtmpAssets]
 }

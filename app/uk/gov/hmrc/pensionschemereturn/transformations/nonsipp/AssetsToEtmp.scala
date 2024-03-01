@@ -17,10 +17,10 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Assets
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.howDisposedToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.schemeHoldLandPropertyToString
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.howDisposedToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.schemeHoldLandPropertyToString
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()

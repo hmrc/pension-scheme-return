@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-
-case class TransfersOut(
-  schemeName: String,
-  dateOfTransfer: LocalDate,
-  transferSchemeType: PensionSchemeType
+case class EtmpOtherAssets(
+  otherAssetsWereHeld: String,
+  otherAssetsWereDisposed: String
 )
 
-object TransfersOut {
-  implicit val format: Format[TransfersOut] = Json.format[TransfersOut]
+object EtmpOtherAssets {
+  implicit val formats: OFormat[EtmpOtherAssets] =
+    Json.format[EtmpOtherAssets]
 }

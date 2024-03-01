@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
+package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-
-case class EtmpPensionSurrender(
-  totalSurrendered: Double,
-  dateOfSurrender: LocalDate,
-  surrenderReason: String
+case class Address(
+  addressLine1: String,
+  addressLine2: Option[String],
+  addressLine3: Option[String],
+  town: String,
+  postCode: Option[String],
+  countryCode: String
 )
 
-object EtmpPensionSurrender {
-  implicit val formats: Format[EtmpPensionSurrender] = Json.format[EtmpPensionSurrender]
+object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
 }

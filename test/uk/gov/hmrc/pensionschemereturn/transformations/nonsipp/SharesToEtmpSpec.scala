@@ -22,8 +22,10 @@ import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowSharesDisposed.{Other, Redeemed, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.HowSharesDisposed.{Other, Redeemed, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 import java.time.LocalDate

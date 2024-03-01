@@ -19,12 +19,18 @@ package utils
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, SectionStatus, Standard}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.HowDisposed.Sold
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.Sold
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.Acquisition
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
 import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
 import uk.gov.hmrc.pensionschemereturn.models.response._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
@@ -491,7 +497,15 @@ trait TestValues {
         moneyBorrowed = None
       )
     ),
-    bonds = Some(EtmpBonds(bondsWereAdded = "bondsWereAdded", bondsWereDisposed = "bondsWereDisposed")),
+    bonds = Some(
+      EtmpBonds(
+        recordVersion = None,
+        bondsWereAdded = "bondsWereAdded",
+        bondsWereDisposed = "bondsWereDisposed",
+        noOfTransactions = None,
+        bondTransactions = None
+      )
+    ),
     otherAssets = Some(
       EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")
     )
@@ -791,7 +805,62 @@ trait TestValues {
             )
           )
         ),
-        bonds = Some(EtmpBonds(bondsWereAdded = "No", bondsWereDisposed = "No")),
+        bonds = Some(
+          EtmpBonds(
+            recordVersion = Some("528"),
+            bondsWereAdded = "Yes",
+            bondsWereDisposed = "No",
+            noOfTransactions = Some(2),
+            bondTransactions = Some(
+              Seq(
+                EtmpBondTransactions(
+                  nameOfBonds = "Xenex Bonds",
+                  methodOfHolding = "01",
+                  dateOfAcqOrContrib = Some(sampleToday),
+                  costOfBonds = 10234.56,
+                  connectedPartyStatus = Some("02"),
+                  bondsUnregulated = "No",
+                  totalIncomeOrReceipts = 50.0,
+                  bondsDisposed = Some(
+                    Seq(
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(sampleToday),
+                        amountReceived = Some(12333.59),
+                        bondsPurchaserName = Some("Happy Bond Buyers Inc."),
+                        connectedPartyStatus = Some("02"),
+                        totalNowHeld = 120
+                      )
+                    )
+                  )
+                ),
+                EtmpBondTransactions(
+                  nameOfBonds = "Really Goods Bonds ABC",
+                  methodOfHolding = "03",
+                  dateOfAcqOrContrib = Some(sampleToday),
+                  costOfBonds = 2000.5,
+                  connectedPartyStatus = Some("02"),
+                  bondsUnregulated = "No",
+                  totalIncomeOrReceipts = 300,
+                  bondsDisposed = Some(
+                    Seq(
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(sampleToday),
+                        amountReceived = Some(3333.33),
+                        bondsPurchaserName = Some("Bonds Buyers (PTY) Ltd"),
+                        connectedPartyStatus = Some("01"),
+                        totalNowHeld = 50
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
         otherAssets = Some(
           EtmpOtherAssets(
             otherAssetsWereHeld = "No",
