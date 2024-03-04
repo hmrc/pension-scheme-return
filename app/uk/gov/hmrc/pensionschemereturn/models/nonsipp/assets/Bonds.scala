@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,26 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Assets(optLandOrProperty: Option[LandOrProperty], optBorrowing: Option[Borrowing], optBonds: Option[Bonds])
+import java.time.LocalDate
 
-object Assets {
-  implicit val formats: OFormat[Assets] = Json.format[Assets]
+case class Bonds(
+  bondsWereAdded: Boolean,
+  bondsWereDisposed: Boolean,
+  bondTransactions: Seq[BondTransactions]
+)
+
+case class BondTransactions(
+  nameOfBonds: String,
+  methodOfHolding: SchemeHoldBond,
+  optDateOfAcqOrContrib: Option[LocalDate],
+  costOfBonds: Double,
+  optConnectedPartyStatus: Option[Boolean],
+  bondsUnregulated: Boolean,
+  totalIncomeOrReceipts: Double
+)
+
+object Bonds {
+  private implicit val formatBondTransactions: OFormat[BondTransactions] =
+    Json.format[BondTransactions]
+  implicit val format: OFormat[Bonds] = Json.format[Bonds]
 }

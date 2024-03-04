@@ -21,6 +21,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.stringToIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.stringToHowDisposed
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.stringToSchemeHoldBond
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.stringToSchemeHoldLandProperty
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -137,6 +138,27 @@ class AssetsFromEtmp @Inject() extends Transformer {
                     borrowingFromName = mb.borrowingFromName,
                     connectedPartyStatus = mb.connectedPartyStatus == Connected,
                     reasonForBorrow = mb.reasonForBorrow
+                  )
+              )
+          )
+      ),
+      optBonds = assets.bonds.map(
+        bonds =>
+          Bonds(
+            bondsWereAdded = fromYesNo(bonds.bondsWereAdded),
+            bondsWereDisposed = fromYesNo(bonds.bondsWereDisposed),
+            bondTransactions = bonds.bondTransactions
+              .getOrElse(Seq.empty)
+              .map(
+                bondTransaction =>
+                  BondTransactions(
+                    nameOfBonds = bondTransaction.nameOfBonds,
+                    methodOfHolding = stringToSchemeHoldBond(bondTransaction.methodOfHolding),
+                    optDateOfAcqOrContrib = bondTransaction.dateOfAcqOrContrib,
+                    costOfBonds = bondTransaction.costOfBonds,
+                    optConnectedPartyStatus = bondTransaction.connectedPartyStatus.map(_ == Connected),
+                    bondsUnregulated = fromYesNo(bondTransaction.bondsUnregulated),
+                    totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts
                   )
               )
           )

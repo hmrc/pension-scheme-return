@@ -27,6 +27,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompil
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.Sold
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.Acquisition
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
@@ -186,6 +187,23 @@ trait TestValues {
             borrowingFromName = "borrowingFromName",
             connectedPartyStatus = true,
             reasonForBorrow = "reasonForBorrow"
+          )
+        )
+      )
+    ),
+    optBonds = Some(
+      Bonds(
+        bondsWereAdded = true,
+        bondsWereDisposed = false,
+        bondTransactions = Seq(
+          BondTransactions(
+            nameOfBonds = "nameOfBonds",
+            methodOfHolding = Contribution,
+            optDateOfAcqOrContrib = Some(sampleToday),
+            costOfBonds = Double.MaxValue,
+            optConnectedPartyStatus = Some(false),
+            bondsUnregulated = false,
+            totalIncomeOrReceipts = Double.MaxValue
           )
         )
       )

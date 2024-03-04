@@ -20,6 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.howDisposedToString
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.schemeHoldBondToString
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.schemeHoldLandPropertyToString
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -151,7 +152,31 @@ class AssetsToEtmp @Inject() extends Transformer {
             )
           )
       ),
-      bonds = None,
+      bonds = assets.optBonds.map(
+        bonds =>
+          EtmpBonds(
+            recordVersion = None,
+            bondsWereAdded = toYesNo(bonds.bondsWereAdded),
+            bondsWereDisposed = toYesNo(bonds.bondsWereDisposed),
+            noOfTransactions = Option.when(bonds.bondsWereAdded)(bonds.bondTransactions.size),
+            bondTransactions = Option.when(bonds.bondsWereAdded)(
+              bonds.bondTransactions.map(
+                bondTransaction =>
+                  EtmpBondTransactions(
+                    nameOfBonds = bondTransaction.nameOfBonds,
+                    methodOfHolding = schemeHoldBondToString(bondTransaction.methodOfHolding),
+                    dateOfAcqOrContrib = bondTransaction.optDateOfAcqOrContrib,
+                    costOfBonds = bondTransaction.costOfBonds,
+                    connectedPartyStatus =
+                      bondTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                    bondsUnregulated = toYesNo(bondTransaction.bondsUnregulated),
+                    totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts,
+                    bondsDisposed = None
+                  )
+              )
+            )
+          )
+      ),
       otherAssets = None
     )
 }
