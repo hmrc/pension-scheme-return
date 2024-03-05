@@ -19,38 +19,38 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.utils.WithName
 
-sealed trait SchemeHoldLandProperty {
+sealed trait SchemeHoldBond {
   val name: String
 }
 
-object SchemeHoldLandProperty {
+object SchemeHoldBond {
 
-  case object Acquisition extends WithName("Acquisition") with SchemeHoldLandProperty
+  case object Acquisition extends WithName("01") with SchemeHoldBond
 
-  case object Contribution extends WithName("Contribution") with SchemeHoldLandProperty
+  case object Contribution extends WithName("02") with SchemeHoldBond
 
-  case object Transfer extends WithName("Transfer") with SchemeHoldLandProperty
+  case object Transfer extends WithName("03") with SchemeHoldBond
 
-  val values: List[SchemeHoldLandProperty] = List(Acquisition, Contribution, Transfer)
+  val values: List[SchemeHoldBond] = List(Acquisition, Contribution, Transfer)
 
-  private val mappings: Map[String, SchemeHoldLandProperty] = values.map(v => (v.toString, v)).toMap
+  private val mappings: Map[String, SchemeHoldBond] = values.map(v => (v.toString, v)).toMap
 
-  implicit val reads: Reads[SchemeHoldLandProperty] =
+  implicit val reads: Reads[SchemeHoldBond] =
     JsPath.read[String].flatMap {
       case aop if mappings.keySet.contains(aop) => Reads(_ => JsSuccess(mappings.apply(aop)))
-      case invalidValue => Reads(_ => JsError(s"Invalid SchemeHoldLandProperty type: $invalidValue"))
+      case invalidValue => Reads(_ => JsError(s"Invalid SchemeHoldBond type: $invalidValue"))
     }
 
-  implicit val writes: Writes[SchemeHoldLandProperty] = it => JsString(it.name)
+  implicit val writes: Writes[SchemeHoldBond] = it => JsString(it.name)
 
-  def schemeHoldLandPropertyToString(schemeHoldLandProperty: SchemeHoldLandProperty): String =
-    schemeHoldLandProperty match {
+  def schemeHoldBondToString(schemeHoldBond: SchemeHoldBond): String =
+    schemeHoldBond match {
       case Acquisition => "01"
       case Contribution => "02"
       case Transfer => "03"
     }
 
-  def stringToSchemeHoldLandProperty(string: String): SchemeHoldLandProperty =
+  def stringToSchemeHoldBond(string: String): SchemeHoldBond =
     string match {
       case "01" => Acquisition
       case "02" => Contribution

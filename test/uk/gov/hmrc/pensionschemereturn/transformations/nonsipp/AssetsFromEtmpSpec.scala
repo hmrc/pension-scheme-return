@@ -24,6 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Transfer
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -46,12 +47,13 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       )
       val expected = Assets(
         optLandOrProperty = None,
-        optBorrowing = None
+        optBorrowing = None,
+        optBonds = None
       )
       transformation.transform(assets) shouldMatchTo expected
     }
 
-    "as an Individual for LandOrProperty" in {
+    "when optional fields are non-None" in {
 
       val assets = EtmpAssets(
         landOrProperty = Some(
@@ -176,7 +178,28 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
             )
           )
         ),
-        bonds = None,
+        bonds = Some(
+          EtmpBonds(
+            recordVersion = None,
+            bondsWereAdded = Yes,
+            bondsWereDisposed = No,
+            noOfTransactions = Some(1),
+            bondTransactions = Some(
+              Seq(
+                EtmpBondTransactions(
+                  nameOfBonds = "nameOfBonds",
+                  methodOfHolding = "03",
+                  dateOfAcqOrContrib = Some(today),
+                  costOfBonds = Double.MaxValue,
+                  connectedPartyStatus = Some(Unconnected),
+                  bondsUnregulated = Yes,
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  bondsDisposed = None
+                )
+              )
+            )
+          )
+        ),
         otherAssets = None
       )
       val expected = Assets(
@@ -286,6 +309,23 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 borrowingFromName = "borrowingFromName",
                 connectedPartyStatus = false,
                 reasonForBorrow = "reasonForBorrow"
+              )
+            )
+          )
+        ),
+        optBonds = Some(
+          Bonds(
+            bondsWereAdded = true,
+            bondsWereDisposed = false,
+            bondTransactions = Seq(
+              BondTransactions(
+                nameOfBonds = "nameOfBonds",
+                methodOfHolding = Transfer,
+                optDateOfAcqOrContrib = Some(today),
+                costOfBonds = Double.MaxValue,
+                optConnectedPartyStatus = Some(false),
+                bondsUnregulated = true,
+                totalIncomeOrReceipts = Double.MaxValue
               )
             )
           )

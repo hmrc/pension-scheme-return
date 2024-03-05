@@ -24,6 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.{Acquisition, Contribution}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
@@ -39,7 +40,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     "when optional fields are None" in {
       val assets = Assets(
         optLandOrProperty = None,
-        optBorrowing = None
+        optBorrowing = None,
+        optBonds = None
       )
 
       val expected = EtmpAssets(
@@ -160,6 +162,23 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 borrowingFromName = "borrowingFromName",
                 connectedPartyStatus = true,
                 reasonForBorrow = "reasonForBorrow"
+              )
+            )
+          )
+        ),
+        optBonds = Some(
+          Bonds(
+            bondsWereAdded = true,
+            bondsWereDisposed = false,
+            bondTransactions = Seq(
+              BondTransactions(
+                nameOfBonds = "nameOfBonds",
+                methodOfHolding = Contribution,
+                optDateOfAcqOrContrib = Some(today),
+                costOfBonds = Double.MaxValue,
+                optConnectedPartyStatus = Some(true),
+                bondsUnregulated = false,
+                totalIncomeOrReceipts = Double.MaxValue
               )
             )
           )
@@ -289,14 +308,35 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             )
           )
         ),
-        bonds = None,
+        bonds = Some(
+          EtmpBonds(
+            recordVersion = None,
+            bondsWereAdded = Yes,
+            bondsWereDisposed = No,
+            noOfTransactions = Some(1),
+            bondTransactions = Some(
+              Seq(
+                EtmpBondTransactions(
+                  nameOfBonds = "nameOfBonds",
+                  methodOfHolding = "02",
+                  dateOfAcqOrContrib = Some(today),
+                  costOfBonds = Double.MaxValue,
+                  connectedPartyStatus = Some(Connected),
+                  bondsUnregulated = No,
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  bondsDisposed = None
+                )
+              )
+            )
+          )
+        ),
         otherAssets = None
       )
 
       transformation.transform(assets) shouldMatchTo expected
     }
 
-    "as an Other for LandOrProperty with an empty optDisposedPropertyTransaction sequence" in {
+    "with an empty optDisposedTransactions sequence" in {
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
@@ -356,6 +396,23 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 borrowingFromName = "borrowingFromName",
                 connectedPartyStatus = true,
                 reasonForBorrow = "reasonForBorrow"
+              )
+            )
+          )
+        ),
+        optBonds = Some(
+          Bonds(
+            bondsWereAdded = true,
+            bondsWereDisposed = false,
+            bondTransactions = Seq(
+              BondTransactions(
+                nameOfBonds = "nameOfBonds",
+                methodOfHolding = Acquisition,
+                optDateOfAcqOrContrib = Some(today),
+                costOfBonds = Double.MaxValue,
+                optConnectedPartyStatus = Some(true),
+                bondsUnregulated = false,
+                totalIncomeOrReceipts = Double.MaxValue
               )
             )
           )
@@ -435,7 +492,28 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             )
           )
         ),
-        bonds = None,
+        bonds = Some(
+          EtmpBonds(
+            recordVersion = None,
+            bondsWereAdded = Yes,
+            bondsWereDisposed = No,
+            noOfTransactions = Some(1),
+            bondTransactions = Some(
+              Seq(
+                EtmpBondTransactions(
+                  nameOfBonds = "nameOfBonds",
+                  methodOfHolding = "01",
+                  dateOfAcqOrContrib = Some(today),
+                  costOfBonds = Double.MaxValue,
+                  connectedPartyStatus = Some(Connected),
+                  bondsUnregulated = No,
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  bondsDisposed = None
+                )
+              )
+            )
+          )
+        ),
         otherAssets = None
       )
 
