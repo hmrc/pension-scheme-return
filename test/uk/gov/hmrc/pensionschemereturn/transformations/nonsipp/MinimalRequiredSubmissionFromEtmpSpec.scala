@@ -18,7 +18,6 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import generators.ModelGenerators
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
@@ -26,12 +25,7 @@ import utils.TestValues
 
 import java.time.LocalDate
 
-class MinimalRequiredSubmissionFromEtmpSpec
-    extends PlaySpec
-    with MockitoSugar
-    with ModelGenerators
-    with TestValues
-    with DiffShouldMatcher {
+class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar with TestValues with DiffShouldMatcher {
 
   private val transformation = new MinimalRequiredSubmissionFromEtmp()
 

@@ -19,7 +19,9 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 import play.api.Logging
 import play.api.libs.json.{JsArray, JsObject, JsString, JsValue}
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.pensionschemereturn.services.PsrVersionsService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -27,10 +29,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class PsrVersionsController @Inject()(cc: ControllerComponents, psrVersionsService: PsrVersionsService)(
+class PsrVersionsController @Inject()(
+  cc: ControllerComponents,
+  psrVersionsService: PsrVersionsService,
+  val authConnector: AuthConnector
+)(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
+    with PsrAuth
     with HttpErrorFunctions
     with Results
     with Logging {
@@ -39,35 +46,37 @@ class PsrVersionsController @Inject()(cc: ControllerComponents, psrVersionsServi
     pstr: String,
     startDates: Seq[String]
   ): Action[AnyContent] = Action.async { implicit request =>
-    logger.debug(
-      s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates"
-    )
-    Future
-      .sequence(
-        startDates.map(
-          startDate => {
-            psrVersionsService.getVersions(pstr, startDate).map { data =>
-              val props: List[(String, JsValue)] = List(
-                Some("startDate" -> JsString(startDate)),
-                Some("data" -> data)
-              ).flatten
-              JsObject(props)
+    authorisedAsPsrUser { _ =>
+      logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates")
+      Future
+        .sequence(
+          startDates.map(
+            startDate => {
+              psrVersionsService.getVersions(pstr, startDate).map { data =>
+                val props: List[(String, JsValue)] = List(
+                  Some("startDate" -> JsString(startDate)),
+                  Some("data" -> data)
+                ).flatten
+                JsObject(props)
+              }
             }
-          }
+          )
         )
-      )
-      .map(v => Ok(JsArray.apply(v)))
+        .map(v => Ok(JsArray.apply(v)))
+    }
   }
 
   def getVersions(
     pstr: String,
     startDate: String
   ): Action[AnyContent] = Action.async { implicit request =>
-    logger.debug(
-      s"Retrieving reporting versions - with pstr: $pstr, startDate: $startDate"
-    )
-    psrVersionsService.getVersions(pstr, startDate).map { data =>
-      Ok(data)
+    authorisedAsPsrUser { _ =>
+      logger.debug(
+        s"Retrieving reporting versions - with pstr: $pstr, startDate: $startDate"
+      )
+      psrVersionsService.getVersions(pstr, startDate).map { data =>
+        Ok(data)
+      }
     }
   }
 }

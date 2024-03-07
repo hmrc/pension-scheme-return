@@ -19,6 +19,8 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -26,21 +28,30 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.retrieve.{~, Name}
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.base.SpecBase
 import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
 import utils.TestValues
 
 import scala.concurrent.Future
 
-class SippPsrSubmitControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfter with TestValues {
+class SippPsrSubmitControllerSpec
+    extends AsyncWordSpec
+    with Matchers
+    with MockitoSugar
+    with BeforeAndAfter
+    with TestValues {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   private val fakeRequest = FakeRequest("POST", "/")
   private val mockSippPsrSubmissionService = mock[SippPsrSubmissionService]
+  private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
   val modules: Seq[GuiceableModule] =
     Seq(
-      bind[SippPsrSubmissionService].toInstance(mockSippPsrSubmissionService)
+      bind[SippPsrSubmissionService].toInstance(mockSippPsrSubmissionService),
+      bind[AuthConnector].toInstance(mockAuthConnector)
     )
 
   val application: Application = new GuiceApplicationBuilder()
@@ -49,6 +60,13 @@ class SippPsrSubmitControllerSpec extends SpecBase with MockitoSugar with Before
     .build()
 
   private val controller = application.injector.instanceOf[SippPsrSubmitController]
+
+  before {
+    when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      .thenReturn(
+        Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+      )
+  }
 
   "POST SIPP PSR" must {
     "return 204" in {

@@ -19,7 +19,9 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc._
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.services.PsrSubmissionService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -28,23 +30,30 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton()
-class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionService: PsrSubmissionService)(
+class PsrSubmitController @Inject()(
+  cc: ControllerComponents,
+  psrSubmissionService: PsrSubmissionService,
+  val authConnector: AuthConnector
+)(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
+    with PsrAuth
     with HttpErrorFunctions
     with Results
     with Logging {
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    val psrSubmission = requiredBody.as[PsrSubmission]
-    logger.info(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
-    psrSubmissionService
-      .submitStandardPsr(psrSubmission)
-      .map(response => {
-        logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
-        NoContent
-      })
+    authorisedAsPsrUser { _ =>
+      val psrSubmission = requiredBody.as[PsrSubmission]
+      logger.info(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
+      psrSubmissionService
+        .submitStandardPsr(psrSubmission)
+        .map(response => {
+          logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
+          NoContent
+        })
+    }
   }
 
   def getStandardPsr(
@@ -53,13 +62,15 @@ class PsrSubmitController @Inject()(cc: ControllerComponents, psrSubmissionServi
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
   ): Action[AnyContent] = Action.async { implicit request =>
-    logger.debug(
-      s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
-    )
-    psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
-      case None => NotFound
-      case Some(Right(psrSubmission)) => Ok(Json.toJson(psrSubmission))
-      case Some(Left(error)) => InternalServerError(Json.toJson(error))
+    authorisedAsPsrUser { _ =>
+      logger.debug(
+        s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
+      )
+      psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
+        case None => NotFound
+        case Some(Right(psrSubmission)) => Ok(Json.toJson(psrSubmission))
+        case Some(Left(error)) => InternalServerError(Json.toJson(error))
+      }
     }
   }
 }

@@ -17,6 +17,8 @@
 package utils
 
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
+import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
@@ -42,6 +44,19 @@ import java.time.{LocalDate, LocalDateTime}
 
 trait TestValues {
 
+  val externalId: String = "externalId"
+  val enrolments: Enrolments = Enrolments(
+    Set(
+      Enrolment(
+        psaEnrolmentKey,
+        Seq(
+          EnrolmentIdentifier(psaIdKey, "A0000000")
+        ),
+        "Activated",
+        None
+      )
+    )
+  )
   val pstr = "testPstr"
   val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
 
