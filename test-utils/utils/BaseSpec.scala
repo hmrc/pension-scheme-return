@@ -17,7 +17,6 @@
 package utils
 
 import generators.Generators
-import models.ModelSerializers
 import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
@@ -32,5 +31,4 @@ abstract class BaseSpec
     with BeforeAndAfterEach
     with OptionValues
     with Generators
-    with ModelSerializers
     with TestValues
