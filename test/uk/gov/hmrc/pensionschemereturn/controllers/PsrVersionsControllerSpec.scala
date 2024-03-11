@@ -17,10 +17,6 @@
 package uk.gov.hmrc.pensionschemereturn.controllers
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
-import org.scalatest.BeforeAndAfter
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -28,25 +24,25 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{~, Name}
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.services.PsrVersionsService
-import utils.TestValues
+import utils.{BaseSpec, TestValues}
 
 import scala.concurrent.Future
 
-class PsrVersionsControllerSpec
-    extends AsyncWordSpec
-    with Matchers
-    with MockitoSugar
-    with BeforeAndAfter
-    with TestValues {
+class PsrVersionsControllerSpec extends BaseSpec with TestValues {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   private val fakeRequest = FakeRequest("GET", "/")
   private val mockPsrVersionsService = mock[PsrVersionsService]
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+  override def beforeEach(): Unit = {
+    reset(mockAuthConnector)
+    reset(mockPsrVersionsService)
+  }
 
   val modules: Seq[GuiceableModule] =
     Seq(
@@ -59,19 +55,50 @@ class PsrVersionsControllerSpec
     .overrides(modules: _*)
     .build()
 
-  before {
-    when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
-      .thenReturn(
-        Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
-      )
-  }
-
   private val controller = application.injector.instanceOf[PsrVersionsController]
 
   "Get Reporting Versions" must {
+
+    "return 401 - Bearer token expired" in {
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+        .thenReturn(
+          Future.failed(new BearerTokenExpired)
+        )
+
+      val thrown = intercept[AuthorisationException] {
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest))
+      }
+
+      thrown.reason mustBe "Bearer token expired"
+
+      verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+    }
+
+    "return 401 - Bearer token not supplied" in {
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+        .thenReturn(
+          Future.failed(new MissingBearerToken)
+        )
+
+      val thrown = intercept[AuthorisationException] {
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest))
+      }
+
+      thrown.reason mustBe "Bearer token not supplied"
+      verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+    }
+
     "return success" in {
       val responseJson: JsObject = Json.obj("mock" -> "pass")
 
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+        )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(responseJson))
 
@@ -80,6 +107,10 @@ class PsrVersionsControllerSpec
     }
 
     "return success when empty" in {
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+        )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.arr()))
 
