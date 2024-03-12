@@ -38,6 +38,8 @@ trait Transformer {
   protected val Connected: String = "01"
   protected val Unconnected: String = "02"
 
+  protected val holderValue = -0.01
+
   protected def toYesNo(condition: Boolean): String = if (condition) Yes else No
 
   protected def optToYesNo(optValue: Option[_]): String = optValue.map(_ => Yes).getOrElse(No)
