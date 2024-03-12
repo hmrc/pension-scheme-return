@@ -355,7 +355,7 @@ trait TestValues {
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
-  val sampleShares: Shares = Shares(optShareTransactions = None)
+  val sampleShares: Shares = Shares(optShareTransactions = None, optTotalValueQuotedShares = None)
 
   // Standard - ETMP
 

@@ -52,7 +52,7 @@ class SharesToEtmp @Inject() extends Transformer {
       connectedPartySharesWereDisposed =
         transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty),
       shareTransactions = optShareTransactions.map(_.map(transformShareTransactions)),
-      totalValueQuotedShares = 0.00 // TODO: Waiting confirmation from Josh
+      totalValueQuotedShares = shares.optTotalValueQuotedShares.getOrElse(holderValue)
     )
   }
 

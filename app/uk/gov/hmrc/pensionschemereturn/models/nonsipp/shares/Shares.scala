@@ -22,7 +22,8 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PropertyAcquiredFrom
 import java.time.LocalDate
 
 case class Shares(
-  optShareTransactions: Option[List[ShareTransaction]]
+  optShareTransactions: Option[List[ShareTransaction]],
+  optTotalValueQuotedShares: Option[Double]
 )
 
 case class ShareTransaction(
