@@ -218,7 +218,20 @@ trait TestValues {
             costOfBonds = Double.MaxValue,
             optConnectedPartyStatus = Some(false),
             bondsUnregulated = false,
-            totalIncomeOrReceipts = Double.MaxValue
+            totalIncomeOrReceipts = Double.MaxValue,
+            optBondsDisposed = Some(
+              Seq(
+                BondDisposed(
+                  methodOfDisposal = Sold,
+                  optOtherMethod = None,
+                  optDateSold = Some(sampleToday),
+                  optAmountReceived = Some(Double.MaxValue),
+                  optBondsPurchaserName = Some("BondsPurchaserName"),
+                  optConnectedPartyStatus = Some(true),
+                  totalNowHeld = Int.MaxValue
+                )
+              )
+            )
           )
         )
       )

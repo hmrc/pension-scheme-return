@@ -182,7 +182,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           EtmpBonds(
             recordVersion = None,
             bondsWereAdded = Yes,
-            bondsWereDisposed = No,
+            bondsWereDisposed = Yes,
             noOfTransactions = Some(1),
             bondTransactions = Some(
               Seq(
@@ -194,7 +194,37 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                   connectedPartyStatus = Some(Unconnected),
                   bondsUnregulated = Yes,
                   totalIncomeOrReceipts = Double.MaxValue,
-                  bondsDisposed = None
+                  bondsDisposed = Some(
+                    Seq(
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(today),
+                        amountReceived = Some(Double.MaxValue),
+                        bondsPurchaserName = Some("BondsPurchaserName"),
+                        connectedPartyStatus = Some(Unconnected),
+                        totalNowHeld = Int.MaxValue
+                      ),
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "02",
+                        otherMethod = None,
+                        dateSold = None,
+                        amountReceived = None,
+                        bondsPurchaserName = None,
+                        connectedPartyStatus = None,
+                        totalNowHeld = Int.MaxValue
+                      ),
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "03",
+                        otherMethod = Some("OtherMethod"),
+                        dateSold = None,
+                        amountReceived = None,
+                        bondsPurchaserName = None,
+                        connectedPartyStatus = None,
+                        totalNowHeld = Int.MaxValue
+                      )
+                    )
+                  )
                 )
               )
             )
@@ -316,7 +346,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         optBonds = Some(
           Bonds(
             bondsWereAdded = true,
-            bondsWereDisposed = false,
+            bondsWereDisposed = true,
             bondTransactions = Seq(
               BondTransactions(
                 nameOfBonds = "nameOfBonds",
@@ -325,7 +355,38 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 costOfBonds = Double.MaxValue,
                 optConnectedPartyStatus = Some(false),
                 bondsUnregulated = true,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optBondsDisposed = Some(
+                  Seq(
+                    BondDisposed(
+                      methodOfDisposal = Sold,
+                      optOtherMethod = None,
+                      optDateSold = Some(today),
+                      optAmountReceived = Some(Double.MaxValue),
+                      optBondsPurchaserName = Some("BondsPurchaserName"),
+                      optConnectedPartyStatus = Some(false),
+                      totalNowHeld = Int.MaxValue
+                    ),
+                    BondDisposed(
+                      methodOfDisposal = Transferred,
+                      optOtherMethod = None,
+                      optDateSold = None,
+                      optAmountReceived = None,
+                      optBondsPurchaserName = None,
+                      optConnectedPartyStatus = None,
+                      totalNowHeld = Int.MaxValue
+                    ),
+                    BondDisposed(
+                      methodOfDisposal = Other,
+                      optOtherMethod = Some("OtherMethod"),
+                      optDateSold = None,
+                      optAmountReceived = None,
+                      optBondsPurchaserName = None,
+                      optConnectedPartyStatus = None,
+                      totalNowHeld = Int.MaxValue
+                    )
+                  )
+                )
               )
             )
           )

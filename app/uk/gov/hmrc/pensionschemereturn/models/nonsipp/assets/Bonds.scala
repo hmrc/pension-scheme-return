@@ -33,10 +33,23 @@ case class BondTransactions(
   costOfBonds: Double,
   optConnectedPartyStatus: Option[Boolean],
   bondsUnregulated: Boolean,
-  totalIncomeOrReceipts: Double
+  totalIncomeOrReceipts: Double,
+  optBondsDisposed: Option[Seq[BondDisposed]]
+)
+
+case class BondDisposed(
+  methodOfDisposal: HowDisposed,
+  optOtherMethod: Option[String],
+  optDateSold: Option[LocalDate],
+  optAmountReceived: Option[Double],
+  optBondsPurchaserName: Option[String],
+  optConnectedPartyStatus: Option[Boolean],
+  totalNowHeld: Int
 )
 
 object Bonds {
+  private implicit val formatBondDisposed: OFormat[BondDisposed] =
+    Json.format[BondDisposed]
   private implicit val formatBondTransactions: OFormat[BondTransactions] =
     Json.format[BondTransactions]
   implicit val format: OFormat[Bonds] = Json.format[Bonds]

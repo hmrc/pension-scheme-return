@@ -54,7 +54,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       transformation.transform(assets) shouldMatchTo expected
     }
 
-    "as an Individual for LandOrProperty" in {
+    "when optional fields are non-None" in {
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
@@ -169,7 +169,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         optBonds = Some(
           Bonds(
             bondsWereAdded = true,
-            bondsWereDisposed = false,
+            bondsWereDisposed = true,
             bondTransactions = Seq(
               BondTransactions(
                 nameOfBonds = "nameOfBonds",
@@ -178,7 +178,38 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 costOfBonds = Double.MaxValue,
                 optConnectedPartyStatus = Some(true),
                 bondsUnregulated = false,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optBondsDisposed = Some(
+                  Seq(
+                    BondDisposed(
+                      methodOfDisposal = Sold,
+                      optOtherMethod = None,
+                      optDateSold = Some(today),
+                      optAmountReceived = Some(Double.MaxValue),
+                      optBondsPurchaserName = Some("BondsPurchaserName"),
+                      optConnectedPartyStatus = Some(true),
+                      totalNowHeld = Int.MaxValue
+                    ),
+                    BondDisposed(
+                      methodOfDisposal = Transferred,
+                      optOtherMethod = None,
+                      optDateSold = None,
+                      optAmountReceived = None,
+                      optBondsPurchaserName = None,
+                      optConnectedPartyStatus = None,
+                      totalNowHeld = Int.MaxValue
+                    ),
+                    BondDisposed(
+                      methodOfDisposal = Other,
+                      optOtherMethod = Some("OtherMethod"),
+                      optDateSold = None,
+                      optAmountReceived = None,
+                      optBondsPurchaserName = None,
+                      optConnectedPartyStatus = None,
+                      totalNowHeld = Int.MaxValue
+                    )
+                  )
+                )
               )
             )
           )
@@ -312,7 +343,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           EtmpBonds(
             recordVersion = None,
             bondsWereAdded = Yes,
-            bondsWereDisposed = No,
+            bondsWereDisposed = Yes,
             noOfTransactions = Some(1),
             bondTransactions = Some(
               Seq(
@@ -324,7 +355,37 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedPartyStatus = Some(Connected),
                   bondsUnregulated = No,
                   totalIncomeOrReceipts = Double.MaxValue,
-                  bondsDisposed = None
+                  bondsDisposed = Some(
+                    Seq(
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(today),
+                        amountReceived = Some(Double.MaxValue),
+                        bondsPurchaserName = Some("BondsPurchaserName"),
+                        connectedPartyStatus = Some(Connected),
+                        totalNowHeld = Int.MaxValue
+                      ),
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "02",
+                        otherMethod = None,
+                        dateSold = None,
+                        amountReceived = None,
+                        bondsPurchaserName = None,
+                        connectedPartyStatus = None,
+                        totalNowHeld = Int.MaxValue
+                      ),
+                      EtmpBondsDisposed(
+                        methodOfDisposal = "03",
+                        otherMethod = Some("OtherMethod"),
+                        dateSold = None,
+                        amountReceived = None,
+                        bondsPurchaserName = None,
+                        connectedPartyStatus = None,
+                        totalNowHeld = Int.MaxValue
+                      )
+                    )
+                  )
                 )
               )
             )
@@ -336,12 +397,12 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       transformation.transform(assets) shouldMatchTo expected
     }
 
-    "with an empty optDisposedTransactions sequence" in {
+    "when optional fields are non-None but with optDisposed sequences (bonds&landOrProperty)" in {
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
             landOrPropertyHeld = true,
-            disposeAnyLandOrProperty = true,
+            disposeAnyLandOrProperty = false,
             landOrPropertyTransactions = List(
               LandOrPropertyTransactions(
                 propertyDetails = PropertyDetails(
@@ -412,7 +473,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 costOfBonds = Double.MaxValue,
                 optConnectedPartyStatus = Some(true),
                 bondsUnregulated = false,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optBondsDisposed = Some(Seq.empty)
               )
             )
           )
@@ -424,7 +486,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           EtmpLandOrProperty(
             recordVersion = None,
             heldAnyLandOrProperty = Yes,
-            disposeAnyLandOrProperty = Yes,
+            disposeAnyLandOrProperty = No,
             noOfTransactions = Some(1),
             landOrPropertyTransactions = Some(
               Seq(
