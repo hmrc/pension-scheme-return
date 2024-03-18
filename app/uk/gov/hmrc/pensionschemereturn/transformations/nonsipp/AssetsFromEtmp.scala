@@ -158,7 +158,21 @@ class AssetsFromEtmp @Inject() extends Transformer {
                     costOfBonds = bondTransaction.costOfBonds,
                     optConnectedPartyStatus = bondTransaction.connectedPartyStatus.map(_ == Connected),
                     bondsUnregulated = fromYesNo(bondTransaction.bondsUnregulated),
-                    totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts
+                    totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts,
+                    optBondsDisposed = bondTransaction.bondsDisposed.map(
+                      _.map(
+                        bd =>
+                          BondDisposed(
+                            methodOfDisposal = stringToHowDisposed(bd.methodOfDisposal),
+                            optOtherMethod = bd.otherMethod,
+                            optDateSold = bd.dateSold,
+                            optAmountReceived = bd.amountReceived,
+                            optBondsPurchaserName = bd.bondsPurchaserName,
+                            optConnectedPartyStatus = bd.connectedPartyStatus.map(_ == Connected),
+                            totalNowHeld = bd.totalNowHeld
+                          )
+                      )
+                    )
                   )
               )
           )
