@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, Other, UKCompany, UKPartnership}
 
 class IdentityTypeSpec extends AnyWordSpec with Matchers {
 

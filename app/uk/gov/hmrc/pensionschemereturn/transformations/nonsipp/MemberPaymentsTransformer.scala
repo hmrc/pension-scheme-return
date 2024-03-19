@@ -17,19 +17,14 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import cats.syntax.traverse._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
   EtmpMemberDetails,
   EtmpMemberLumpSumReceived,
   EtmpMemberPayments
-}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.{
-  MemberDetails,
-  MemberLumpSumReceived,
-  MemberPayments,
-  SectionDetails
 }
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 

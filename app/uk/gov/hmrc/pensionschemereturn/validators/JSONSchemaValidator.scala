@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.validators
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.{Inject, Singleton}
 import com.networknt.schema.{JsonSchemaFactory, SpecVersion, ValidationMessage}
+import com.google.inject.{Inject, Singleton}
+import com.fasterxml.jackson.databind.ObjectMapper
 import play.api.libs.json._
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala

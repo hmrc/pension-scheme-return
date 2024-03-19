@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import utils.{BaseSpec, TestValues}
+import play.api.mvc.AnyContentAsEmpty
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import utils.{BaseSpec, TestValues}
+import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class PsrOverviewServiceSpec extends BaseSpec with MockitoSugar with TestValues {
 

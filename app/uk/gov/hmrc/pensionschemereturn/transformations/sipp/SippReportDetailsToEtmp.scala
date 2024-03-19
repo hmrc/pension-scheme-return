@@ -18,9 +18,9 @@ package uk.gov.hmrc.pensionschemereturn.transformations.sipp
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
-import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippReportDetailsSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
+import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 
 @Singleton()
 class SippReportDetailsToEtmp @Inject()() extends Transformer {

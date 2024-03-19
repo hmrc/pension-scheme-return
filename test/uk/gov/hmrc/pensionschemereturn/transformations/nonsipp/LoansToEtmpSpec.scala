@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
+import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import org.scalatestplus.play.PlaySpec
+import org.mockito.MockitoSugar
 
 import java.time.LocalDate
 

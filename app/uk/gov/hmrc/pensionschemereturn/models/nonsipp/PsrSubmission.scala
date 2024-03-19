@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPayments
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPayments
+import play.api.libs.json.{Json, OFormat}
 
 case class PsrSubmission(
   minimalRequiredSubmission: MinimalRequiredSubmission,

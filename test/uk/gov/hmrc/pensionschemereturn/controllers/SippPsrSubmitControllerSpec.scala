@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers
 
-import org.mockito.ArgumentMatchers.any
-import play.api.Application
+import play.api.test.FakeRequest
+import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
 import play.api.http.Status
 import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.libs.json.{JsObject, JsValue, Json}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{~, Name}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
+import org.mockito.ArgumentMatchers.any
+import play.api.test.Helpers._
 import utils.{BaseSpec, TestValues}
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.Application
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 import scala.concurrent.Future
 

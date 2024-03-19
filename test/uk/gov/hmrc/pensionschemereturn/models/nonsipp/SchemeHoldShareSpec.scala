@@ -16,14 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.SchemeHoldShare._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.SchemeHoldShare.{
-  stringToSchemeHoldShare,
-  Acquisition,
-  Contribution,
-  Transfer
-}
 
 class SchemeHoldShareSpec extends AnyWordSpec with Matchers {
 

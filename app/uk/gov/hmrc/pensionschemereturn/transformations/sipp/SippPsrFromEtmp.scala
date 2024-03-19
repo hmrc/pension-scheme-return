@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.sipp
 
-import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.response.SippPsrSubmissionEtmpResponse
+import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 

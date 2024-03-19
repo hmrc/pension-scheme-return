@@ -16,24 +16,20 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
-import com.google.inject.Inject
-import play.api.Logging
-import play.api.http.Status._
-import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.pensionschemereturn.models.response._
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
-import uk.gov.hmrc.pensionschemereturn.models.response.{
-  PsrOverviewEtmpResponse,
-  PsrSubmissionEtmpResponse,
-  PsrVersionsEtmpResponse,
-  SippPsrSubmissionEtmpResponse
-}
+import play.api.libs.json.Format.GenericFormat
+import play.api.mvc.RequestHeader
+import com.google.inject.Inject
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
+import play.api.Logging
+import play.api.libs.json.{JsValue, Json}
+import play.api.http.Status._
+import uk.gov.hmrc.http._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 import java.util.UUID.randomUUID
-import scala.concurrent.{ExecutionContext, Future}
 
 class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     extends HttpErrorFunctions

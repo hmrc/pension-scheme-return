@@ -6,11 +6,15 @@ lazy val microservice = Project("pension-scheme-return", file("."))
   .settings(
     majorVersion        := 0,
     scalaVersion        := "2.13.12",
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalafixScalaBinaryVersion := "2.13",
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
     scalacOptions += "-Wconf:src=routes/.*:s",
     scalafmtOnCompile := true,
+    scalafixOnCompile := true,
     PlayKeys.playDefaultPort := 10700
   )
   .settings(inConfig(Test)(testSettings) *)

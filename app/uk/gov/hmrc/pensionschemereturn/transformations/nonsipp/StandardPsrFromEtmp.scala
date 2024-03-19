@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import cats.syntax.traverse._
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import uk.gov.hmrc.pensionschemereturn.transformations.{Transformer, TransformerError}
+import cats.syntax.traverse._
+import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 
 import java.time.LocalDate
 

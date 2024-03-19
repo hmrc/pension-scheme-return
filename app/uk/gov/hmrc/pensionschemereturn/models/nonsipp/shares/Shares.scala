@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares
 
-import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PropertyAcquiredFrom
+import play.api.libs.json.{Format, Json}
 
 import java.time.LocalDate
 

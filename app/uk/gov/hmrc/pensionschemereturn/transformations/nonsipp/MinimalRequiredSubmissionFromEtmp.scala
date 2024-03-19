@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
-import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()

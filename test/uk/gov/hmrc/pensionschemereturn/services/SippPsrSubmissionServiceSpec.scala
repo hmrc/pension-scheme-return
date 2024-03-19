@@ -16,23 +16,23 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
-import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
-import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.sipp.{SippPsrFromEtmp, SippPsrSubmissionToEtmp}
+import play.api.mvc.AnyContentAsEmpty
+import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
+import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
 import utils.{BaseSpec, TestValues}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
+import play.api.libs.json.Json
+import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
+import uk.gov.hmrc.http._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SippPsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValues {
 
