@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.response
 
-import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMemberPayments
 

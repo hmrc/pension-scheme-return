@@ -17,15 +17,8 @@
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import org.scalatest.matchers.should.Matchers
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.HowSharesDisposed._
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.HowSharesDisposed.{
-  howSharesDisposedToString,
-  stringToHowSharesDisposed,
-  Other,
-  Redeemed,
-  Sold,
-  Transferred
-}
 
 class HowSharesDisposedSpec extends AnyWordSpec with Matchers {
 

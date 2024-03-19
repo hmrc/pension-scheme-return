@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations
 
-import org.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
+import org.scalatestplus.play.PlaySpec
+import org.mockito.MockitoSugar
 
 class TransformerSpec extends PlaySpec with MockitoSugar with Transformer {
   "Transformer" should {

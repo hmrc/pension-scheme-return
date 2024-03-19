@@ -16,20 +16,20 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.Application
-import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.RequestHeader
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
 import uk.gov.hmrc.pensionschemereturn.models.response._
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
+import play.api.mvc.RequestHeader
+import com.github.tomakehurst.wiremock.client.WireMock._
+import play.api.inject.bind
+import uk.gov.hmrc.auth.core.AuthConnector
+import play.api.test.FakeRequest
+import com.github.tomakehurst.wiremock.client.WireMock
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.Application
+import play.api.libs.json.{JsObject, Json}
+import play.api.http.Status.{BAD_REQUEST, OK}
+import uk.gov.hmrc.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

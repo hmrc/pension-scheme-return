@@ -16,12 +16,13 @@
 
 package generators
 
+import org.scalacheck.Gen._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalacheck.Gen.{alphaNumChar, alphaNumStr, alphaStr, choose, chooseNum, listOfN, nonEmptyListOf}
+
+import scala.collection.Seq
 
 import java.time.{Instant, LocalDate, ZoneOffset}
-import scala.collection.Seq
 
 trait BasicGenerators {
 

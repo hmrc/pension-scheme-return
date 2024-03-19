@@ -16,14 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.TypeOfShares._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.TypeOfShares.{
-  stringToTypeOfShares,
-  ConnectedParty,
-  SponsoringEmployer,
-  Unquoted
-}
 
 class TypeOfSharesSpec extends AnyWordSpec with Matchers {
 

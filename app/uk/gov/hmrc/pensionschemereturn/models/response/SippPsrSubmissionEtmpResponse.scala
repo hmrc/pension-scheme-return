@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.response
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsPath, Json, Reads}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpAccountingPeriod, EtmpAccountingPeriodDetails}
+import play.api.libs.json.{JsPath, Json, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
 
 case class SippPsrSubmissionEtmpResponse(

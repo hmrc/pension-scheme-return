@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
+import play.api.mvc.RequestHeader
 import com.google.inject.{Inject, Singleton}
+import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
+import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import play.api.Logging
 import play.api.libs.json._
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.models._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
-import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
+import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
 import scala.concurrent.{ExecutionContext, Future}
 

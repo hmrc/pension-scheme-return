@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.etmp
 
-import play.api.libs.json.{JsError, JsString, JsSuccess, Reads, Writes}
+import play.api.libs.json._
 
 sealed trait YesNo {
   val value: String

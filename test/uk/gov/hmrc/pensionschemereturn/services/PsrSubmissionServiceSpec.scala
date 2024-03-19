@@ -16,24 +16,24 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import com.softwaremill.diffx.generic.AutoDerivation
-import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
-import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
-import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.http.{BadRequestException, ExpectationFailedException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
+import uk.gov.hmrc.pensionschemereturn.models._
+import play.api.libs.json.Json
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
+import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
 import utils.{BaseSpec, TestValues}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.mvc.AnyContentAsEmpty
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
+import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
+import com.softwaremill.diffx.generic.AutoDerivation
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class PsrSubmissionServiceSpec
     extends BaseSpec

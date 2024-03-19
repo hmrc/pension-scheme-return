@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.{MemberPayments, PensionSurrender, SectionDetails}
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{EtmpMemberPayments, EtmpPensionSurrender}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.{MemberPayments, PensionSurrender, SectionDetails}
 
 import java.time.LocalDate
 

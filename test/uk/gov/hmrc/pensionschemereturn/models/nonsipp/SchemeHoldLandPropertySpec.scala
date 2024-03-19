@@ -18,13 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.{
-  schemeHoldLandPropertyToString,
-  stringToSchemeHoldLandProperty,
-  Acquisition,
-  Contribution,
-  Transfer
-}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty._
 
 class SchemeHoldLandPropertySpec extends AnyWordSpec with Matchers {
 

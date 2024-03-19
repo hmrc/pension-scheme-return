@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.pensionschemereturn.auth
 
-import play.api.Logging
 import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{~, Name}
+import uk.gov.hmrc.pensionschemereturn.config.Constants._
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core.retrieve.{~, Name}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import play.api.Logging
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
-import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey, pspEnrolmentKey, pspIdKey}
 
 import scala.concurrent.{ExecutionContext, Future}
 

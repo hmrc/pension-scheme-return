@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
-import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
 import utils.TestValues
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import org.scalatestplus.play.PlaySpec
+import org.mockito.MockitoSugar
 
 import java.time.LocalDate
 

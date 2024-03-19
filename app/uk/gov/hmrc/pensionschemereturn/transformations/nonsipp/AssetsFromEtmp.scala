@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.stringToIdentityType
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import com.google.inject.{Inject, Singleton}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.stringToHowDisposed
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
+import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.stringToSchemeHoldBond
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.stringToSchemeHoldLandProperty
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
-import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
 class AssetsFromEtmp @Inject() extends Transformer {

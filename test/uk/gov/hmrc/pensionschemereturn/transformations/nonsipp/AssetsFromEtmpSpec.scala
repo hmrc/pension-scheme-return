@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Transfer
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Transfer
+import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import org.scalatestplus.play.PlaySpec
+import org.mockito.MockitoSugar
 
 import java.time.LocalDate
 

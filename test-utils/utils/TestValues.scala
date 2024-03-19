@@ -16,31 +16,31 @@
 
 package utils
 
-import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
-import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
+import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
+import uk.gov.hmrc.pensionschemereturn.models.response._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
+import uk.gov.hmrc.pensionschemereturn.models.etmp._
+import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.Sold
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, ReportStatusCompiled, SectionStatus, Standard}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.Sold
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.Acquisition
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
-import uk.gov.hmrc.pensionschemereturn.models.response._
-import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 
-import java.text.MessageFormat
-import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime}
+import java.time.format.DateTimeFormatter
+import java.text.MessageFormat
 
 trait TestValues {
 

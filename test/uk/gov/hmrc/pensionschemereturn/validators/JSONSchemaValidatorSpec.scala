@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.pensionschemereturn.validators
 
-import org.mockito.MockitoSugar.mock
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import org.scalatest.matchers.must.Matchers
+import play.api.inject.bind
+import uk.gov.hmrc.auth.core.AuthConnector
+import play.api.Application
+import org.mockito.MockitoSugar.mock
+import org.scalatest.wordspec.AnyWordSpec
 
 class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileReader {
 

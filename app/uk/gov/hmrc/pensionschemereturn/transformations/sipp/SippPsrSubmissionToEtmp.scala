@@ -17,8 +17,8 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.sipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.SippPsrSubmissionEtmpRequest
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
+import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.SippPsrSubmissionEtmpRequest
 
 @Singleton()
 class SippPsrSubmissionToEtmp @Inject()(

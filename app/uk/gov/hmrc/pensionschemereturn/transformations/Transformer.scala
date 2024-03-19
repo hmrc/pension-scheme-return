@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations
 
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.TransferSchemeType
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.identityTypeToString
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.PensionSchemeType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.TransferSchemeType
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError.UnknownError
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.PensionSchemeType
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType
 
 import scala.language.implicitConversions
 

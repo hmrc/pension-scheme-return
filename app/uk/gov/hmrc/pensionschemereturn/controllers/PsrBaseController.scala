@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers
 
-import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.BadRequestException
 
 trait PsrBaseController {

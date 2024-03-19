@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpLoans
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{stringToIdentityType, Individual}
+import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpLoans
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()

@@ -16,18 +16,19 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers
 
-import play.api.Logging
-import play.api.libs.json.Json
+import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
 import play.api.mvc._
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HttpErrorFunctions
-import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.pensionschemereturn.models.sipp.SippPsrSubmission
-import uk.gov.hmrc.pensionschemereturn.services.SippPsrSubmissionService
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import play.api.Logging
+import play.api.libs.json.Json
+
+import scala.concurrent.ExecutionContext
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton()
 class SippPsrSubmitController @Inject()(

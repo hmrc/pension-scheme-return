@@ -17,15 +17,15 @@
 package uk.gov.hmrc.pensionschemereturn.connectors
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import com.softwaremill.diffx.generic.AutoDerivation
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.scalatest.time.{Millis, Span}
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import com.github.tomakehurst.wiremock.client.WireMock._
 import uk.gov.hmrc.http.test.{HttpClientSupport, WireMockSupport}
+import com.softwaremill.diffx.generic.AutoDerivation
 import utils.BaseSpec
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.Application
+import org.scalatest.time.{Millis, Span}
 
 import scala.reflect.ClassTag
 
