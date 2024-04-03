@@ -31,8 +31,57 @@
   },
   "assets": {
     "otherAssets": {
-      "otherAssetsWereHeld": "No",
-      "otherAssetsWereDisposed": "No"
+      "recordVersion": "002",
+      "otherAssetsWereHeld": "Yes",
+      "otherAssetsWereDisposed": "No",
+      "noOfTransactions": 2,
+      "otherAssetTransactions": [
+        {
+          "assetDescription": "Box of matches",
+          "methodOfHolding": "02",
+          "dateOfAcqOrContrib": "2022-09-30",
+          "costOfAsset": 100000,
+          "acquiredFromName": "Dodgy Den Match Co.",
+          "acquiredFromType": {
+            "indivOrOrgType": "04",
+            "idNumber": "TS315528"
+          },
+          "connectedStatus": "01",
+          "supportedByIndepValuation": "No",
+          "movableSchedule29A": "No",
+          "totalIncomeOrReceipts": 0,
+          "assetsDisposed": [
+            {
+              "methodOfDisposal": "01",
+              "dateSold": "2022-12-30",
+              "purchaserName": "Acme Express Ltd.",
+              "purchaserType": {
+                "indivOrOrgType": "04",
+                "otherDescription": "Foreign purchaser"
+              },
+              "totalAmountReceived": 150000,
+              "connectedStatus": "02",
+              "supportedByIndepValuation": "Yes",
+              "fullyDisposedOf": "Yes"
+            }
+          ]
+        },
+        {
+          "assetDescription": "10kg Gold bars",
+          "methodOfHolding": "03",
+          "dateOfAcqOrContrib": "2023-04-30",
+          "costOfAsset": 2400000,
+          "acquiredFromName": "GoldBullion.co.uk",
+          "acquiredFromType": {
+            "indivOrOrgType": "02",
+            "idNumber": "SC123456"
+          },
+          "connectedStatus": "02",
+          "supportedByIndepValuation": "No",
+          "movableSchedule29A": "No",
+          "totalIncomeOrReceipts": 0
+        }
+      ]
     }
   }
 }

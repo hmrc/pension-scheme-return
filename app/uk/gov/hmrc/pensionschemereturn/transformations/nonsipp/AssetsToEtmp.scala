@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldAsset.schemeHoldAssetToString
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.howDisposedToString
@@ -193,6 +194,38 @@ class AssetsToEtmp @Inject() extends Transformer {
             )
           )
       ),
-      otherAssets = None
+      otherAssets = assets.optOtherAssets.map(
+        otherAssets =>
+          EtmpOtherAssets(
+            otherAssetsWereHeld = toYesNo(otherAssets.otherAssetsWereHeld),
+            otherAssetsWereDisposed = toYesNo(otherAssets.otherAssetsWereDisposed),
+            noOfTransactions = Option.when(otherAssets.otherAssetsWereHeld)(otherAssets.otherAssetTransactions.size),
+            otherAssetTransactions = Option.when(otherAssets.otherAssetsWereHeld)(
+              otherAssets.otherAssetTransactions.map(
+                otherAssetTransaction =>
+                  EtmpOtherAssetTransaction(
+                    assetDescription = otherAssetTransaction.assetDescription,
+                    methodOfHolding = schemeHoldAssetToString(otherAssetTransaction.methodOfHolding),
+                    dateOfAcqOrContrib = otherAssetTransaction.optDateOfAcqOrContrib,
+                    costOfAsset = otherAssetTransaction.costOfAsset,
+                    acquiredFromName = otherAssetTransaction.optPropertyAcquiredFromName,
+                    acquiredFromType = otherAssetTransaction.optPropertyAcquiredFrom.map(
+                      propertyAcquiredFrom =>
+                        toEtmpIdentityType(
+                          identityType = propertyAcquiredFrom.identityType,
+                          optIdNumber = propertyAcquiredFrom.idNumber,
+                          optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                          optOtherDescription = propertyAcquiredFrom.otherDescription
+                        )
+                    ),
+                    connectedStatus = otherAssetTransaction.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
+                    supportedByIndepValuation = otherAssetTransaction.optIndepValuationSupport.map(toYesNo),
+                    movableSchedule29A = toYesNo(otherAssetTransaction.movableSchedule29A),
+                    totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts
+                  )
+              )
+            )
+          )
+      )
     )
 }

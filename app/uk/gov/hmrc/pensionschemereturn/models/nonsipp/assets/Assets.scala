@@ -18,7 +18,12 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Assets(optLandOrProperty: Option[LandOrProperty], optBorrowing: Option[Borrowing], optBonds: Option[Bonds])
+case class Assets(
+  optLandOrProperty: Option[LandOrProperty],
+  optBorrowing: Option[Borrowing],
+  optBonds: Option[Bonds],
+  optOtherAssets: Option[OtherAssets]
+)
 
 object Assets {
   implicit val formats: OFormat[Assets] = Json.format[Assets]

@@ -16,14 +16,35 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import play.api.libs.json.{Json, OFormat}
+
+import java.time.LocalDate
 
 case class EtmpOtherAssets(
   otherAssetsWereHeld: String,
-  otherAssetsWereDisposed: String
+  otherAssetsWereDisposed: String,
+  noOfTransactions: Option[Int],
+  otherAssetTransactions: Option[Seq[EtmpOtherAssetTransaction]]
+)
+
+case class EtmpOtherAssetTransaction(
+  assetDescription: String,
+  methodOfHolding: String,
+  dateOfAcqOrContrib: Option[LocalDate],
+  costOfAsset: Double,
+  acquiredFromName: Option[String],
+  acquiredFromType: Option[EtmpIdentityType],
+  connectedStatus: Option[String],
+  supportedByIndepValuation: Option[String],
+  movableSchedule29A: String,
+  totalIncomeOrReceipts: Double
 )
 
 object EtmpOtherAssets {
+
+  private implicit val formatsEtmpOtherAssetTransaction: OFormat[EtmpOtherAssetTransaction] =
+    Json.format[EtmpOtherAssetTransaction]
   implicit val formats: OFormat[EtmpOtherAssets] =
     Json.format[EtmpOtherAssets]
 }

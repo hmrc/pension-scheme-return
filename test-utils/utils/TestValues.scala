@@ -16,7 +16,6 @@
 
 package utils
 
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
@@ -24,9 +23,11 @@ import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdK
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
+import uk.gov.hmrc.pensionschemereturn.models.requests.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
 import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
 import uk.gov.hmrc.pensionschemereturn.models.response._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldAsset.Transfer
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
 import uk.gov.hmrc.pensionschemereturn.models.etmp._
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
@@ -232,6 +233,26 @@ trait TestValues {
                 )
               )
             )
+          )
+        )
+      )
+    ),
+    optOtherAssets = Some(
+      OtherAssets(
+        otherAssetsWereHeld = true,
+        otherAssetsWereDisposed = true,
+        otherAssetTransactions = Seq(
+          OtherAssetTransaction(
+            assetDescription = "assetDescription",
+            methodOfHolding = Transfer,
+            optDateOfAcqOrContrib = None,
+            costOfAsset = Double.MaxValue,
+            optPropertyAcquiredFromName = None,
+            optPropertyAcquiredFrom = None,
+            optConnectedStatus = None,
+            optIndepValuationSupport = None,
+            movableSchedule29A = true,
+            totalIncomeOrReceipts = Double.MaxValue
           )
         )
       )
@@ -553,7 +574,12 @@ trait TestValues {
       )
     ),
     otherAssets = Some(
-      EtmpOtherAssets(otherAssetsWereHeld = "otherAssetsWereHeld", otherAssetsWereDisposed = "otherAssetsWereDisposed")
+      EtmpOtherAssets(
+        otherAssetsWereHeld = "otherAssetsWereHeld",
+        otherAssetsWereDisposed = "otherAssetsWereDisposed",
+        noOfTransactions = None,
+        otherAssetTransactions = None
+      )
     )
   )
 
@@ -855,7 +881,7 @@ trait TestValues {
           EtmpBonds(
             recordVersion = Some("528"),
             bondsWereAdded = "Yes",
-            bondsWereDisposed = "No",
+            bondsWereDisposed = "Yes",
             noOfTransactions = Some(2),
             bondTransactions = Some(
               Seq(
@@ -909,8 +935,32 @@ trait TestValues {
         ),
         otherAssets = Some(
           EtmpOtherAssets(
-            otherAssetsWereHeld = "No",
-            otherAssetsWereDisposed = "No"
+            otherAssetsWereHeld = "Yes",
+            otherAssetsWereDisposed = "No",
+            noOfTransactions = Some(1),
+            otherAssetTransactions = Some(
+              Seq(
+                EtmpOtherAssetTransaction(
+                  assetDescription = "Box of matches",
+                  methodOfHolding = "01",
+                  dateOfAcqOrContrib = Some(sampleToday),
+                  costOfAsset = Double.MaxValue,
+                  acquiredFromName = Some("Dodgy Den Match Co."),
+                  acquiredFromType = Some(
+                    EtmpIdentityType(
+                      indivOrOrgType = "01",
+                      idNumber = None,
+                      reasonNoIdNumber = Some("reasonNoId"),
+                      otherDescription = None
+                    )
+                  ),
+                  connectedStatus = Some("01"),
+                  supportedByIndepValuation = Some("No"),
+                  movableSchedule29A = "No",
+                  totalIncomeOrReceipts = Double.MaxValue
+                )
+              )
+            )
           )
         )
       )

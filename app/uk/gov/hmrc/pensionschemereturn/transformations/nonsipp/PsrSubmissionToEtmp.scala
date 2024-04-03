@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import uk.gov.hmrc.pensionschemereturn.models.requests.etmp.PsrSubmissionEtmpRequest
+import uk.gov.hmrc.pensionschemereturn.models.requests.PsrSubmissionEtmpRequest
 
 @Singleton()
 class PsrSubmissionToEtmp @Inject()(
