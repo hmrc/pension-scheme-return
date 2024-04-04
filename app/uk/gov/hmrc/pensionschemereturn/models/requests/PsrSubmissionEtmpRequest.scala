@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.pensionschemereturn.models.requests.etmp
+package uk.gov.hmrc.pensionschemereturn.models.requests
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import play.api.libs.json.{Json, OWrites}

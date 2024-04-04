@@ -103,8 +103,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
 
       val requestJson: JsValue = Json.parse(
-        """
-          |{
+        """{
           |  "minimalRequiredSubmission": {
           |    "reportDetails": {
           |      "pstr": "00000042IN",
@@ -158,57 +157,155 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |    ]
           |  },
           |  "assets": {
-          |    "landOrProperty": {
+          |    "optLandOrProperty": {
           |      "landOrPropertyHeld": true,
           |      "disposeAnyLandOrProperty": true,
           |      "landOrPropertyTransactions": [
           |        {
           |          "propertyDetails": {
-          |            "landOrPropertyInUK": true,
+          |            "landOrPropertyInUK": false,
           |            "addressDetails": {
-          |              "addressLine1": "Flat 2",
-          |              "addressLine2": "7 Other Place",
-          |              "addressLine3": "Some District",
-          |              "town": "Anytown",
-          |              "postCode": "ZZ1 1ZZ",
-          |              "country": "United Kingdom",
-          |              "countryCode": "GB"
+          |              "addressLine1": "Fenerbahce",
+          |              "addressLine3": "Kadikoy",
+          |              "town": "Istanbul",
+          |              "countryCode": "TR"
           |            },
-          |            "landRegistryTitleNumberKey": true,
-          |            "landRegistryTitleNumberValue": "MS123456"
+          |            "landRegistryTitleNumberKey": false,
+          |            "landRegistryTitleNumberValue": "Foreign property"
           |          },
           |          "heldPropertyTransaction": {
           |            "methodOfHolding": "Acquisition",
-          |            "dateOfAcquisitionOrContribution": "2009-03-01",
-          |            "optPropertyAcquiredFromName": "Seller-Test",
+          |            "dateOfAcquisitionOrContribution": "1953-03-28",
+          |            "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd",
           |            "optPropertyAcquiredFrom": {
           |              "identityType": "individual",
-          |              "idNumber": "SX123456D"
+          |              "idNumber": "SX123456A"
           |            },
           |            "optConnectedPartyStatus": true,
-          |            "totalCostOfLandOrProperty": 87,
+          |            "totalCostOfLandOrProperty": 1000000,
           |            "optIndepValuationSupport": true,
           |            "isLandOrPropertyResidential": true,
-          |            "optLeaseDetails": {
-          |              "lesseeName": "Lessee-Test",
-          |              "leaseGrantDate": "2008-07-06",
-          |              "annualLeaseAmount": 98,
-          |              "connectedPartyStatus": false
-          |            },
-          |            "landOrPropertyLeased": true,
-          |            "totalIncomeOrReceipts": 90
+          |            "landOrPropertyLeased": false,
+          |            "totalIncomeOrReceipts": 25000
           |          },
           |          "optDisposedPropertyTransaction": [
           |            {
           |              "methodOfDisposal": "Sold",
-          |              "optDateOfSale": "2009-03-01",
-          |              "optNameOfPurchaser": "Purchaser-Test",
+          |              "optDateOfSale": "2022-10-19",
+          |              "optNameOfPurchaser": "Victor Enterprises Inc.",
           |              "optPropertyAcquiredFrom": {
-          |                "identityType": "individual",
-          |                "idNumber": "SX123456D"
+          |                "identityType": "ukCompany",
+          |                "idNumber": "24896221"
           |              },
-          |              "optSaleProceeds": 1907,
+          |              "optSaleProceeds": 1500000,
           |              "optConnectedPartyStatus": true,
+          |              "optIndepValuationSupport": false,
+          |              "portionStillHeld": false
+          |            }
+          |          ]
+          |        },
+          |        {
+          |          "propertyDetails": {
+          |            "landOrPropertyInUK": true,
+          |            "addressDetails": {
+          |              "addressLine1": "Beyoglu",
+          |              "addressLine2": "Ulker Arena",
+          |              "addressLine3": "Kadikoy",
+          |              "town": "Istanbul",
+          |              "postCode": "GB135HG",
+          |              "countryCode": "GB"
+          |            },
+          |            "landRegistryTitleNumberKey": true,
+          |            "landRegistryTitleNumberValue": "LR10000102202202"
+          |          },
+          |          "heldPropertyTransaction": {
+          |            "methodOfHolding": "Contribution",
+          |            "dateOfAcquisitionOrContribution": "1953-03-28",
+          |            "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd.",
+          |            "optPropertyAcquiredFrom": {
+          |              "identityType": "individual",
+          |              "idNumber": "SX123456A"
+          |            },
+          |            "optConnectedPartyStatus": true,
+          |            "totalCostOfLandOrProperty": 1000000,
+          |            "optIndepValuationSupport": false,
+          |            "isLandOrPropertyResidential": true,
+          |            "landOrPropertyLeased": false,
+          |            "totalIncomeOrReceipts": 25000
+          |          },
+          |          "optDisposedPropertyTransaction": [
+          |            {
+          |              "methodOfDisposal": "Sold",
+          |              "optDateOfSale": "2022-10-19",
+          |              "optNameOfPurchaser": "Victor Enterprises Inc.",
+          |              "optPropertyAcquiredFrom": {
+          |                "identityType": "ukCompany",
+          |                "idNumber": "24896221"
+          |              },
+          |              "optSaleProceeds": 1500000,
+          |              "optConnectedPartyStatus": true,
+          |              "optIndepValuationSupport": false,
+          |              "portionStillHeld": false
+          |            }
+          |          ]
+          |        },
+          |        {
+          |          "propertyDetails": {
+          |            "landOrPropertyInUK": false,
+          |            "addressDetails": {
+          |              "addressLine1": "1 Hacienda Way",
+          |              "addressLine3": "01055",
+          |              "town": "Madrid",
+          |              "countryCode": "ES"
+          |            },
+          |            "landRegistryTitleNumberKey": false,
+          |            "landRegistryTitleNumberValue": "Foreign property"
+          |          },
+          |          "heldPropertyTransaction": {
+          |            "methodOfHolding": "Acquisition",
+          |            "dateOfAcquisitionOrContribution": "2022-12-30",
+          |            "optPropertyAcquiredFromName": "Joe Sussex",
+          |            "optPropertyAcquiredFrom": {
+          |              "identityType": "individual",
+          |              "idNumber": "SX654321A"
+          |            },
+          |            "optConnectedPartyStatus": false,
+          |            "totalCostOfLandOrProperty": 14000000,
+          |            "optIndepValuationSupport": false,
+          |            "isLandOrPropertyResidential": false,
+          |            "optLeaseDetails": {
+          |              "lesseeName": "Leasee",
+          |              "leaseGrantDate": "2023-01-17",
+          |              "annualLeaseAmount": 500000,
+          |              "connectedPartyStatus": false
+          |            },
+          |            "landOrPropertyLeased": true,
+          |            "totalIncomeOrReceipts": 500000
+          |          },
+          |          "optDisposedPropertyTransaction": [
+          |            {
+          |              "methodOfDisposal": "Sold",
+          |              "optDateOfSale": "2022-11-09",
+          |              "optNameOfPurchaser": "Realty Purchasers Co.",
+          |              "optPropertyAcquiredFrom": {
+          |                "identityType": "ukCompany",
+          |                "idNumber": "JE463863"
+          |              },
+          |              "optSaleProceeds": 1550000,
+          |              "optConnectedPartyStatus": true,
+          |              "optIndepValuationSupport": false,
+          |              "portionStillHeld": true
+          |            },
+          |            {
+          |              "methodOfDisposal": "Sold",
+          |              "optDateOfSale": "2023-01-26",
+          |              "optNameOfPurchaser": "ABC Company Inc.",
+          |              "optPropertyAcquiredFrom": {
+          |                "identityType": "ukCompany",
+          |                "idNumber": "DA576257"
+          |              },
+          |              "optSaleProceeds": 10234.56,
+          |              "optConnectedPartyStatus": false,
           |              "optIndepValuationSupport": false,
           |              "portionStillHeld": true
           |            }
@@ -216,28 +313,92 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |        }
           |      ]
           |    },
-          |    "borrowing": {
+          |    "optBorrowing": {
           |      "moneyWasBorrowed": true,
           |      "moneyBorrowed": [
           |        {
-          |          "dateOfBorrow": "2023-10-19",
-          |          "amountBorrowed": 2,
-          |          "schemeAssetsValue": 3,
-          |          "interestRate": 4,
-          |          "borrowingFromName": "borrowingFromName",
-          |          "connectedPartyStatus": true,
-          |          "reasonForBorrow": "reasonForBorrow"
+          |          "dateOfBorrow": "2022-10-18",
+          |          "schemeAssetsValue": 0,
+          |          "amountBorrowed": 2000,
+          |          "interestRate": 5.55,
+          |          "borrowingFromName": "Loans R Us",
+          |          "connectedPartyStatus": false,
+          |          "reasonForBorrow": "We needed the money."
+          |        }
+          |      ]
+          |    },
+          |    "optBonds": {
+          |      "bondsWereAdded": true,
+          |      "bondsWereDisposed": false,
+          |      "bondTransactions": [
+          |        {
+          |          "nameOfBonds": "Xenex Bonds",
+          |          "methodOfHolding": "01",
+          |          "optDateOfAcqOrContrib": "2022-10-06",
+          |          "costOfBonds": 10234.56,
+          |          "optConnectedPartyStatus": false,
+          |          "bondsUnregulated": false,
+          |          "totalIncomeOrReceipts": 50,
+          |          "optBondsDisposed": [
+          |            {
+          |              "methodOfDisposal": "Sold",
+          |              "optDateSold": "2022-11-30",
+          |              "optAmountReceived": 12333.59,
+          |              "optBondsPurchaserName": "Happy Bond Buyers Inc.",
+          |              "optConnectedPartyStatus": false,
+          |              "totalNowHeld": 120
+          |            },
+          |            {
+          |              "methodOfDisposal": "Transferred",
+          |              "totalNowHeld": 12
+          |            },
+          |            {
+          |              "methodOfDisposal": "Other",
+          |              "optOtherMethod": "OtherMethod",
+          |              "totalNowHeld": 10
+          |            }
+          |          ]
+          |        },
+          |        {
+          |          "nameOfBonds": "Really Goods Bonds ABC",
+          |          "methodOfHolding": "02",
+          |          "optDateOfAcqOrContrib": "2022-07-30",
+          |          "costOfBonds": 2000.5,
+          |          "optConnectedPartyStatus": false,
+          |          "bondsUnregulated": false,
+          |          "totalIncomeOrReceipts": 300
+          |        }
+          |      ]
+          |    },
+          |    "optOtherAssets": {
+          |      "otherAssetsWereHeld": true,
+          |      "otherAssetsWereDisposed": false,
+          |      "otherAssetTransactions": [
+          |        {
+          |          "assetDescription": "Test asset",
+          |          "methodOfHolding": "01",
+          |          "optDateOfAcqOrContrib": "2023-03-05",
+          |          "costOfAsset": 12.34,
+          |          "optPropertyAcquiredFromName": "test-name",
+          |          "optPropertyAcquiredFrom": {
+          |            "identityType": "other",
+          |            "otherDescription": "description"
+          |          },
+          |          "optConnectedStatus": false,
+          |          "optIndepValuationSupport": false,
+          |          "movableSchedule29A": false,
+          |          "totalIncomeOrReceipts": 34.56
           |        }
           |      ]
           |    }
           |  },
           |  "membersPayments": {
+          |    "employerContributionMade": false,
+          |    "unallocatedContribsMade": false,
           |    "employerContributionsDetails": {
           |      "made": true,
           |      "completed": true
           |    },
-          |    "unallocatedContribsMade": false,
-          |    "employerContributionsCompleted": true,
           |    "transfersInCompleted": true,
           |    "transfersOutCompleted": true,
           |    "lumpSumReceived": true,
@@ -484,11 +645,10 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |          "totalDividendsOrReceipts": 599.99
           |        }
           |      }
-          |    ]
+          |    ],
+          |    "optTotalValueQuotedShares": 12.34
           |  }
-          |}
-          |
-          |""".stripMargin
+          |}""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
       val result = controller.submitStandardPsr(postRequest)

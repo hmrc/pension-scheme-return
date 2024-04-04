@@ -1015,7 +1015,7 @@ object PsrConnectorSpec {
       |        "bonds": {
       |            "recordVersion": "528",
       |            "bondsWereAdded": "Yes",
-      |            "bondsWereDisposed": "No",
+      |            "bondsWereDisposed": "Yes",
       |            "noOfTransactions": 2,
       |            "bondTransactions": [
       |                {
@@ -1060,24 +1060,24 @@ object PsrConnectorSpec {
       |        },
       |        "otherAssets": {
       |            "recordVersion": "002",
-      |            "otherAssetsWereHeld": "No",
+      |            "otherAssetsWereHeld": "Yes",
       |            "otherAssetsWereDisposed": "No",
-      |            "noOfTransactions": 2,
+      |            "noOfTransactions": 1,
       |            "otherAssetTransactions": [
       |                {
       |                    "assetDescription": "Box of matches",
-      |                    "methodOfHolding": "02",
-      |                    "dateOfAcqOrContrib": "2022-09-30",
-      |                    "costOfAsset": 100000,
+      |                    "methodOfHolding": "01",
+      |                    "dateOfAcqOrContrib": "2023-10-19",
+      |                    "costOfAsset": 1.7976931348623157E+308,
       |                    "acquiredFromName": "Dodgy Den Match Co.",
       |                    "acquiredFromType": {
-      |                        "indivOrOrgType": "04",
-      |                        "idNumber": "TS315528"
+      |                        "indivOrOrgType": "01",
+      |                        "reasonNoIdNumber": "reasonNoId"
       |                    },
       |                    "connectedStatus": "01",
       |                    "supportedByIndepValuation": "No",
       |                    "movableSchedule29A": "No",
-      |                    "totalIncomeOrReceipts": 0,
+      |                    "totalIncomeOrReceipts": 1.7976931348623157E+308,
       |                    "assetsDisposed": [
       |                        {
       |                            "methodOfDisposal": "01",
@@ -1093,21 +1093,6 @@ object PsrConnectorSpec {
       |                            "fullyDisposedOf": "Yes"
       |                        }
       |                    ]
-      |                },
-      |                {
-      |                    "assetDescription": "10kg Gold bars",
-      |                    "methodOfHolding": "03",
-      |                    "dateOfAcqOrContrib": "2023-04-30",
-      |                    "costOfAsset": 2400000,
-      |                    "acquiredFromName": "GoldBullion.co.uk",
-      |                    "acquiredFromType": {
-      |                        "indivOrOrgType": "02",
-      |                        "idNumber": "SC123456"
-      |                    },
-      |                    "connectedStatus": "02",
-      |                    "supportedByIndepValuation": "No",
-      |                    "movableSchedule29A": "No",
-      |                    "totalIncomeOrReceipts": 0
       |                }
       |            ]
       |        }

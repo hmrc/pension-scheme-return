@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldAsset.stringToSchemeHoldAsset
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.stringToIdentityType
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
@@ -173,6 +174,38 @@ class AssetsFromEtmp @Inject() extends Transformer {
                           )
                       )
                     )
+                  )
+              )
+          )
+      ),
+      optOtherAssets = assets.otherAssets.map(
+        otherAssets =>
+          OtherAssets(
+            otherAssetsWereHeld = fromYesNo(otherAssets.otherAssetsWereHeld),
+            otherAssetsWereDisposed = fromYesNo(otherAssets.otherAssetsWereDisposed),
+            otherAssetTransactions = otherAssets.otherAssetTransactions
+              .getOrElse(Seq.empty)
+              .map(
+                oa =>
+                  OtherAssetTransaction(
+                    assetDescription = oa.assetDescription,
+                    methodOfHolding = stringToSchemeHoldAsset(oa.methodOfHolding),
+                    optDateOfAcqOrContrib = oa.dateOfAcqOrContrib,
+                    costOfAsset = oa.costOfAsset,
+                    optPropertyAcquiredFromName = oa.acquiredFromName,
+                    optPropertyAcquiredFrom = oa.acquiredFromType.map { etmpIdentityType =>
+                      val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
+                      PropertyAcquiredFrom(
+                        identityType = identityType,
+                        idNumber = etmpIdentityType.idNumber,
+                        reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
+                        otherDescription = etmpIdentityType.otherDescription
+                      )
+                    },
+                    optConnectedStatus = oa.connectedStatus.map(_ == Connected),
+                    optIndepValuationSupport = oa.supportedByIndepValuation.map(fromYesNo),
+                    movableSchedule29A = fromYesNo(oa.movableSchedule29A),
+                    totalIncomeOrReceipts = oa.totalIncomeOrReceipts
                   )
               )
           )
