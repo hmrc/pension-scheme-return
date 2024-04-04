@@ -69,7 +69,10 @@ class PsrSubmitController @Inject()(
       )
       psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
         case None => NotFound
-        case Some(Right(psrSubmission)) => Ok(Json.toJson(psrSubmission))
+        case Some(Right(psrSubmission)) =>
+          val jsonResponse = Json.toJson(psrSubmission)
+          logger.debug(message = s"Retrieved data as JSON: $jsonResponse")
+          Ok(jsonResponse)
         case Some(Left(error)) => InternalServerError(Json.toJson(error))
       }
     }
