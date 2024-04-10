@@ -47,10 +47,12 @@ class PsrSubmitController @Inject()(
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
     authorisedAsPsrUser { _ =>
       val psrSubmission = requiredBody.as[PsrSubmission]
+      // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
       logger.info(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
       psrSubmissionService
         .submitStandardPsr(psrSubmission)
         .map(response => {
+          // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
           logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
           NoContent
         })
@@ -71,6 +73,7 @@ class PsrSubmitController @Inject()(
         case None => NotFound
         case Some(Right(psrSubmission)) =>
           val jsonResponse = Json.toJson(psrSubmission)
+          // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
           logger.debug(message = s"Retrieved data as JSON: $jsonResponse")
           Ok(jsonResponse)
         case Some(Left(error)) => InternalServerError(Json.toJson(error))

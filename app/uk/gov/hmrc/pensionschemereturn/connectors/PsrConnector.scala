@@ -44,6 +44,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
+    // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
     logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.stringify(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
@@ -53,6 +54,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
       .map { response =>
         response.status match {
           case OK =>
+            // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
             logger.debug(s"Submit standard PSR ----<<RESPONSE>>----: ${Json.stringify(response.json)}")
             response
           case _ => handleErrorResponse("POST", url)(response)
@@ -93,6 +95,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitSippPsrUrl.format(pstr)
+    // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
     logger.info(s"Submit SIPP PSR called URL: $url with payload: ${Json.stringify(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
@@ -173,6 +176,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
         case OK =>
           response.json.as[Seq[PsrVersionsEtmpResponse]]
         case SERVICE_UNAVAILABLE =>
+          // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
           // TODO - must be a temporary solution to check QA env issues
           logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty respose")
           Seq.empty[PsrVersionsEtmpResponse]
