@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
 import uk.gov.hmrc.pensionschemereturn.models.requests.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
-import com.networknt.schema.{CustomErrorMessageType, ValidationMessage}
+import com.networknt.schema.ValidationMessage
 import uk.gov.hmrc.pensionschemereturn.models.response._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldAsset.Transfer
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.{No, Yes}
@@ -41,7 +41,6 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandPrope
 
 import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
-import java.text.MessageFormat
 
 trait TestValues {
 
@@ -1413,14 +1412,10 @@ trait TestValues {
     accountingPeriodDetails = sampleEtmpAccountingPeriodDetails
   )
 
-  val validationMessage: ValidationMessage = ValidationMessage.ofWithCustom(
-    "type",
-    CustomErrorMessageType.of("CustomErrorMessageType"),
-    new MessageFormat("MessageFormat"),
-    "customMessage",
-    "at",
-    "schemaPath"
-  )
+  val validationMessage: ValidationMessage = ValidationMessage
+    .builder()
+    .message("customMessage")
+    .build()
 
   val sampleOverviewResponse: Seq[PsrOverviewEtmpResponse] = Seq(
     PsrOverviewEtmpResponse(

@@ -779,7 +779,8 @@
 						"exec": [
 							""
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				},
 				{
@@ -790,7 +791,8 @@
 							"    pm.response.to.have.status(200);",
 							"});"
 						],
-						"type": "text/javascript"
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -808,7 +810,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{pension-scheme-return}}/psr/standard/24000001IN?fbNumber=123456785011",
+					"raw": "{{pension-scheme-return}}/psr/standard/24000001IN?fbNumber=000000021221",
 					"host": [
 						"{{pension-scheme-return}}"
 					],
@@ -830,7 +832,7 @@
 						},
 						{
 							"key": "fbNumber",
-							"value": "123456785011"
+							"value": "000000021221"
 						}
 					]
 				}
