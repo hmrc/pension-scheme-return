@@ -1,11 +1,14 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
+import uk.gov.hmrc.DefaultBuildSettings
 
-lazy val microservice = Project("pension-scheme-return", file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+val appName = "pension-scheme-return"
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
+
+lazy val microservice = Project(appName, file("."))
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
-    majorVersion        := 0,
-    scalaVersion        := "2.13.12",
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
     scalafixScalaBinaryVersion := "2.13",
@@ -18,8 +21,6 @@ lazy val microservice = Project("pension-scheme-return", file("."))
     PlayKeys.playDefaultPort := 10700
   )
   .settings(inConfig(Test)(testSettings) *)
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(itSettings) *)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings *)
 
@@ -28,14 +29,13 @@ lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   unmanagedSourceDirectories += baseDirectory.value / "test-utils"
 )
 
-lazy val itSettings = integrationTestSettings() ++ Seq(
-  unmanagedSourceDirectories := Seq(
-    baseDirectory.value / "it",
-    baseDirectory.value / "test-utils"
-  ),
-  unmanagedResourceDirectories := Seq(
-    baseDirectory.value / "it" / "resources"
-  ),
-  parallelExecution := false,
-  fork := true
-)
+lazy val it = project.in(file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+  .settings(
+    libraryDependencies ++= AppDependencies.test,
+    Test / fork := true,
+    Test / scalafmtOnCompile := true,
+    Test / unmanagedResourceDirectories += baseDirectory.value / "it" / "test" / "resources"
+  )
