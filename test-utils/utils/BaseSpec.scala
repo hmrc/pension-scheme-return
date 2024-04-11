@@ -21,7 +21,7 @@ import org.scalatest.matchers.must.Matchers
 import generators.Generators
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.wordspec.AnyWordSpec
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 abstract class BaseSpec
     extends AnyWordSpec

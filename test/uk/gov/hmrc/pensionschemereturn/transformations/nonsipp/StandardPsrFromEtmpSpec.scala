@@ -17,17 +17,18 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.models.response.{EtmpPsrDetails, EtmpSchemeDetails, PsrSubmissionEtmpResponse}
-import utils.TestValues
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import com.softwaremill.diffx.generic.AutoDerivation
 import org.mockito.ArgumentMatchers.any
+import utils.TestValues
+import org.mockito.Mockito._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMemberPayments
 import org.scalatestplus.play.PlaySpec
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 class StandardPsrFromEtmpSpec
     extends PlaySpec

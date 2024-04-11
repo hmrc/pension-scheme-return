@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
+import org.mockito.Mockito._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec

@@ -25,6 +25,7 @@ import uk.gov.hmrc.auth.core.retrieve.{~, Name}
 import uk.gov.hmrc.http.HeaderCarrier
 import org.mockito.ArgumentMatchers.any
 import play.api.test.Helpers._
+import org.mockito.Mockito._
 import utils.{BaseSpec, TestValues}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.Application
