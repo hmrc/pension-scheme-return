@@ -17,13 +17,14 @@
 package uk.gov.hmrc.pensionschemereturn.services
 
 import play.api.test.FakeRequest
-import utils.{BaseSpec, TestValues}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
+import utils.{BaseSpec, TestValues}
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

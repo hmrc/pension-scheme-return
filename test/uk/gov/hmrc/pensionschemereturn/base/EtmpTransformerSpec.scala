@@ -23,7 +23,7 @@ import org.scalatest.{AppendedClues, BeforeAndAfterEach}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import com.softwaremill.diffx.generic.AutoDerivation
 import org.scalatestplus.play.PlaySpec
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 trait EtmpTransformerSpec
     extends PlaySpec

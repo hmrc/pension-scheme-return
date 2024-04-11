@@ -24,7 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import org.scalatestplus.play.PlaySpec
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with TestValues with DiffShouldMatcher {
 

@@ -21,7 +21,7 @@ import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import org.scalatestplus.play.PlaySpec
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 import java.time.LocalDate
 

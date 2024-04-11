@@ -21,10 +21,11 @@ import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToE
 import uk.gov.hmrc.pensionschemereturn.models._
 import play.api.libs.json.Json
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import utils.{BaseSpec, TestValues}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import org.mockito.Mockito._
 import play.api.mvc.AnyContentAsEmpty
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}

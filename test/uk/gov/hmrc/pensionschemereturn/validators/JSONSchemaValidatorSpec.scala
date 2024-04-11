@@ -22,8 +22,8 @@ import org.scalatest.matchers.must.Matchers
 import play.api.inject.bind
 import uk.gov.hmrc.auth.core.AuthConnector
 import play.api.Application
-import org.mockito.MockitoSugar.mock
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.mockito.MockitoSugar.mock
 
 class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileReader {
 
