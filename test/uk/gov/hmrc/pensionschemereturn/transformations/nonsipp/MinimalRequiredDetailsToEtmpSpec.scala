@@ -31,11 +31,18 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
   private val transformation: MinimalRequiredDetailsToEtmp = new MinimalRequiredDetailsToEtmp()
   val today: LocalDate = LocalDate.now
 
-  "LoansToEtmp" should {
-    "PSR minimalRequiredDetails should successfully transform to etmp format" in {
+  "MinimalRequiredDetailsToEtmp" should {
+    "PSR minimalRequiredDetails should successfully transform to etmp format when isSubmitted false" in {
 
       val minimalRequiredSubmission = MinimalRequiredSubmission(
-        reportDetails = ReportDetails("testPstr", today, today),
+        reportDetails = ReportDetails(
+          fbVersion = None,
+          fbstatus = None,
+          pstr = "testPstr",
+          periodStart = today,
+          periodEnd = today,
+          compilationOrSubmissionDate = None
+        ),
         accountingPeriods = List(today -> today),
         schemeDesignatory = SchemeDesignatory(
           reasonForNoBankAccount = Some("reasonForNoBankAccount"),
@@ -82,8 +89,67 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
         )
       )
 
-      transformation.transform(minimalRequiredSubmission) shouldMatchTo expected
+      transformation.transform(minimalRequiredSubmission = minimalRequiredSubmission, isSubmitted = false) shouldMatchTo expected
     }
 
+    "PSR minimalRequiredDetails should successfully transform to etmp format when isSubmitted true" in {
+
+      val minimalRequiredSubmission = MinimalRequiredSubmission(
+        reportDetails = ReportDetails(
+          fbVersion = None,
+          fbstatus = None,
+          pstr = "testPstr",
+          periodStart = today,
+          periodEnd = today,
+          compilationOrSubmissionDate = None
+        ),
+        accountingPeriods = List(today -> today),
+        schemeDesignatory = SchemeDesignatory(
+          reasonForNoBankAccount = Some("reasonForNoBankAccount"),
+          openBankAccount = false,
+          activeMembers = 1,
+          deferredMembers = 2,
+          pensionerMembers = 3,
+          totalAssetValueStart = Some(Double.MaxValue),
+          totalAssetValueEnd = None,
+          totalCashStart = Some(Double.MaxValue),
+          totalCashEnd = None,
+          totalPayments = Some(Double.MaxValue)
+        )
+      )
+
+      val expected = EtmpMinimalRequiredSubmission(
+        EtmpReportDetails(
+          pstr = None,
+          psrStatus = Submitted,
+          periodStart = today,
+          periodEnd = today
+        ),
+        EtmpAccountingPeriodDetails(
+          recordVersion = None,
+          accountingPeriods = List(
+            EtmpAccountingPeriod(
+              accPeriodStart = today,
+              accPeriodEnd = today
+            )
+          )
+        ),
+        EtmpSchemeDesignatory(
+          recordVersion = None,
+          openBankAccount = No,
+          reasonNoOpenAccount = Some("reasonForNoBankAccount"),
+          noOfActiveMembers = 1,
+          noOfDeferredMembers = 2,
+          noOfPensionerMembers = 3,
+          totalAssetValueStart = Some(Double.MaxValue),
+          totalAssetValueEnd = None,
+          totalCashStart = Some(Double.MaxValue),
+          totalCashEnd = None,
+          totalPayments = Some(Double.MaxValue)
+        )
+      )
+
+      transformation.transform(minimalRequiredSubmission = minimalRequiredSubmission, isSubmitted = true) shouldMatchTo expected
+    }
   }
 }

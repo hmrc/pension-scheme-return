@@ -1,0 +1,31 @@
+{
+  "reportDetails": {
+    "psrStatus": "Compiled",
+    "periodStart": "2023-04-06",
+    "periodEnd": "2024-04-05"
+  },
+  "accountingPeriodDetails": {
+    "accountingPeriods": [
+      {
+        "accPeriodStart": "2023-04-06",
+        "accPeriodEnd": "2024-04-05"
+      }
+    ]
+  },
+  "schemeDesignatory": {
+    "openBankAccount": "Yes",
+    "noOfActiveMembers": 50,
+    "noOfDeferredMembers": 50,
+    "noOfPensionerMembers": 1,
+    "totalPayments": 74
+  },
+  "psrDeclaration": {
+    "submittedBy": "PSP",
+    "submitterId": "21000005",
+    "psaId": "A2100005",
+    "pspDeclaration": {
+      "pspDeclaration1": true,
+      "pspDeclaration2": true
+    }
+  }
+}

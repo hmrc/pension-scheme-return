@@ -16,21 +16,17 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPayments
+import uk.gov.hmrc.pensionschemereturn.models.etmp.SubmitterType
 import play.api.libs.json.{Json, OFormat}
 
-case class PsrSubmission(
-  minimalRequiredSubmission: MinimalRequiredSubmission,
-  checkReturnDates: Boolean,
-  loans: Option[Loans],
-  assets: Option[Assets],
-  membersPayments: Option[MemberPayments],
-  shares: Option[Shares],
-  psrDeclaration: Option[PsrDeclaration]
+case class PsrDeclaration(
+  submittedBy: SubmitterType,
+  submitterId: String,
+  optAuthorisingPSAID: Option[String],
+  declaration1: Boolean,
+  declaration2: Boolean
 )
 
-object PsrSubmission {
-  implicit val formats: OFormat[PsrSubmission] = Json.format[PsrSubmission]
+object PsrDeclaration {
+  implicit val formats: OFormat[PsrDeclaration] = Json.format[PsrDeclaration]
 }

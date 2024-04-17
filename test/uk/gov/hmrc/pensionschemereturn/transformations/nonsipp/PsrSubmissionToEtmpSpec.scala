@@ -33,6 +33,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
     reset(mockAssetsToEtmp)
     reset(mockMemberPaymentsTransformer)
     reset(mockSharesToEtmp)
+    reset(mockPsrDeclarationToEtmp)
     super.beforeEach()
   }
 
@@ -41,6 +42,7 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
   private val mockAssetsToEtmp: AssetsToEtmp = mock[AssetsToEtmp]
   private val mockMemberPaymentsTransformer: MemberPaymentsTransformer = mock[MemberPaymentsTransformer]
   private val mockSharesToEtmp: SharesToEtmp = mock[SharesToEtmp]
+  private val mockPsrDeclarationToEtmp: PsrDeclarationToEtmp = mock[PsrDeclarationToEtmp]
 
   private val transformation: PsrSubmissionToEtmp =
     new PsrSubmissionToEtmp(
@@ -48,13 +50,14 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
       mockLoansToEtmp,
       mockAssetsToEtmp,
       mockMemberPaymentsTransformer,
-      mockSharesToEtmp
+      mockSharesToEtmp,
+      mockPsrDeclarationToEtmp
     )
 
   "PsrSubmissionToEtmp" should {
     "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails" in {
 
-      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
+      when(mockMinimalRequiredDetailsToEtmp.transform(any(), any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
@@ -62,7 +65,8 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         loans = None,
         assets = None,
         membersPayments = None,
-        shares = None
+        shares = None,
+        psrDeclaration = None
       )
 
       val expected = PsrSubmissionEtmpRequest(
@@ -72,25 +76,28 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         loans = None,
         assets = None,
         membersPayments = None,
-        shares = None
+        shares = None,
+        psrDeclaration = None
       )
 
       transformation.transform(psrSubmission) shouldMatchTo expected
-      verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any())
+      verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any(), any())
       verify(mockLoansToEtmp, never).transform(any())
       verify(mockAssetsToEtmp, never).transform(any())
       verify(mockAssetsToEtmp, never).transform(any())
       verify(mockMemberPaymentsTransformer, never).toEtmp(any())
       verify(mockSharesToEtmp, never).transform(any())
+      verify(mockPsrDeclarationToEtmp, never).transform(any())
     }
 
     "PSR submission should successfully transform to etmp format" in {
 
-      when(mockMinimalRequiredDetailsToEtmp.transform(any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
+      when(mockMinimalRequiredDetailsToEtmp.transform(any(), any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
       when(mockLoansToEtmp.transform(any())).thenReturn(sampleEtmpLoans)
       when(mockAssetsToEtmp.transform(any())).thenReturn(sampleEtmpAssets)
       when(mockMemberPaymentsTransformer.toEtmp(any())).thenReturn(sampleEtmpMemberPayments)
       when(mockSharesToEtmp.transform(any())).thenReturn(sampleEtmpShares)
+      when(mockPsrDeclarationToEtmp.transform(any())).thenReturn(sampleEtmpPsrDeclaration)
 
       val psrSubmission: PsrSubmission = PsrSubmission(
         minimalRequiredSubmission = mock[MinimalRequiredSubmission],
@@ -98,7 +105,8 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         loans = Some(mock[Loans]),
         assets = Some(mock[Assets]),
         membersPayments = Some(mock[MemberPayments]),
-        shares = Some(mock[Shares])
+        shares = Some(mock[Shares]),
+        psrDeclaration = Some(mock[PsrDeclaration])
       )
 
       val expected = PsrSubmissionEtmpRequest(
@@ -108,15 +116,18 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
         loans = Some(sampleEtmpLoans),
         assets = Some(sampleEtmpAssets),
         membersPayments = Some(sampleEtmpMemberPayments),
-        shares = Some(sampleEtmpShares)
+        shares = Some(sampleEtmpShares),
+        psrDeclaration = Some(sampleEtmpPsrDeclaration)
       )
 
       transformation.transform(psrSubmission) shouldMatchTo expected
-      verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any())
+      verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any(), any())
       verify(mockLoansToEtmp, times(1)).transform(any())
       verify(mockAssetsToEtmp, times(1)).transform(any())
       verify(mockMemberPaymentsTransformer, times(1)).toEtmp(any())
       verify(mockSharesToEtmp, times(1)).transform(any())
+      verify(mockPsrDeclarationToEtmp, times(1)).transform(any())
+      verify(mockPsrDeclarationToEtmp, times(1)).transform(any())
     }
   }
 }

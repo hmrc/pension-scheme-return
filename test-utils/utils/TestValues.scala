@@ -64,9 +64,12 @@ trait TestValues {
 
   val sampleMinimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
     reportDetails = ReportDetails(
+      fbVersion = Some("001"),
+      fbstatus = Some(Compiled.name),
       pstr = pstr,
       periodStart = sampleToday,
-      periodEnd = sampleToday
+      periodEnd = sampleToday,
+      compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
     ),
     accountingPeriods = List(sampleToday -> sampleToday),
     schemeDesignatory = SchemeDesignatory(
@@ -89,7 +92,8 @@ trait TestValues {
     loans = None,
     assets = None,
     membersPayments = None,
-    shares = None
+    shares = None,
+    psrDeclaration = None
   )
 
   val sampleLoans: Loans = Loans(
@@ -389,6 +393,14 @@ trait TestValues {
   )
 
   val sampleShares: Shares = Shares(optShareTransactions = None, optTotalValueQuotedShares = None)
+
+  val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
+    submittedBy = PSA,
+    submitterId = "A0000000",
+    optAuthorisingPSAID = None,
+    declaration1 = true,
+    declaration2 = true
+  )
 
   // Standard - ETMP
 
@@ -793,6 +805,15 @@ trait TestValues {
     ),
     totalValueQuotedShares = 0.00
   )
+
+  val sampleEtmpPsrDeclaration: EtmpPsrDeclaration =
+    EtmpPsrDeclaration(
+      submittedBy = PSA,
+      submitterId = "A2100005",
+      psaId = None,
+      psaDeclaration = Some(EtmpPsaDeclaration(psaDeclaration1 = true, psaDeclaration2 = true)),
+      pspDeclaration = None
+    )
 
   val samplePsrSubmissionEtmpResponse: PsrSubmissionEtmpResponse = PsrSubmissionEtmpResponse(
     schemeDetails = EtmpSchemeDetails(pstr = "12345678AA", schemeName = "My Golden Egg scheme"),
@@ -1356,6 +1377,15 @@ trait TestValues {
         ),
         totalValueQuotedShares = 0.00
       )
+    ),
+    psrDeclaration = Some(
+      EtmpPsrDeclaration(
+        submittedBy = PSP,
+        submitterId = "21000005",
+        psaId = Some("A2100005"),
+        psaDeclaration = None,
+        pspDeclaration = Some(EtmpPspDeclaration(pspDeclaration1 = true, pspDeclaration2 = true))
+      )
     )
   )
 
@@ -1378,7 +1408,8 @@ trait TestValues {
     None,
     None,
     membersPayments = None,
-    shares = None
+    shares = None,
+    psrDeclaration = None
   )
 
   // SIPP - PSR

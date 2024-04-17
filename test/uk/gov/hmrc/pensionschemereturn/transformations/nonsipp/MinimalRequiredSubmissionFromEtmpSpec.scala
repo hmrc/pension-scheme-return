@@ -18,12 +18,14 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import utils.TestValues
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
+import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
+import java.time.format.DateTimeFormatter
 
 class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar with TestValues with DiffShouldMatcher {
 
@@ -34,9 +36,13 @@ class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar w
 
       val expected = MinimalRequiredSubmission(
         ReportDetails(
-          "12345678AA",
+          fbVersion = Some("001"),
+          fbstatus = Some(Compiled.name),
+          pstr = "12345678AA",
           periodStart = LocalDate.parse("2023-04-06"),
-          periodEnd = LocalDate.parse("2024-04-05")
+          periodEnd = LocalDate.parse("2024-04-05"),
+          compilationOrSubmissionDate =
+            Some(LocalDateTime.parse("2023-12-17T09:30:47Z", DateTimeFormatter.ISO_DATE_TIME))
         ),
         List(
           LocalDate.parse("2022-04-06") -> LocalDate.parse("2022-12-31"),

@@ -26,12 +26,16 @@ class PsrSubmissionToEtmp @Inject()(
   loansToEtmp: LoansToEtmp,
   assetsToEtmp: AssetsToEtmp,
   memberPaymentsTransformer: MemberPaymentsTransformer,
-  sharesToEtmp: SharesToEtmp
+  sharesToEtmp: SharesToEtmp,
+  psrDeclarationToEtmp: PsrDeclarationToEtmp
 ) {
 
   def transform(psrSubmission: PsrSubmission): PsrSubmissionEtmpRequest = {
     val etmpMinimalRequiredSubmission =
-      minimalRequiredDetailsToEtmp.transform(psrSubmission.minimalRequiredSubmission)
+      minimalRequiredDetailsToEtmp.transform(
+        psrSubmission.minimalRequiredSubmission,
+        psrSubmission.psrDeclaration.isDefined
+      )
     PsrSubmissionEtmpRequest(
       reportDetails = etmpMinimalRequiredSubmission.reportDetails,
       accountingPeriodDetails = etmpMinimalRequiredSubmission.accountingPeriodDetails,
@@ -39,7 +43,8 @@ class PsrSubmissionToEtmp @Inject()(
       loans = psrSubmission.loans.map(loansToEtmp.transform),
       assets = psrSubmission.assets.map(assetsToEtmp.transform),
       membersPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp),
-      shares = psrSubmission.shares.map(sharesToEtmp.transform)
+      shares = psrSubmission.shares.map(sharesToEtmp.transform),
+      psrDeclaration = psrSubmission.psrDeclaration.map(psrDeclarationToEtmp.transform)
     )
   }
 

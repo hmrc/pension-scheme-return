@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
 case class MinimalRequiredSubmission(
   reportDetails: ReportDetails,
@@ -27,9 +27,12 @@ case class MinimalRequiredSubmission(
 )
 
 case class ReportDetails(
+  fbVersion: Option[String],
+  fbstatus: Option[String],
   pstr: String,
   periodStart: LocalDate,
-  periodEnd: LocalDate
+  periodEnd: LocalDate,
+  compilationOrSubmissionDate: Option[LocalDateTime]
 )
 
 case class SchemeDesignatory(

@@ -648,6 +648,13 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |      }
           |    ],
           |    "optTotalValueQuotedShares": 12.34
+          |  },
+          |  "psrDeclaration": {
+          |    "submittedBy": "PSP",
+          |    "submitterId": "21000005",
+          |    "optAuthorisingPSAID": "A2100005",
+          |    "declaration1": true,
+          |    "declaration2": true
           |  }
           |}""".stripMargin
       )
