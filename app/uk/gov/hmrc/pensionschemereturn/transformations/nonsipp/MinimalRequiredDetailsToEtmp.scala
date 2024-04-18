@@ -25,11 +25,14 @@ import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 @Singleton()
 class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
 
-  def transform(minimalRequiredSubmission: MinimalRequiredSubmission): EtmpMinimalRequiredSubmission =
+  def transform(
+    minimalRequiredSubmission: MinimalRequiredSubmission,
+    isSubmitted: Boolean
+  ): EtmpMinimalRequiredSubmission =
     EtmpMinimalRequiredSubmission(
       EtmpReportDetails(
         pstr = None,
-        psrStatus = Compiled,
+        psrStatus = if (isSubmitted) Submitted else Compiled,
         periodStart = minimalRequiredSubmission.reportDetails.periodStart,
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd
       ),

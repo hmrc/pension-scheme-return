@@ -18,6 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.models.response.{EtmpPsrDetails, EtmpSchemeDetails, PsrSubmissionEtmpResponse}
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
+import uk.gov.hmrc.pensionschemereturn.models.etmp.Submitted
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -45,6 +46,7 @@ class StandardPsrFromEtmpSpec
     reset(mockAssetsFromEtmp)
     reset(mockMemberPayments)
     reset(mockSharesFromEtmp)
+    reset(mockPsrDeclarationFromEtmp)
     super.beforeEach()
   }
 
@@ -53,6 +55,7 @@ class StandardPsrFromEtmpSpec
   val mockAssetsFromEtmp: AssetsFromEtmp = mock[AssetsFromEtmp]
   val mockMemberPayments: MemberPaymentsTransformer = mock[MemberPaymentsTransformer]
   val mockSharesFromEtmp: SharesFromEtmp = mock[SharesFromEtmp]
+  val mockPsrDeclarationFromEtmp: PsrDeclarationFromEtmp = mock[PsrDeclarationFromEtmp]
 
   private val transformation =
     new StandardPsrFromEtmp(
@@ -60,7 +63,8 @@ class StandardPsrFromEtmpSpec
       mockLoansFromEtmp,
       mockAssetsFromEtmp,
       mockMemberPayments,
-      mockSharesFromEtmp
+      mockSharesFromEtmp,
+      mockPsrDeclarationFromEtmp
     )
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails when checkReturnDates is true" in {
@@ -75,7 +79,8 @@ class StandardPsrFromEtmpSpec
       loans = None,
       assets = None,
       membersPayments = None,
-      shares = None
+      shares = None,
+      psrDeclaration = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(samplePsrSubmission)
@@ -84,6 +89,7 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, never).transform(any())
     verify(mockMemberPayments, never).fromEtmp(any())
     verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with only MinimalRequiredDetails checkReturnDates is false" in {
@@ -101,7 +107,8 @@ class StandardPsrFromEtmpSpec
       loans = None,
       assets = None,
       membersPayments = None,
-      shares = None
+      shares = None,
+      psrDeclaration = None
     )
 
     val updatedReportDetails =
@@ -118,6 +125,7 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, never).transform(any())
     verify(mockMemberPayments, never).fromEtmp(any())
     verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with Loans" in {
@@ -133,7 +141,8 @@ class StandardPsrFromEtmpSpec
       loans = Some(mock[EtmpLoans]),
       assets = None,
       membersPayments = None,
-      shares = None
+      shares = None,
+      psrDeclaration = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -144,6 +153,7 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, never).transform(any())
     verify(mockMemberPayments, never).fromEtmp(any())
     verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with Assets" in {
@@ -159,7 +169,8 @@ class StandardPsrFromEtmpSpec
       loans = None,
       assets = Some(mock[EtmpAssets]),
       membersPayments = None,
-      shares = None
+      shares = None,
+      psrDeclaration = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -170,6 +181,7 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, times(1)).transform(any())
     verify(mockMemberPayments, never).fromEtmp(any())
     verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with Member Payments" in {
@@ -185,7 +197,8 @@ class StandardPsrFromEtmpSpec
       loans = None,
       assets = None,
       membersPayments = Some(mock[EtmpMemberPayments]),
-      shares = None
+      shares = None,
+      psrDeclaration = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -197,6 +210,7 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, never).transform(any())
     verify(mockMemberPayments, times(1)).fromEtmp(any())
     verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
   }
 
   "PSR submission should successfully transform to etmp format with Shares" in {
@@ -212,7 +226,8 @@ class StandardPsrFromEtmpSpec
       loans = None,
       assets = None,
       membersPayments = None,
-      shares = Some(mock[EtmpShares])
+      shares = Some(mock[EtmpShares]),
+      psrDeclaration = None
     )
 
     transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
@@ -224,5 +239,39 @@ class StandardPsrFromEtmpSpec
     verify(mockAssetsFromEtmp, never).transform(any())
     verify(mockMemberPayments, never).fromEtmp(any())
     verify(mockSharesFromEtmp, times(1)).transform(any())
+    verify(mockPsrDeclarationFromEtmp, never).transform(any())
+  }
+
+  "PSR submission should successfully transform to etmp format with PsrDeclaration" in {
+
+    val submittedMinimalSubmissionDetail = sampleMinimalRequiredSubmission
+      .copy(reportDetails = sampleMinimalRequiredSubmission.reportDetails.copy(fbstatus = Some(Submitted.name)))
+
+    when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(submittedMinimalSubmissionDetail)
+    when(mockPsrDeclarationFromEtmp.transform(any())).thenReturn(samplePsrDeclaration)
+
+    val psrSubmissionResponse = PsrSubmissionEtmpResponse(
+      schemeDetails = mock[EtmpSchemeDetails],
+      psrDetails = mock[EtmpPsrDetails],
+      accountingPeriodDetails = mock[EtmpAccountingPeriodDetails],
+      schemeDesignatory = mock[EtmpSchemeDesignatory],
+      loans = None,
+      assets = None,
+      membersPayments = None,
+      shares = None,
+      psrDeclaration = Some(mock[EtmpPsrDeclaration])
+    )
+
+    transformation.transform(psrSubmissionResponse) shouldMatchTo Right(
+      samplePsrSubmission
+        .copy(minimalRequiredSubmission = submittedMinimalSubmissionDetail, psrDeclaration = Some(samplePsrDeclaration))
+    )
+
+    verify(mockMinimalRequiredSubmissionFromEtmp, times(1)).transform(any())
+    verify(mockLoansFromEtmp, never).transform(any())
+    verify(mockAssetsFromEtmp, never).transform(any())
+    verify(mockMemberPayments, never).fromEtmp(any())
+    verify(mockSharesFromEtmp, never).transform(any())
+    verify(mockPsrDeclarationFromEtmp, times(1)).transform(any())
   }
 }

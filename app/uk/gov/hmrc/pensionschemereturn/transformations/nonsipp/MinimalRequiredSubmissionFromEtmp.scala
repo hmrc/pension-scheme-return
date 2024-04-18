@@ -22,14 +22,17 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
-class MinimalRequiredSubmissionFromEtmp @Inject()() extends Transformer {
+class MinimalRequiredSubmissionFromEtmp @Inject() extends Transformer {
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): MinimalRequiredSubmission =
     MinimalRequiredSubmission(
       reportDetails = ReportDetails(
+        fbVersion = Some(psrSubmissionResponse.psrDetails.fbVersion),
+        fbstatus = Some(psrSubmissionResponse.psrDetails.fbstatus.name),
         pstr = psrSubmissionResponse.schemeDetails.pstr,
         periodStart = psrSubmissionResponse.psrDetails.periodStart,
-        periodEnd = psrSubmissionResponse.psrDetails.periodEnd
+        periodEnd = psrSubmissionResponse.psrDetails.periodEnd,
+        compilationOrSubmissionDate = Some(psrSubmissionResponse.psrDetails.compilationOrSubmissionDate)
       ),
       accountingPeriods = psrSubmissionResponse.accountingPeriodDetails.accountingPeriods
         .map(accPeriod => (accPeriod.accPeriodStart, accPeriod.accPeriodEnd)),

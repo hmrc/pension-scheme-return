@@ -30,7 +30,8 @@ class StandardPsrFromEtmp @Inject()(
   loansFromEtmp: LoansFromEtmp,
   assetsFromEtmp: AssetsFromEtmp,
   memberPaymentsTransformer: MemberPaymentsTransformer,
-  sharesFromEtmp: SharesFromEtmp
+  sharesFromEtmp: SharesFromEtmp,
+  psrDeclarationFromEtmp: PsrDeclarationFromEtmp
 ) extends Transformer {
 
   def transform(psrSubmissionResponse: PsrSubmissionEtmpResponse): Either[TransformerError, PsrSubmission] =
@@ -44,7 +45,8 @@ class StandardPsrFromEtmp @Inject()(
       loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
       assets = psrSubmissionResponse.assets.map(assetsFromEtmp.transform),
       membersPayments = memberPayments,
-      shares = psrSubmissionResponse.shares.map(sharesFromEtmp.transform)
+      shares = psrSubmissionResponse.shares.map(sharesFromEtmp.transform),
+      psrDeclaration = psrSubmissionResponse.psrDeclaration.map(psrDeclarationFromEtmp.transform)
     )
 
   private def isCheckReturnDates(reportDetails: ReportDetails, accountingPeriods: (LocalDate, LocalDate)): Boolean =
