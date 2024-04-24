@@ -38,11 +38,26 @@ case class EtmpOtherAssetTransaction(
   connectedStatus: Option[String],
   supportedByIndepValuation: Option[String],
   movableSchedule29A: String,
-  totalIncomeOrReceipts: Double
+  totalIncomeOrReceipts: Double,
+  assetsDisposed: Option[Seq[EtmpAssetsDisposed]]
+)
+
+case class EtmpAssetsDisposed(
+  methodOfDisposal: String,
+  otherMethod: Option[String],
+  dateSold: Option[LocalDate],
+  purchaserName: Option[String],
+  purchaserType: Option[EtmpIdentityType],
+  totalAmountReceived: Option[Double],
+  connectedStatus: Option[String],
+  supportedByIndepValuation: Option[String],
+  fullyDisposedOf: String
 )
 
 object EtmpOtherAssets {
 
+  private implicit val formatsEtmpAssetsDisposed: OFormat[EtmpAssetsDisposed] =
+    Json.format[EtmpAssetsDisposed]
   private implicit val formatsEtmpOtherAssetTransaction: OFormat[EtmpOtherAssetTransaction] =
     Json.format[EtmpOtherAssetTransaction]
   implicit val formats: OFormat[EtmpOtherAssets] =

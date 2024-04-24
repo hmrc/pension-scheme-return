@@ -236,7 +236,40 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = Some(false),
                 optIndepValuationSupport = Some(false),
                 movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                Some(
+                  Seq(
+                    OtherAssetDisposed(
+                      methodOfDisposal = Sold,
+                      optOtherMethod = None,
+                      optDateSold = Some(today),
+                      optPurchaserName = Some("PurchaserName"),
+                      optPropertyAcquiredFrom = Some(
+                        PropertyAcquiredFrom(
+                          IdentityType.Other,
+                          None,
+                          None,
+                          Some("otherDescription")
+                        )
+                      ),
+                      optTotalAmountReceived = Some(Double.MaxValue),
+                      optConnectedStatus = Some(false),
+                      optSupportedByIndepValuation = Some(false),
+                      fullyDisposedOf = false
+                    ),
+                    OtherAssetDisposed(
+                      methodOfDisposal = Transferred,
+                      optOtherMethod = None,
+                      optDateSold = None,
+                      optPurchaserName = None,
+                      optPropertyAcquiredFrom = None,
+                      optTotalAmountReceived = None,
+                      optConnectedStatus = None,
+                      optSupportedByIndepValuation = None,
+                      fullyDisposedOf = true
+                    )
+                  )
+                )
               ),
               OtherAssetTransaction(
                 assetDescription = "assetDescription",
@@ -248,7 +281,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = None,
                 optIndepValuationSupport = Some(true),
                 movableSchedule29A = false,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optOtherAssetDisposed = None
               ),
               OtherAssetTransaction(
                 assetDescription = "assetDescription",
@@ -260,7 +294,22 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = None,
                 optIndepValuationSupport = None,
                 movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optOtherAssetDisposed = Some(
+                  Seq(
+                    OtherAssetDisposed(
+                      methodOfDisposal = Other,
+                      optOtherMethod = Some("OtherMethod"),
+                      optDateSold = None,
+                      optPurchaserName = None,
+                      optPropertyAcquiredFrom = None,
+                      optTotalAmountReceived = None,
+                      optConnectedStatus = None,
+                      optSupportedByIndepValuation = None,
+                      fullyDisposedOf = true
+                    )
+                  )
+                )
               )
             )
           )
@@ -466,7 +515,40 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = Some(Unconnected),
                   supportedByIndepValuation = Some(No),
                   movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = Some(
+                    Seq(
+                      EtmpAssetsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(today),
+                        purchaserName = Some("PurchaserName"),
+                        purchaserType = Some(
+                          EtmpIdentityType(
+                            indivOrOrgType = "04",
+                            idNumber = None,
+                            reasonNoIdNumber = None,
+                            otherDescription = Some("otherDescription")
+                          )
+                        ),
+                        totalAmountReceived = Some(Double.MaxValue),
+                        connectedStatus = Some(Unconnected),
+                        supportedByIndepValuation = Some(No),
+                        fullyDisposedOf = "No"
+                      ),
+                      EtmpAssetsDisposed(
+                        methodOfDisposal = "02",
+                        otherMethod = None,
+                        dateSold = None,
+                        purchaserName = None,
+                        purchaserType = None,
+                        totalAmountReceived = None,
+                        connectedStatus = None,
+                        supportedByIndepValuation = None,
+                        fullyDisposedOf = "Yes"
+                      )
+                    )
+                  )
                 ),
                 EtmpOtherAssetTransaction(
                   assetDescription = "assetDescription",
@@ -478,7 +560,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = None,
                   supportedByIndepValuation = Some(Yes),
                   movableSchedule29A = No,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
                   assetDescription = "assetDescription",
@@ -490,7 +573,22 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = None,
                   supportedByIndepValuation = None,
                   movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = Some(
+                    Seq(
+                      EtmpAssetsDisposed(
+                        methodOfDisposal = "03",
+                        otherMethod = Some("OtherMethod"),
+                        dateSold = None,
+                        purchaserName = None,
+                        purchaserType = None,
+                        totalAmountReceived = None,
+                        connectedStatus = None,
+                        supportedByIndepValuation = None,
+                        fullyDisposedOf = "Yes"
+                      )
+                    )
+                  )
                 )
               )
             )
@@ -501,7 +599,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       transformation.transform(assets) shouldMatchTo expected
     }
 
-    "when optional fields are non-None but with optDisposed sequences (bonds&landOrProperty)" in {
+    "when optional fields are non-None but with optDisposed sequences (bonds&landOrProperty&OtherAssets)" in {
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
@@ -605,7 +703,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = Some(false),
                 optIndepValuationSupport = Some(false),
                 movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
                 assetDescription = "assetDescription",
@@ -617,7 +716,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = None,
                 optIndepValuationSupport = Some(true),
                 movableSchedule29A = false,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
                 assetDescription = "assetDescription",
@@ -629,7 +729,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optConnectedStatus = None,
                 optIndepValuationSupport = None,
                 movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Double.MaxValue,
+                optOtherAssetDisposed = Some(Seq.empty)
               )
             )
           )
@@ -755,7 +856,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = Some(Unconnected),
                   supportedByIndepValuation = Some(No),
                   movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
                   assetDescription = "assetDescription",
@@ -767,7 +869,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = None,
                   supportedByIndepValuation = Some(Yes),
                   movableSchedule29A = No,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
                   assetDescription = "assetDescription",
@@ -779,7 +882,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   connectedStatus = None,
                   supportedByIndepValuation = None,
                   movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = None
                 )
               )
             )

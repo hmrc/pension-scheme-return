@@ -1080,13 +1080,13 @@ object PsrConnectorSpec {
       |          "assetsDisposed": [
       |            {
       |              "methodOfDisposal": "01",
-      |              "dateSold": "2022-12-30",
+      |              "dateSold": "2023-10-19",
       |              "purchaserName": "Acme Express Ltd.",
       |              "purchaserType": {
       |                "indivOrOrgType": "04",
       |                "otherDescription": "Foreign purchaser"
       |              },
-      |              "totalAmountReceived": 150000,
+      |              "totalAmountReceived": 150000.33,
       |              "connectedStatus": "02",
       |              "supportedByIndepValuation": "Yes",
       |              "fullyDisposedOf": "Yes"

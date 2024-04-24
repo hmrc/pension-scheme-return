@@ -205,7 +205,31 @@ class AssetsFromEtmp @Inject() extends Transformer {
                     optConnectedStatus = oa.connectedStatus.map(_ == Connected),
                     optIndepValuationSupport = oa.supportedByIndepValuation.map(fromYesNo),
                     movableSchedule29A = fromYesNo(oa.movableSchedule29A),
-                    totalIncomeOrReceipts = oa.totalIncomeOrReceipts
+                    totalIncomeOrReceipts = oa.totalIncomeOrReceipts,
+                    optOtherAssetDisposed = oa.assetsDisposed.map(
+                      _.map(
+                        oad =>
+                          OtherAssetDisposed(
+                            methodOfDisposal = stringToHowDisposed(oad.methodOfDisposal),
+                            optOtherMethod = oad.otherMethod,
+                            optDateSold = oad.dateSold,
+                            optPurchaserName = oad.purchaserName,
+                            optPropertyAcquiredFrom = oad.purchaserType.map { etmpIdentityType =>
+                              val identityType = stringToIdentityType(etmpIdentityType.indivOrOrgType)
+                              PropertyAcquiredFrom(
+                                identityType = identityType,
+                                idNumber = etmpIdentityType.idNumber,
+                                reasonNoIdNumber = etmpIdentityType.reasonNoIdNumber,
+                                otherDescription = etmpIdentityType.otherDescription
+                              )
+                            },
+                            optTotalAmountReceived = oad.totalAmountReceived,
+                            optConnectedStatus = oad.connectedStatus.map(_ == Connected),
+                            optSupportedByIndepValuation = oad.supportedByIndepValuation.map(fromYesNo),
+                            fullyDisposedOf = fromYesNo(oad.fullyDisposedOf)
+                          )
+                      )
+                    )
                   )
               )
           )
