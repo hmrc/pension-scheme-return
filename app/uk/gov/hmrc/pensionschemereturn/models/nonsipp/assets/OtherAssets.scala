@@ -37,11 +37,26 @@ case class OtherAssetTransaction(
   optConnectedStatus: Option[Boolean],
   optIndepValuationSupport: Option[Boolean],
   movableSchedule29A: Boolean,
-  totalIncomeOrReceipts: Double
+  totalIncomeOrReceipts: Double,
+  optOtherAssetDisposed: Option[Seq[OtherAssetDisposed]]
+)
+
+case class OtherAssetDisposed(
+  methodOfDisposal: HowDisposed,
+  optOtherMethod: Option[String],
+  optDateSold: Option[LocalDate],
+  optPurchaserName: Option[String],
+  optPropertyAcquiredFrom: Option[PropertyAcquiredFrom],
+  optTotalAmountReceived: Option[Double],
+  optConnectedStatus: Option[Boolean],
+  optSupportedByIndepValuation: Option[Boolean],
+  fullyDisposedOf: Boolean
 )
 
 object OtherAssets {
 
+  private implicit val formatOtherAssetDisposed: OFormat[OtherAssetDisposed] =
+    Json.format[OtherAssetDisposed]
   private implicit val formatOtherAssetTransaction: OFormat[OtherAssetTransaction] =
     Json.format[OtherAssetTransaction]
   implicit val format: OFormat[OtherAssets] = Json.format[OtherAssets]

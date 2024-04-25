@@ -255,7 +255,29 @@ trait TestValues {
             optConnectedStatus = None,
             optIndepValuationSupport = None,
             movableSchedule29A = true,
-            totalIncomeOrReceipts = Double.MaxValue
+            totalIncomeOrReceipts = Double.MaxValue,
+            optOtherAssetDisposed = Some(
+              Seq(
+                OtherAssetDisposed(
+                  methodOfDisposal = Sold,
+                  optOtherMethod = None,
+                  optDateSold = Some(sampleToday),
+                  optPurchaserName = Some("PurchaserName"),
+                  optPropertyAcquiredFrom = Some(
+                    PropertyAcquiredFrom(
+                      identityType = Individual,
+                      idNumber = Some("SX123456A"),
+                      reasonNoIdNumber = None,
+                      otherDescription = None
+                    )
+                  ),
+                  optTotalAmountReceived = Some(Double.MaxValue),
+                  optConnectedStatus = Some(true),
+                  optSupportedByIndepValuation = Some(true),
+                  fullyDisposedOf = true
+                )
+              )
+            )
           )
         )
       )
@@ -977,7 +999,29 @@ trait TestValues {
                   connectedStatus = Some("01"),
                   supportedByIndepValuation = Some("No"),
                   movableSchedule29A = "No",
-                  totalIncomeOrReceipts = Double.MaxValue
+                  totalIncomeOrReceipts = Double.MaxValue,
+                  assetsDisposed = Some(
+                    Seq(
+                      EtmpAssetsDisposed(
+                        methodOfDisposal = "01",
+                        otherMethod = None,
+                        dateSold = Some(sampleToday),
+                        purchaserName = Some("Acme Express Ltd."),
+                        purchaserType = Some(
+                          EtmpIdentityType(
+                            indivOrOrgType = "04",
+                            idNumber = None,
+                            reasonNoIdNumber = None,
+                            otherDescription = Some("Foreign purchaser")
+                          )
+                        ),
+                        totalAmountReceived = Some(150000.33),
+                        connectedStatus = Some("02"),
+                        supportedByIndepValuation = Some("Yes"),
+                        fullyDisposedOf = "Yes"
+                      )
+                    )
+                  )
                 )
               )
             )

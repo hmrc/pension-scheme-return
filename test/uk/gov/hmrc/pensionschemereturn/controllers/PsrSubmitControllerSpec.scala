@@ -388,7 +388,31 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |          "optConnectedStatus": false,
           |          "optIndepValuationSupport": false,
           |          "movableSchedule29A": false,
-          |          "totalIncomeOrReceipts": 34.56
+          |          "totalIncomeOrReceipts": 34.56,
+          |          "optOtherAssetDisposed": [
+          |            {
+          |              "methodOfDisposal": "Sold",
+          |              "optDateSold": "2022-11-30",
+          |              "optPurchaserName": "Acme Express Ltd.",
+          |              "optPropertyAcquiredFrom": {
+          |                "identityType": "individual",
+          |                "idNumber": "SX123456A"
+          |              },
+          |              "optTotalAmountReceived": 12333.59,
+          |              "optConnectedStatus": false,
+          |              "optSupportedByIndepValuation": false,
+          |              "fullyDisposedOf": true
+          |            },
+          |            {
+          |              "methodOfDisposal": "Transferred",
+          |              "fullyDisposedOf": true
+          |            },
+          |            {
+          |              "methodOfDisposal": "Other",
+          |              "optOtherMethod": "OtherMethod",
+          |              "fullyDisposedOf": true
+          |            }
+          |          ]
           |        }
           |      ]
           |    }

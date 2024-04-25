@@ -221,7 +221,34 @@ class AssetsToEtmp @Inject() extends Transformer {
                     connectedStatus = otherAssetTransaction.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
                     supportedByIndepValuation = otherAssetTransaction.optIndepValuationSupport.map(toYesNo),
                     movableSchedule29A = toYesNo(otherAssetTransaction.movableSchedule29A),
-                    totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts
+                    totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts,
+                    assetsDisposed = otherAssetTransaction.optOtherAssetDisposed
+                      .map(
+                        _.map(
+                          otherAssetDisposed =>
+                            EtmpAssetsDisposed(
+                              methodOfDisposal = howDisposedToString(otherAssetDisposed.methodOfDisposal),
+                              otherMethod = otherAssetDisposed.optOtherMethod,
+                              dateSold = otherAssetDisposed.optDateSold,
+                              purchaserName = otherAssetDisposed.optPurchaserName,
+                              purchaserType = otherAssetDisposed.optPropertyAcquiredFrom.map(
+                                propertyAcquiredFrom =>
+                                  toEtmpIdentityType(
+                                    identityType = propertyAcquiredFrom.identityType,
+                                    optIdNumber = propertyAcquiredFrom.idNumber,
+                                    optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                                    optOtherDescription = propertyAcquiredFrom.otherDescription
+                                  )
+                              ),
+                              totalAmountReceived = otherAssetDisposed.optTotalAmountReceived,
+                              connectedStatus =
+                                otherAssetDisposed.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
+                              supportedByIndepValuation = otherAssetDisposed.optSupportedByIndepValuation.map(toYesNo),
+                              fullyDisposedOf = toYesNo(otherAssetDisposed.fullyDisposedOf)
+                            )
+                        )
+                      )
+                      .filter(_.nonEmpty)
                   )
               )
             )
