@@ -52,8 +52,8 @@ class PsrSubmissionService @Inject()(
       psrConnector
         .submitStandardPsr(psrSubmission.minimalRequiredSubmission.reportDetails.pstr, payloadAsJson)
         .recover {
-          case _: BadRequestException =>
-            throw new ExpectationFailedException("Nothing to submit")
+          case badReq: BadRequestException =>
+            throw new ExpectationFailedException(s"${badReq.message}")
         }
     }
   }
