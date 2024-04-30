@@ -50,7 +50,7 @@ case class OtherAssetDisposed(
   optTotalAmountReceived: Option[Double],
   optConnectedStatus: Option[Boolean],
   optSupportedByIndepValuation: Option[Boolean],
-  fullyDisposedOf: Boolean
+  anyPartAssetStillHeld: Boolean
 )
 
 object OtherAssets {

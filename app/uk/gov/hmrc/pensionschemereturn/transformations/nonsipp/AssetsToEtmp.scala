@@ -244,7 +244,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                               connectedStatus =
                                 otherAssetDisposed.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
                               supportedByIndepValuation = otherAssetDisposed.optSupportedByIndepValuation.map(toYesNo),
-                              fullyDisposedOf = toYesNo(otherAssetDisposed.fullyDisposedOf)
+                              fullyDisposedOf = toYesNo(!otherAssetDisposed.anyPartAssetStillHeld)
                             )
                         )
                       )
