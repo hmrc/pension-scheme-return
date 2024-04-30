@@ -274,7 +274,7 @@ trait TestValues {
                   optTotalAmountReceived = Some(Double.MaxValue),
                   optConnectedStatus = Some(true),
                   optSupportedByIndepValuation = Some(true),
-                  fullyDisposedOf = true
+                  anyPartAssetStillHeld = true
                 )
               )
             )

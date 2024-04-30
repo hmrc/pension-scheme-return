@@ -226,7 +226,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
                             optTotalAmountReceived = oad.totalAmountReceived,
                             optConnectedStatus = oad.connectedStatus.map(_ == Connected),
                             optSupportedByIndepValuation = oad.supportedByIndepValuation.map(fromYesNo),
-                            fullyDisposedOf = fromYesNo(oad.fullyDisposedOf)
+                            anyPartAssetStillHeld = !fromYesNo(oad.fullyDisposedOf)
                           )
                       )
                     )

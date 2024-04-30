@@ -401,16 +401,16 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |              "optTotalAmountReceived": 12333.59,
           |              "optConnectedStatus": false,
           |              "optSupportedByIndepValuation": false,
-          |              "fullyDisposedOf": true
+          |              "anyPartAssetStillHeld": false
           |            },
           |            {
           |              "methodOfDisposal": "Transferred",
-          |              "fullyDisposedOf": true
+          |              "anyPartAssetStillHeld": false
           |            },
           |            {
           |              "methodOfDisposal": "Other",
           |              "optOtherMethod": "OtherMethod",
-          |              "fullyDisposedOf": true
+          |              "anyPartAssetStillHeld": false
           |            }
           |          ]
           |        }

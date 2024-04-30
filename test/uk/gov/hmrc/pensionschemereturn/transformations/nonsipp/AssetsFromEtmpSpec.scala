@@ -288,7 +288,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                         totalAmountReceived = Some(Double.MaxValue),
                         connectedStatus = Some(Unconnected),
                         supportedByIndepValuation = Some(No),
-                        fullyDisposedOf = "No"
+                        fullyDisposedOf = "Yes"
                       ),
                       EtmpAssetsDisposed(
                         methodOfDisposal = "02",
@@ -299,7 +299,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                         totalAmountReceived = None,
                         connectedStatus = None,
                         supportedByIndepValuation = None,
-                        fullyDisposedOf = "Yes"
+                        fullyDisposedOf = "No"
                       )
                     )
                   )
@@ -326,7 +326,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                         totalAmountReceived = None,
                         connectedStatus = None,
                         supportedByIndepValuation = None,
-                        fullyDisposedOf = "Yes"
+                        fullyDisposedOf = "No"
                       )
                     )
                   )
@@ -549,7 +549,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                       optTotalAmountReceived = Some(Double.MaxValue),
                       optConnectedStatus = Some(false),
                       optSupportedByIndepValuation = Some(false),
-                      fullyDisposedOf = false
+                      anyPartAssetStillHeld = false
                     ),
                     OtherAssetDisposed(
                       methodOfDisposal = Transferred,
@@ -560,7 +560,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                       optTotalAmountReceived = None,
                       optConnectedStatus = None,
                       optSupportedByIndepValuation = None,
-                      fullyDisposedOf = true
+                      anyPartAssetStillHeld = true
                     )
                   )
                 )
@@ -587,7 +587,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                       optTotalAmountReceived = None,
                       optConnectedStatus = None,
                       optSupportedByIndepValuation = None,
-                      fullyDisposedOf = true
+                      anyPartAssetStillHeld = true
                     )
                   )
                 )
