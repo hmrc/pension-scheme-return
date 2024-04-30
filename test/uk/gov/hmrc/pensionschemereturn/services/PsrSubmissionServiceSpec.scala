@@ -139,7 +139,7 @@ class PsrSubmissionServiceSpec
         await(service.submitStandardPsr(samplePsrSubmission))
       }
       thrown.responseCode mustBe EXPECTATION_FAILED
-      thrown.message must include("Nothing to submit")
+      thrown.message must include("invalid-request")
 
       verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
       verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
