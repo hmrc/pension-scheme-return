@@ -31,7 +31,6 @@ class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
   ): EtmpMinimalRequiredSubmission =
     EtmpMinimalRequiredSubmission(
       EtmpReportDetails(
-        pstr = None,
         psrStatus = if (isSubmitted) Submitted else Compiled,
         periodStart = minimalRequiredSubmission.reportDetails.periodStart,
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd

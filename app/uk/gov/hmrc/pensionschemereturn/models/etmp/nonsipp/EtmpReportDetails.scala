@@ -22,7 +22,6 @@ import play.api.libs.json.{Json, OWrites}
 import java.time.LocalDate
 
 case class EtmpReportDetails(
-  pstr: Option[String],
   psrStatus: EtmpPsrStatus,
   periodStart: LocalDate,
   periodEnd: LocalDate

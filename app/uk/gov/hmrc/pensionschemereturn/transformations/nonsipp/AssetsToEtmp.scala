@@ -197,6 +197,7 @@ class AssetsToEtmp @Inject() extends Transformer {
       otherAssets = assets.optOtherAssets.map(
         otherAssets =>
           EtmpOtherAssets(
+            recordVersion = None,
             otherAssetsWereHeld = toYesNo(otherAssets.otherAssetsWereHeld),
             otherAssetsWereDisposed = toYesNo(otherAssets.otherAssetsWereDisposed),
             noOfTransactions = Option.when(otherAssets.otherAssetsWereHeld)(otherAssets.otherAssetTransactions.size),

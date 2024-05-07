@@ -22,6 +22,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class EtmpOtherAssets(
+  recordVersion: Option[String],
   otherAssetsWereHeld: String,
   otherAssetsWereDisposed: String,
   noOfTransactions: Option[Int],
