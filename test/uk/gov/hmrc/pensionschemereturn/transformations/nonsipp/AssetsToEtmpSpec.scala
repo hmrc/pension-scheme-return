@@ -493,6 +493,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         otherAssets = Some(
           EtmpOtherAssets(
+            recordVersion = None,
             otherAssetsWereHeld = Yes,
             otherAssetsWereDisposed = No,
             noOfTransactions = Some(3),
@@ -834,6 +835,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         otherAssets = Some(
           EtmpOtherAssets(
+            recordVersion = None,
             otherAssetsWereHeld = Yes,
             otherAssetsWereDisposed = No,
             noOfTransactions = Some(3),

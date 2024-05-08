@@ -428,7 +428,6 @@ trait TestValues {
 
   val sampleEtmpMinimalRequiredSubmission: EtmpMinimalRequiredSubmission = EtmpMinimalRequiredSubmission(
     EtmpReportDetails(
-      pstr = None,
       psrStatus = Compiled,
       periodStart = sampleToday,
       periodEnd = sampleToday
@@ -608,6 +607,7 @@ trait TestValues {
     ),
     otherAssets = Some(
       EtmpOtherAssets(
+        recordVersion = None,
         otherAssetsWereHeld = "otherAssetsWereHeld",
         otherAssetsWereDisposed = "otherAssetsWereDisposed",
         noOfTransactions = None,
@@ -977,6 +977,7 @@ trait TestValues {
         ),
         otherAssets = Some(
           EtmpOtherAssets(
+            recordVersion = Some("002"),
             otherAssetsWereHeld = "Yes",
             otherAssetsWereDisposed = "No",
             noOfTransactions = Some(1),
@@ -1434,7 +1435,7 @@ trait TestValues {
   )
 
   val samplePsrSubmissionEtmpRequest: PsrSubmissionEtmpRequest = PsrSubmissionEtmpRequest(
-    EtmpReportDetails(None, Compiled, sampleToday, sampleToday),
+    EtmpReportDetails(Compiled, sampleToday, sampleToday),
     EtmpAccountingPeriodDetails(None, List(EtmpAccountingPeriod(sampleToday, sampleToday))),
     EtmpSchemeDesignatory(
       Some("001"),

@@ -60,7 +60,6 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
 
       val expected = EtmpMinimalRequiredSubmission(
         EtmpReportDetails(
-          pstr = None,
           psrStatus = Compiled,
           periodStart = today,
           periodEnd = today
@@ -120,7 +119,6 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
 
       val expected = EtmpMinimalRequiredSubmission(
         EtmpReportDetails(
-          pstr = None,
           psrStatus = Submitted,
           periodStart = today,
           periodEnd = today
