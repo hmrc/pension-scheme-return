@@ -1,0 +1,23 @@
+meta {
+  name: Standard PSR - Missing body
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{pension-scheme-return}}/psr/standard
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 400", function () {
+      expect(res.getStatus()).to.equal(400);
+  });
+  
+  
+}

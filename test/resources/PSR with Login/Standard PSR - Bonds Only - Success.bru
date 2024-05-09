@@ -1,0 +1,94 @@
+meta {
+  name: Standard PSR - Bonds Only - Success
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{pension-scheme-return}}/psr/standard
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+body:json {
+  {
+      "minimalRequiredSubmission": {
+          "reportDetails": {
+              "pstr": "00000042IN",
+              "periodStart": "2023-04-06",
+              "periodEnd": "2024-04-05"
+          },
+          "accountingPeriods": [
+              [
+                  "2023-04-06",
+                  "2024-04-05"
+              ]
+          ],
+          "schemeDesignatory": {
+              "openBankAccount": true,
+              "activeMembers": 23,
+              "deferredMembers": 45,
+              "pensionerMembers": 6,
+              "totalPayments": 74
+          }
+      },
+      "checkReturnDates": true,
+      "assets": {
+          "optBonds": {
+              "bondsWereAdded": true,
+              "bondsWereDisposed": false,
+              "bondTransactions": [
+                  {
+                      "nameOfBonds": "Xenex Bonds",
+                      "methodOfHolding": "01",
+                      "optDateOfAcqOrContrib": "2022-10-06",
+                      "costOfBonds": 10234.56,
+                      "optConnectedPartyStatus": false,
+                      "bondsUnregulated": false,
+                      "totalIncomeOrReceipts": 50,
+                      "optBondsDisposed": [
+                          {
+                              "methodOfDisposal": "Sold",
+                              "optDateSold": "2022-11-30",
+                              "optAmountReceived": 12333.59,
+                              "optBondsPurchaserName": "Happy Bond Buyers Inc.",
+                              "optConnectedPartyStatus": false,
+                              "totalNowHeld": 120
+                          },
+                          {
+                              "methodOfDisposal": "Transferred",
+                              "totalNowHeld": 12
+                          },
+                          {
+                              "methodOfDisposal": "Other",
+                              "optOtherMethod": "OtherMethod",
+                              "totalNowHeld": 10
+                          }
+                      ]
+                  },
+                  {
+                      "nameOfBonds": "Really Goods Bonds ABC",
+                      "methodOfHolding": "02",
+                      "optDateOfAcqOrContrib": "2022-07-30",
+                      "costOfBonds": 2000.5,
+                      "optConnectedPartyStatus": false,
+                      "bondsUnregulated": false,
+                      "totalIncomeOrReceipts": 300
+                  }
+              ]
+          }
+      }
+  }
+}
+
+tests {
+  test("Status code is 204", function () {
+      expect(res.getStatus()).to.equal(204);
+  });
+  
+  
+}

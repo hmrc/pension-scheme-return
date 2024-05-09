@@ -1,0 +1,25 @@
+meta {
+  name: Versions - Organisation 2022 - Success
+  type: http
+  seq: 30
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/versions/24000001IN?startDate=2022-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  startDate: 2022-04-06
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}

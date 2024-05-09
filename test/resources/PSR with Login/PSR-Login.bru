@@ -1,0 +1,41 @@
+meta {
+  name: PSR-Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{auth}}/government-gateway/session/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "credId": "1234",
+    "credentialStrength": "strong",
+    "confidenceLevel": 50,
+    "credentialRole": "User",
+    "affinityGroup": "Organisation",
+    "email": "user@test.com",
+    "excludeGnapToken": true,
+    "enrolments": [
+      {
+        "key": "HMRC-PODS-ORG",
+        "identifiers": [
+          {
+            "key": "PsaID",
+            "value": "A2100005"
+          }
+        ],
+        "state": "Activated"
+      }
+    ]
+  }
+}
+
+script:post-response {
+  const bearer_token = res.getHeader("authorization")
+  const token = bearer_token.replace("Bearer", "").replace(/\s/g, "");
+  bru.setEnvVar("bearer_token", token)
+}

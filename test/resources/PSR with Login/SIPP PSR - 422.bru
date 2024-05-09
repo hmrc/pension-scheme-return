@@ -1,0 +1,27 @@
+meta {
+  name: SIPP PSR - 422
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/sipp/24000001IN?psrVersion=456&periodStartDate=9999-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  psrVersion: 456
+  periodStartDate: 9999-04-06
+  ~fbNumber: 123
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 422", function () {
+      expect(res.getStatus()).to.equal(422);
+  });
+}

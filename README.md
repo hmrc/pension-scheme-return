@@ -52,50 +52,30 @@ You can execute the [runtests.sh](runtests.sh) file to run the tests and generat
 
 ***
 
-### Importing the Postman Collection
+### Importing the Bruno Collection
 
-In order to use postman script instead of frontend with full journey you need to import the json files these are
-collections and environments, into Postman.
+In order to use bruno script instead of frontend with full journey you need to import the bru files these are
+collections and environments, into Bruno.
 
-1. Open Postman
+1. Open Bruno
 
-2. Select collections tab and Import -> File -> Upload-> and select json file from postman folder on your repo
+2. Select open collection
 
-Or
+3. Navigate to the /test/resources/PSR with Login
 
-1. Select collections tab and Import > select raw text on pop up > copy and paste the Collection > continue
+4. Select PSR with Login and open
 
-2. In the Collection tab on the left you should have a collection for PSR
-
-Note: Before you can use the collections **YOU MUST import the EnvironmentVariables**
-
-### Importing Environment Variables
-
-> To use the collections, Postman uses custom environment variables for setting bearer tokens, host names and other
-> things. These need importing before you can run any collection.
-
-1. Within Postman, Under My Workspace, select environments tab and Import -> File -> Upload-> and select json file from
-   postman folder on your repo
-
-Or
-
-1. Under My Workspace, select environments tab and import > raw text on pop up > copy and paste the
-   EnvironmentVariable > continue
-
-2. You should have a list of environments you can now use to run your collections against
-
-3. Set this required EnvironmentVariable as Active by clicking the tick
+5. Gets all the collections and environment vars
 
 > #### Environment variable overview
 >
 > - `pension-scheme-return`         sets the host of the service requests to match the environment
-> - `pension-scheme-return-stub`    sets the host of the service requests to match the environment
 > - `auth`                          sets the host of the service requests to match the environment
 > - `bearer_token`                  sets the Authorization token to satisfy backend authentication
 
 ### LOGIN
 PSR-Login request in the collection is required in order to hit the secured backend endpoints. 
-When you hit the PSR-LOGIN, we obtained the authToken from `auth-login-stub/session` url and setting it to the `bearer_token` field of environment variable. This `bearer_token` then will be used in any subsequent requests for Authorization.  
+When you hit the PSR-LOGIN, we obtained the authToken from `government-gateway/session/login` url and setting it to the `bearer_token` field of environment variable. This `bearer_token` then will be used in any subsequent requests for Authorization.  
 
 ***
 

@@ -1,0 +1,27 @@
+meta {
+  name: Standard PSR with fbNumber
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/standard/24000001IN?fbNumber=000000021221
+  body: none
+  auth: bearer
+}
+
+query {
+  fbNumber: 000000021221
+  ~periodStartDate: 2021-04-06
+  ~psrVersion: 456
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}

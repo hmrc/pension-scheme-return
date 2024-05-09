@@ -1,0 +1,31 @@
+meta {
+  name: Versions for Years - Organisation 2017-2023 - Success
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/versions/years/24000001IN?startDates=2023-04-06&startDates=2022-04-06&startDates=2021-04-06&startDates=2020-04-06&startDates=2019-04-06&startDates=2018-04-06&startDates=2017-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  startDates: 2023-04-06
+  startDates: 2022-04-06
+  startDates: 2021-04-06
+  startDates: 2020-04-06
+  startDates: 2019-04-06
+  startDates: 2018-04-06
+  startDates: 2017-04-06
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}
