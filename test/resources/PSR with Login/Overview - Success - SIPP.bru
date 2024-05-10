@@ -1,0 +1,26 @@
+meta {
+  name: Overview - Success - SIPP
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/overview/24000020IN?toDate=2024-04-06&fromDate=2021-04-05
+  body: none
+  auth: bearer
+}
+
+query {
+  toDate: 2024-04-06
+  fromDate: 2021-04-05
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}

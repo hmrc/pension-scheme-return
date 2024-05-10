@@ -1,0 +1,49 @@
+meta {
+  name: Standard PSR - Unprocessable
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{pension-scheme-return}}/psr/standard
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+body:json {
+  {
+      "minimalRequiredSubmission": {
+          "reportDetails": {
+              "pstr": "00000042IN",
+              "periodStart": "2024-04-05",
+              "periodEnd": "2023-04-06"
+          },
+          "accountingPeriods": [
+              [
+                  "2023-04-06",
+                  "2024-04-05"
+              ]
+          ],
+          "schemeDesignatory": {
+              "openBankAccount": true,
+              "activeMembers": 23,
+              "deferredMembers": 45,
+              "pensionerMembers": 6,
+              "totalPayments": 74
+          }
+      },
+      "checkReturnDates": true
+  }
+}
+
+tests {
+  test("Status code is 422", function () {
+      expect(res.getStatus()).to.equal(422);
+  });
+  
+  
+}

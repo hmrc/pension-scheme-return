@@ -1,0 +1,26 @@
+meta {
+  name: Overview - Invalid date range
+  type: http
+  seq: 27
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/overview/24000001IN?fromDate=2024-04-05&toDate=2021-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  fromDate: 2024-04-05
+  toDate: 2021-04-06
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 403", function () {
+      expect(res.getStatus()).to.equal(403);
+  });
+}

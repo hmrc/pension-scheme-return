@@ -1,0 +1,27 @@
+meta {
+  name: SIPP PSR with periodStartDate-psrVersion
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/sipp/24000001IN?periodStartDate=2021-04-06&psrVersion=456
+  body: none
+  auth: bearer
+}
+
+query {
+  periodStartDate: 2021-04-06
+  psrVersion: 456
+  ~fbNumber: 123
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}

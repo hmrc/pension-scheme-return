@@ -1,0 +1,65 @@
+meta {
+  name: Standard PSR - Borrowing Only - Success
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{pension-scheme-return}}/psr/standard
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+body:json {
+  {
+      "minimalRequiredSubmission": {
+          "reportDetails": {
+              "pstr": "00000042IN",
+              "periodStart": "2023-04-06",
+              "periodEnd": "2024-04-05"
+          },
+          "accountingPeriods": [
+              [
+                  "2023-04-06",
+                  "2024-04-05"
+              ]
+          ],
+          "schemeDesignatory": {
+              "openBankAccount": true,
+              "activeMembers": 23,
+              "deferredMembers": 45,
+              "pensionerMembers": 6,
+              "totalPayments": 74
+          }
+      },
+      "checkReturnDates": true,
+      "assets": {
+          "optBorrowing": {
+              "moneyWasBorrowed": true,
+              "moneyBorrowed": [
+                  {
+                      "dateOfBorrow": "2022-10-18",
+                      "schemeAssetsValue": 0,
+                      "amountBorrowed": 2000,
+                      "interestRate": 5.55,
+                      "borrowingFromName": "Loans R Us",
+                      "connectedPartyStatus": false,
+                      "reasonForBorrow": "We needed the money."
+                  }
+              ]
+          }
+      }
+  }
+}
+
+tests {
+  test("Status code is 204", function () {
+      expect(res.getStatus()).to.equal(204);
+  });
+  
+  
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Versions - Bad request
+  type: http
+  seq: 33
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/versions/24000001IN_Invalid?startDate=2021-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  startDate: 2021-04-06
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 400", function () {
+      expect(res.getStatus()).to.equal(400);
+  });
+}
