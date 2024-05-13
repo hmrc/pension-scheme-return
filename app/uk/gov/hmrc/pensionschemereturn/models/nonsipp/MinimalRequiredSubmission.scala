@@ -22,7 +22,7 @@ import java.time.{LocalDate, LocalDateTime}
 
 case class MinimalRequiredSubmission(
   reportDetails: ReportDetails,
-  accountingPeriods: List[(LocalDate, LocalDate)],
+  accountingPeriodDetails: AccountingPeriodDetails,
   schemeDesignatory: SchemeDesignatory
 )
 
@@ -35,7 +35,13 @@ case class ReportDetails(
   compilationOrSubmissionDate: Option[LocalDateTime]
 )
 
+case class AccountingPeriodDetails(
+  recordVersion: Option[String],
+  accountingPeriods: List[(LocalDate, LocalDate)]
+)
+
 case class SchemeDesignatory(
+  recordVersion: Option[String],
   reasonForNoBankAccount: Option[String],
   openBankAccount: Boolean,
   activeMembers: Int,
@@ -50,6 +56,8 @@ case class SchemeDesignatory(
 
 object MinimalRequiredSubmission {
   private implicit val formatDetails: OFormat[ReportDetails] = Json.format[ReportDetails]
+  private implicit val formatAccountingPeriodDetails: OFormat[AccountingPeriodDetails] =
+    Json.format[AccountingPeriodDetails]
   private implicit val formatSchemeDesignatory: OFormat[SchemeDesignatory] = Json.format[SchemeDesignatory]
   implicit val formats: OFormat[MinimalRequiredSubmission] = Json.format[MinimalRequiredSubmission]
 }

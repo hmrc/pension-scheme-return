@@ -16,73 +16,76 @@ auth:bearer {
 
 body:json {
   {
-      "minimalRequiredSubmission": {
-          "reportDetails": {
-              "pstr": "00000042IN",
-              "periodStart": "2022-04-06",
-              "periodEnd": "2023-04-05"
-          },
-          "accountingPeriods": [
-              [
-                  "2022-04-06",
-                  "2023-04-05"
-              ]
-          ],
-          "schemeDesignatory": {
-              "openBankAccount": true,
-              "activeMembers": 1,
-              "deferredMembers": 1,
-              "pensionerMembers": 1
-          }
+    "minimalRequiredSubmission": {
+      "reportDetails": {
+        "pstr": "00000042IN",
+        "periodStart": "2022-04-06",
+        "periodEnd": "2023-04-05"
       },
-      "checkReturnDates": true,
-      "assets": {
-          "optOtherAssets": {
-              "otherAssetsWereHeld": true,
-              "otherAssetsWereDisposed": false,
-              "otherAssetTransactions": [
-                  {
-                      "assetDescription": "Test asset",
-                      "methodOfHolding": "01",
-                      "optDateOfAcqOrContrib": "2023-03-05",
-                      "costOfAsset": 12.34,
-                      "optPropertyAcquiredFromName": "sdgfghdfh",
-                      "optPropertyAcquiredFrom": {
-                          "identityType": "other",
-                          "otherDescription": "gfhfghfghf"
-                      },
-                      "optConnectedStatus": false,
-                      "optIndepValuationSupport": false,
-                      "movableSchedule29A": false,
-                      "totalIncomeOrReceipts": 34.56,
-                      "optOtherAssetDisposed": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateSold": "2022-11-30",
-                              "optPurchaserName": "Acme Express Ltd.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "individual",
-                                  "idNumber": "SX123456A"
-                              },
-                              "optTotalAmountReceived": 12333.59,
-                              "optConnectedStatus": false,
-                              "optSupportedByIndepValuation": false,
-                              "anyPartAssetStillHeld": true
-                          },
-                          {
-                              "methodOfDisposal": "Transferred",
-                              "anyPartAssetStillHeld": true
-                          },
-                          {
-                              "methodOfDisposal": "Other",
-                              "optOtherMethod": "OtherMethod",
-                              "anyPartAssetStillHeld": true
-                          }
-                      ]
-                  }
-              ]
-          }
+      "accountingPeriodDetails": {
+        "recordVersion": "001",
+        "accountingPeriods": [
+          [
+            "2023-04-06",
+            "2024-04-05"
+          ]
+        ]
+      },
+      "schemeDesignatory": {
+        "openBankAccount": true,
+        "activeMembers": 1,
+        "deferredMembers": 1,
+        "pensionerMembers": 1
       }
+    },
+    "checkReturnDates": true,
+    "assets": {
+      "optOtherAssets": {
+        "otherAssetsWereHeld": true,
+        "otherAssetsWereDisposed": false,
+        "otherAssetTransactions": [
+          {
+            "assetDescription": "Test asset",
+            "methodOfHolding": "01",
+            "optDateOfAcqOrContrib": "2023-03-05",
+            "costOfAsset": 12.34,
+            "optPropertyAcquiredFromName": "sdgfghdfh",
+            "optPropertyAcquiredFrom": {
+              "identityType": "other",
+              "otherDescription": "gfhfghfghf"
+            },
+            "optConnectedStatus": false,
+            "optIndepValuationSupport": false,
+            "movableSchedule29A": false,
+            "totalIncomeOrReceipts": 34.56,
+            "optOtherAssetDisposed": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateSold": "2022-11-30",
+                "optPurchaserName": "Acme Express Ltd.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "individual",
+                  "idNumber": "SX123456A"
+                },
+                "optTotalAmountReceived": 12333.59,
+                "optConnectedStatus": false,
+                "optSupportedByIndepValuation": false,
+                "anyPartAssetStillHeld": true
+              },
+              {
+                "methodOfDisposal": "Transferred",
+                "anyPartAssetStillHeld": true
+              },
+              {
+                "methodOfDisposal": "Other",
+                "optOtherMethod": "OtherMethod",
+                "anyPartAssetStillHeld": true
+              }
+            ]
+          }
+        ]
+      }
+    }
   }
 }
 

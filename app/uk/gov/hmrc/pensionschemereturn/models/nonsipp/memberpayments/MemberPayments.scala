@@ -24,6 +24,7 @@ case class SectionDetails(
 )
 
 case class MemberPayments(
+  recordVersion: Option[String],
   memberDetails: List[MemberDetails],
   employerContributionsDetails: SectionDetails,
   transfersInCompleted: Boolean,

@@ -41,6 +41,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
       case (inputRecipientSponsoringEmployer, resultRecipientSponsoringEmployer) =>
         s"as an Individual for recipientSponsoringEmployer : $inputRecipientSponsoringEmployer" in {
           val loans: Loans = Loans(
+            recordVersion = Some("001"),
             schemeHadLoans = true,
             loanTransactions = List(
               LoanTransactions(
@@ -64,7 +65,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
           )
 
           val expected = EtmpLoans(
-            recordVersion = None,
+            recordVersion = Some("001"),
             schemeHadLoans = Yes,
             noOfLoans = Some(1),
             loanTransactions = Some(
@@ -104,6 +105,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
 
     s"when schemeHadLoans is false and loanTransactions is empty" in {
       val loans: Loans = Loans(
+        recordVersion = None,
         schemeHadLoans = false,
         loanTransactions = List.empty
       )

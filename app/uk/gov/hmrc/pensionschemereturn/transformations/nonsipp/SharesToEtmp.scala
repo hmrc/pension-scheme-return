@@ -39,7 +39,7 @@ class SharesToEtmp @Inject() extends Transformer {
       transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.ConnectedParty)
 
     EtmpShares(
-      recordVersion = None,
+      recordVersion = shares.recordVersion,
       sponsorEmployerSharesWereHeld = YesNo(sponsoringEmployerFlag),
       noOfSponsEmplyrShareTransactions = Option.when(sponsoringEmployerFlag)(sponsoringEmployerCount),
       unquotedSharesWereHeld = YesNo(unquotedFlag),

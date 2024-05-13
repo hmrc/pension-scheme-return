@@ -35,6 +35,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
       optLandOrProperty = assets.landOrProperty.map(
         landOrProperty =>
           LandOrProperty(
+            recordVersion = landOrProperty.recordVersion,
             landOrPropertyHeld = fromYesNo(landOrProperty.heldAnyLandOrProperty),
             disposeAnyLandOrProperty = fromYesNo(landOrProperty.disposeAnyLandOrProperty),
             landOrPropertyTransactions = landOrProperty.landOrPropertyTransactions
@@ -126,6 +127,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
       optBorrowing = assets.borrowing.map(
         borrowing =>
           Borrowing(
+            recordVersion = borrowing.recordVersion,
             moneyWasBorrowed = fromYesNo(borrowing.moneyWasBorrowed),
             moneyBorrowed = borrowing.moneyBorrowed
               .getOrElse(Seq.empty)
@@ -146,6 +148,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
       optBonds = assets.bonds.map(
         bonds =>
           Bonds(
+            recordVersion = bonds.recordVersion,
             bondsWereAdded = fromYesNo(bonds.bondsWereAdded),
             bondsWereDisposed = fromYesNo(bonds.bondsWereDisposed),
             bondTransactions = bonds.bondTransactions
@@ -181,6 +184,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
       optOtherAssets = assets.otherAssets.map(
         otherAssets =>
           OtherAssets(
+            recordVersion = otherAssets.recordVersion,
             otherAssetsWereHeld = fromYesNo(otherAssets.otherAssetsWereHeld),
             otherAssetsWereDisposed = fromYesNo(otherAssets.otherAssetsWereDisposed),
             otherAssetTransactions = otherAssets.otherAssetTransactions

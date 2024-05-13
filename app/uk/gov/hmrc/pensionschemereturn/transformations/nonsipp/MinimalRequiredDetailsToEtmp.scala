@@ -36,8 +36,8 @@ class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
         periodEnd = minimalRequiredSubmission.reportDetails.periodEnd
       ),
       EtmpAccountingPeriodDetails(
-        recordVersion = None,
-        accountingPeriods = minimalRequiredSubmission.accountingPeriods.map {
+        recordVersion = minimalRequiredSubmission.accountingPeriodDetails.recordVersion,
+        accountingPeriods = minimalRequiredSubmission.accountingPeriodDetails.accountingPeriods.map {
           case (start, end) =>
             EtmpAccountingPeriod(
               accPeriodStart = start,
@@ -46,7 +46,7 @@ class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
         }
       ),
       EtmpSchemeDesignatory(
-        recordVersion = None,
+        recordVersion = minimalRequiredSubmission.schemeDesignatory.recordVersion,
         openBankAccount = toYesNo(minimalRequiredSubmission.schemeDesignatory.openBankAccount),
         reasonNoOpenAccount = minimalRequiredSubmission.schemeDesignatory.reasonForNoBankAccount,
         noOfActiveMembers = minimalRequiredSubmission.schemeDesignatory.activeMembers,

@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import utils.TestValues
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.etmp.Compiled
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,7 +35,7 @@ class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar w
     "transform successfully" in {
 
       val expected = MinimalRequiredSubmission(
-        ReportDetails(
+        reportDetails = ReportDetails(
           fbVersion = Some("001"),
           fbstatus = Some(Compiled.name),
           pstr = "12345678AA",
@@ -44,11 +44,15 @@ class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar w
           compilationOrSubmissionDate =
             Some(LocalDateTime.parse("2023-12-17T09:30:47Z", DateTimeFormatter.ISO_DATE_TIME))
         ),
-        List(
-          LocalDate.parse("2022-04-06") -> LocalDate.parse("2022-12-31"),
-          LocalDate.parse("2023-01-01") -> LocalDate.parse("2023-04-05")
+        accountingPeriodDetails = AccountingPeriodDetails(
+          recordVersion = Some("002"),
+          accountingPeriods = List(
+            LocalDate.parse("2022-04-06") -> LocalDate.parse("2022-12-31"),
+            LocalDate.parse("2023-01-01") -> LocalDate.parse("2023-04-05")
+          )
         ),
-        SchemeDesignatory(
+        schemeDesignatory = SchemeDesignatory(
+          recordVersion = Some("002"),
           reasonForNoBankAccount = None,
           openBankAccount = true,
           activeMembers = 5,
