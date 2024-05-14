@@ -57,7 +57,10 @@ class MemberPaymentsTransformer @Inject()(
       },
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
-          memberStatus = SectionStatus.New,
+          memberStatus = memberDetails.state match {
+            case MemberState.Active => SectionStatus.New
+            case MemberState.Deleted => SectionStatus.Deleted
+          },
           memberPSRVersion = "001",
           noOfContributions =
             if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
@@ -104,6 +107,11 @@ class MemberPaymentsTransformer @Inject()(
         transfersOut <- member.memberTransfersOut.toList.flatten.traverse(transferOutTransformer.fromEtmp)
         pensionSurrenders <- member.memberPensionSurrender.toList.flatten.traverse(pensionSurrenderTransformer.fromEtmp)
       } yield MemberDetails(
+        state = member.memberStatus match {
+          case SectionStatus.New => MemberState.Active
+          case SectionStatus.Changed => MemberState.Active
+          case SectionStatus.Deleted => MemberState.Deleted
+        },
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
         totalContributions = member.totalContributions,
