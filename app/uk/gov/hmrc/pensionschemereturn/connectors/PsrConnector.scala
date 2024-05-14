@@ -80,6 +80,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
       response.status match {
         case OK =>
+          logger.debug(s"This is ETMP Response -->> Status : ${response.status}, Data : ${response.json}")
           Some(response.json.as[PsrSubmissionEtmpResponse])
         case UNPROCESSABLE_ENTITY if response.body.contains("PSR_NOT_FOUND") =>
           logger.info(s"$logMessage and returned PSR_NOT_FOUND with status: ${response.status}")
