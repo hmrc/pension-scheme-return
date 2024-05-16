@@ -24,6 +24,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig, runModeConfiguration: Configuration) {
 
+  lazy val appName: String = config.get[String](path = "appName")
   private val ifURL: String = servicesConfig.baseUrl(serviceName = "if-hod")
 
   lazy val integrationFrameworkEnvironment: String =
