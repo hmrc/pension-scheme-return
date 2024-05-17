@@ -21,6 +21,8 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import java.time.LocalDateTime
+import java.util.Locale
+import java.time.format.DateTimeFormatter
 
 sealed trait Event
 
@@ -46,17 +48,26 @@ case object Complained extends WithName("Complained") with Event
 case class EmailEvent(event: Event, detected: LocalDateTime)
 
 object EmailEvent {
+  private val isoZonedDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.UK)
+
+  private val dateTimeWritesWithMilliseconds = Writes[LocalDateTime] { localDateTime =>
+    JsString(isoZonedDateFormatter.format(localDateTime))
+  }
 
   implicit val read: Reads[EmailEvent] = {
     (JsPath \ "event")
       .read[Event]
-      .and((JsPath \ "detected").read[String].map(LocalDateTime.parse))(EmailEvent.apply _)
+      .and((JsPath \ "detected").read[String].map(detected => LocalDateTime.parse(detected, isoZonedDateFormatter)))(
+        EmailEvent.apply _
+      )
   }
-
   implicit val write: Writes[EmailEvent] =
     (JsPath \ "event")
       .write[Event]
-      .and((JsPath \ "detected").write[LocalDateTime])(emailEvent => (emailEvent.event, emailEvent.detected))
+      .and((JsPath \ "detected").write[LocalDateTime](dateTimeWritesWithMilliseconds))(
+        emailEvent => (emailEvent.event, emailEvent.detected)
+      )
 }
 
 case class EmailEvents(events: Seq[EmailEvent])
