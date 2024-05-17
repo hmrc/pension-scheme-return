@@ -59,13 +59,9 @@ class MemberPaymentsTransformer @Inject()(
         EtmpMemberDetails(
           memberStatus = SectionStatus.New,
           memberPSRVersion = "001",
-          noOfContributions = if (memberPayments.employerContributionsDetails.completed) {
-            if (memberDetails.employerContributions.nonEmpty) {
-              Some(memberDetails.employerContributions.size)
-            } else {
-              Some(-1)
-            }
-          } else None,
+          noOfContributions =
+            if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
+            else None,
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
