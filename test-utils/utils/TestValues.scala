@@ -337,6 +337,7 @@ trait TestValues {
   )
 
   val sampleMemberDetails1: MemberDetails = MemberDetails(
+    state = MemberState.Active,
     MemberPersonalDetails(
       firstName = "test first one",
       lastName = "test last one",
@@ -367,6 +368,7 @@ trait TestValues {
   )
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
+    state = MemberState.Active,
     MemberPersonalDetails(
       firstName = "test first two",
       lastName = "test last two",

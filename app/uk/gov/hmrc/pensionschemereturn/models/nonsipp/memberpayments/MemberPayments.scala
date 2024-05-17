@@ -37,6 +37,7 @@ case class MemberPayments(
 )
 
 case class MemberDetails(
+  state: MemberState,
   personalDetails: MemberPersonalDetails,
   employerContributions: List[EmployerContributions],
   totalContributions: Option[Double],

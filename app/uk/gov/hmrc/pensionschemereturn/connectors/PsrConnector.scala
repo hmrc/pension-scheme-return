@@ -45,7 +45,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
     // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
-    logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.stringify(data)}")
+    logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.prettyPrint(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
     logger.debug(s"----<<Headers>>----: $hc")
@@ -56,7 +56,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
         response.status match {
           case OK =>
             // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
-            logger.debug(s"Submit standard PSR ----<<RESPONSE>>----: ${Json.stringify(response.json)}")
+            logger.debug(s"Submit standard PSR ----<<RESPONSE>>----: ${Json.prettyPrint(response.json)}")
             response
           case _ => handleErrorResponse("POST", url)(response)
         }

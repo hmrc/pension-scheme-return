@@ -435,6 +435,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |    },
           |    "memberDetails": [
           |      {
+          |        "state": "Active",
           |        "personalDetails": {
           |          "firstName": "John",
           |          "lastName": "Doe",
@@ -489,6 +490,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |        "pensionAmountReceived": 12.34
           |      },
           |      {
+          |        "state": "Deleted",
           |        "personalDetails": {
           |          "firstName": "Jane",
           |          "lastName": "Dean",

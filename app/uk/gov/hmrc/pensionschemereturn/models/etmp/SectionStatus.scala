@@ -29,7 +29,7 @@ object SectionStatus {
   case object Changed extends SectionStatus {
     val value = "Changed"
   }
-  private case object Deleted extends SectionStatus {
+  case object Deleted extends SectionStatus {
     val value = "Deleted"
   }
 
