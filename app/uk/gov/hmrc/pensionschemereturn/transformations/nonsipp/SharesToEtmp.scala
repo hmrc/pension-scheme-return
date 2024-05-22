@@ -51,7 +51,8 @@ class SharesToEtmp @Inject() extends Transformer {
       unquotedSharesWereDisposed = transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted),
       connectedPartySharesWereDisposed =
         transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty),
-      shareTransactions = optShareTransactions.map(_.map(transformShareTransactions)),
+      shareTransactions =
+        Option.when(optShareTransactions.nonEmpty)(optShareTransactions.map(_.map(transformShareTransactions))).flatten,
       totalValueQuotedShares = shares.optTotalValueQuotedShares.getOrElse(holderValue)
     )
   }
