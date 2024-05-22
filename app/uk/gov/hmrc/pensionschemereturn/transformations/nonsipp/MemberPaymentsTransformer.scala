@@ -131,7 +131,9 @@ class MemberPaymentsTransformer @Inject()(
           memberDetails = details,
           employerContributionsDetails = SectionDetails(
             made = out.employerContributionMade.boolean,
-            completed = out.memberDetails.forall(_.noOfContributions.nonEmpty)
+            completed =
+              if (!out.employerContributionMade.boolean) true
+              else !out.memberDetails.forall(_.noOfContributions.isEmpty)
           ),
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
