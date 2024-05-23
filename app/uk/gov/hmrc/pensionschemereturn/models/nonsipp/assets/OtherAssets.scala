@@ -22,6 +22,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class OtherAssets(
+  recordVersion: Option[String],
   otherAssetsWereHeld: Boolean,
   otherAssetsWereDisposed: Boolean,
   otherAssetTransactions: Seq[OtherAssetTransaction]

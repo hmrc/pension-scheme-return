@@ -71,8 +71,10 @@ trait TestValues {
       periodEnd = sampleToday,
       compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
     ),
-    accountingPeriods = List(sampleToday -> sampleToday),
+    accountingPeriodDetails =
+      AccountingPeriodDetails(recordVersion = Some("001"), accountingPeriods = List(sampleToday -> sampleToday)),
     schemeDesignatory = SchemeDesignatory(
+      recordVersion = Some("001"),
       reasonForNoBankAccount = None,
       openBankAccount = true,
       activeMembers = 1,
@@ -97,6 +99,7 @@ trait TestValues {
   )
 
   val sampleLoans: Loans = Loans(
+    recordVersion = Some("001"),
     schemeHadLoans = true,
     loanTransactions = List(
       LoanTransactions(
@@ -131,6 +134,7 @@ trait TestValues {
   val sampleAssets: Assets = Assets(
     optLandOrProperty = Some(
       LandOrProperty(
+        recordVersion = Some("001"),
         landOrPropertyHeld = true,
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = Seq(
@@ -196,6 +200,7 @@ trait TestValues {
     ),
     optBorrowing = Some(
       Borrowing(
+        recordVersion = Some("001"),
         moneyWasBorrowed = true,
         moneyBorrowed = Seq(
           MoneyBorrowed(
@@ -212,6 +217,7 @@ trait TestValues {
     ),
     optBonds = Some(
       Bonds(
+        recordVersion = Some("001"),
         bondsWereAdded = true,
         bondsWereDisposed = false,
         bondTransactions = Seq(
@@ -242,6 +248,7 @@ trait TestValues {
     ),
     optOtherAssets = Some(
       OtherAssets(
+        recordVersion = Some("001"),
         otherAssetsWereHeld = true,
         otherAssetsWereDisposed = true,
         otherAssetTransactions = Seq(
@@ -401,6 +408,7 @@ trait TestValues {
   val sampleUnallocatedContribAmount: Double = 201.34
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
+    recordVersion = Some("001"),
     unallocatedContribsMade = true,
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberDetails = List(
@@ -416,7 +424,8 @@ trait TestValues {
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
-  val sampleShares: Shares = Shares(optShareTransactions = None, optTotalValueQuotedShares = None)
+  val sampleShares: Shares =
+    Shares(recordVersion = Some("001"), optShareTransactions = None, optTotalValueQuotedShares = None)
 
   val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
     submittedBy = PSA,
@@ -619,7 +628,7 @@ trait TestValues {
   )
 
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
-    recordVersion = None,
+    recordVersion = Some("001"),
     employerContributionMade = Yes,
     unallocatedContribsMade = Yes,
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),

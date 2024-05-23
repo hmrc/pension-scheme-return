@@ -60,7 +60,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       val assets = EtmpAssets(
         landOrProperty = Some(
           EtmpLandOrProperty(
-            recordVersion = None,
+            recordVersion = Some("001"),
             heldAnyLandOrProperty = Yes,
             disposeAnyLandOrProperty = Yes,
             noOfTransactions = Some(1),
@@ -162,7 +162,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         borrowing = Some(
           EtmpBorrowing(
-            recordVersion = None,
+            recordVersion = Some("001"),
             moneyWasBorrowed = Yes,
             noOfBorrows = Some(1),
             moneyBorrowed = Some(
@@ -182,7 +182,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         bonds = Some(
           EtmpBonds(
-            recordVersion = None,
+            recordVersion = Some("001"),
             bondsWereAdded = Yes,
             bondsWereDisposed = Yes,
             noOfTransactions = Some(1),
@@ -234,7 +234,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         otherAssets = Some(
           EtmpOtherAssets(
-            recordVersion = None,
+            recordVersion = Some("001"),
             otherAssetsWereHeld = Yes,
             otherAssetsWereDisposed = No,
             noOfTransactions = Some(1),
@@ -340,6 +340,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       val expected = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
+            recordVersion = Some("001"),
             landOrPropertyHeld = true,
             disposeAnyLandOrProperty = true,
             landOrPropertyTransactions = List(
@@ -434,6 +435,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         optBorrowing = Some(
           Borrowing(
+            recordVersion = Some("001"),
             moneyWasBorrowed = true,
             moneyBorrowed = Seq(
               MoneyBorrowed(
@@ -450,6 +452,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         optBonds = Some(
           Bonds(
+            recordVersion = Some("001"),
             bondsWereAdded = true,
             bondsWereDisposed = true,
             bondTransactions = Seq(
@@ -498,6 +501,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         ),
         optOtherAssets = Some(
           OtherAssets(
+            recordVersion = Some("001"),
             otherAssetsWereHeld = true,
             otherAssetsWereDisposed = false,
             otherAssetTransactions = Seq(

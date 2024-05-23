@@ -27,6 +27,7 @@ class LoansFromEtmp @Inject() extends Transformer {
 
   def transform(loans: EtmpLoans): Loans =
     Loans(
+      recordVersion = loans.recordVersion,
       schemeHadLoans = fromYesNo(loans.schemeHadLoans),
       loanTransactions = loans.loanTransactions
         .getOrElse(Seq.empty)

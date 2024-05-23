@@ -35,13 +35,14 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
     "for schemeHadLoans is false loanTransactions is empty" in {
 
       val etmpLoans = EtmpLoans(
-        recordVersion = Some("001"),
+        recordVersion = None,
         schemeHadLoans = No,
         noOfLoans = None,
         loanTransactions = None
       )
 
       val expected: Loans = Loans(
+        recordVersion = None,
         schemeHadLoans = false,
         loanTransactions = List.empty
       )
@@ -86,6 +87,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
       )
 
       val expected: Loans = Loans(
+        recordVersion = Some("001"),
         schemeHadLoans = true,
         loanTransactions = List(
           LoanTransactions(
@@ -147,6 +149,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
       )
 
       val expected: Loans = Loans(
+        recordVersion = Some("001"),
         schemeHadLoans = true,
         loanTransactions = List(
           LoanTransactions(
@@ -210,6 +213,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
       )
 
       val expected: Loans = Loans(
+        recordVersion = Some("001"),
         schemeHadLoans = true,
         loanTransactions = List(
           LoanTransactions(
@@ -273,6 +277,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
       )
 
       val expected: Loans = Loans(
+        recordVersion = Some("001"),
         schemeHadLoans = true,
         loanTransactions = List(
           LoanTransactions(

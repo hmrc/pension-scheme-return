@@ -40,8 +40,10 @@ class StandardPsrFromEtmp @Inject()(
       minimalRequiredSubmission = minimalRequiredSubmissionFromEtmp.transform(psrSubmissionResponse)
     } yield PsrSubmission(
       minimalRequiredSubmission = minimalRequiredSubmission,
-      checkReturnDates =
-        isCheckReturnDates(minimalRequiredSubmission.reportDetails, minimalRequiredSubmission.accountingPeriods.head),
+      checkReturnDates = isCheckReturnDates(
+        minimalRequiredSubmission.reportDetails,
+        minimalRequiredSubmission.accountingPeriodDetails.accountingPeriods.head
+      ),
       loans = psrSubmissionResponse.loans.map(loansFromEtmp.transform),
       assets = psrSubmissionResponse.assets.map(assetsFromEtmp.transform),
       membersPayments = memberPayments,

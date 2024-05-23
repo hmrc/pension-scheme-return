@@ -39,7 +39,7 @@ class MemberPaymentsTransformer @Inject()(
 
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
-      recordVersion = None,
+      recordVersion = memberPayments.recordVersion,
       employerContributionMade = memberPayments.employerContributionsDetails.made,
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount =
@@ -128,6 +128,7 @@ class MemberPaymentsTransformer @Inject()(
     memberDetails.map(
       details =>
         MemberPayments(
+          recordVersion = out.recordVersion,
           memberDetails = details,
           employerContributionsDetails = SectionDetails(
             made = out.employerContributionMade.boolean,

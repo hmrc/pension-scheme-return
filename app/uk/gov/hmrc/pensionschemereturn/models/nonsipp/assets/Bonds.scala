@@ -21,6 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class Bonds(
+  recordVersion: Option[String],
   bondsWereAdded: Boolean,
   bondsWereDisposed: Boolean,
   bondTransactions: Seq[BondTransactions]

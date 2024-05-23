@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 
 @Singleton()
@@ -34,9 +34,13 @@ class MinimalRequiredSubmissionFromEtmp @Inject() extends Transformer {
         periodEnd = psrSubmissionResponse.psrDetails.periodEnd,
         compilationOrSubmissionDate = Some(psrSubmissionResponse.psrDetails.compilationOrSubmissionDate)
       ),
-      accountingPeriods = psrSubmissionResponse.accountingPeriodDetails.accountingPeriods
-        .map(accPeriod => (accPeriod.accPeriodStart, accPeriod.accPeriodEnd)),
+      accountingPeriodDetails = AccountingPeriodDetails(
+        recordVersion = psrSubmissionResponse.accountingPeriodDetails.recordVersion,
+        accountingPeriods = psrSubmissionResponse.accountingPeriodDetails.accountingPeriods
+          .map(accPeriod => (accPeriod.accPeriodStart, accPeriod.accPeriodEnd))
+      ),
       schemeDesignatory = SchemeDesignatory(
+        recordVersion = psrSubmissionResponse.schemeDesignatory.recordVersion,
         reasonForNoBankAccount = psrSubmissionResponse.schemeDesignatory.reasonNoOpenAccount,
         openBankAccount = fromYesNo(psrSubmissionResponse.schemeDesignatory.openBankAccount),
         activeMembers = psrSubmissionResponse.schemeDesignatory.noOfActiveMembers,

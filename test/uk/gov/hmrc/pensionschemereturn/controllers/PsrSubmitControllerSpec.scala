@@ -104,19 +104,23 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
 
       val requestJson: JsValue = Json.parse(
-        """{
+        """
+          |{
           |  "minimalRequiredSubmission": {
           |    "reportDetails": {
           |      "pstr": "00000042IN",
           |      "periodStart": "2023-04-06",
           |      "periodEnd": "2024-04-05"
           |    },
-          |    "accountingPeriods": [
-          |      [
-          |        "2023-04-06",
-          |        "2024-04-05"
+          |    "accountingPeriodDetails":  {
+          |      "recordVersion" : "001",
+          |      "accountingPeriods": [
+          |        [
+          |          "2023-04-06",
+          |          "2024-04-05"
+          |        ]
           |      ]
-          |    ],
+          |    },
           |    "schemeDesignatory": {
           |      "openBankAccount": true,
           |      "activeMembers": 23,
@@ -682,7 +686,8 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |    "declaration1": true,
           |    "declaration2": true
           |  }
-          |}""".stripMargin
+          |}
+          |""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
       val result = controller.submitStandardPsr(postRequest)
