@@ -74,7 +74,7 @@ class PsrSubmitController @Inject()(
         case Some(Right(psrSubmission)) =>
           val jsonResponse = Json.toJson(psrSubmission)
           // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
-          logger.debug(message = s"Retrieved data as JSON: $jsonResponse")
+          logger.debug(message = s"Retrieved data as JSON: ${Json.prettyPrint(jsonResponse)}")
           Ok(jsonResponse)
         case Some(Left(error)) => InternalServerError(Json.toJson(error))
       }
