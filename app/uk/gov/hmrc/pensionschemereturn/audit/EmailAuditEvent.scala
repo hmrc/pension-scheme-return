@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.audit
 
+import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
 import uk.gov.hmrc.pensionschemereturn.models.Event
 import play.api.libs.json.{JsObject, Json}
 
@@ -26,16 +27,43 @@ case class EmailAuditEvent(
   emailAddress: String,
   event: Event,
   requestId: String,
-  reportVersion: String
+  reportVersion: String,
+  schemeName: String,
+  taxYear: String,
+  userName: String
 ) extends AuditEvent {
   override def auditType: String = "PensionSchemeReturnEmailEvent"
-  override def details: JsObject =
-    Json.obj(
-      fields = "email-initiation-request-id" -> requestId,
-      "emailAddress" -> emailAddress,
-      "event" -> event.toString,
-      "submittedBy" -> submittedBy,
-      "reportVersion" -> reportVersion,
-      "PensionSchemeTaxReference" -> pstr
-    ) ++ Json.obj("psaId" -> psaOrPspId)
+
+  override def details: JsObject = {
+    val emailDetails =
+      Json.obj(
+        fields = "EmailInitiationRequestId" -> requestId,
+        "EmailAddress" -> emailAddress,
+        "Event" -> event.toString,
+        "SubmittedBy" -> submittedBy,
+        "ReportVersion" -> reportVersion,
+        "PensionSchemeTaxReference" -> pstr,
+        "SchemeName" -> schemeName,
+        "TaxYear" -> taxYear
+      )
+    psaOrPspIdDetails(submittedBy, psaOrPspId, userName) ++ emailDetails
+  }
+
+  private def psaOrPspIdDetails(
+    credentialRole: String,
+    psaOrPspId: String,
+    schemeAdministratorOrPractitionerName: String
+  ): JsObject =
+    credentialRole match {
+      case PSA =>
+        Json.obj(
+          "PensionSchemeAdministratorId" -> psaOrPspId,
+          "SchemeAdministratorName" -> schemeAdministratorOrPractitionerName
+        )
+      case _ =>
+        Json.obj(
+          "PensionSchemePractitionerId" -> psaOrPspId,
+          "SchemePractitionerName" -> schemeAdministratorOrPractitionerName
+        )
+    }
 }

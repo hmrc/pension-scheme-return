@@ -53,7 +53,10 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with Inside {
         emailAddress = "test@test.com",
         event = Sent,
         requestId = "test-request-id",
-        reportVersion = "1"
+        reportVersion = "001",
+        schemeName = "Test Scheme",
+        taxYear = "test tax year",
+        userName = "test user"
       )
 
       val templateCaptor = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
@@ -68,13 +71,16 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with Inside {
           auditType mustBe event.auditType
 
           detail mustBe Json.obj(
-            "email-initiation-request-id" -> "test-request-id",
+            "EmailInitiationRequestId" -> "test-request-id",
             "PensionSchemeTaxReference" -> "test-pstr",
-            "emailAddress" -> "test@test.com",
-            "event" -> "Sent",
-            "submittedBy" -> "PSA",
-            "reportVersion" -> "1",
-            "psaId" -> "A2500001"
+            "SchemeAdministratorName" -> "test user",
+            "EmailAddress" -> "test@test.com",
+            "Event" -> "Sent",
+            "SubmittedBy" -> "PSA",
+            "ReportVersion" -> "001",
+            "PensionSchemeAdministratorId" -> "A2500001",
+            "SchemeName" -> "Test Scheme",
+            "TaxYear" -> "test tax year"
           )
       }
     }

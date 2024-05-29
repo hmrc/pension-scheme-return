@@ -1,0 +1,38 @@
+meta {
+  name: Email callback - PSA
+  type: http
+  seq: 37
+}
+
+post {
+  url: {{pension-scheme-return}}/psr/email-response/PSA/govuk-tax-49316285-77d2-4e76-90d2-96c5f4c804b1/iZaFtw49io0G92SaqOy7wQ%3D%3D/RYyHJTm36IlhCOZ9cME8JNnO8otIuO5TR%2BKUqIi9yyfjlcbrwZ3lI0Emn%2FiK3UiD/wJjPVITiQLor2CQqHKIIDw%3D%3D/001/t9l8A%2B8Bb41buDLF3mQOamd2BtfYXadQWL%2BJddeDmOcuCNMcmt7L%2FDlBlejvtrjybI0%2Fk2UfXlryRGiY12ik1g%3D%3D/2022-2023/KID8ZxmHefQRskZqY0qoAO2XRjvQYEI%2BLmxBoqPEmFY%3D
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+body:json {
+  {
+      "events": [
+          {
+              "event": "Sent",
+              "detected": "2024-05-17T11:07:48.956Z"
+          },
+          {
+              "event": "Delivered",
+              "detected": "2015-07-02T08:25:20.956Z"
+          }
+      ]
+  }
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+  
+  
+}

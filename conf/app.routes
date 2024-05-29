@@ -1,13 +1,13 @@
 # microservice specific routes
 
-GET         /psr/overview/:pstr                                                                 uk.gov.hmrc.pensionschemereturn.controllers.PsrOverviewController.getOverview(pstr: String, fromDate: String, toDate: String)
-GET         /psr/versions/:pstr                                                                 uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersions(pstr: String, startDate: String)
-GET         /psr/versions/years/:pstr                                                           uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersionsForYears(pstr: String, startDates: Seq[String])
+GET         /psr/overview/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrOverviewController.getOverview(pstr: String, fromDate: String, toDate: String)
+GET         /psr/versions/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersions(pstr: String, startDate: String)
+GET         /psr/versions/years/:pstr  uk.gov.hmrc.pensionschemereturn.controllers.PsrVersionsController.getVersionsForYears(pstr: String, startDates: Seq[String])
 
-POST        /psr/standard                                                                       uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
-GET         /psr/standard/:pstr                                                                 uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.getStandardPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
+POST        /psr/standard              uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
+GET         /psr/standard/:pstr        uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.getStandardPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
 
-POST        /psr/sipp                                                                           uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.submitSippPsr
-GET         /psr/sipp/:pstr                                                                     uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.getSippPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
+POST        /psr/sipp                  uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.submitSippPsr
+GET         /psr/sipp/:pstr            uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.getSippPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
 
-POST        /psr/email-response/:submittedBy/:requestId/:email/:psaId/:pstr/:reportVersion      uk.gov.hmrc.pensionschemereturn.controllers.EmailResponseController.sendAuditEvents(submittedBy: String, requestId: String, email: String, psaId: String, pstr: String, reportVersion: String)
+POST        /psr/email-response/:submittedBy/:requestId/:email/:psaId/:pstr/:reportVersion/:schemeName/:taxYear/:userName      uk.gov.hmrc.pensionschemereturn.controllers.EmailResponseController.sendAuditEvents(submittedBy: String, requestId: String, email: String, psaId: String, pstr: String, reportVersion: String, schemeName: String, taxYear: String, userName: String)

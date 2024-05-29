@@ -48,10 +48,13 @@ class EmailResponseController @Inject()(
     email: String,
     encryptedPsaOrPspId: String,
     encryptedPstr: String,
-    reportVersion: String
+    reportVersion: String,
+    encryptedSchemeName: String,
+    taxYear: String,
+    encryptedUserName: String
   ): Action[JsValue] = Action(parser.tolerantJson) { implicit request =>
-    decryptPsaOrPspIdAndEmail(encryptedPsaOrPspId, encryptedPstr, email) match {
-      case Right(Tuple3(psaOrPspId, pstr, emailAddress)) =>
+    decryptDetails(encryptedPsaOrPspId, encryptedPstr, email, encryptedSchemeName, encryptedUserName) match {
+      case Right(Tuple5(psaOrPspId, pstr, emailAddress, schemeName, userName)) =>
         request.body
           .validate[EmailEvents]
           .fold(
@@ -64,7 +67,18 @@ class EmailResponseController @Inject()(
                 .foreach { event =>
                   logger.debug(s"Email Audit event is $event")
                   auditService.sendEvent(
-                    EmailAuditEvent(psaOrPspId, pstr, submittedBy, emailAddress, event.event, requestId, reportVersion)
+                    EmailAuditEvent(
+                      psaOrPspId,
+                      pstr,
+                      submittedBy,
+                      emailAddress,
+                      event.event,
+                      requestId,
+                      reportVersion,
+                      schemeName,
+                      taxYear,
+                      userName
+                    )
                   )(request, implicitly)
                 }
               Ok
@@ -75,20 +89,30 @@ class EmailResponseController @Inject()(
     }
   }
 
-  private def decryptPsaOrPspIdAndEmail(
+  private def decryptDetails(
     encryptedPsaOrPspId: String,
     encryptedPstr: String,
-    email: String
-  ): Either[Result, (String, String, String)] = {
-    val psaOrPspId = crypto.QueryParameterCrypto.decrypt(Crypted(encryptedPsaOrPspId)).value
-    val pstr = crypto.QueryParameterCrypto.decrypt(Crypted(encryptedPstr)).value
-    val emailAddress = crypto.QueryParameterCrypto.decrypt(Crypted(email)).value
-
+    email: String,
+    encryptedSchemeName: String,
+    encryptedUserName: String
+  ): Either[Result, (String, String, String, String, String)] = {
+    val emailAddress: String = decrypt(email)
     try {
       require(emailAddress.matches(emailRegex))
-      Right(Tuple3(psaOrPspId, pstr, emailAddress))
+      Right(
+        Tuple5(
+          decrypt(encryptedPsaOrPspId),
+          decrypt(encryptedPstr),
+          emailAddress,
+          decrypt(encryptedSchemeName),
+          decrypt(encryptedUserName)
+        )
+      )
     } catch {
       case _: IllegalArgumentException => Left(Forbidden(s"Malformed email address : $emailAddress"))
     }
   }
+
+  private def decrypt(encrypted: String): String =
+    crypto.QueryParameterCrypto.decrypt(Crypted(encrypted)).value
 }
