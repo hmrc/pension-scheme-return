@@ -60,6 +60,10 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
   private val encryptedPstr = injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(pstr)).value
   private val encryptedEmail =
     injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(emailAddress)).value
+  private val encryptedSchemeName =
+    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(schemeName)).value
+  private val encryptedUserName =
+    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(userName)).value
 
   override def beforeEach(): Unit = {
     reset(mockAuditService)
@@ -77,7 +81,10 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
         encryptedEmail,
         encryptedPsaId,
         encryptedPstr,
-        reportVersion
+        reportVersion,
+        encryptedSchemeName,
+        taxYear,
+        encryptedUserName
       )(
         fakeRequest.withBody(Json.toJson(emailEvents))
       )
@@ -91,7 +98,10 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
         emailAddress,
         Complained,
         requestId,
-        reportVersion
+        reportVersion,
+        schemeName,
+        taxYear,
+        userName
       )
       eventCaptor.getValue mustBe expected
     }
@@ -103,7 +113,10 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
         encryptedEmail,
         encryptedPsaId,
         encryptedPstr,
-        reportVersion
+        reportVersion,
+        encryptedSchemeName,
+        taxYear,
+        encryptedUserName
       )(
         fakeRequest.withBody(Json.obj("name" -> "invalid"))
       )
@@ -121,6 +134,10 @@ object EmailResponseControllerSpec {
   private val emailAddress = "test@test.com"
   private val requestId = "test-request-id"
   private val reportVersion = "1"
+  private val schemeName = "Test Scheme"
+  private val userName = "User Name"
+  private val taxYear = "Test tax year"
+
   private val fakeRequest = FakeRequest("", "")
   private val enrolments = Enrolments(
     Set(

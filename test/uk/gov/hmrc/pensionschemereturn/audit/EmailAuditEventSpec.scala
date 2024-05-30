@@ -32,17 +32,23 @@ class EmailAuditEventSpec extends AnyFlatSpec with Matchers {
       emailAddress = "test@test.com",
       event = Sent,
       requestId = "test-request-id",
-      reportVersion = "1"
+      reportVersion = "001",
+      schemeName = "Test Scheme",
+      taxYear = "test tax year",
+      userName = "Test User"
     )
 
     val expected: JsObject = Json.obj(
-      "email-initiation-request-id" -> "test-request-id",
-      "psaId" -> "A2500001",
-      "emailAddress" -> "test@test.com",
-      "event" -> Sent.toString,
-      "submittedBy" -> "PSA",
-      "reportVersion" -> "1",
-      "PensionSchemeTaxReference" -> "pstr-test"
+      "EmailInitiationRequestId" -> "test-request-id",
+      "PensionSchemeAdministratorId" -> "A2500001",
+      "SchemeAdministratorName" -> "Test User",
+      "EmailAddress" -> "test@test.com",
+      "Event" -> Sent.toString,
+      "SubmittedBy" -> "PSA",
+      "ReportVersion" -> "001",
+      "PensionSchemeTaxReference" -> "pstr-test",
+      "SchemeName" -> "Test Scheme",
+      "TaxYear" -> "test tax year"
     )
 
     event.auditType shouldBe "PensionSchemeReturnEmailEvent"
