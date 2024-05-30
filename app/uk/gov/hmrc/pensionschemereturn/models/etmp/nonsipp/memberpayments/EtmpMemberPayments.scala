@@ -31,7 +31,7 @@ case class EtmpMemberPayments(
   schemeMadeTransferOut: YesNo,
   lumpSumReceived: YesNo,
   pensionReceived: YesNo,
-  surrenderMade: YesNo,
+  surrenderMade: Option[YesNo],
   memberDetails: List[EtmpMemberDetails]
 )
 
