@@ -637,7 +637,7 @@ trait TestValues {
     schemeMadeTransferOut = Yes,
     lumpSumReceived = Yes,
     pensionReceived = Yes,
-    surrenderMade = Yes,
+    surrenderMade = Some(Yes),
     memberDetails = List(
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
@@ -1052,7 +1052,7 @@ trait TestValues {
         schemeMadeTransferOut = Yes,
         lumpSumReceived = Yes,
         pensionReceived = Yes,
-        surrenderMade = Yes,
+        surrenderMade = Some(Yes),
         memberDetails = List(
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,

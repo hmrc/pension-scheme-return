@@ -50,10 +50,10 @@ class MemberPaymentsTransformer @Inject()(
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = memberPayments.pensionReceived,
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
-        case SectionDetails(made @ true, completed @ true) => true
-        case SectionDetails(made @ true, completed @ false) => false
-        case SectionDetails(made @ false, completed @ true) => false
-        case SectionDetails(made @ false, completed @ false) => false // shouldn't happen but adding just in case
+        case SectionDetails(made @ true, completed @ true) => Some(true)
+        case SectionDetails(made @ true, completed @ false) => Some(false)
+        case SectionDetails(made @ false, completed @ true) => Some(false)
+        case SectionDetails(made @ false, completed @ false) => None // not started
       },
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
@@ -143,15 +143,15 @@ class MemberPaymentsTransformer @Inject()(
           memberContributionMade = unapply(out.memberContributionMade),
           lumpSumReceived = unapply(out.lumpSumReceived),
           pensionReceived = unapply(out.pensionReceived),
-          benefitsSurrenderedDetails =
-            (out.surrenderMade.boolean, out.memberDetails.map(_.memberPensionSurrender)) match {
-              case (false, List(Some(Nil))) => SectionDetails(made = true, completed = false)
-              case (true, List(Some(Nil))) => SectionDetails(made = true, completed = true)
-              case (false, List(None)) => SectionDetails(made = false, completed = true)
-              case (true, List(None)) => SectionDetails(made = true, completed = true) // this case shouldn't happen
-              case (true, _) => SectionDetails(made = true, completed = true)
-              case (false, _) => SectionDetails(made = false, completed = true)
+          benefitsSurrenderedDetails = {
+            (out.surrenderMade.map(_.boolean), out.memberDetails.map(_.memberPensionSurrender)) match {
+              case (None, _) => SectionDetails.notStarted
+              case (Some(false), list) if list.nonEmpty => SectionDetails(made = false, completed = true)
+              case (Some(false), Nil) => SectionDetails(made = false, completed = false)
+              case (Some(true), list) if list.nonEmpty => SectionDetails(made = true, completed = true)
+              case (Some(true), Nil) => SectionDetails(made = true, completed = false)
             }
+          }
         )
     )
   }

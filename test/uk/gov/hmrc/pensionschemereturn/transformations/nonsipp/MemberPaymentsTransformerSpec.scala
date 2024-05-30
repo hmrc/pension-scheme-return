@@ -190,7 +190,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
     surrenderedBenefits: Option[List[EtmpPensionSurrender]]
   ): EtmpMemberPayments =
     sampleEtmpMemberPayments.copy(
-      surrenderMade = surrenderMade,
+      surrenderMade = Some(surrenderMade),
       memberDetails = sampleEtmpMemberPayments.memberDetails.map(_.copy(memberPensionSurrender = surrenderedBenefits))
     )
 }
