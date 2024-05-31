@@ -61,7 +61,7 @@ class MemberPaymentsTransformer @Inject()(
             case MemberState.Active => SectionStatus.New
             case MemberState.Deleted => SectionStatus.Deleted
           },
-          memberPSRVersion = "001",
+          memberPSRVersion = memberDetails.memberPSRVersion,
           noOfContributions =
             if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
             else None,
@@ -112,6 +112,7 @@ class MemberPaymentsTransformer @Inject()(
           case SectionStatus.Changed => MemberState.Active
           case SectionStatus.Deleted => MemberState.Deleted
         },
+        memberPSRVersion = member.memberPSRVersion,
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
         totalContributions = member.totalContributions,
