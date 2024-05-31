@@ -43,11 +43,11 @@ case class MemberPayments(
   employerContributionsDetails: SectionDetails,
   transfersInCompleted: Boolean,
   transfersOutCompleted: Boolean,
-  unallocatedContribsMade: Boolean,
+  unallocatedContribsMade: Option[Boolean],
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: Boolean,
-  lumpSumReceived: Boolean,
-  pensionReceived: Boolean,
+  memberContributionMade: Option[Boolean],
+  lumpSumReceived: Option[Boolean],
+  pensionReceived: Option[Boolean],
   benefitsSurrenderedDetails: SectionDetails
 )
 

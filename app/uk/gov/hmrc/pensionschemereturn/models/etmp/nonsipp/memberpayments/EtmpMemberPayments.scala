@@ -23,14 +23,14 @@ import java.time.LocalDate
 
 case class EtmpMemberPayments(
   recordVersion: Option[String],
-  employerContributionMade: YesNo,
-  unallocatedContribsMade: YesNo,
+  employerContributionMade: Option[YesNo],
+  unallocatedContribsMade: Option[YesNo],
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: YesNo,
-  schemeReceivedTransferIn: YesNo,
-  schemeMadeTransferOut: YesNo,
-  lumpSumReceived: YesNo,
-  pensionReceived: YesNo,
+  memberContributionMade: Option[YesNo],
+  schemeReceivedTransferIn: Option[YesNo],
+  schemeMadeTransferOut: Option[YesNo],
+  lumpSumReceived: Option[YesNo],
+  pensionReceived: Option[YesNo],
   surrenderMade: Option[YesNo],
   memberDetails: List[EtmpMemberDetails]
 )

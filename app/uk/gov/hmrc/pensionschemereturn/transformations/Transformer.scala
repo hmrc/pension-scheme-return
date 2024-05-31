@@ -87,4 +87,8 @@ trait Transformer {
   }
 
   implicit def implicitToYesNo(bool: Boolean): YesNo = YesNo(bool)
+  implicit def implicitToYesNoOpt(bool: Option[Boolean]): Option[YesNo] = bool.map(YesNo(_))
+
+  implicit def implicitToBool(yesNo: YesNo): Boolean = yesNo.boolean
+  implicit def implicitToBoolOpt(yesNo: Option[YesNo]): Option[Boolean] = yesNo.map(_.boolean)
 }

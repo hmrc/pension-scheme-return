@@ -17,7 +17,6 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import cats.syntax.traverse._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
@@ -40,13 +39,13 @@ class MemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = memberPayments.recordVersion,
-      employerContributionMade = memberPayments.employerContributionsDetails.made,
+      employerContributionMade = Option
+        .when(memberPayments.employerContributionsDetails.started)(memberPayments.employerContributionsDetails.made),
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
-      unallocatedContribAmount =
-        if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
+      unallocatedContribAmount = memberPayments.unallocatedContribAmount,
       memberContributionMade = memberPayments.memberContributionMade,
-      schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
-      schemeMadeTransferOut = memberPayments.memberDetails.exists(_.transfersOut.nonEmpty),
+      schemeReceivedTransferIn = Some(memberPayments.memberDetails.exists(_.transfersIn.nonEmpty)),
+      schemeMadeTransferOut = Some(memberPayments.memberDetails.exists(_.transfersOut.nonEmpty)),
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = memberPayments.pensionReceived,
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
@@ -109,7 +108,7 @@ class MemberPaymentsTransformer @Inject()(
       } yield MemberDetails(
         state = member.memberStatus match {
           case SectionStatus.New => MemberState.Active
-          case SectionStatus.Changed => MemberState.Active
+          case SectionStatus.Changed => MemberState.Active //todo: change when new member state is added
           case SectionStatus.Deleted => MemberState.Deleted
         },
         memberPSRVersion = member.memberPSRVersion,
@@ -131,26 +130,26 @@ class MemberPaymentsTransformer @Inject()(
         MemberPayments(
           recordVersion = out.recordVersion,
           memberDetails = details,
-          employerContributionsDetails = SectionDetails(
-            made = out.employerContributionMade.boolean,
-            completed =
-              if (!out.employerContributionMade.boolean) true
-              else !out.memberDetails.forall(_.noOfContributions.isEmpty)
-          ),
+          employerContributionsDetails = (
+            out.employerContributionMade.map(_.boolean),
+            out.memberDetails.forall(_.noOfContributions.nonEmpty)
+          ) match {
+            case (None, _) => SectionDetails.notStarted
+            case (Some(false), _) => SectionDetails(made = false, completed = true)
+            case (Some(true), completed) => SectionDetails(made = true, completed = completed)
+          },
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
-          unallocatedContribsMade = unapply(out.unallocatedContribsMade),
+          unallocatedContribsMade = out.unallocatedContribsMade.map(_.boolean),
           unallocatedContribAmount = out.unallocatedContribAmount,
-          memberContributionMade = unapply(out.memberContributionMade),
-          lumpSumReceived = unapply(out.lumpSumReceived),
-          pensionReceived = unapply(out.pensionReceived),
+          memberContributionMade = out.memberContributionMade,
+          lumpSumReceived = out.lumpSumReceived,
+          pensionReceived = out.pensionReceived,
           benefitsSurrenderedDetails = {
-            (out.surrenderMade.map(_.boolean), out.memberDetails.map(_.memberPensionSurrender)) match {
+            (out.surrenderMade, out.memberDetails.map(_.memberPensionSurrender)) match {
               case (None, _) => SectionDetails.notStarted
-              case (Some(false), list) if list.nonEmpty => SectionDetails(made = false, completed = true)
-              case (Some(false), Nil) => SectionDetails(made = false, completed = false)
-              case (Some(true), list) if list.nonEmpty => SectionDetails(made = true, completed = true)
-              case (Some(true), Nil) => SectionDetails(made = true, completed = false)
+              case (Some(made), list) if list.nonEmpty => SectionDetails(made = made, completed = true)
+              case (Some(made), Nil) => SectionDetails(made = made, completed = false)
             }
           }
         )
