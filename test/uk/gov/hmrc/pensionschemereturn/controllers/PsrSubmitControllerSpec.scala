@@ -440,6 +440,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |    "memberDetails": [
           |      {
           |        "state": "Active",
+          |        "memberPSRVersion": "001",
           |        "personalDetails": {
           |          "firstName": "John",
           |          "lastName": "Doe",

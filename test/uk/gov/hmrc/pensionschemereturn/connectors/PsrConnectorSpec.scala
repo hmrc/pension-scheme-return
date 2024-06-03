@@ -667,7 +667,6 @@ object PsrConnectorSpec {
       |      },
       |      {
       |        "memberStatus": "Changed",
-      |        "memberPSRVersion": "001",
       |        "personalDetails": {
       |          "foreName": "Johnny",
       |          "middleName": "Be",

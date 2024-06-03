@@ -39,7 +39,7 @@ case class EtmpMemberPayments(
 // this means that when we read them as a List[?] and the field doesn't exist in the response, it will blow up
 case class EtmpMemberDetails(
   memberStatus: SectionStatus,
-  memberPSRVersion: String,
+  memberPSRVersion: Option[String],
   noOfContributions: Option[Int],
   totalContributions: Option[Double],
   noOfTransfersIn: Option[Int],

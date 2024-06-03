@@ -345,6 +345,7 @@ trait TestValues {
 
   val sampleMemberDetails1: MemberDetails = MemberDetails(
     state = MemberState.Active,
+    memberPSRVersion = Some("001"),
     MemberPersonalDetails(
       firstName = "test first one",
       lastName = "test last one",
@@ -376,6 +377,7 @@ trait TestValues {
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
     state = MemberState.Active,
+    memberPSRVersion = None,
     MemberPersonalDetails(
       firstName = "test first two",
       lastName = "test last two",
@@ -641,7 +643,7 @@ trait TestValues {
     memberDetails = List(
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "001",
+        memberPSRVersion = Some("001"),
         noOfContributions = Some(2),
         totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
@@ -712,7 +714,7 @@ trait TestValues {
       ),
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "001",
+        memberPSRVersion = None,
         noOfContributions = Some(2),
         totalContributions = None,
         noOfTransfersIn = Some(1),
@@ -1056,7 +1058,7 @@ trait TestValues {
         memberDetails = List(
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
-            memberPSRVersion = "001",
+            memberPSRVersion = Some("001"),
             noOfContributions = Some(2),
             totalContributions = Some(30000.0),
             noOfTransfersIn = Some(2),
@@ -1144,7 +1146,7 @@ trait TestValues {
           ),
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
-            memberPSRVersion = "001",
+            memberPSRVersion = None,
             noOfContributions = Some(2),
             totalContributions = Some(20000.0),
             noOfTransfersIn = Some(2),
