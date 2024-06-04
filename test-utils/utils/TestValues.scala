@@ -411,18 +411,18 @@ trait TestValues {
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
     recordVersion = Some("001"),
-    unallocatedContribsMade = true,
+    unallocatedContribsMade = Some(true),
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberDetails = List(
       sampleMemberDetails1,
       sampleMemberDetails2
     ),
     employerContributionsDetails = SectionDetails(made = true, completed = true),
-    memberContributionMade = true,
+    memberContributionMade = Some(true),
     transfersInCompleted = true,
     transfersOutCompleted = true,
-    lumpSumReceived = true,
-    pensionReceived = true,
+    lumpSumReceived = Some(true),
+    pensionReceived = Some(true),
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
@@ -631,14 +631,14 @@ trait TestValues {
 
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
     recordVersion = Some("001"),
-    employerContributionMade = Yes,
-    unallocatedContribsMade = Yes,
+    employerContributionMade = Some(Yes),
+    unallocatedContribsMade = Some(Yes),
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
-    memberContributionMade = Yes,
-    schemeReceivedTransferIn = Yes,
-    schemeMadeTransferOut = Yes,
-    lumpSumReceived = Yes,
-    pensionReceived = Yes,
+    memberContributionMade = Some(Yes),
+    schemeReceivedTransferIn = Some(Yes),
+    schemeMadeTransferOut = Some(Yes),
+    lumpSumReceived = Some(Yes),
+    pensionReceived = Some(Yes),
     surrenderMade = Some(Yes),
     memberDetails = List(
       EtmpMemberDetails(
@@ -1046,14 +1046,14 @@ trait TestValues {
     membersPayments = Some(
       EtmpMemberPayments(
         recordVersion = Some("002"),
-        employerContributionMade = Yes,
-        unallocatedContribsMade = No,
+        employerContributionMade = Some(Yes),
+        unallocatedContribsMade = Some(No),
         unallocatedContribAmount = None,
-        memberContributionMade = Yes,
-        schemeReceivedTransferIn = Yes,
-        schemeMadeTransferOut = Yes,
-        lumpSumReceived = Yes,
-        pensionReceived = Yes,
+        memberContributionMade = Some(Yes),
+        schemeReceivedTransferIn = Some(Yes),
+        schemeMadeTransferOut = Some(Yes),
+        lumpSumReceived = Some(Yes),
+        pensionReceived = Some(Yes),
         surrenderMade = Some(Yes),
         memberDetails = List(
           EtmpMemberDetails(
