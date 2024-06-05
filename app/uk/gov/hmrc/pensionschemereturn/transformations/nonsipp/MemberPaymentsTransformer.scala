@@ -47,7 +47,7 @@ class MemberPaymentsTransformer @Inject()(
       schemeReceivedTransferIn = Some(memberPayments.memberDetails.exists(_.transfersIn.nonEmpty)),
       schemeMadeTransferOut = Some(memberPayments.memberDetails.exists(_.transfersOut.nonEmpty)),
       lumpSumReceived = memberPayments.lumpSumReceived,
-      pensionReceived = memberPayments.pensionReceived,
+      pensionReceived = Option.when(memberPayments.pensionReceived.started)(memberPayments.pensionReceived.made),
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
         case SectionDetails(made @ true, completed @ true) => Some(true)
         case SectionDetails(made @ true, completed @ false) => Some(false)
@@ -144,7 +144,13 @@ class MemberPaymentsTransformer @Inject()(
           unallocatedContribAmount = out.unallocatedContribAmount,
           memberContributionMade = out.memberContributionMade,
           lumpSumReceived = out.lumpSumReceived,
-          pensionReceived = out.pensionReceived,
+          pensionReceived = (out.pensionReceived.map(_.boolean), out.memberDetails.map(_.pensionAmountReceived)) match {
+            case (None, _) => SectionDetails.notStarted
+            case (Some(false), _) => SectionDetails(made = false, completed = true)
+            case (Some(true), s) if s.forall(_.nonEmpty) || s.exists(_.exists(_ == 0)) =>
+              SectionDetails(made = true, completed = true)
+            case (Some(true), _) => SectionDetails(made = true, completed = false)
+          },
           benefitsSurrenderedDetails = {
             (out.surrenderMade, out.memberDetails.map(_.memberPensionSurrender)) match {
               case (None, _) => SectionDetails.notStarted
