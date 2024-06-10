@@ -40,7 +40,18 @@ class MemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = None,
-      employerContributionMade = memberPayments.employerContributionsDetails.made,
+      employerContributionMade = (
+        memberPayments.employerContributionsDetails.made,
+        memberPayments.memberDetails.flatMap(_.employerContributions).size,
+        memberPayments.employerContributionsDetails.completed
+      ) match {
+        // Complete with 0 contributions: transform to false, as both cases are logically equivalent
+        case (true, 0, true) => false
+        // In Progress with 1+ contributions: transform to false, to differentiate from Completed with 1+ contributions
+        case (true, _, false) => false
+        // All other cases: no transformation required
+        case (answer, _, _) => answer
+      },
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount =
         if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
@@ -62,9 +73,7 @@ class MemberPaymentsTransformer @Inject()(
             case MemberState.Deleted => SectionStatus.Deleted
           },
           memberPSRVersion = "001",
-          noOfContributions =
-            if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
-            else None,
+          noOfContributions = Some(memberDetails.employerContributions.size),
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
@@ -131,9 +140,12 @@ class MemberPaymentsTransformer @Inject()(
           memberDetails = details,
           employerContributionsDetails = SectionDetails(
             made = out.employerContributionMade.boolean,
-            completed =
-              if (!out.employerContributionMade.boolean) true
-              else !out.memberDetails.forall(_.noOfContributions.isEmpty)
+            completed = (out.employerContributionMade.boolean, details.flatMap(_.employerContributions).size) match {
+              case (false, 0) => true // Completed with no Emp Conts made
+              case (false, _) => false // In Progress with "Yes" answer (set as "No" to differentiate from cases below)
+              case (true, 0) => false // In Progress with "Yes" answer but no Emp Conts made yet
+              case (true, _) => true // Completed with some Emp Conts made
+            }
           ),
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
