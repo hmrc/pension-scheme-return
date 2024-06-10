@@ -422,7 +422,7 @@ trait TestValues {
     transfersInCompleted = true,
     transfersOutCompleted = true,
     lumpSumReceived = Some(true),
-    pensionReceived = Some(true),
+    pensionReceived = SectionDetails(made = true, completed = true),
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 

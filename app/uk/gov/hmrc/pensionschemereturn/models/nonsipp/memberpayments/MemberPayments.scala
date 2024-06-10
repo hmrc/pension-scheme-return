@@ -47,7 +47,7 @@ case class MemberPayments(
   unallocatedContribAmount: Option[Double],
   memberContributionMade: Option[Boolean],
   lumpSumReceived: Option[Boolean],
-  pensionReceived: Option[Boolean],
+  pensionReceived: SectionDetails,
   benefitsSurrenderedDetails: SectionDetails
 )
 
