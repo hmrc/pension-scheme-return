@@ -60,10 +60,8 @@ class MemberPaymentsTransformer @Inject()(
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount = memberPayments.unallocatedContribAmount,
       memberContributionMade = memberPayments.memberContributionMade,
-      schemeReceivedTransferIn =
-        Some(memberPayments.memberDetails.filter(_.state != MemberState.Deleted).exists(_.transfersIn.nonEmpty)),
-      schemeMadeTransferOut =
-        Some(memberPayments.memberDetails.filter(_.state != MemberState.Deleted).exists(_.transfersOut.nonEmpty)),
+      schemeReceivedTransferIn = Some(memberPayments.memberDetails.exists(_.transfersIn.nonEmpty)),
+      schemeMadeTransferOut = Some(memberPayments.memberDetails.exists(_.transfersOut.nonEmpty)),
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = Option.when(memberPayments.pensionReceived.started)(memberPayments.pensionReceived.made),
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
