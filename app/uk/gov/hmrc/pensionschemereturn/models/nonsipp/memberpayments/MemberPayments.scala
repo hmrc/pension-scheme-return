@@ -18,26 +18,42 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments
 
 import play.api.libs.json.{Format, Json}
 
+/**
+ * Contains a representation of the important yes / no questions for a section
+ * (made = false && completed = false) = section not started
+ * (made = false && completed = true)  = initial section question is no
+ * (made = true && completed = true)   = initial section question is yes and the user has said they don't want to add anymore
+ * (made = true && completed = false)  = initial section question is yes and the user has changed or removed something in a section
+ *                                       this will be changed to (made = true && completed = true) when the user says they don't want to add anymore
+ */
 case class SectionDetails(
   made: Boolean,
   completed: Boolean
-)
+) {
+  val started: Boolean = !(!made && !completed)
+}
+
+object SectionDetails {
+  val notStarted: SectionDetails = SectionDetails(made = false, completed = false)
+}
 
 case class MemberPayments(
+  recordVersion: Option[String],
   memberDetails: List[MemberDetails],
   employerContributionsDetails: SectionDetails,
   transfersInCompleted: Boolean,
   transfersOutCompleted: Boolean,
-  unallocatedContribsMade: Boolean,
+  unallocatedContribsMade: Option[Boolean],
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: Boolean,
-  lumpSumReceived: Boolean,
-  pensionReceived: Boolean,
+  memberContributionMade: Option[Boolean],
+  lumpSumReceived: Option[Boolean],
+  pensionReceived: SectionDetails,
   benefitsSurrenderedDetails: SectionDetails
 )
 
 case class MemberDetails(
   state: MemberState,
+  memberPSRVersion: Option[String],
   personalDetails: MemberPersonalDetails,
   employerContributions: List[EmployerContributions],
   totalContributions: Option[Double],

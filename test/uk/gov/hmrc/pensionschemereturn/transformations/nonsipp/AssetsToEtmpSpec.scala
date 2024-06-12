@@ -58,6 +58,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
+            recordVersion = Some("001"),
             landOrPropertyHeld = true,
             disposeAnyLandOrProperty = true,
             landOrPropertyTransactions = List(
@@ -152,6 +153,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optBorrowing = Some(
           Borrowing(
+            recordVersion = Some("001"),
             moneyWasBorrowed = true,
             moneyBorrowed = Seq(
               MoneyBorrowed(
@@ -168,6 +170,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optBonds = Some(
           Bonds(
+            recordVersion = Some("001"),
             bondsWereAdded = true,
             bondsWereDisposed = true,
             bondTransactions = Seq(
@@ -216,6 +219,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optOtherAssets = Some(
           OtherAssets(
+            recordVersion = Some("001"),
             otherAssetsWereHeld = true,
             otherAssetsWereDisposed = false,
             otherAssetTransactions = Seq(
@@ -319,7 +323,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       val expected = EtmpAssets(
         landOrProperty = Some(
           EtmpLandOrProperty(
-            recordVersion = None,
+            recordVersion = Some("001"),
             heldAnyLandOrProperty = Yes,
             disposeAnyLandOrProperty = Yes,
             noOfTransactions = Some(1),
@@ -421,7 +425,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         borrowing = Some(
           EtmpBorrowing(
-            recordVersion = None,
+            recordVersion = Some("001"),
             moneyWasBorrowed = Yes,
             noOfBorrows = Some(1),
             moneyBorrowed = Some(
@@ -441,7 +445,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         bonds = Some(
           EtmpBonds(
-            recordVersion = None,
+            recordVersion = Some("001"),
             bondsWereAdded = Yes,
             bondsWereDisposed = Yes,
             noOfTransactions = Some(1),
@@ -493,7 +497,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         otherAssets = Some(
           EtmpOtherAssets(
-            recordVersion = None,
+            recordVersion = Some("001"),
             otherAssetsWereHeld = Yes,
             otherAssetsWereDisposed = No,
             noOfTransactions = Some(3),
@@ -604,6 +608,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       val assets = Assets(
         optLandOrProperty = Some(
           LandOrProperty(
+            recordVersion = None,
             landOrPropertyHeld = true,
             disposeAnyLandOrProperty = false,
             landOrPropertyTransactions = List(
@@ -650,6 +655,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optBorrowing = Some(
           Borrowing(
+            recordVersion = None,
             moneyWasBorrowed = true,
             moneyBorrowed = Seq(
               MoneyBorrowed(
@@ -666,6 +672,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optBonds = Some(
           Bonds(
+            recordVersion = None,
             bondsWereAdded = true,
             bondsWereDisposed = false,
             bondTransactions = Seq(
@@ -684,6 +691,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         ),
         optOtherAssets = Some(
           OtherAssets(
+            recordVersion = None,
             otherAssetsWereHeld = true,
             otherAssetsWereDisposed = false,
             otherAssetTransactions = Seq(

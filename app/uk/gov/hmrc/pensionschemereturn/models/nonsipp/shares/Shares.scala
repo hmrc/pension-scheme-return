@@ -22,6 +22,7 @@ import play.api.libs.json.{Format, Json}
 import java.time.LocalDate
 
 case class Shares(
+  recordVersion: Option[String],
   optShareTransactions: Option[List[ShareTransaction]],
   optTotalValueQuotedShares: Option[Double]
 )

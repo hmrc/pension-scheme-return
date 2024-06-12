@@ -23,15 +23,15 @@ import java.time.LocalDate
 
 case class EtmpMemberPayments(
   recordVersion: Option[String],
-  employerContributionMade: YesNo,
-  unallocatedContribsMade: YesNo,
+  employerContributionMade: Option[YesNo],
+  unallocatedContribsMade: Option[YesNo],
   unallocatedContribAmount: Option[Double],
-  memberContributionMade: YesNo,
-  schemeReceivedTransferIn: YesNo,
-  schemeMadeTransferOut: YesNo,
-  lumpSumReceived: YesNo,
-  pensionReceived: YesNo,
-  surrenderMade: YesNo,
+  memberContributionMade: Option[YesNo],
+  schemeReceivedTransferIn: Option[YesNo],
+  schemeMadeTransferOut: Option[YesNo],
+  lumpSumReceived: Option[YesNo],
+  pensionReceived: Option[YesNo],
+  surrenderMade: Option[YesNo],
   memberDetails: List[EtmpMemberDetails]
 )
 
@@ -39,7 +39,7 @@ case class EtmpMemberPayments(
 // this means that when we read them as a List[?] and the field doesn't exist in the response, it will blow up
 case class EtmpMemberDetails(
   memberStatus: SectionStatus,
-  memberPSRVersion: String,
+  memberPSRVersion: Option[String],
   noOfContributions: Option[Int],
   totalContributions: Option[Double],
   noOfTransfersIn: Option[Int],

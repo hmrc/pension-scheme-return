@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.etmp._
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails, SchemeDesignatory}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import com.softwaremill.diffx.generic.auto.diffForCaseClass
@@ -43,8 +43,10 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           periodEnd = today,
           compilationOrSubmissionDate = None
         ),
-        accountingPeriods = List(today -> today),
+        accountingPeriodDetails =
+          AccountingPeriodDetails(recordVersion = Some("001"), accountingPeriods = List(today -> today)),
         schemeDesignatory = SchemeDesignatory(
+          recordVersion = Some("001"),
           reasonForNoBankAccount = Some("reasonForNoBankAccount"),
           openBankAccount = false,
           activeMembers = 1,
@@ -65,7 +67,7 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           periodEnd = today
         ),
         EtmpAccountingPeriodDetails(
-          recordVersion = None,
+          recordVersion = Some("001"),
           accountingPeriods = List(
             EtmpAccountingPeriod(
               accPeriodStart = today,
@@ -74,7 +76,7 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           )
         ),
         EtmpSchemeDesignatory(
-          recordVersion = None,
+          recordVersion = Some("001"),
           openBankAccount = No,
           reasonNoOpenAccount = Some("reasonForNoBankAccount"),
           noOfActiveMembers = 1,
@@ -102,8 +104,10 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
           periodEnd = today,
           compilationOrSubmissionDate = None
         ),
-        accountingPeriods = List(today -> today),
+        accountingPeriodDetails =
+          AccountingPeriodDetails(recordVersion = None, accountingPeriods = List(today -> today)),
         schemeDesignatory = SchemeDesignatory(
+          recordVersion = None,
           reasonForNoBankAccount = Some("reasonForNoBankAccount"),
           openBankAccount = false,
           activeMembers = 1,

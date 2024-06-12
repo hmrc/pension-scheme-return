@@ -71,8 +71,10 @@ trait TestValues {
       periodEnd = sampleToday,
       compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
     ),
-    accountingPeriods = List(sampleToday -> sampleToday),
+    accountingPeriodDetails =
+      AccountingPeriodDetails(recordVersion = Some("001"), accountingPeriods = List(sampleToday -> sampleToday)),
     schemeDesignatory = SchemeDesignatory(
+      recordVersion = Some("001"),
       reasonForNoBankAccount = None,
       openBankAccount = true,
       activeMembers = 1,
@@ -97,6 +99,7 @@ trait TestValues {
   )
 
   val sampleLoans: Loans = Loans(
+    recordVersion = Some("001"),
     schemeHadLoans = true,
     loanTransactions = List(
       LoanTransactions(
@@ -131,6 +134,7 @@ trait TestValues {
   val sampleAssets: Assets = Assets(
     optLandOrProperty = Some(
       LandOrProperty(
+        recordVersion = Some("001"),
         landOrPropertyHeld = true,
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = Seq(
@@ -196,6 +200,7 @@ trait TestValues {
     ),
     optBorrowing = Some(
       Borrowing(
+        recordVersion = Some("001"),
         moneyWasBorrowed = true,
         moneyBorrowed = Seq(
           MoneyBorrowed(
@@ -212,6 +217,7 @@ trait TestValues {
     ),
     optBonds = Some(
       Bonds(
+        recordVersion = Some("001"),
         bondsWereAdded = true,
         bondsWereDisposed = false,
         bondTransactions = Seq(
@@ -242,6 +248,7 @@ trait TestValues {
     ),
     optOtherAssets = Some(
       OtherAssets(
+        recordVersion = Some("001"),
         otherAssetsWereHeld = true,
         otherAssetsWereDisposed = true,
         otherAssetTransactions = Seq(
@@ -338,6 +345,7 @@ trait TestValues {
 
   val sampleMemberDetails1: MemberDetails = MemberDetails(
     state = MemberState.Active,
+    memberPSRVersion = Some("001"),
     MemberPersonalDetails(
       firstName = "test first one",
       lastName = "test last one",
@@ -369,6 +377,7 @@ trait TestValues {
 
   val sampleMemberDetails2: MemberDetails = MemberDetails(
     state = MemberState.Active,
+    memberPSRVersion = None,
     MemberPersonalDetails(
       firstName = "test first two",
       lastName = "test last two",
@@ -401,22 +410,24 @@ trait TestValues {
   val sampleUnallocatedContribAmount: Double = 201.34
 
   val sampleMemberPayments: MemberPayments = MemberPayments(
-    unallocatedContribsMade = true,
+    recordVersion = Some("001"),
+    unallocatedContribsMade = Some(true),
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
     memberDetails = List(
       sampleMemberDetails1,
       sampleMemberDetails2
     ),
     employerContributionsDetails = SectionDetails(made = true, completed = true),
-    memberContributionMade = true,
+    memberContributionMade = Some(true),
     transfersInCompleted = true,
     transfersOutCompleted = true,
-    lumpSumReceived = true,
-    pensionReceived = true,
+    lumpSumReceived = Some(true),
+    pensionReceived = SectionDetails(made = true, completed = true),
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
   )
 
-  val sampleShares: Shares = Shares(optShareTransactions = None, optTotalValueQuotedShares = None)
+  val sampleShares: Shares =
+    Shares(recordVersion = Some("001"), optShareTransactions = None, optTotalValueQuotedShares = None)
 
   val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
     submittedBy = PSA,
@@ -619,20 +630,20 @@ trait TestValues {
   )
 
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
-    recordVersion = None,
-    employerContributionMade = Yes,
-    unallocatedContribsMade = Yes,
+    recordVersion = Some("001"),
+    employerContributionMade = Some(Yes),
+    unallocatedContribsMade = Some(Yes),
     unallocatedContribAmount = Some(sampleUnallocatedContribAmount),
-    memberContributionMade = Yes,
-    schemeReceivedTransferIn = Yes,
-    schemeMadeTransferOut = Yes,
-    lumpSumReceived = Yes,
-    pensionReceived = Yes,
-    surrenderMade = Yes,
+    memberContributionMade = Some(Yes),
+    schemeReceivedTransferIn = Some(Yes),
+    schemeMadeTransferOut = Some(Yes),
+    lumpSumReceived = Some(Yes),
+    pensionReceived = Some(Yes),
+    surrenderMade = Some(Yes),
     memberDetails = List(
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "001",
+        memberPSRVersion = Some("001"),
         noOfContributions = Some(2),
         totalContributions = Some(Double.MaxValue),
         noOfTransfersIn = Some(1),
@@ -703,7 +714,7 @@ trait TestValues {
       ),
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
-        memberPSRVersion = "001",
+        memberPSRVersion = None,
         noOfContributions = Some(2),
         totalContributions = None,
         noOfTransfersIn = Some(1),
@@ -1035,19 +1046,19 @@ trait TestValues {
     membersPayments = Some(
       EtmpMemberPayments(
         recordVersion = Some("002"),
-        employerContributionMade = Yes,
-        unallocatedContribsMade = No,
+        employerContributionMade = Some(Yes),
+        unallocatedContribsMade = Some(No),
         unallocatedContribAmount = None,
-        memberContributionMade = Yes,
-        schemeReceivedTransferIn = Yes,
-        schemeMadeTransferOut = Yes,
-        lumpSumReceived = Yes,
-        pensionReceived = Yes,
-        surrenderMade = Yes,
+        memberContributionMade = Some(Yes),
+        schemeReceivedTransferIn = Some(Yes),
+        schemeMadeTransferOut = Some(Yes),
+        lumpSumReceived = Some(Yes),
+        pensionReceived = Some(Yes),
+        surrenderMade = Some(Yes),
         memberDetails = List(
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
-            memberPSRVersion = "001",
+            memberPSRVersion = Some("001"),
             noOfContributions = Some(2),
             totalContributions = Some(30000.0),
             noOfTransfersIn = Some(2),
@@ -1135,7 +1146,7 @@ trait TestValues {
           ),
           EtmpMemberDetails(
             memberStatus = SectionStatus.Changed,
-            memberPSRVersion = "001",
+            memberPSRVersion = None,
             noOfContributions = Some(2),
             totalContributions = Some(20000.0),
             noOfTransfersIn = Some(2),

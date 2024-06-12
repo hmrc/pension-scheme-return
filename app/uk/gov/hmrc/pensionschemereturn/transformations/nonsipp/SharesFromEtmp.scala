@@ -32,6 +32,7 @@ class SharesFromEtmp @Inject() extends Transformer {
 
   def transform(shares: EtmpShares): Shares =
     Shares(
+      recordVersion = shares.recordVersion,
       optShareTransactions = shares.shareTransactions.map(_.map(transformShareTransactions)),
       optTotalValueQuotedShares =
         Option.when(shares.totalValueQuotedShares != holderValue)(shares.totalValueQuotedShares)

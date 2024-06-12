@@ -16,581 +16,589 @@ auth:bearer {
 
 body:json {
   {
-      "minimalRequiredSubmission": {
-          "reportDetails": {
-              "pstr": "00000042IN",
-              "periodStart": "2023-04-06",
-              "periodEnd": "2024-04-05"
-          },
-          "accountingPeriods": [
-              [
-                  "2023-04-06",
-                  "2024-04-05"
-              ]
-          ],
-          "schemeDesignatory": {
-              "openBankAccount": true,
-              "activeMembers": 23,
-              "deferredMembers": 45,
-              "pensionerMembers": 6,
-              "totalPayments": 74
-          }
+    "minimalRequiredSubmission": {
+      "reportDetails": {
+        "pstr": "00000042IN",
+        "periodStart": "2023-04-06",
+        "periodEnd": "2024-04-05"
       },
-      "checkReturnDates": true,
-      "loans": {
-          "schemeHadLoans": true,
-          "loanTransactions": [
-              {
-                  "recipientIdentityType": {
-                      "identityType": "individual",
-                      "reasonNoIdNumber": "sdfsdf"
-                  },
-                  "loanRecipientName": "sdfsdfds",
-                  "connectedPartyStatus": true,
-                  "datePeriodLoanDetails": {
-                      "dateOfLoan": "2023-02-12",
-                      "loanTotalSchemeAssets": 3,
-                      "loanPeriodInMonths": 9
-                  },
-                  "loanAmountDetails": {
-                      "loanAmount": 9,
-                      "capRepaymentCY": 8,
-                      "amountOutstanding": 7
-                  },
-                  "equalInstallments": true,
-                  "loanInterestDetails": {
-                      "loanInterestAmount": 8,
-                      "loanInterestRate": 8,
-                      "intReceivedCY": 6
-                  },
-                  "optSecurityGivenDetails": "kjsdfvsd",
-                  "optOutstandingArrearsOnLoan": 273
-              }
+      "accountingPeriodDetails": {
+        "recordVersion": "001",
+        "accountingPeriods": [
+          [
+            "2023-04-06",
+            "2024-04-05"
           ]
+        ]
       },
-      "assets": {
-          "optLandOrProperty": {
-              "landOrPropertyHeld": true,
-              "disposeAnyLandOrProperty": true,
-              "landOrPropertyTransactions": [
-                  {
-                      "propertyDetails": {
-                          "landOrPropertyInUK": false,
-                          "addressDetails": {
-                              "addressLine1": "Fenerbahce",
-                              "addressLine3": "Kadikoy",
-                              "town": "Istanbul",
-                              "countryCode": "TR"
-                          },
-                          "landRegistryTitleNumberKey": false,
-                          "landRegistryTitleNumberValue": "Foreign property"
-                      },
-                      "heldPropertyTransaction": {
-                          "methodOfHolding": "Acquisition",
-                          "dateOfAcquisitionOrContribution": "1953-03-28",
-                          "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd",
-                          "optPropertyAcquiredFrom": {
-                              "identityType": "individual",
-                              "idNumber": "SX123456A"
-                          },
-                          "optConnectedPartyStatus": true,
-                          "totalCostOfLandOrProperty": 1000000,
-                          "optIndepValuationSupport": true,
-                          "isLandOrPropertyResidential": true,
-                          "landOrPropertyLeased": false,
-                          "totalIncomeOrReceipts": 25000
-                      },
-                      "optDisposedPropertyTransaction": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateOfSale": "2022-10-19",
-                              "optNameOfPurchaser": "Victor Enterprises Inc.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "ukCompany",
-                                  "idNumber": "24896221"
-                              },
-                              "optSaleProceeds": 1500000,
-                              "optConnectedPartyStatus": true,
-                              "optIndepValuationSupport": false,
-                              "portionStillHeld": false
-                          }
-                      ]
-                  },
-                  {
-                      "propertyDetails": {
-                          "landOrPropertyInUK": true,
-                          "addressDetails": {
-                              "addressLine1": "Beyoglu",
-                              "addressLine2": "Ulker Arena",
-                              "addressLine3": "Kadikoy",
-                              "town": "Istanbul",
-                              "postCode": "GB135HG",
-                              "countryCode": "GB"
-                          },
-                          "landRegistryTitleNumberKey": true,
-                          "landRegistryTitleNumberValue": "LR10000102202202"
-                      },
-                      "heldPropertyTransaction": {
-                          "methodOfHolding": "Contribution",
-                          "dateOfAcquisitionOrContribution": "1953-03-28",
-                          "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd.",
-                          "optPropertyAcquiredFrom": {
-                              "identityType": "individual",
-                              "idNumber": "SX123456A"
-                          },
-                          "optConnectedPartyStatus": true,
-                          "totalCostOfLandOrProperty": 1000000,
-                          "optIndepValuationSupport": false,
-                          "isLandOrPropertyResidential": true,
-                          "landOrPropertyLeased": false,
-                          "totalIncomeOrReceipts": 25000
-                      },
-                      "optDisposedPropertyTransaction": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateOfSale": "2022-10-19",
-                              "optNameOfPurchaser": "Victor Enterprises Inc.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "ukCompany",
-                                  "idNumber": "24896221"
-                              },
-                              "optSaleProceeds": 1500000,
-                              "optConnectedPartyStatus": true,
-                              "optIndepValuationSupport": false,
-                              "portionStillHeld": false
-                          }
-                      ]
-                  },
-                  {
-                      "propertyDetails": {
-                          "landOrPropertyInUK": false,
-                          "addressDetails": {
-                              "addressLine1": "1 Hacienda Way",
-                              "addressLine3": "01055",
-                              "town": "Madrid",
-                              "countryCode": "ES"
-                          },
-                          "landRegistryTitleNumberKey": false,
-                          "landRegistryTitleNumberValue": "Foreign property"
-                      },
-                      "heldPropertyTransaction": {
-                          "methodOfHolding": "Acquisition",
-                          "dateOfAcquisitionOrContribution": "2022-12-30",
-                          "optPropertyAcquiredFromName": "Joe Sussex",
-                          "optPropertyAcquiredFrom": {
-                              "identityType": "individual",
-                              "idNumber": "SX654321A"
-                          },
-                          "optConnectedPartyStatus": false,
-                          "totalCostOfLandOrProperty": 14000000,
-                          "optIndepValuationSupport": false,
-                          "isLandOrPropertyResidential": false,
-                          "optLeaseDetails": {
-                              "lesseeName": "Leasee",
-                              "leaseGrantDate": "2023-01-17",
-                              "annualLeaseAmount": 500000,
-                              "connectedPartyStatus": false
-                          },
-                          "landOrPropertyLeased": true,
-                          "totalIncomeOrReceipts": 500000
-                      },
-                      "optDisposedPropertyTransaction": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateOfSale": "2022-11-09",
-                              "optNameOfPurchaser": "Realty Purchasers Co.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "ukCompany",
-                                  "idNumber": "JE463863"
-                              },
-                              "optSaleProceeds": 1550000,
-                              "optConnectedPartyStatus": true,
-                              "optIndepValuationSupport": false,
-                              "portionStillHeld": true
-                          },
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateOfSale": "2023-01-26",
-                              "optNameOfPurchaser": "ABC Company Inc.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "ukCompany",
-                                  "idNumber": "DA576257"
-                              },
-                              "optSaleProceeds": 10234.56,
-                              "optConnectedPartyStatus": false,
-                              "optIndepValuationSupport": false,
-                              "portionStillHeld": true
-                          }
-                      ]
-                  }
-              ]
-          },
-          "optBorrowing": {
-              "moneyWasBorrowed": true,
-              "moneyBorrowed": [
-                  {
-                      "dateOfBorrow": "2022-10-18",
-                      "schemeAssetsValue": 0,
-                      "amountBorrowed": 2000,
-                      "interestRate": 5.55,
-                      "borrowingFromName": "Loans R Us",
-                      "connectedPartyStatus": false,
-                      "reasonForBorrow": "We needed the money."
-                  }
-              ]
-          },
-          "optBonds": {
-              "bondsWereAdded": true,
-              "bondsWereDisposed": false,
-              "bondTransactions": [
-                  {
-                      "nameOfBonds": "Xenex Bonds",
-                      "methodOfHolding": "01",
-                      "optDateOfAcqOrContrib": "2022-10-06",
-                      "costOfBonds": 10234.56,
-                      "optConnectedPartyStatus": false,
-                      "bondsUnregulated": false,
-                      "totalIncomeOrReceipts": 50,
-                      "optBondsDisposed": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateSold": "2022-11-30",
-                              "optAmountReceived": 12333.59,
-                              "optBondsPurchaserName": "Happy Bond Buyers Inc.",
-                              "optConnectedPartyStatus": false,
-                              "totalNowHeld": 120
-                          },
-                          {
-                              "methodOfDisposal": "Transferred",
-                              "totalNowHeld": 12
-                          },
-                          {
-                              "methodOfDisposal": "Other",
-                              "optOtherMethod": "OtherMethod",
-                              "totalNowHeld": 10
-                          }
-                      ]
-                  },
-                  {
-                      "nameOfBonds": "Really Goods Bonds ABC",
-                      "methodOfHolding": "02",
-                      "optDateOfAcqOrContrib": "2022-07-30",
-                      "costOfBonds": 2000.5,
-                      "optConnectedPartyStatus": false,
-                      "bondsUnregulated": false,
-                      "totalIncomeOrReceipts": 300
-                  }
-              ]
-          },
-          "optOtherAssets": {
-              "otherAssetsWereHeld": true,
-              "otherAssetsWereDisposed": false,
-              "otherAssetTransactions": [
-                  {
-                      "assetDescription": "Test asset",
-                      "methodOfHolding": "01",
-                      "optDateOfAcqOrContrib": "2023-03-05",
-                      "costOfAsset": 12.34,
-                      "optPropertyAcquiredFromName": "sdgfghdfh",
-                      "optPropertyAcquiredFrom": {
-                          "identityType": "other",
-                          "otherDescription": "gfhfghfghf"
-                      },
-                      "optConnectedStatus": false,
-                      "optIndepValuationSupport": false,
-                      "movableSchedule29A": false,
-                      "totalIncomeOrReceipts": 34.56,
-                      "optOtherAssetDisposed": [
-                          {
-                              "methodOfDisposal": "Sold",
-                              "optDateSold": "2022-11-30",
-                              "optPurchaserName": "Acme Express Ltd.",
-                              "optPropertyAcquiredFrom": {
-                                  "identityType": "individual",
-                                  "idNumber": "SX123456A"
-                              },
-                              "optTotalAmountReceived": 12333.59,
-                              "optConnectedStatus": false,
-                              "optSupportedByIndepValuation": false,
-                              "anyPartAssetStillHeld": true
-                          },
-                          {
-                              "methodOfDisposal": "Transferred",
-                              "anyPartAssetStillHeld": true
-                          },
-                          {
-                              "methodOfDisposal": "Other",
-                              "optOtherMethod": "OtherMethod",
-                              "anyPartAssetStillHeld": true
-                          }
-                      ]
-                  }
-              ]
-          }
-      },
-      "membersPayments": {
-          "employerContributionMade": false,
-          "unallocatedContribsMade": false,
-          "employerContributionsDetails": {
-              "made": true,
-              "completed": true
-          },
-          "transfersInCompleted": true,
-          "transfersOutCompleted": true,
-          "lumpSumReceived": true,
-          "memberContributionMade": true,
-          "pensionReceived": true,
-          "benefitsSurrenderedDetails": {
-              "made": true,
-              "completed": true
-          },
-          "memberDetails": [
-              {
-                  "personalDetails": {
-                      "firstName": "John",
-                      "lastName": "Doe",
-                      "dateOfBirth": "1990-10-10",
-                      "nino": "AB123456A"
-                  },
-                  "employerContributions": [
-                      {
-                          "employerName": "Acme Ltd",
-                          "employerType": {
-                              "employerType": "UKCompany",
-                              "value": "11108499"
-                          },
-                          "totalTransferValue": 12.34
-                      },
-                      {
-                          "employerName": "Slack Ltd",
-                          "employerType": {
-                              "employerType": "UKPartnership",
-                              "value": "A1230849"
-                          },
-                          "totalTransferValue": 102.88
-                      }
-                  ],
-                  "transfersIn": [
-                      {
-                          "schemeName": "Test pension scheme",
-                          "dateOfTransfer": "2023-02-12",
-                          "transferValue": 12.34,
-                          "transferIncludedAsset": true,
-                          "transferSchemeType": {
-                              "key": "registeredPS",
-                              "value": "88390774ZZ"
-                          }
-                      }
-                  ],
-                  "transfersOut": [
-                      {
-                          "schemeName": "Test pension scheme out",
-                          "dateOfTransfer": "2023-02-12",
-                          "transferSchemeType": {
-                              "key": "registeredPS",
-                              "value": "76509173AA"
-                          }
-                      }
-                  ],
-                  "benefitsSurrendered": {
-                      "totalSurrendered": 12.34,
-                      "dateOfSurrender": "2022-12-12",
-                      "surrenderReason": "some reason"
-                  },
-                  "pensionAmountReceived": 12.34
-              },
-              {
-                  "personalDetails": {
-                      "firstName": "Jane",
-                      "lastName": "Dean",
-                      "dateOfBirth": "1995-06-01",
-                      "noNinoReason": "some reason"
-                  },
-                  "employerContributions": [
-                      {
-                          "employerName": "Test Ltd",
-                          "employerType": {
-                              "employerType": "UKCompany",
-                              "value": "67308411"
-                          },
-                          "totalTransferValue": 23.35
-                      },
-                      {
-                          "employerName": "Legal Ltd",
-                          "employerType": {
-                              "employerType": "Other",
-                              "value": "some description"
-                          },
-                          "totalTransferValue": 553.01
-                      }
-                  ],
-                  "transfersIn": [
-                      {
-                          "schemeName": "overseas pension scheme",
-                          "dateOfTransfer": "2020-10-04",
-                          "transferValue": 45.67,
-                          "transferIncludedAsset": false,
-                          "transferSchemeType": {
-                              "key": "qualifyingRecognisedOverseasPS",
-                              "value": "Q654321"
-                          }
-                      },
-                      {
-                          "schemeName": "Test pension scheme",
-                          "dateOfTransfer": "2021-08-21",
-                          "transferValue": 67.89,
-                          "transferIncludedAsset": true,
-                          "transferSchemeType": {
-                              "key": "other",
-                              "value": "other value"
-                          }
-                      }
-                  ],
-                  "transfersOut": [
-                      {
-                          "schemeName": "overseas pension scheme out",
-                          "dateOfTransfer": "2020-10-04",
-                          "transferSchemeType": {
-                              "key": "qualifyingRecognisedOverseasPS",
-                              "value": "Q000002"
-                          }
-                      },
-                      {
-                          "schemeName": "Test pension scheme out",
-                          "dateOfTransfer": "2021-08-21",
-                          "transferSchemeType": {
-                              "key": "other",
-                              "value": "other value"
-                          }
-                      }
-                  ],
-                  "benefitsSurrendered": {
-                      "totalSurrendered": 12.34,
-                      "dateOfSurrender": "2022-12-12",
-                      "surrenderReason": "some reason"
-                  },
-                  "pensionAmountReceived": 12.34
-              }
-          ]
-      },
-      "shares": {
-          "optShareTransactions": [
-              {
-                  "typeOfSharesHeld": "01",
-                  "shareIdentification": {
-                      "nameOfSharesCompany": "AppleSauce Inc.",
-                      "optReasonNoCRN": "Not able to locate Company on Companies House",
-                      "classOfShares": "Ordinary Shares"
-                  },
-                  "heldSharesTransaction": {
-                      "schemeHoldShare": "01",
-                      "optDateOfAcqOrContrib": "2022-10-29",
-                      "totalShares": 200,
-                      "optAcquiredFromName": "Fredd Bloggs",
-                      "optPropertyAcquiredFrom": {
-                          "identityType": "individual",
-                          "idNumber": "JE123176A"
-                      },
-                      "optConnectedPartyStatus": false,
-                      "costOfShares": 10000,
-                      "supportedByIndepValuation": true,
-                      "optTotalAssetValue": 2000,
-                      "totalDividendsOrReceipts": 500
-                  },
-                  "optDisposedSharesTransaction": [
-                      {
-                          "methodOfDisposal": "Sold",
-                          "optSalesQuestions": {
-                              "dateOfSale": "2023-04-06",
-                              "noOfSharesSold": 4,
-                              "amountReceived": 38.3,
-                              "nameOfPurchaser": "nameOfPurchaser",
-                              "purchaserType": {
-                                  "identityType": "individual",
-                                  "reasonNoIdNumber": "sdfsdf"
-                              },
-                              "connectedPartyStatus": false,
-                              "supportedByIndepValuation": true
-                          },
-                          "totalSharesNowHeld": 1
-                      },
-                      {
-                          "methodOfDisposal": "Redeemed",
-                          "optRedemptionQuestions": {
-                              "dateOfRedemption": "2023-03-07",
-                              "noOfSharesRedeemed": 27,
-                              "amountReceived": 1907
-                          },
-                          "totalSharesNowHeld": 1
-                      }
-                  ]
-              },
-              {
-                  "typeOfSharesHeld": "03",
-                  "shareIdentification": {
-                      "nameOfSharesCompany": "Pear Computers Inc.",
-                      "optCrnNumber": "LP289157",
-                      "classOfShares": "Preferred Shares"
-                  },
-                  "heldSharesTransaction": {
-                      "schemeHoldShare": "01",
-                      "optDateOfAcqOrContrib": "2023-02-23",
-                      "totalShares": 10000,
-                      "optAcquiredFromName": "Golden Investments Ltd.",
-                      "optPropertyAcquiredFrom": {
-                          "identityType": "ukPartnership",
-                          "idNumber": "28130262"
-                      },
-                      "optConnectedPartyStatus": false,
-                      "costOfShares": 50000,
-                      "supportedByIndepValuation": true,
-                      "optTotalAssetValue": 40000,
-                      "totalDividendsOrReceipts": 200
-                  },
-                  "optDisposedSharesTransaction": [
-                      {
-                          "methodOfDisposal": "Transferred",
-                          "totalSharesNowHeld": 48
-                      },
-                      {
-                          "methodOfDisposal": "Other",
-                          "totalSharesNowHeld": 27
-                      }
-                  ]
-              },
-              {
-                  "typeOfSharesHeld": "03",
-                  "shareIdentification": {
-                      "nameOfSharesCompany": "Connected Party Inc.",
-                      "optCrnNumber": "LP289157",
-                      "classOfShares": "Convertible Preference Shares"
-                  },
-                  "heldSharesTransaction": {
-                      "schemeHoldShare": "02",
-                      "optDateOfAcqOrContrib": "2023-02-23",
-                      "totalShares": 1000,
-                      "optAcquiredFromName": "Investec Inc.",
-                      "optPropertyAcquiredFrom": {
-                          "identityType": "ukCompany",
-                          "idNumber": "0000123456"
-                      },
-                      "optConnectedPartyStatus": false,
-                      "costOfShares": 120220.34,
-                      "supportedByIndepValuation": true,
-                      "optTotalAssetValue": 10000,
-                      "totalDividendsOrReceipts": 599.99
-                  }
-              }
-          ],
-          "optTotalValueQuotedShares": 12.34
-      },
-      "psrDeclaration": {
-          "submittedBy": "PSP",
-          "submitterId": "21000005",
-          "optAuthorisingPSAID": "A2100005",
-          "declaration1": true,
-          "declaration2": true
+      "schemeDesignatory": {
+        "openBankAccount": true,
+        "activeMembers": 23,
+        "deferredMembers": 45,
+        "pensionerMembers": 6,
+        "totalPayments": 74
       }
+    },
+    "checkReturnDates": true,
+    "loans": {
+      "schemeHadLoans": true,
+      "loanTransactions": [
+        {
+          "recipientIdentityType": {
+            "identityType": "individual",
+            "reasonNoIdNumber": "sdfsdf"
+          },
+          "loanRecipientName": "sdfsdfds",
+          "connectedPartyStatus": true,
+          "datePeriodLoanDetails": {
+            "dateOfLoan": "2023-02-12",
+            "loanTotalSchemeAssets": 3,
+            "loanPeriodInMonths": 9
+          },
+          "loanAmountDetails": {
+            "loanAmount": 9,
+            "capRepaymentCY": 8,
+            "amountOutstanding": 7
+          },
+          "equalInstallments": true,
+          "loanInterestDetails": {
+            "loanInterestAmount": 8,
+            "loanInterestRate": 8,
+            "intReceivedCY": 6
+          },
+          "optSecurityGivenDetails": "kjsdfvsd",
+          "optOutstandingArrearsOnLoan": 273
+        }
+      ]
+    },
+    "assets": {
+      "optLandOrProperty": {
+        "landOrPropertyHeld": true,
+        "disposeAnyLandOrProperty": true,
+        "landOrPropertyTransactions": [
+          {
+            "propertyDetails": {
+              "landOrPropertyInUK": false,
+              "addressDetails": {
+                "addressLine1": "Fenerbahce",
+                "addressLine3": "Kadikoy",
+                "town": "Istanbul",
+                "countryCode": "TR"
+              },
+              "landRegistryTitleNumberKey": false,
+              "landRegistryTitleNumberValue": "Foreign property"
+            },
+            "heldPropertyTransaction": {
+              "methodOfHolding": "Acquisition",
+              "dateOfAcquisitionOrContribution": "1953-03-28",
+              "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd",
+              "optPropertyAcquiredFrom": {
+                "identityType": "individual",
+                "idNumber": "SX123456A"
+              },
+              "optConnectedPartyStatus": true,
+              "totalCostOfLandOrProperty": 1000000,
+              "optIndepValuationSupport": true,
+              "isLandOrPropertyResidential": true,
+              "landOrPropertyLeased": false,
+              "totalIncomeOrReceipts": 25000
+            },
+            "optDisposedPropertyTransaction": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateOfSale": "2022-10-19",
+                "optNameOfPurchaser": "Victor Enterprises Inc.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "ukCompany",
+                  "idNumber": "24896221"
+                },
+                "optSaleProceeds": 1500000,
+                "optConnectedPartyStatus": true,
+                "optIndepValuationSupport": false,
+                "portionStillHeld": false
+              }
+            ]
+          },
+          {
+            "propertyDetails": {
+              "landOrPropertyInUK": true,
+              "addressDetails": {
+                "addressLine1": "Beyoglu",
+                "addressLine2": "Ulker Arena",
+                "addressLine3": "Kadikoy",
+                "town": "Istanbul",
+                "postCode": "GB135HG",
+                "countryCode": "GB"
+              },
+              "landRegistryTitleNumberKey": true,
+              "landRegistryTitleNumberValue": "LR10000102202202"
+            },
+            "heldPropertyTransaction": {
+              "methodOfHolding": "Contribution",
+              "dateOfAcquisitionOrContribution": "1953-03-28",
+              "optPropertyAcquiredFromName": "Taylor Wonky Housing Estates Ltd.",
+              "optPropertyAcquiredFrom": {
+                "identityType": "individual",
+                "idNumber": "SX123456A"
+              },
+              "optConnectedPartyStatus": true,
+              "totalCostOfLandOrProperty": 1000000,
+              "optIndepValuationSupport": false,
+              "isLandOrPropertyResidential": true,
+              "landOrPropertyLeased": false,
+              "totalIncomeOrReceipts": 25000
+            },
+            "optDisposedPropertyTransaction": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateOfSale": "2022-10-19",
+                "optNameOfPurchaser": "Victor Enterprises Inc.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "ukCompany",
+                  "idNumber": "24896221"
+                },
+                "optSaleProceeds": 1500000,
+                "optConnectedPartyStatus": true,
+                "optIndepValuationSupport": false,
+                "portionStillHeld": false
+              }
+            ]
+          },
+          {
+            "propertyDetails": {
+              "landOrPropertyInUK": false,
+              "addressDetails": {
+                "addressLine1": "1 Hacienda Way",
+                "addressLine3": "01055",
+                "town": "Madrid",
+                "countryCode": "ES"
+              },
+              "landRegistryTitleNumberKey": false,
+              "landRegistryTitleNumberValue": "Foreign property"
+            },
+            "heldPropertyTransaction": {
+              "methodOfHolding": "Acquisition",
+              "dateOfAcquisitionOrContribution": "2022-12-30",
+              "optPropertyAcquiredFromName": "Joe Sussex",
+              "optPropertyAcquiredFrom": {
+                "identityType": "individual",
+                "idNumber": "SX654321A"
+              },
+              "optConnectedPartyStatus": false,
+              "totalCostOfLandOrProperty": 14000000,
+              "optIndepValuationSupport": false,
+              "isLandOrPropertyResidential": false,
+              "optLeaseDetails": {
+                "lesseeName": "Leasee",
+                "leaseGrantDate": "2023-01-17",
+                "annualLeaseAmount": 500000,
+                "connectedPartyStatus": false
+              },
+              "landOrPropertyLeased": true,
+              "totalIncomeOrReceipts": 500000
+            },
+            "optDisposedPropertyTransaction": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateOfSale": "2022-11-09",
+                "optNameOfPurchaser": "Realty Purchasers Co.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "ukCompany",
+                  "idNumber": "JE463863"
+                },
+                "optSaleProceeds": 1550000,
+                "optConnectedPartyStatus": true,
+                "optIndepValuationSupport": false,
+                "portionStillHeld": true
+              },
+              {
+                "methodOfDisposal": "Sold",
+                "optDateOfSale": "2023-01-26",
+                "optNameOfPurchaser": "ABC Company Inc.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "ukCompany",
+                  "idNumber": "DA576257"
+                },
+                "optSaleProceeds": 10234.56,
+                "optConnectedPartyStatus": false,
+                "optIndepValuationSupport": false,
+                "portionStillHeld": true
+              }
+            ]
+          }
+        ]
+      },
+      "optBorrowing": {
+        "moneyWasBorrowed": true,
+        "moneyBorrowed": [
+          {
+            "dateOfBorrow": "2022-10-18",
+            "schemeAssetsValue": 0,
+            "amountBorrowed": 2000,
+            "interestRate": 5.55,
+            "borrowingFromName": "Loans R Us",
+            "connectedPartyStatus": false,
+            "reasonForBorrow": "We needed the money."
+          }
+        ]
+      },
+      "optBonds": {
+        "bondsWereAdded": true,
+        "bondsWereDisposed": false,
+        "bondTransactions": [
+          {
+            "nameOfBonds": "Xenex Bonds",
+            "methodOfHolding": "01",
+            "optDateOfAcqOrContrib": "2022-10-06",
+            "costOfBonds": 10234.56,
+            "optConnectedPartyStatus": false,
+            "bondsUnregulated": false,
+            "totalIncomeOrReceipts": 50,
+            "optBondsDisposed": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateSold": "2022-11-30",
+                "optAmountReceived": 12333.59,
+                "optBondsPurchaserName": "Happy Bond Buyers Inc.",
+                "optConnectedPartyStatus": false,
+                "totalNowHeld": 120
+              },
+              {
+                "methodOfDisposal": "Transferred",
+                "totalNowHeld": 12
+              },
+              {
+                "methodOfDisposal": "Other",
+                "optOtherMethod": "OtherMethod",
+                "totalNowHeld": 10
+              }
+            ]
+          },
+          {
+            "nameOfBonds": "Really Goods Bonds ABC",
+            "methodOfHolding": "02",
+            "optDateOfAcqOrContrib": "2022-07-30",
+            "costOfBonds": 2000.5,
+            "optConnectedPartyStatus": false,
+            "bondsUnregulated": false,
+            "totalIncomeOrReceipts": 300
+          }
+        ]
+      },
+      "optOtherAssets": {
+        "otherAssetsWereHeld": true,
+        "otherAssetsWereDisposed": false,
+        "otherAssetTransactions": [
+          {
+            "assetDescription": "Test asset",
+            "methodOfHolding": "01",
+            "optDateOfAcqOrContrib": "2023-03-05",
+            "costOfAsset": 12.34,
+            "optPropertyAcquiredFromName": "sdgfghdfh",
+            "optPropertyAcquiredFrom": {
+              "identityType": "other",
+              "otherDescription": "gfhfghfghf"
+            },
+            "optConnectedStatus": false,
+            "optIndepValuationSupport": false,
+            "movableSchedule29A": false,
+            "totalIncomeOrReceipts": 34.56,
+            "optOtherAssetDisposed": [
+              {
+                "methodOfDisposal": "Sold",
+                "optDateSold": "2022-11-30",
+                "optPurchaserName": "Acme Express Ltd.",
+                "optPropertyAcquiredFrom": {
+                  "identityType": "individual",
+                  "idNumber": "SX123456A"
+                },
+                "optTotalAmountReceived": 12333.59,
+                "optConnectedStatus": false,
+                "optSupportedByIndepValuation": false,
+                "anyPartAssetStillHeld": true
+              },
+              {
+                "methodOfDisposal": "Transferred",
+                "anyPartAssetStillHeld": true
+              },
+              {
+                "methodOfDisposal": "Other",
+                "optOtherMethod": "OtherMethod",
+                "anyPartAssetStillHeld": true
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "membersPayments": {
+      "employerContributionMade": false,
+      "unallocatedContribsMade": false,
+      "employerContributionsDetails": {
+        "made": true,
+        "completed": true
+      },
+      "transfersInCompleted": true,
+      "transfersOutCompleted": true,
+      "lumpSumReceived": true,
+      "memberContributionMade": true,
+      "pensionReceived": {
+        "made": true,
+        "completed": true
+       },
+      "benefitsSurrenderedDetails": {
+        "made": true,
+        "completed": true
+      },
+      "memberDetails": [
+        {
+          "personalDetails": {
+            "firstName": "John",
+            "lastName": "Doe",
+            "dateOfBirth": "1990-10-10",
+            "nino": "AB123456A"
+          },
+          "state": "Active",
+          "employerContributions": [
+            {
+              "employerName": "Acme Ltd",
+              "employerType": {
+                "employerType": "UKCompany",
+                "value": "11108499"
+              },
+              "totalTransferValue": 12.34
+            },
+            {
+              "employerName": "Slack Ltd",
+              "employerType": {
+                "employerType": "UKPartnership",
+                "value": "A1230849"
+              },
+              "totalTransferValue": 102.88
+            }
+          ],
+          "transfersIn": [
+            {
+              "schemeName": "Test pension scheme",
+              "dateOfTransfer": "2023-02-12",
+              "transferValue": 12.34,
+              "transferIncludedAsset": true,
+              "transferSchemeType": {
+                "key": "registeredPS",
+                "value": "88390774ZZ"
+              }
+            }
+          ],
+          "transfersOut": [
+            {
+              "schemeName": "Test pension scheme out",
+              "dateOfTransfer": "2023-02-12",
+              "transferSchemeType": {
+                "key": "registeredPS",
+                "value": "76509173AA"
+              }
+            }
+          ],
+          "benefitsSurrendered": {
+            "totalSurrendered": 12.34,
+            "dateOfSurrender": "2022-12-12",
+            "surrenderReason": "some reason"
+          },
+          "pensionAmountReceived": 12.34
+        },
+        {
+          "personalDetails": {
+            "firstName": "Jane",
+            "lastName": "Dean",
+            "dateOfBirth": "1995-06-01",
+            "noNinoReason": "some reason"
+          },
+          "state": "Active",
+          "employerContributions": [
+            {
+              "employerName": "Test Ltd",
+              "employerType": {
+                "employerType": "UKCompany",
+                "value": "67308411"
+              },
+              "totalTransferValue": 23.35
+            },
+            {
+              "employerName": "Legal Ltd",
+              "employerType": {
+                "employerType": "Other",
+                "value": "some description"
+              },
+              "totalTransferValue": 553.01
+            }
+          ],
+          "transfersIn": [
+            {
+              "schemeName": "overseas pension scheme",
+              "dateOfTransfer": "2020-10-04",
+              "transferValue": 45.67,
+              "transferIncludedAsset": false,
+              "transferSchemeType": {
+                "key": "qualifyingRecognisedOverseasPS",
+                "value": "Q654321"
+              }
+            },
+            {
+              "schemeName": "Test pension scheme",
+              "dateOfTransfer": "2021-08-21",
+              "transferValue": 67.89,
+              "transferIncludedAsset": true,
+              "transferSchemeType": {
+                "key": "other",
+                "value": "other value"
+              }
+            }
+          ],
+          "transfersOut": [
+            {
+              "schemeName": "overseas pension scheme out",
+              "dateOfTransfer": "2020-10-04",
+              "transferSchemeType": {
+                "key": "qualifyingRecognisedOverseasPS",
+                "value": "Q000002"
+              }
+            },
+            {
+              "schemeName": "Test pension scheme out",
+              "dateOfTransfer": "2021-08-21",
+              "transferSchemeType": {
+                "key": "other",
+                "value": "other value"
+              }
+            }
+          ],
+          "benefitsSurrendered": {
+            "totalSurrendered": 12.34,
+            "dateOfSurrender": "2022-12-12",
+            "surrenderReason": "some reason"
+          },
+          "pensionAmountReceived": 12.34
+        }
+      ]
+    },
+    "shares": {
+      "optShareTransactions": [
+        {
+          "typeOfSharesHeld": "01",
+          "shareIdentification": {
+            "nameOfSharesCompany": "AppleSauce Inc.",
+            "optReasonNoCRN": "Not able to locate Company on Companies House",
+            "classOfShares": "Ordinary Shares"
+          },
+          "heldSharesTransaction": {
+            "schemeHoldShare": "01",
+            "optDateOfAcqOrContrib": "2022-10-29",
+            "totalShares": 200,
+            "optAcquiredFromName": "Fredd Bloggs",
+            "optPropertyAcquiredFrom": {
+              "identityType": "individual",
+              "idNumber": "JE123176A"
+            },
+            "optConnectedPartyStatus": false,
+            "costOfShares": 10000,
+            "supportedByIndepValuation": true,
+            "optTotalAssetValue": 2000,
+            "totalDividendsOrReceipts": 500
+          },
+          "optDisposedSharesTransaction": [
+            {
+              "methodOfDisposal": "Sold",
+              "optSalesQuestions": {
+                "dateOfSale": "2023-04-06",
+                "noOfSharesSold": 4,
+                "amountReceived": 38.3,
+                "nameOfPurchaser": "nameOfPurchaser",
+                "purchaserType": {
+                  "identityType": "individual",
+                  "reasonNoIdNumber": "sdfsdf"
+                },
+                "connectedPartyStatus": false,
+                "supportedByIndepValuation": true
+              },
+              "totalSharesNowHeld": 1
+            },
+            {
+              "methodOfDisposal": "Redeemed",
+              "optRedemptionQuestions": {
+                "dateOfRedemption": "2023-03-07",
+                "noOfSharesRedeemed": 27,
+                "amountReceived": 1907
+              },
+              "totalSharesNowHeld": 1
+            }
+          ]
+        },
+        {
+          "typeOfSharesHeld": "03",
+          "shareIdentification": {
+            "nameOfSharesCompany": "Pear Computers Inc.",
+            "optCrnNumber": "LP289157",
+            "classOfShares": "Preferred Shares"
+          },
+          "heldSharesTransaction": {
+            "schemeHoldShare": "01",
+            "optDateOfAcqOrContrib": "2023-02-23",
+            "totalShares": 10000,
+            "optAcquiredFromName": "Golden Investments Ltd.",
+            "optPropertyAcquiredFrom": {
+              "identityType": "ukPartnership",
+              "idNumber": "28130262"
+            },
+            "optConnectedPartyStatus": false,
+            "costOfShares": 50000,
+            "supportedByIndepValuation": true,
+            "optTotalAssetValue": 40000,
+            "totalDividendsOrReceipts": 200
+          },
+          "optDisposedSharesTransaction": [
+            {
+              "methodOfDisposal": "Transferred",
+              "totalSharesNowHeld": 48
+            },
+            {
+              "methodOfDisposal": "Other",
+              "totalSharesNowHeld": 27
+            }
+          ]
+        },
+        {
+          "typeOfSharesHeld": "03",
+          "shareIdentification": {
+            "nameOfSharesCompany": "Connected Party Inc.",
+            "optCrnNumber": "LP289157",
+            "classOfShares": "Convertible Preference Shares"
+          },
+          "heldSharesTransaction": {
+            "schemeHoldShare": "02",
+            "optDateOfAcqOrContrib": "2023-02-23",
+            "totalShares": 1000,
+            "optAcquiredFromName": "Investec Inc.",
+            "optPropertyAcquiredFrom": {
+              "identityType": "ukCompany",
+              "idNumber": "0000123456"
+            },
+            "optConnectedPartyStatus": false,
+            "costOfShares": 120220.34,
+            "supportedByIndepValuation": true,
+            "optTotalAssetValue": 10000,
+            "totalDividendsOrReceipts": 599.99
+          }
+        }
+      ],
+      "optTotalValueQuotedShares": 12.34
+    },
+    "psrDeclaration": {
+      "submittedBy": "PSP",
+      "submitterId": "21000005",
+      "optAuthorisingPSAID": "A2100005",
+      "declaration1": true,
+      "declaration2": true
+    }
   }
 }
 

@@ -309,12 +309,13 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     "Shares with all types" in {
 
       val shares = Shares(
+        recordVersion = Some("001"),
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = None
       )
 
       val expected = EtmpShares(
-        recordVersion = None,
+        recordVersion = Some("001"),
         sponsorEmployerSharesWereHeld = YesNo.Yes,
         noOfSponsEmplyrShareTransactions = Some(1),
         unquotedSharesWereHeld = YesNo.Yes,
@@ -333,6 +334,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     "Shares with quoted shares" in {
 
       val shares = Shares(
+        recordVersion = None,
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = Some(Double.MaxValue)
       )

@@ -46,7 +46,7 @@ case class LoanTransactions(
   optOutstandingArrearsOnLoan: Option[Double]
 )
 
-case class Loans(schemeHadLoans: Boolean, loanTransactions: Seq[LoanTransactions])
+case class Loans(recordVersion: Option[String], schemeHadLoans: Boolean, loanTransactions: Seq[LoanTransactions])
 
 object Loans {
   private implicit val formatLoanInterestDetails: OFormat[LoanInterestDetails] = Json.format[LoanInterestDetails]

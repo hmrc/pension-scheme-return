@@ -48,7 +48,6 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.prettyPrint(data)}")
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-    logger.debug(s"----<<Headers>>----: $hc")
 
     http
       .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
@@ -77,8 +76,6 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     logger.info(logMessage)
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
-    logger.debug(s"----<<Headers>>----: $hc")
 
     http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
       response.status match {
@@ -182,7 +179,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
         case SERVICE_UNAVAILABLE =>
           // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
           // TODO - must be a temporary solution to check QA env issues
-          logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty respose")
+          logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty response")
           Seq.empty[PsrVersionsEtmpResponse]
         case NOT_FOUND =>
           logger.info(s"$logMessage and returned ${response.status}, ${response.json}")

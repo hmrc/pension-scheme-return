@@ -17,7 +17,6 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import cats.syntax.traverse._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo.unapply
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
@@ -52,19 +51,21 @@ class MemberPaymentsTransformer @Inject()(
         // All other cases: no transformation required
         case (answer, _, _) => answer
       },
+//       recordVersion = memberPayments.recordVersion,
+//       employerContributionMade = Option
+//         .when(memberPayments.employerContributionsDetails.started)(memberPayments.employerContributionsDetails.made),
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
-      unallocatedContribAmount =
-        if (memberPayments.unallocatedContribsMade) memberPayments.unallocatedContribAmount else None,
+      unallocatedContribAmount = memberPayments.unallocatedContribAmount,
       memberContributionMade = memberPayments.memberContributionMade,
-      schemeReceivedTransferIn = memberPayments.memberDetails.exists(_.transfersIn.nonEmpty),
-      schemeMadeTransferOut = memberPayments.memberDetails.exists(_.transfersOut.nonEmpty),
+      schemeReceivedTransferIn = Some(memberPayments.memberDetails.filter(_.state != MemberState.Deleted).exists(_.transfersIn.nonEmpty)),
+      schemeMadeTransferOut = Some(memberPayments.memberDetails.filter(_.state != MemberState.Deleted).exists(_.transfersOut.nonEmpty)),
       lumpSumReceived = memberPayments.lumpSumReceived,
-      pensionReceived = memberPayments.pensionReceived,
+      pensionReceived = Option.when(memberPayments.pensionReceived.started)(memberPayments.pensionReceived.made),
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
-        case SectionDetails(made @ true, completed @ true) => true
-        case SectionDetails(made @ true, completed @ false) => false
-        case SectionDetails(made @ false, completed @ true) => false
-        case SectionDetails(made @ false, completed @ false) => false // shouldn't happen but adding just in case
+        case SectionDetails(made @ true, completed @ true) => Some(true)
+        case SectionDetails(made @ true, completed @ false) => Some(false)
+        case SectionDetails(made @ false, completed @ true) => Some(false)
+        case SectionDetails(made @ false, completed @ false) => None // not started
       },
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
@@ -74,6 +75,10 @@ class MemberPaymentsTransformer @Inject()(
           },
           memberPSRVersion = "001",
           noOfContributions = Some(memberDetails.employerContributions.size),
+//           memberPSRVersion = memberDetails.memberPSRVersion,
+//           noOfContributions =
+//             if (memberPayments.employerContributionsDetails.completed) Some(memberDetails.employerContributions.size)
+//             else None,
           totalContributions = memberDetails.totalContributions,
           noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
           noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
@@ -118,9 +123,10 @@ class MemberPaymentsTransformer @Inject()(
       } yield MemberDetails(
         state = member.memberStatus match {
           case SectionStatus.New => MemberState.Active
-          case SectionStatus.Changed => MemberState.Active
+          case SectionStatus.Changed => MemberState.Active //todo: change when new member state is added
           case SectionStatus.Deleted => MemberState.Deleted
         },
+        memberPSRVersion = member.memberPSRVersion,
         personalDetails = memberPersonalDetails,
         employerContributions = employerContributions,
         totalContributions = member.totalContributions,
@@ -137,6 +143,7 @@ class MemberPaymentsTransformer @Inject()(
     memberDetails.map(
       details =>
         MemberPayments(
+          recordVersion = out.recordVersion,
           memberDetails = details,
           employerContributionsDetails = SectionDetails(
             made = out.employerContributionMade.boolean,
@@ -147,22 +154,34 @@ class MemberPaymentsTransformer @Inject()(
               case (true, _) => true // Completed with some Emp Conts made
             }
           ),
+//           employerContributionsDetails = (
+//             out.employerContributionMade.map(_.boolean),
+//             out.memberDetails.forall(_.noOfContributions.nonEmpty)
+//           ) match {
+//             case (None, _) => SectionDetails.notStarted
+//             case (Some(false), _) => SectionDetails(made = false, completed = true)
+//             case (Some(true), completed) => SectionDetails(made = true, completed = completed)
+//           },
           transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
           transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
-          unallocatedContribsMade = unapply(out.unallocatedContribsMade),
+          unallocatedContribsMade = out.unallocatedContribsMade.map(_.boolean),
           unallocatedContribAmount = out.unallocatedContribAmount,
-          memberContributionMade = unapply(out.memberContributionMade),
-          lumpSumReceived = unapply(out.lumpSumReceived),
-          pensionReceived = unapply(out.pensionReceived),
-          benefitsSurrenderedDetails =
-            (out.surrenderMade.boolean, out.memberDetails.map(_.memberPensionSurrender)) match {
-              case (false, List(Some(Nil))) => SectionDetails(made = true, completed = false)
-              case (true, List(Some(Nil))) => SectionDetails(made = true, completed = true)
-              case (false, List(None)) => SectionDetails(made = false, completed = true)
-              case (true, List(None)) => SectionDetails(made = true, completed = true) // this case shouldn't happen
-              case (true, _) => SectionDetails(made = true, completed = true)
-              case (false, _) => SectionDetails(made = false, completed = true)
+          memberContributionMade = out.memberContributionMade,
+          lumpSumReceived = out.lumpSumReceived,
+          pensionReceived = (out.pensionReceived.map(_.boolean), out.memberDetails.map(_.pensionAmountReceived)) match {
+            case (None, _) => SectionDetails.notStarted
+            case (Some(false), _) => SectionDetails(made = false, completed = true)
+            case (Some(true), s) if s.forall(_.nonEmpty) || s.exists(_.exists(_ == 0)) =>
+              SectionDetails(made = true, completed = true)
+            case (Some(true), _) => SectionDetails(made = true, completed = false)
+          },
+          benefitsSurrenderedDetails = {
+            (out.surrenderMade, out.memberDetails.map(_.memberPensionSurrender)) match {
+              case (None, _) => SectionDetails.notStarted
+              case (Some(made), list) if list.nonEmpty => SectionDetails(made = made, completed = true)
+              case (Some(made), Nil) => SectionDetails(made = made, completed = false)
             }
+          }
         )
     )
   }

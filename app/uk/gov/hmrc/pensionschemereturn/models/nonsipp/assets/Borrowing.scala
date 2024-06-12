@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-case class Borrowing(moneyWasBorrowed: Boolean, moneyBorrowed: Seq[MoneyBorrowed])
+case class Borrowing(recordVersion: Option[String], moneyWasBorrowed: Boolean, moneyBorrowed: Seq[MoneyBorrowed])
 
 case class MoneyBorrowed(
   dateOfBorrow: LocalDate,

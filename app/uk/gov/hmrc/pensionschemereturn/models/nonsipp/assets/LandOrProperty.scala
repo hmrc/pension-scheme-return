@@ -22,6 +22,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDate
 
 case class LandOrProperty(
+  recordVersion: Option[String],
   landOrPropertyHeld: Boolean,
   disposeAnyLandOrProperty: Boolean,
   landOrPropertyTransactions: Seq[LandOrPropertyTransactions]
