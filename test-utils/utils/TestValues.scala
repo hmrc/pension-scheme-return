@@ -309,7 +309,7 @@ trait TestValues {
     totalTransferValue = 56.78
   )
 
-  val sampleEmployerContributions4: EmployerContributions = EmployerContributions(
+  val sampleEmployerContribution4: EmployerContributions = EmployerContributions(
     employerName = "test employer four",
     employerType = EmployerType.UKPartnership(Right("test partnership id")),
     totalTransferValue = 78.99
@@ -387,7 +387,7 @@ trait TestValues {
     ),
     employerContributions = List(
       sampleEmployerContribution3,
-      sampleEmployerContributions4
+      sampleEmployerContribution4
     ),
     totalContributions = None,
     transfersIn = List(
@@ -741,7 +741,7 @@ trait TestValues {
               totalContribution = 56.78
             ),
             EtmpEmployerContributions(
-              orgName = sampleEmployerContributions4.employerName,
+              orgName = sampleEmployerContribution4.employerName,
               organisationIdentity = OrganisationIdentity(
                 orgType = EmployerContributionsOrgType.UKPartnership,
                 idNumber = Some("test partnership id"),
@@ -784,6 +784,42 @@ trait TestValues {
         )
       )
     )
+  )
+
+  val sampleEtmpEmployerContribution1: EtmpEmployerContributions = EtmpEmployerContributions(
+    orgName = "test employer one",
+    organisationIdentity = OrganisationIdentity(
+      orgType = EmployerContributionsOrgType.UKCompany,
+      idNumber = Some("test company id")
+    ),
+    totalContribution = 12.34
+  )
+
+  val sampleEtmpEmployerContribution2: EtmpEmployerContributions = EtmpEmployerContributions(
+    orgName = "test employer two",
+    organisationIdentity = OrganisationIdentity(
+      orgType = EmployerContributionsOrgType.UKCompany,
+      reasonNoIdNumber = Some("test reason")
+    ),
+    totalContribution = 34.56
+  )
+
+  val sampleEtmpEmployerContribution3: EtmpEmployerContributions = EtmpEmployerContributions(
+    orgName = "test employer three",
+    organisationIdentity = OrganisationIdentity(
+      orgType = EmployerContributionsOrgType.Other,
+      otherDescription = Some("test description")
+    ),
+    totalContribution = 56.78
+  )
+
+  val sampleEtmpEmployerContribution4: EtmpEmployerContributions = EtmpEmployerContributions(
+    orgName = "test employer four",
+    organisationIdentity = OrganisationIdentity(
+      orgType = EmployerContributionsOrgType.UKPartnership,
+      idNumber = Some("test partnership id")
+    ),
+    totalContribution = 78.99
   )
 
   val sampleEtmpShares: EtmpShares = EtmpShares(
