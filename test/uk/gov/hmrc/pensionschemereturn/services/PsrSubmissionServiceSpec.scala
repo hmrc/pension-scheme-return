@@ -67,27 +67,27 @@ class PsrSubmissionServiceSpec
   "getStandardPsr" should {
     "return 200 without data when connector returns successfully" in {
 
-      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
+      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
       whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result =>
         result mustBe None
 
-        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
         verify(mockStandardPsrFromEtmp, never).transform(any())
       }
     }
 
     "return 200 with data when connector returns successfully" in {
 
-      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any()))
+      when(mockPsrConnector.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Some(samplePsrSubmissionEtmpResponse)))
       when(mockStandardPsrFromEtmp.transform(any())).thenReturn(Right(samplePsrSubmission))
 
       whenReady(service.getStandardPsr("testPstr", Some("fbNumber"), None, None)) { result =>
         result shouldMatchTo Some(Right(samplePsrSubmission))
 
-        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+        verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
         verify(mockStandardPsrFromEtmp, times(1)).transform(any())
       }
     }

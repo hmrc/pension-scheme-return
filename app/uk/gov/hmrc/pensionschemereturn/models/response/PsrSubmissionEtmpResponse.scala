@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.models.response
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets.EtmpAssets
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMemberPayments
 
@@ -50,7 +50,7 @@ case class EtmpPsrDetails(
 )
 
 object PsrSubmissionEtmpResponse {
-  private implicit val readsEtmpSchemeDetails: Reads[EtmpSchemeDetails] = Json.reads[EtmpSchemeDetails]
-  private implicit val readsEtmpPsrDetails: Reads[EtmpPsrDetails] = Json.reads[EtmpPsrDetails]
-  implicit val reads: Reads[PsrSubmissionEtmpResponse] = Json.reads[PsrSubmissionEtmpResponse]
+  private implicit val formatsEtmpSchemeDetails: OFormat[EtmpSchemeDetails] = Json.format[EtmpSchemeDetails]
+  private implicit val formatsEtmpPsrDetails: OFormat[EtmpPsrDetails] = Json.format[EtmpPsrDetails]
+  implicit val formats: OFormat[PsrSubmissionEtmpResponse] = Json.format[PsrSubmissionEtmpResponse]
 }

@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import play.api.test.FakeRequest
-import play.api.mvc.AnyContentAsEmpty
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
@@ -41,7 +39,6 @@ class PsrOverviewServiceSpec extends BaseSpec with MockitoSugar with TestValues 
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val rq: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "getOverview" should {
     "return 200 without data when connector returns successfully" in {
