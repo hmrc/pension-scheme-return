@@ -65,7 +65,8 @@ class PsrSubmissionService @Inject()(
     optPsrVersion: Option[String]
   )(
     implicit headerCarrier: HeaderCarrier,
-    ec: ExecutionContext
+    ec: ExecutionContext,
+    request: RequestHeader
   ): Future[Option[Either[TransformerError, PsrSubmission]]] =
     psrConnector
       .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)

@@ -17,11 +17,12 @@
 package uk.gov.hmrc.pensionschemereturn.connectors
 
 import uk.gov.hmrc.pensionschemereturn.models.response._
-import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.RequestHeader
 import com.google.inject.Inject
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
+import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
 import play.api.http.Status._
@@ -31,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import java.util.UUID.randomUUID
 
-class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
+class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: ApiAuditUtil)
     extends HttpErrorFunctions
     with HttpResponseHelper
     with Logging {
@@ -60,6 +61,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
+      .andThen(apiAuditUtil.firePsrPostAuditEvent(pstr, data))
   }
 
   def getStandardPsr(
@@ -67,7 +69,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[PsrSubmissionEtmpResponse]] = {
+  )(
+    implicit headerCarrier: HeaderCarrier,
+    ec: ExecutionContext,
+    request: RequestHeader
+  ): Future[Option[PsrSubmissionEtmpResponse]] = {
 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
     val url: String = config.getStandardPsrUrl.format(params)
@@ -77,17 +83,20 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient)
 
     implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
 
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
-      response.status match {
-        case OK =>
-          logger.debug(s"This is ETMP Response -->> Status : ${response.status}, Data : ${response.json}")
-          Some(response.json.as[PsrSubmissionEtmpResponse])
-        case UNPROCESSABLE_ENTITY if response.body.contains("PSR_NOT_FOUND") =>
-          logger.info(s"$logMessage and returned PSR_NOT_FOUND with status: ${response.status}")
-          None
-        case _ => handleErrorResponse("GET", url)(response)
+    http
+      .GET[HttpResponse](url)(implicitly, hc, implicitly)
+      .map { response =>
+        response.status match {
+          case OK =>
+            logger.debug(s"This is ETMP Response -->> Status : ${response.status}, Data : ${response.json}")
+            Some(response.json.as[PsrSubmissionEtmpResponse])
+          case UNPROCESSABLE_ENTITY if response.body.contains("PSR_NOT_FOUND") =>
+            logger.info(s"$logMessage and returned PSR_NOT_FOUND with status: ${response.status}")
+            None
+          case _ => handleErrorResponse("GET", url)(response)
+        }
       }
-    }
+      .andThen(apiAuditUtil.firePsrGetAuditEvent(pstr, optFbNumber, optPeriodStartDate, optPsrVersion))
   }
 
   def submitSippPsr(

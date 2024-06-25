@@ -707,12 +707,12 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(
           Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
         )
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any()))
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(Some(Right(samplePsrSubmission))))
 
       val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(fakeRequest)
       status(result) mustBe Status.OK
-      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
 
@@ -721,12 +721,12 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(
           Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
         )
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any()))
+      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
 
       val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(fakeRequest)
       status(result) mustBe Status.NOT_FOUND
-      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any())
+      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
   }
