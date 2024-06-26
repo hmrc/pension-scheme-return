@@ -428,8 +428,8 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |      "made": true,
           |      "completed": true
           |    },
-          |    "transfersInCompleted": true,
-          |    "transfersOutCompleted": true,
+          |    "transfersInMade": true,
+          |    "transfersOutMade": true,
           |    "lumpSumReceived": true,
           |    "memberContributionMade": true,
           |    "pensionReceived": {

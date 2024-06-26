@@ -37,6 +37,8 @@ case class EtmpMemberPayments(
 
 // Using Option[List[?]] as the data items are optional in ETMP,
 // this means that when we read them as a List[?] and the field doesn't exist in the response, it will blow up
+// Note: For the 'noOf...' fields, ETMP will ignore any value of 0 we try to POST, so Some(0) and None are effectively
+// identical for these fields, so POSTing them will have the same result: ETMP storing no value for that field.
 case class EtmpMemberDetails(
   memberStatus: SectionStatus,
   memberPSRVersion: Option[String],
