@@ -23,4 +23,23 @@ import uk.gov.hmrc.http.BadRequestException
 trait PsrBaseController {
   def requiredBody(implicit request: Request[AnyContent]): JsValue =
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
+
+  protected def requiredHeaders(headers: String*)(implicit request: Request[AnyContent]): Seq[String] = {
+    val headerData = headers.map(request.headers.get)
+    val allHeadersDefined = headerData.forall(_.isDefined)
+    if (allHeadersDefined) headerData.collect { case Some(value) => value } else {
+      val missingHeaders = headers.zip(headerData)
+      val errorString = missingHeaders
+        .map {
+          case (headerName, data) =>
+            prettyMissingParamError(data, headerName + " missing")
+        }
+        .mkString(" ")
+      throw new BadRequestException("Bad Request with missing parameters: " + errorString)
+    }
+  }
+
+  private def prettyMissingParamError(param: Option[String], error: String): String =
+    if (param.isEmpty) s"$error " else ""
+
 }

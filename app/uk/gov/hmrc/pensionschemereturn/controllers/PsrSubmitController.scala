@@ -45,12 +45,13 @@ class PsrSubmitController @Inject()(
     with Logging {
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { _ =>
+    authorisedAsPsrUser { psrAuth =>
+      val Seq(userName, schemeName) = requiredHeaders("userName", "schemeName")
       val psrSubmission = requiredBody.as[PsrSubmission]
       // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
       logger.info(message = s"Submitting standard PSR - Incoming payload: $psrSubmission")
       psrSubmissionService
-        .submitStandardPsr(psrSubmission)
+        .submitStandardPsr(psrSubmission, psrAuth, userName, schemeName)
         .map(response => {
           // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
           logger.debug(message = s"Submit standard PSR - response: ${response.status} , body: ${response.body}")
@@ -65,19 +66,23 @@ class PsrSubmitController @Inject()(
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
   ): Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { _ =>
+    authorisedAsPsrUser { psrAuth =>
+      val Seq(userName, schemeName) = requiredHeaders("userName", "schemeName")
       logger.debug(
         s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
       )
-      psrSubmissionService.getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion).map {
-        case None => NotFound
-        case Some(Right(psrSubmission)) =>
-          val jsonResponse = Json.toJson(psrSubmission)
-          // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
-          logger.debug(message = s"Retrieved data as JSON: ${Json.prettyPrint(jsonResponse)}")
-          Ok(jsonResponse)
-        case Some(Left(error)) => InternalServerError(Json.toJson(error))
-      }
+      psrSubmissionService
+        .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion, psrAuth, userName, schemeName)
+        .map {
+          case None => NotFound
+          case Some(Right(psrSubmission)) =>
+            val jsonResponse = Json.toJson(psrSubmission)
+            // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
+            logger.debug(message = s"Retrieved data as JSON: ${Json.prettyPrint(jsonResponse)}")
+            Ok(jsonResponse)
+          case Some(Left(error)) => InternalServerError(Json.toJson(error))
+        }
     }
   }
+
 }

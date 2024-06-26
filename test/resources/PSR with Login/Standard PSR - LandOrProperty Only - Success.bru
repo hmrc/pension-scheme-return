@@ -10,6 +10,11 @@ post {
   auth: bearer
 }
 
+headers {
+  userName: TestUserName
+  schemeName: TestSchemeName
+}
+
 auth:bearer {
   token: {{bearer_token}}
 }

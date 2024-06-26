@@ -103,7 +103,8 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
         taxYear,
         userName
       )
-      eventCaptor.getValue mustBe expected
+      val captured: EmailAuditEvent = eventCaptor.getValue
+      captured mustBe expected
     }
 
     "respond with BAD_REQUEST when not given EmailEvents" in {
@@ -134,23 +135,9 @@ object EmailResponseControllerSpec {
   private val emailAddress = "test@test.com"
   private val requestId = "test-request-id"
   private val reportVersion = "1"
-  private val schemeName = "Test Scheme"
-  private val userName = "User Name"
   private val taxYear = "Test tax year"
 
   private val fakeRequest = FakeRequest("", "")
-  private val enrolments = Enrolments(
-    Set(
-      Enrolment(
-        "HMRC-PODS-ORG",
-        Seq(
-          EnrolmentIdentifier("PSAID", "A0000000")
-        ),
-        "Activated",
-        None
-      )
-    )
-  )
   private val eventCaptor = ArgumentCaptor.forClass(classOf[EmailAuditEvent])
   private val emailEvents = EmailEvents(
     Seq(

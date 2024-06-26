@@ -1,13 +1,18 @@
 meta {
   name: Standard PSR - Unprocessable
   type: http
-  seq: 13
+  seq: 14
 }
 
 post {
   url: {{pension-scheme-return}}/psr/standard
   body: json
   auth: bearer
+}
+
+headers {
+  userName: TestUserName
+  schemeName: TestSchemeName
 }
 
 auth:bearer {

@@ -32,13 +32,21 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
 
   def firePsrPostAuditEvent(
     pstr: String,
-    data: JsValue
+    data: JsValue,
+    schemeName: String,
+    credentialRole: String,
+    psaPspId: String,
+    userName: String
   )(implicit ec: ExecutionContext, request: RequestHeader): PartialFunction[Try[HttpResponse], Unit] = {
     case Success(httpResponse) =>
       logger.info(s"PsrPostAuditEvent ->> Status: ${Status.OK}, Payload: ${Json.prettyPrint(data)}")
       auditService.sendEvent(
         PsrPostAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           payload = data,
           status = Some(Status.OK),
           response = Some(httpResponse.json),
@@ -50,6 +58,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrPostAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           payload = data,
           status = Some(error.statusCode),
           response = None,
@@ -61,6 +73,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrPostAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           payload = data,
           status = Some(error.responseCode),
           response = None,
@@ -72,6 +88,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrPostAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           payload = data,
           status = None,
           response = None,
@@ -84,7 +104,11 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
     pstr: String,
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
-    optPsrVersion: Option[String]
+    optPsrVersion: Option[String],
+    credentialRole: String,
+    psaPspId: String,
+    userName: String,
+    schemeName: String
   )(
     implicit ec: ExecutionContext,
     request: RequestHeader
@@ -94,6 +118,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrGetAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           fbNumber = optFbNumber,
           periodStartDate = optPeriodStartDate,
           psrVersion = optPsrVersion,
@@ -107,6 +135,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrGetAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           fbNumber = optFbNumber,
           periodStartDate = optPeriodStartDate,
           psrVersion = optPsrVersion,
@@ -120,6 +152,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrGetAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           fbNumber = optFbNumber,
           periodStartDate = optPeriodStartDate,
           psrVersion = optPsrVersion,
@@ -133,6 +169,10 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
       auditService.sendEvent(
         PsrGetAuditEvent(
           pstr = pstr,
+          credentialRole = credentialRole,
+          psaPspId = psaPspId,
+          userName = userName,
+          schemeName = schemeName,
           fbNumber = optFbNumber,
           periodStartDate = optPeriodStartDate,
           psrVersion = optPsrVersion,

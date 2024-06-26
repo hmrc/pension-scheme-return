@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.services
 import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
 import play.api.mvc.RequestHeader
 import com.google.inject.{Inject, Singleton}
+import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.pensionschemereturn.models._
@@ -40,7 +41,10 @@ class PsrSubmissionService @Inject()(
 ) extends Logging {
 
   def submitStandardPsr(
-    psrSubmission: PsrSubmission
+    psrSubmission: PsrSubmission,
+    psrAuth: PsrAuthContext[Any],
+    userName: String,
+    schemeName: String
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
     val payloadAsJson = Json.toJson(psrSubmissionToEtmp.transform(psrSubmission))
     val validationResult = jsonPayloadSchemaValidator.validatePayload(API_1999, payloadAsJson)
@@ -50,7 +54,14 @@ class PsrSubmissionService @Inject()(
       )
     } else {
       psrConnector
-        .submitStandardPsr(psrSubmission.minimalRequiredSubmission.reportDetails.pstr, payloadAsJson)
+        .submitStandardPsr(
+          psrSubmission.minimalRequiredSubmission.reportDetails.pstr,
+          payloadAsJson,
+          schemeName,
+          psrAuth.psaPspId,
+          psrAuth.credentialRole,
+          userName
+        )
         .recover {
           case badReq: BadRequestException =>
             throw new ExpectationFailedException(s"${badReq.message}")
@@ -62,13 +73,25 @@ class PsrSubmissionService @Inject()(
     pstr: String,
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
-    optPsrVersion: Option[String]
+    optPsrVersion: Option[String],
+    psrAuth: PsrAuthContext[Any],
+    userName: String,
+    schemeName: String
   )(
     implicit headerCarrier: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader
   ): Future[Option[Either[TransformerError, PsrSubmission]]] =
     psrConnector
-      .getStandardPsr(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
+      .getStandardPsr(
+        pstr,
+        optFbNumber,
+        optPeriodStartDate,
+        optPsrVersion,
+        schemeName,
+        psrAuth.psaPspId,
+        psrAuth.credentialRole,
+        userName
+      )
       .map(_.map(standardPsrFromEtmp.transform))
 }

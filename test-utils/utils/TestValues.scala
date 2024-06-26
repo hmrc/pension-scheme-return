@@ -58,6 +58,9 @@ trait TestValues {
     )
   )
   val pstr = "testPstr"
+  val schemeName = "SchemeName"
+  val userName = "userName"
+  val psaPspId = "psaPspId"
   val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
 
   // Standard - PSR

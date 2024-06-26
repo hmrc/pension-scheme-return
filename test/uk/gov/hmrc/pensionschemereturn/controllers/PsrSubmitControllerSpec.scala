@@ -73,7 +73,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
 
       thrown.reason mustBe "Bearer token expired"
 
-      verify(mockPsrSubmissionService, never).submitStandardPsr(any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
 
@@ -89,7 +89,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
       }
 
       thrown.reason mustBe "Bearer token not supplied"
-      verify(mockPsrSubmissionService, never).submitStandardPsr(any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
 
@@ -100,7 +100,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(
           Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
         )
-      when(mockPsrSubmissionService.submitStandardPsr(any())(any(), any(), any()))
+      when(mockPsrSubmissionService.submitStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
 
       val requestJson: JsValue = Json.parse(
@@ -694,9 +694,11 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
           |""".stripMargin
       )
       val postRequest = fakeRequest.withJsonBody(requestJson)
-      val result = controller.submitStandardPsr(postRequest)
+      val result = controller.submitStandardPsr(
+        postRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+      )
       status(result) mustBe Status.NO_CONTENT
-      verify(mockPsrSubmissionService, times(1)).submitStandardPsr(any())(any(), any(), any())
+      verify(mockPsrSubmissionService, times(1)).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
   }
@@ -707,12 +709,19 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(
           Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
         )
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(Some(Right(samplePsrSubmission))))
+      when(
+        mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      ).thenReturn(Future.successful(Some(Right(samplePsrSubmission))))
 
-      val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(fakeRequest)
+      val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(
+        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+      )
       status(result) mustBe Status.OK
-      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+        any(),
+        any(),
+        any()
+      )
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
 
@@ -721,12 +730,19 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
         .thenReturn(
           Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
         )
-      when(mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(None))
+      when(
+        mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
+      ).thenReturn(Future.successful(None))
 
-      val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(fakeRequest)
+      val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(
+        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+      )
       status(result) mustBe Status.NOT_FOUND
-      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+        any(),
+        any(),
+        any()
+      )
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
     }
   }

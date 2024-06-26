@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.pensionschemereturn.audit
 
-import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
 import uk.gov.hmrc.pensionschemereturn.models.Event
 import play.api.libs.json.{JsObject, Json}
 
 case class EmailAuditEvent(
-  psaOrPspId: String,
+  psaPspId: String,
   pstr: String,
   submittedBy: String,
   emailAddress: String,
@@ -31,7 +30,7 @@ case class EmailAuditEvent(
   schemeName: String,
   taxYear: String,
   userName: String
-) extends AuditEvent {
+) extends ExtendedAuditEvent {
   override def auditType: String = "PensionSchemeReturnEmailEvent"
 
   override def details: JsObject = {
@@ -46,24 +45,6 @@ case class EmailAuditEvent(
         "SchemeName" -> schemeName,
         "TaxYear" -> taxYear
       )
-    psaOrPspIdDetails(submittedBy, psaOrPspId, userName) ++ emailDetails
+    psaOrPspIdDetails(submittedBy, psaPspId, userName) ++ emailDetails
   }
-
-  private def psaOrPspIdDetails(
-    credentialRole: String,
-    psaOrPspId: String,
-    schemeAdministratorOrPractitionerName: String
-  ): JsObject =
-    credentialRole match {
-      case PSA =>
-        Json.obj(
-          "PensionSchemeAdministratorId" -> psaOrPspId,
-          "SchemeAdministratorName" -> schemeAdministratorOrPractitionerName
-        )
-      case _ =>
-        Json.obj(
-          "PensionSchemePractitionerId" -> psaOrPspId,
-          "SchemePractitionerName" -> schemeAdministratorOrPractitionerName
-        )
-    }
 }

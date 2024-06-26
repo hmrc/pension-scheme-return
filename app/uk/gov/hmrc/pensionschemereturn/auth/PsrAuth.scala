@@ -30,6 +30,7 @@ final case class PsrAuthContext[A](
   externalId: String,
   psaPspId: String,
   name: Option[Name],
+  credentialRole: String,
   request: Request[A]
 )
 
@@ -52,8 +53,9 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
       .retrieve(PsrRetrievals) {
         case Some(externalId) ~ enrolments ~ name =>
           getPsaPspId(enrolments) match {
-            case Some(psaPspId) => block(PsrAuthContext(externalId, psaPspId, name, request))
-            case psa => Future.failed(new BadRequestException(s"Bad Request without psaPspId $psa"))
+            case Some((psaPspId, credentialRole)) =>
+              block(PsrAuthContext(externalId, psaPspId, name, credentialRole, request))
+            case psa => Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
           }
         case _ =>
           Future.failed(new UnauthorizedException("Not Authorised - Unable to retrieve credentials - externalId"))
@@ -71,12 +73,12 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
       .flatMap(_.getIdentifier(pspIdKey))
       .map(_.value)
 
-  private def getPsaPspId(enrolments: Enrolments): Option[String] =
+  private def getPsaPspId(enrolments: Enrolments): Option[(String, String)] =
     getPsaId(enrolments) match {
-      case id @ Some(_) => id
+      case Some(id) => Some((id, PSA))
       case _ =>
         getPspId(enrolments) match {
-          case id @ Some(_) => id
+          case Some(id) => Some((id, PSP))
           case _ => None
         }
     }
