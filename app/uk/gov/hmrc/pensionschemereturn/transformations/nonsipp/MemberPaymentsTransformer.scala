@@ -60,8 +60,8 @@ class MemberPaymentsTransformer @Inject()(
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount = memberPayments.unallocatedContribAmount,
       memberContributionMade = memberPayments.memberContributionMade,
-      schemeReceivedTransferIn = Some(memberPayments.memberDetails.exists(_.transfersIn.nonEmpty)),
-      schemeMadeTransferOut = Some(memberPayments.memberDetails.exists(_.transfersOut.nonEmpty)),
+      schemeReceivedTransferIn = memberPayments.transfersInMade,
+      schemeMadeTransferOut = memberPayments.transfersOutMade,
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = Option.when(memberPayments.pensionReceived.started)(memberPayments.pensionReceived.made),
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
@@ -79,8 +79,8 @@ class MemberPaymentsTransformer @Inject()(
           memberPSRVersion = memberDetails.memberPSRVersion,
           noOfContributions = Some(memberDetails.employerContributions.size),
           totalContributions = memberDetails.totalContributions,
-          noOfTransfersIn = if (memberPayments.transfersInCompleted) Some(memberDetails.transfersIn.size) else None,
-          noOfTransfersOut = if (memberPayments.transfersOutCompleted) Some(memberDetails.transfersOut.size) else None,
+          noOfTransfersIn = Some(memberDetails.transfersIn.size),
+          noOfTransfersOut = Some(memberDetails.transfersOut.size),
           pensionAmountReceived = memberDetails.pensionAmountReceived,
           personalDetails = memberPersonalDetailsTransformer.toEtmp(memberDetails.personalDetails),
           memberEmpContribution =
@@ -162,8 +162,8 @@ class MemberPaymentsTransformer @Inject()(
                 case (None, _) => false
               }
           ),
-          transfersInCompleted = out.memberDetails.forall(_.noOfTransfersIn.nonEmpty),
-          transfersOutCompleted = out.memberDetails.forall(_.noOfTransfersOut.nonEmpty),
+          transfersInMade = out.schemeReceivedTransferIn,
+          transfersOutMade = out.schemeMadeTransferOut,
           unallocatedContribsMade = out.unallocatedContribsMade.map(_.boolean),
           unallocatedContribAmount = out.unallocatedContribAmount,
           memberContributionMade = out.memberContributionMade,

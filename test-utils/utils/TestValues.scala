@@ -419,8 +419,8 @@ trait TestValues {
     ),
     employerContributionsDetails = SectionDetails(made = true, completed = true),
     memberContributionMade = Some(true),
-    transfersInCompleted = true,
-    transfersOutCompleted = true,
+    transfersInMade = Some(true),
+    transfersOutMade = Some(true),
     lumpSumReceived = Some(true),
     pensionReceived = SectionDetails(made = true, completed = true),
     benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
