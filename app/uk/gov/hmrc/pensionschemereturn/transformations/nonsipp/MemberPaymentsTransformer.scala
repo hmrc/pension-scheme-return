@@ -73,7 +73,8 @@ class MemberPaymentsTransformer @Inject()(
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
           memberStatus = memberDetails.state match {
-            case MemberState.Active => SectionStatus.New
+            case MemberState.New => SectionStatus.New
+            case MemberState.Changed => SectionStatus.Changed
             case MemberState.Deleted => SectionStatus.Deleted
           },
           memberPSRVersion = memberDetails.memberPSRVersion,
@@ -121,8 +122,8 @@ class MemberPaymentsTransformer @Inject()(
         pensionSurrenders <- member.memberPensionSurrender.toList.flatten.traverse(pensionSurrenderTransformer.fromEtmp)
       } yield MemberDetails(
         state = member.memberStatus match {
-          case SectionStatus.New => MemberState.Active
-          case SectionStatus.Changed => MemberState.Active //todo: change when new member state is added
+          case SectionStatus.New => MemberState.New
+          case SectionStatus.Changed => MemberState.Changed
           case SectionStatus.Deleted => MemberState.Deleted
         },
         memberPSRVersion = member.memberPSRVersion,
