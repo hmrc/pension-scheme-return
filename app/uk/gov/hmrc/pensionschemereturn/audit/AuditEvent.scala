@@ -16,10 +16,34 @@
 
 package uk.gov.hmrc.pensionschemereturn.audit
 
-import play.api.libs.json.JsObject
+import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
+import play.api.libs.json.{JsObject, Json}
 
 trait AuditEvent {
   def auditType: String
 
   def details: JsObject
+}
+
+trait ExtendedAuditEvent extends AuditEvent {
+
+  def details: JsObject
+
+  def psaOrPspIdDetails(
+    credentialRole: String,
+    psaPspId: String,
+    schemeAdministratorOrPractitionerName: String
+  ): JsObject =
+    credentialRole match {
+      case PSA =>
+        Json.obj(
+          "PensionSchemeAdministratorId" -> psaPspId,
+          "SchemeAdministratorName" -> schemeAdministratorOrPractitionerName
+        )
+      case _ =>
+        Json.obj(
+          "PensionSchemePractitionerId" -> psaPspId,
+          "SchemePractitionerName" -> schemeAdministratorOrPractitionerName
+        )
+    }
 }

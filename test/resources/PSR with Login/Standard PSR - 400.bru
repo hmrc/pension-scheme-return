@@ -1,7 +1,7 @@
 meta {
-  name: Standard PSR - 422
+  name: Standard PSR - 400
   type: http
-  seq: 17
+  seq: 18
 }
 
 get {
@@ -17,8 +17,7 @@ query {
 }
 
 headers {
-  userName: TestUserName
-  schemeName: TestSchemeName
+  : 
 }
 
 auth:bearer {
@@ -26,7 +25,7 @@ auth:bearer {
 }
 
 tests {
-  test("Status code is 422", function () {
-      expect(res.getStatus()).to.equal(422);
+  test("Status code is 400 for missing headers", function () {
+      expect(res.getStatus()).to.equal(400);
   });
 }

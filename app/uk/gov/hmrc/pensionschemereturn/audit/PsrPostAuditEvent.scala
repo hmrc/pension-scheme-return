@@ -20,11 +20,16 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 
 case class PsrPostAuditEvent(
   pstr: String,
+  credentialRole: String,
+  psaPspId: String,
+  userName: String,
+  schemeName: String,
   payload: JsValue,
   status: Option[Int],
   response: Option[JsValue],
   errorMessage: Option[String]
-) extends AuditEvent {
+) extends ExtendedAuditEvent {
+
   override def auditType: String = "PSRPost"
 
   override def details: JsObject = {
@@ -36,8 +41,9 @@ case class PsrPostAuditEvent(
     val apiDetails =
       Json.obj(
         "PensionSchemeTaxReference" -> pstr,
+        "SchemeName" -> schemeName,
         "Payload" -> payload
       )
-    apiDetails ++ optStatus ++ optResponse ++ optErrorMessage
+    psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage
   }
 }

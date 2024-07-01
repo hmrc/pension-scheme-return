@@ -41,7 +41,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
 
   def submitStandardPsr(
     pstr: String,
-    data: JsValue
+    data: JsValue,
+    schemeName: String,
+    psaPspId: String,
+    credentialRole: String,
+    userName: String
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
@@ -61,14 +65,20 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
           case _ => handleErrorResponse("POST", url)(response)
         }
       }
-      .andThen(apiAuditUtil.firePsrPostAuditEvent(pstr, data))
+      .andThen(
+        apiAuditUtil.firePsrPostAuditEvent(pstr, data, schemeName, credentialRole, psaPspId, userName)
+      )
   }
 
   def getStandardPsr(
     pstr: String,
     optFbNumber: Option[String],
     optPeriodStartDate: Option[String],
-    optPsrVersion: Option[String]
+    optPsrVersion: Option[String],
+    schemeName: String,
+    psaPspId: String,
+    credentialRole: String,
+    userName: String
   )(
     implicit headerCarrier: HeaderCarrier,
     ec: ExecutionContext,
@@ -96,7 +106,18 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
           case _ => handleErrorResponse("GET", url)(response)
         }
       }
-      .andThen(apiAuditUtil.firePsrGetAuditEvent(pstr, optFbNumber, optPeriodStartDate, optPsrVersion))
+      .andThen(
+        apiAuditUtil.firePsrGetAuditEvent(
+          pstr,
+          optFbNumber,
+          optPeriodStartDate,
+          optPsrVersion,
+          credentialRole,
+          psaPspId,
+          userName,
+          schemeName
+        )
+      )
   }
 
   def submitSippPsr(

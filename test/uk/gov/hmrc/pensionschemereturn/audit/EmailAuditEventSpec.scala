@@ -26,7 +26,7 @@ class EmailAuditEventSpec extends AnyFlatSpec with Matchers {
   "EmailAuditEvent" should "output the correct map of data" in {
 
     val event = EmailAuditEvent(
-      psaOrPspId = "A2500001",
+      psaPspId = "A2500001",
       pstr = "pstr-test",
       submittedBy = "PSA",
       emailAddress = "test@test.com",

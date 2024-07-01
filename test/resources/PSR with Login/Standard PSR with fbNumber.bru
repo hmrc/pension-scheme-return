@@ -1,7 +1,7 @@
 meta {
   name: Standard PSR with fbNumber
   type: http
-  seq: 15
+  seq: 16
 }
 
 get {
@@ -14,6 +14,11 @@ query {
   fbNumber: 000000021221
   ~periodStartDate: 2021-04-06
   ~psrVersion: 456
+}
+
+headers {
+  userName: TestUserName
+  schemeName: TestSchemeName
 }
 
 auth:bearer {

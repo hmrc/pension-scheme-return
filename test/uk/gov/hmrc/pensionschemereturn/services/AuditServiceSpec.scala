@@ -47,7 +47,7 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with Inside {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
 
       val event = EmailAuditEvent(
-        psaOrPspId = "A2500001",
+        psaPspId = "A2500001",
         pstr = "test-pstr",
         submittedBy = "PSA",
         emailAddress = "test@test.com",

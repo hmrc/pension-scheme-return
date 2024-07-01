@@ -20,6 +20,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.pensionschemereturn.services.AuditService
 import play.api.mvc.RequestHeader
 import play.api.http.Status
+import uk.gov.hmrc.pensionschemereturn.config.Constants.{PSA, PSP}
 import uk.gov.hmrc.http.{HttpException, HttpResponse, UpstreamErrorResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -48,13 +49,17 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
   "firePsrPostAuditEvent" must {
 
     doNothing().when(mockAuditService).sendEvent(any())(any(), any())
-    val psrPostEventPf = service.firePsrPostAuditEvent(pstr, payload)
+    val psrPostEventPf = service.firePsrPostAuditEvent(pstr, payload, schemeName, PSA, psaPspId, userName)
 
     "send the correct audit event for a successful response" in {
 
       psrPostEventPf(Success(HttpResponse.apply(Status.OK, responseData, Map.empty)))
       val expectedAuditEvent = PsrPostAuditEvent(
         pstr = pstr,
+        credentialRole = PSA,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         payload = payload,
         status = Some(Status.OK),
         response = Some(responseData),
@@ -71,6 +76,10 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
       psrPostEventPf(Failure(UpstreamErrorResponse.apply(message, status, reportAs, Map.empty)))
       val expectedAuditEvent = PsrPostAuditEvent(
         pstr = pstr,
+        credentialRole = PSA,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         status = Some(status),
         payload = payload,
         response = None,
@@ -86,6 +95,10 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
       psrPostEventPf(Failure(new HttpException(message, status)))
       val expectedAuditEvent = PsrPostAuditEvent(
         pstr = pstr,
+        credentialRole = PSA,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         status = Some(status),
         payload = payload,
         response = None,
@@ -100,6 +113,10 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
       psrPostEventPf(Failure(new RuntimeException(message)))
       val expectedAuditEvent = PsrPostAuditEvent(
         pstr = pstr,
+        credentialRole = PSA,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         status = None,
         payload = payload,
         response = None,
@@ -114,10 +131,14 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
     doNothing().when(mockAuditService).sendEvent(any())(any(), any())
 
     "send the correct audit event for a successful response" in {
-      val psrGetEventPf = service.firePsrGetAuditEvent(pstr, None, None, None)
+      val psrGetEventPf = service.firePsrGetAuditEvent(pstr, None, None, None, PSP, psaPspId, userName, schemeName)
       psrGetEventPf(Success(Some(samplePsrSubmissionEtmpResponse)))
       val expectedAuditEvent = PsrGetAuditEvent(
         pstr = pstr,
+        credentialRole = PSP,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         None,
         None,
         None,
@@ -129,13 +150,18 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
     }
 
     "send the audit event with the status code when an upstream error occurs" in {
-      val psrGetEventPf = service.firePsrGetAuditEvent(pstr, Some("fbNumber"), None, None)
+      val psrGetEventPf =
+        service.firePsrGetAuditEvent(pstr, Some("fbNumber"), None, None, PSP, psaPspId, userName, schemeName)
       val reportAs = 202
       val message = "The request was not found"
       val status = Status.NOT_FOUND
       psrGetEventPf(Failure(UpstreamErrorResponse.apply(message, status, reportAs, Map.empty)))
       val expectedAuditEvent = PsrGetAuditEvent(
         pstr = pstr,
+        credentialRole = PSP,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         Some("fbNumber"),
         None,
         None,
@@ -147,12 +173,25 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
     }
 
     "send the audit event with the status code when an HttpException error occurs" in {
-      val psrGetEventPf = service.firePsrGetAuditEvent(pstr, None, Some("periodStartDate"), Some("psrVersion"))
+      val psrGetEventPf = service.firePsrGetAuditEvent(
+        pstr,
+        None,
+        Some("periodStartDate"),
+        Some("psrVersion"),
+        PSP,
+        psaPspId,
+        userName,
+        schemeName
+      )
       val message = "The request had a network error"
       val status = Status.SERVICE_UNAVAILABLE
       psrGetEventPf(Failure(new HttpException(message, status)))
       val expectedAuditEvent = PsrGetAuditEvent(
         pstr = pstr,
+        credentialRole = PSP,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         None,
         Some("periodStartDate"),
         Some("psrVersion"),
@@ -165,11 +204,24 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
 
     "send the audit event when a throwable is thrown" in {
       val psrGetEventPf =
-        service.firePsrGetAuditEvent(pstr, Some("fbNumber"), Some("periodStartDate"), Some("psrVersion"))
+        service.firePsrGetAuditEvent(
+          pstr,
+          Some("fbNumber"),
+          Some("periodStartDate"),
+          Some("psrVersion"),
+          PSP,
+          psaPspId,
+          userName,
+          schemeName
+        )
       val message = "The request had a network error"
       psrGetEventPf(Failure(new RuntimeException(message)))
       val expectedAuditEvent = PsrGetAuditEvent(
         pstr = pstr,
+        credentialRole = PSP,
+        psaPspId = psaPspId,
+        userName = userName,
+        schemeName = schemeName,
         Some("fbNumber"),
         Some("periodStartDate"),
         Some("psrVersion"),

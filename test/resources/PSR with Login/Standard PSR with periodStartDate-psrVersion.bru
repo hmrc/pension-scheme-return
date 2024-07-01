@@ -1,7 +1,7 @@
 meta {
   name: Standard PSR with periodStartDate-psrVersion
   type: http
-  seq: 14
+  seq: 15
 }
 
 get {
@@ -14,6 +14,11 @@ query {
   periodStartDate: 2021-04-06
   psrVersion: 001
   ~fbNumber: 123
+}
+
+headers {
+  userName: TestUserName
+  schemeName: TestSchemeName
 }
 
 auth:bearer {

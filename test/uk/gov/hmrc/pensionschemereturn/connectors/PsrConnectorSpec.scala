@@ -21,6 +21,7 @@ import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
 import play.api.mvc.RequestHeader
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.inject.bind
+import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
 import uk.gov.hmrc.auth.core.AuthConnector
 import play.api.test.FakeRequest
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -260,12 +261,13 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         ok()
       )
 
-      whenReady(connector.submitStandardPsr("testPstr", createJsonObject())) { result: HttpResponse =>
-        WireMock.verify(
-          postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
-        )
+      whenReady(connector.submitStandardPsr(pstr, createJsonObject(), schemeName, "psaPspId", PSA, "userName")) {
+        result: HttpResponse =>
+          WireMock.verify(
+            postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
+          )
 
-        result.status mustBe OK
+          result.status mustBe OK
       }
     }
   }
@@ -279,13 +281,14 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         ok(sampleStandardPsrResponseAsJsonString)
       )
 
-      whenReady(connector.getStandardPsr("testPstr", Some("testFbNumber"), None, None)) {
-        result: Option[PsrSubmissionEtmpResponse] =>
-          WireMock.verify(
-            getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber"))
-          )
+      whenReady(
+        connector.getStandardPsr("testPstr", Some("testFbNumber"), None, None, schemeName, "psaPspId", PSA, "userName")
+      ) { result: Option[PsrSubmissionEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber"))
+        )
 
-          result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
+        result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -296,16 +299,26 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         ok(sampleStandardPsrResponseAsJsonString)
       )
 
-      whenReady(connector.getStandardPsr("testPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
-        result: Option[PsrSubmissionEtmpResponse] =>
-          WireMock.verify(
-            getRequestedFor(
-              urlEqualTo(
-                "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
-              )
+      whenReady(
+        connector.getStandardPsr(
+          "testPstr",
+          None,
+          Some("testPeriodStartDate"),
+          Some("testPsrVersion"),
+          schemeName,
+          "psaPspId",
+          PSA,
+          "userName"
+        )
+      ) { result: Option[PsrSubmissionEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
             )
           )
-          result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
+        )
+        result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
 
@@ -318,16 +331,26 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         )
       )
 
-      whenReady(connector.getStandardPsr("notFoundTestPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion"))) {
-        result: Option[_] =>
-          WireMock.verify(
-            getRequestedFor(
-              urlEqualTo(
-                "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
-              )
+      whenReady(
+        connector.getStandardPsr(
+          "notFoundTestPstr",
+          None,
+          Some("testPeriodStartDate"),
+          Some("testPsrVersion"),
+          schemeName,
+          "psaPspId",
+          PSA,
+          "userName"
+        )
+      ) { result: Option[_] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
             )
           )
-          result mustBe None
+        )
+        result mustBe None
       }
     }
 
@@ -339,7 +362,18 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       )
 
       val thrown = intercept[BadRequestException] {
-        await(connector.getStandardPsr("invalidTestPstr", None, Some("testPeriodStartDate"), Some("testPsrVersion")))
+        await(
+          connector.getStandardPsr(
+            "invalidTestPstr",
+            None,
+            Some("testPeriodStartDate"),
+            Some("testPsrVersion"),
+            schemeName,
+            "psaPspId",
+            PSA,
+            "userName"
+          )
+        )
       }
       WireMock.verify(
         getRequestedFor(
@@ -356,7 +390,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when missing parameters" in {
 
       val thrown = intercept[BadRequestException] {
-        await(connector.getStandardPsr("testPstr", None, None, None))
+        await(connector.getStandardPsr("testPstr", None, None, None, schemeName, "psaPspId", PSA, "userName"))
       }
 
       thrown.responseCode mustBe BAD_REQUEST
