@@ -245,7 +245,7 @@ class StandardPsrFromEtmpSpec
   "PSR submission should successfully transform to etmp format with PsrDeclaration" in {
 
     val submittedMinimalSubmissionDetail = sampleMinimalRequiredSubmission
-      .copy(reportDetails = sampleMinimalRequiredSubmission.reportDetails.copy(fbstatus = Some(Submitted.name)))
+      .copy(reportDetails = sampleMinimalRequiredSubmission.reportDetails.copy(fbstatus = Some(Submitted)))
 
     when(mockMinimalRequiredSubmissionFromEtmp.transform(any())).thenReturn(submittedMinimalSubmissionDetail)
     when(mockPsrDeclarationFromEtmp.transform(any())).thenReturn(samplePsrDeclaration)
