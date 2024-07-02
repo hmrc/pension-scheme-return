@@ -68,7 +68,7 @@ trait TestValues {
   val sampleMinimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
     reportDetails = ReportDetails(
       fbVersion = Some("001"),
-      fbstatus = Some(Compiled.name),
+      fbstatus = Some(Compiled),
       pstr = pstr,
       periodStart = sampleToday,
       periodEnd = sampleToday,

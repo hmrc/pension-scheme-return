@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.nonsipp
 
+import uk.gov.hmrc.pensionschemereturn.models.etmp.EtmpPsrStatus
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.{LocalDate, LocalDateTime}
@@ -28,7 +29,7 @@ case class MinimalRequiredSubmission(
 
 case class ReportDetails(
   fbVersion: Option[String],
-  fbstatus: Option[String],
+  fbstatus: Option[EtmpPsrStatus],
   pstr: String,
   periodStart: LocalDate,
   periodEnd: LocalDate,
