@@ -37,7 +37,7 @@ class MinimalRequiredSubmissionFromEtmpSpec extends PlaySpec with MockitoSugar w
       val expected = MinimalRequiredSubmission(
         reportDetails = ReportDetails(
           fbVersion = Some("001"),
-          fbstatus = Some(Compiled.name),
+          fbstatus = Some(Compiled),
           pstr = "12345678AA",
           periodStart = LocalDate.parse("2023-04-06"),
           periodEnd = LocalDate.parse("2024-04-05"),

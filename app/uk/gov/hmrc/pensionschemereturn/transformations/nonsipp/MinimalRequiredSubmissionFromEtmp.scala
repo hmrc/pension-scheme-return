@@ -28,7 +28,7 @@ class MinimalRequiredSubmissionFromEtmp @Inject() extends Transformer {
     MinimalRequiredSubmission(
       reportDetails = ReportDetails(
         fbVersion = Some(psrSubmissionResponse.psrDetails.fbVersion),
-        fbstatus = Some(psrSubmissionResponse.psrDetails.fbstatus.name),
+        fbstatus = Some(psrSubmissionResponse.psrDetails.fbstatus),
         pstr = psrSubmissionResponse.schemeDetails.pstr,
         periodStart = psrSubmissionResponse.psrDetails.periodStart,
         periodEnd = psrSubmissionResponse.psrDetails.periodEnd,
