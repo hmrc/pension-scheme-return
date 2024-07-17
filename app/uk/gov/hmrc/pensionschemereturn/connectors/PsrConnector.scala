@@ -20,7 +20,9 @@ import uk.gov.hmrc.pensionschemereturn.models.response._
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.RequestHeader
 import com.google.inject.Inject
+import play.api.libs.ws.WSRequest
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
 import play.api.Logging
@@ -32,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import java.util.UUID.randomUUID
 
-class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: ApiAuditUtil)
+class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil: ApiAuditUtil)
     extends HttpErrorFunctions
     with HttpResponseHelper
     with Logging {
@@ -52,10 +54,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
     logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.prettyPrint(data)}")
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
     http
-      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
+      .post(url"$url")
+      .withBody(Json.toJson(data))
+      .transform(integrationFrameworkHeader)
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case OK =>
@@ -88,13 +91,12 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
     val url: String = config.getStandardPsrUrl.format(params)
     val logMessage = s"Get standard PSR called URL: $url with pstr: $pstr"
-
     logger.info(logMessage)
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
     http
-      .GET[HttpResponse](url)(implicitly, hc, implicitly)
+      .get(url"$url")
+      .transform(integrationFrameworkHeader)
+      .execute
       .map { response =>
         response.status match {
           case OK =>
@@ -129,10 +131,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
     logger.info(s"Submit SIPP PSR called URL: $url with payload: ${Json.stringify(data)}")
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
     http
-      .POST[JsValue, HttpResponse](url, data)(implicitly, implicitly, hc, implicitly)
+      .post(url"$url")
+      .withBody(Json.toJson(data))
+      .transform(integrationFrameworkHeader)
+      .execute
       .map { response =>
         response.status match {
           case OK => response
@@ -154,18 +157,20 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
 
     logger.info(logMessage)
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
-      response.status match {
-        case OK =>
-          Some(response.json.as[SippPsrSubmissionEtmpResponse])
-        case NOT_FOUND =>
-          logger.warn(s"$logMessage and returned ${response.status}")
-          None
-        case _ => handleErrorResponse("GET", url)(response)
+    http
+      .get(url"$url")
+      .transform(integrationFrameworkHeader)
+      .execute
+      .map { response =>
+        response.status match {
+          case OK =>
+            Some(response.json.as[SippPsrSubmissionEtmpResponse])
+          case NOT_FOUND =>
+            logger.warn(s"$logMessage and returned ${response.status}")
+            None
+          case _ => handleErrorResponse("GET", url)(response)
+        }
       }
-    }
   }
 
   def getOverview(pstr: String, fromDate: String, toDate: String)(
@@ -177,18 +182,20 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     val logMessage = s"Get overview called, URL: $url"
     logger.info(logMessage)
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
-      response.status match {
-        case OK =>
-          response.json.as[Seq[PsrOverviewEtmpResponse]]
-        case NOT_FOUND =>
-          logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
-          Seq.empty[PsrOverviewEtmpResponse]
-        case _ => handleErrorResponse("GET", url)(response)
+    http
+      .get(url"$url")
+      .transform(integrationFrameworkHeader)
+      .execute
+      .map { response =>
+        response.status match {
+          case OK =>
+            response.json.as[Seq[PsrOverviewEtmpResponse]]
+          case NOT_FOUND =>
+            logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
+            Seq.empty[PsrOverviewEtmpResponse]
+          case _ => handleErrorResponse("GET", url)(response)
+        }
       }
-    }
   }
 
   def getVersions(pstr: String, startDate: String)(
@@ -200,23 +207,25 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     val logMessage = s"Get report versions called, URL: $url"
     logger.info(logMessage)
 
-    implicit val hc: HeaderCarrier = headerCarrier.withExtraHeaders(headers = integrationFrameworkHeader: _*)
-
-    http.GET[HttpResponse](url)(implicitly, hc, implicitly).map { response =>
-      response.status match {
-        case OK =>
-          response.json.as[Seq[PsrVersionsEtmpResponse]]
-        case SERVICE_UNAVAILABLE =>
-          // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
-          // TODO - must be a temporary solution to check QA env issues
-          logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty response")
-          Seq.empty[PsrVersionsEtmpResponse]
-        case NOT_FOUND =>
-          logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
-          Seq.empty[PsrVersionsEtmpResponse]
-        case _ => handleErrorResponse("GET", url)(response)
+    http
+      .get(url"$url")
+      .transform(integrationFrameworkHeader)
+      .execute
+      .map { response =>
+        response.status match {
+          case OK =>
+            response.json.as[Seq[PsrVersionsEtmpResponse]]
+          case SERVICE_UNAVAILABLE =>
+            // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
+            // TODO - must be a temporary solution to check QA env issues
+            logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty response")
+            Seq.empty[PsrVersionsEtmpResponse]
+          case NOT_FOUND =>
+            logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
+            Seq.empty[PsrVersionsEtmpResponse]
+          case _ => handleErrorResponse("GET", url)(response)
+        }
       }
-    }
   }
 
   private def buildParams(
@@ -233,12 +242,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClient, apiAuditUtil: 
     }
   private def getCorrelationId: String = randomUUID.toString.slice(0, maxLengthCorrelationId)
 
-  private def integrationFrameworkHeader: Seq[(String, String)] =
-    Seq(
+  private def integrationFrameworkHeader(wsRequest: WSRequest): WSRequest =
+    wsRequest.addHttpHeaders(
       "Environment" -> config.integrationFrameworkEnvironment,
       "Authorization" -> config.integrationFrameworkAuthorization,
       "Content-Type" -> "application/json",
       "CorrelationId" -> getCorrelationId
     )
-
 }

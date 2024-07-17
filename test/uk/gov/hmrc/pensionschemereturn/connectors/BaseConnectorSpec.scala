@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import com.github.tomakehurst.wiremock.client.WireMock._
-import uk.gov.hmrc.http.test.{HttpClientSupport, WireMockSupport}
+import uk.gov.hmrc.http.test.{HttpClientV2Support, WireMockSupport}
 import com.softwaremill.diffx.generic.AutoDerivation
 import utils.BaseSpec
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,7 +32,7 @@ import scala.reflect.ClassTag
 abstract class BaseConnectorSpec
     extends BaseSpec
     with WireMockSupport
-    with HttpClientSupport
+    with HttpClientV2Support
     with DiffShouldMatcher
     with AutoDerivation {
 
