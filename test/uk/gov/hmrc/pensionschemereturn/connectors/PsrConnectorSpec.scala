@@ -28,6 +28,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import play.api.Application
+import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.libs.json.{JsObject, Json}
 import play.api.http.Status.{BAD_REQUEST, OK}
 import uk.gov.hmrc.http._
@@ -40,6 +41,9 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   private implicit lazy val rh: RequestHeader = FakeRequest("", "")
 
   private val mockAuthConnector = mock[AuthConnector]
+
+  override implicit val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = scaled(Span(5, Seconds)), interval = scaled(Span(50, Millis)))
 
   val modules: Seq[GuiceableModule] =
     Seq(
@@ -59,24 +63,23 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
   "getOverview" should {
 
-//    TODO - this test passed on localhost but it is failing on the cloud
-//    "return overview details when returns were found" in {
-//
-//      stubGet(
-//        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
-//        ok(sampleOverviewResponseAsJsonString)
-//      )
-//
-//      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
-//        WireMock.verify(
-//          getRequestedFor(
-//            urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05")
-//          )
-//        )
-//
-//        result shouldMatchTo sampleOverviewResponse
-//      }
-//    }
+    "return overview details when returns were found" in {
+
+      stubGet(
+        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
+        ok(sampleOverviewResponseAsJsonString)
+      )
+
+      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05")
+          )
+        )
+
+        result shouldMatchTo sampleOverviewResponse
+      }
+    }
 
     "return empty list when pstr not found in etmp" in {
 
