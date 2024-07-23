@@ -21,9 +21,9 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
 import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
-import uk.gov.hmrc.pensionschemereturn.models.sipp.{SippPsrSubmission, SippReportDetailsSubmission}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
-import uk.gov.hmrc.pensionschemereturn.models.requests.{PsrSubmissionEtmpRequest, SippPsrSubmissionEtmpRequest}
+import uk.gov.hmrc.pensionschemereturn.models.requests.PsrSubmissionEtmpRequest
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.Acquisition
 import com.networknt.schema.ValidationMessage
 import uk.gov.hmrc.pensionschemereturn.models.response._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldAsset.Transfer
@@ -36,8 +36,6 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.sipp.EtmpSippReportDetails
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldLandProperty.Acquisition
 
 import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
@@ -1471,37 +1469,6 @@ trait TestValues {
     membersPayments = None,
     shares = None,
     psrDeclaration = None
-  )
-
-  // SIPP - PSR
-  val sampleSippReportDetailsSubmission: SippReportDetailsSubmission = SippReportDetailsSubmission(
-    "17836742CF",
-    periodStart = LocalDate.of(2020, 12, 12),
-    periodEnd = LocalDate.of(2021, 12, 12),
-    memberTransactions = "Yes"
-  )
-
-  val sampleSippPsrSubmission: SippPsrSubmission = SippPsrSubmission(
-    sampleSippReportDetailsSubmission
-  )
-
-  // SIPP - ETMP
-
-  val sampleSippPsrSubmissionEtmpRequest: SippPsrSubmissionEtmpRequest = SippPsrSubmissionEtmpRequest(
-    EtmpSippReportDetails(None, Compiled, sampleToday, sampleToday, "Yes", None, None)
-  )
-
-  val sampleSippPsrSubmissionEtmpResponse: SippPsrSubmissionEtmpResponse = SippPsrSubmissionEtmpResponse(
-    reportDetails = EtmpSippReportDetails(
-      pstr = Some("12345678AA"),
-      status = Compiled,
-      periodStart = LocalDate.parse("2022-04-06"),
-      periodEnd = LocalDate.parse("2023-04-05"),
-      memberTransactions = "Yes",
-      schemeName = Some("PSR Scheme"),
-      psrVersion = Some("001")
-    ),
-    accountingPeriodDetails = sampleEtmpAccountingPeriodDetails
   )
 
   val validationMessage: ValidationMessage = ValidationMessage
