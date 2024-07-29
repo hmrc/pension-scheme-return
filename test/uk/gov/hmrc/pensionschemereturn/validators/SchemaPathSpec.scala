@@ -26,8 +26,5 @@ class SchemaPathSpec extends AnyWordSpec with Matchers {
     "have API 1999 with correct path" in {
       SchemaPaths.API_1999 mustBe "/resources/schemas/api-1999-submit-pension-scheme-return-request-schema-v1.1.5.json"
     }
-    "have API 1997 with correct path" in {
-      SchemaPaths.API_1997 mustBe "/resources/schemas/api-1997-submit-sipp-pension-scheme-return-request-schema-v1.0.3.json"
-    }
   }
 }

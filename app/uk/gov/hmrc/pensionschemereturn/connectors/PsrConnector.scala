@@ -122,57 +122,6 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
       )
   }
 
-  def submitSippPsr(
-    pstr: String,
-    data: JsValue
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
-
-    val url: String = config.submitSippPsrUrl.format(pstr)
-    // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
-    logger.info(s"Submit SIPP PSR called URL: $url with payload: ${Json.stringify(data)}")
-
-    http
-      .post(url"$url")
-      .withBody(Json.toJson(data))
-      .transform(integrationFrameworkHeader)
-      .execute
-      .map { response =>
-        response.status match {
-          case OK => response
-          case _ => handleErrorResponse("POST", url)(response)
-        }
-      }
-  }
-
-  def getSippPsr(
-    pstr: String,
-    optFbNumber: Option[String],
-    optPeriodStartDate: Option[String],
-    optPsrVersion: Option[String]
-  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[Option[SippPsrSubmissionEtmpResponse]] = {
-
-    val params = buildParams(pstr, optFbNumber, optPeriodStartDate, optPsrVersion)
-    val url: String = config.getSippPsrUrl.format(params)
-    val logMessage = s"Get SIPP PSR called URL: $url with pstr: $pstr"
-
-    logger.info(logMessage)
-
-    http
-      .get(url"$url")
-      .transform(integrationFrameworkHeader)
-      .execute
-      .map { response =>
-        response.status match {
-          case OK =>
-            Some(response.json.as[SippPsrSubmissionEtmpResponse])
-          case NOT_FOUND =>
-            logger.warn(s"$logMessage and returned ${response.status}")
-            None
-          case _ => handleErrorResponse("GET", url)(response)
-        }
-      }
-  }
-
   def getOverview(pstr: String, fromDate: String, toDate: String)(
     implicit headerCarrier: HeaderCarrier,
     ec: ExecutionContext

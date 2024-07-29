@@ -7,7 +7,4 @@ GET         /psr/versions/years/:pstr                                           
 POST        /psr/standard                                                                                                        uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.submitStandardPsr
 GET         /psr/standard/:pstr                                                                                                  uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitController.getStandardPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
 
-POST        /psr/sipp                                                                                                            uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.submitSippPsr
-GET         /psr/sipp/:pstr                                                                                                      uk.gov.hmrc.pensionschemereturn.controllers.SippPsrSubmitController.getSippPsr(pstr: String, fbNumber: Option[String], periodStartDate: Option[String], psrVersion: Option[String] )
-
 POST        /psr/email-response/:submittedBy/:requestId/:email/:psaId/:pstr/:reportVersion/:schemeName/:taxYear/:userName        uk.gov.hmrc.pensionschemereturn.controllers.EmailResponseController.sendAuditEvents(submittedBy: String, requestId: String, email: String, psaId: String, pstr: String, reportVersion: String, schemeName: String, taxYear: String, userName: String)
