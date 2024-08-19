@@ -20,11 +20,13 @@ import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
 import play.api.mvc.RequestHeader
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Submitted}
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import uk.gov.hmrc.pensionschemereturn.models._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
+import uk.gov.hmrc.pensionschemereturn.models.enumeration.CipPsrStatus
+import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeReturnValidationFailureException
 import play.api.Logging
 import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
@@ -60,7 +62,8 @@ class PsrSubmissionService @Inject()(
           schemeName,
           psrAuth.psaPspId,
           psrAuth.credentialRole,
-          userName
+          userName,
+          getCipPsrStatus(psrSubmission)
         )
         .recover {
           case badReq: BadRequestException =>
@@ -68,6 +71,19 @@ class PsrSubmissionService @Inject()(
         }
     }
   }
+
+  def getCipPsrStatus(psrSubmission: PsrSubmission): Option[String] =
+    (
+      psrSubmission.minimalRequiredSubmission.reportDetails.fbVersion,
+      psrSubmission.minimalRequiredSubmission.reportDetails.fbstatus
+    ) match {
+      case (Some(version), Some(Compiled)) if version.toInt > 1 => Some(CipPsrStatus.CHANGED_COMPILED.toString)
+      case (Some(version), Some(Submitted)) if version.toInt > 1 => Some(CipPsrStatus.CHANGED_SUBMITTED.toString)
+      case (None, Some(Compiled)) => Some(CipPsrStatus.CHANGED_COMPILED.toString)
+      case (None, Some(Submitted)) => Some(CipPsrStatus.CHANGED_SUBMITTED.toString)
+      case _ =>
+        None // requirement is: If this is the Compiled and submitted return, we don't need this field to be populated.
+    }
 
   def getStandardPsr(
     pstr: String,

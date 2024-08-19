@@ -36,7 +36,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
     schemeName: String,
     credentialRole: String,
     psaPspId: String,
-    userName: String
+    userName: String,
+    cipPsrStatus: Option[String]
   )(implicit ec: ExecutionContext, request: RequestHeader): PartialFunction[Try[HttpResponse], Unit] = {
     case Success(httpResponse) =>
       logger.info(s"PsrPostAuditEvent ->> Status: ${Status.OK}, Payload: ${Json.prettyPrint(data)}")
@@ -50,7 +51,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
           payload = data,
           status = Some(Status.OK),
           response = Some(httpResponse.json),
-          errorMessage = None
+          errorMessage = None,
+          psrStatus = cipPsrStatus
         )
       )
     case Failure(error: UpstreamErrorResponse) =>
@@ -65,7 +67,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
           payload = data,
           status = Some(error.statusCode),
           response = None,
-          errorMessage = Some(error.message)
+          errorMessage = Some(error.message),
+          psrStatus = cipPsrStatus
         )
       )
     case Failure(error: HttpException) =>
@@ -80,7 +83,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
           payload = data,
           status = Some(error.responseCode),
           response = None,
-          errorMessage = Some(error.message)
+          errorMessage = Some(error.message),
+          psrStatus = cipPsrStatus
         )
       )
     case Failure(error: Throwable) =>
@@ -95,7 +99,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
           payload = data,
           status = None,
           response = None,
-          errorMessage = Some(error.getMessage)
+          errorMessage = Some(error.getMessage),
+          psrStatus = cipPsrStatus
         )
       )
   }

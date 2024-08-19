@@ -27,7 +27,8 @@ case class PsrPostAuditEvent(
   payload: JsValue,
   status: Option[Int],
   response: Option[JsValue],
-  errorMessage: Option[String]
+  errorMessage: Option[String],
+  psrStatus: Option[String]
 ) extends ExtendedAuditEvent {
 
   override def auditType: String = "PSRPost"
@@ -37,6 +38,7 @@ case class PsrPostAuditEvent(
     val optStatus = status.fold[JsObject](Json.obj())(s => Json.obj("HttpStatus" -> s))
     val optResponse = response.fold[JsObject](Json.obj())(s => Json.obj("Response" -> s))
     val optErrorMessage = errorMessage.fold[JsObject](Json.obj())(s => Json.obj("ErrorMessage" -> s))
+    val optPsrStatus = psrStatus.fold[JsObject](Json.obj())(s => Json.obj("PsrStatus" -> s))
 
     val apiDetails =
       Json.obj(
@@ -44,6 +46,6 @@ case class PsrPostAuditEvent(
         "SchemeName" -> schemeName,
         "Payload" -> payload
       )
-    psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage
+    psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage ++ optPsrStatus
   }
 }
