@@ -47,7 +47,8 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
     schemeName: String,
     psaPspId: String,
     credentialRole: String,
-    userName: String
+    userName: String,
+    cipPsrStatus: Option[String]
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
@@ -69,7 +70,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
         }
       }
       .andThen(
-        apiAuditUtil.firePsrPostAuditEvent(pstr, data, schemeName, credentialRole, psaPspId, userName)
+        apiAuditUtil.firePsrPostAuditEvent(pstr, data, schemeName, credentialRole, psaPspId, userName, cipPsrStatus)
       )
   }
 

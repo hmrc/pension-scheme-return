@@ -49,7 +49,7 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
   "firePsrPostAuditEvent" must {
 
     doNothing().when(mockAuditService).sendEvent(any())(any(), any())
-    val psrPostEventPf = service.firePsrPostAuditEvent(pstr, payload, schemeName, PSA, psaPspId, userName)
+    val psrPostEventPf = service.firePsrPostAuditEvent(pstr, payload, schemeName, PSA, psaPspId, userName, cipPsrStatus)
 
     "send the correct audit event for a successful response" in {
 
@@ -63,7 +63,8 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
         payload = payload,
         status = Some(Status.OK),
         response = Some(responseData),
-        errorMessage = None
+        errorMessage = None,
+        psrStatus = None
       )
       verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
     }
@@ -83,7 +84,8 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
         status = Some(status),
         payload = payload,
         response = None,
-        errorMessage = Some(message)
+        errorMessage = Some(message),
+        psrStatus = None
       )
       verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
     }
@@ -102,7 +104,8 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
         status = Some(status),
         payload = payload,
         response = None,
-        errorMessage = Some(message)
+        errorMessage = Some(message),
+        psrStatus = None
       )
       verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
     }
@@ -120,7 +123,8 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
         status = None,
         payload = payload,
         response = None,
-        errorMessage = Some(message)
+        errorMessage = Some(message),
+        psrStatus = None
       )
       verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
     }

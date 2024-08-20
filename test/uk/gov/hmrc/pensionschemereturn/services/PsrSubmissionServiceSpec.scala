@@ -18,7 +18,8 @@ package uk.gov.hmrc.pensionschemereturn.services
 
 import play.api.test.FakeRequest
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
-import uk.gov.hmrc.pensionschemereturn.models._
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Submitted}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails}
 import play.api.libs.json.Json
 import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,6 +31,8 @@ import play.api.mvc.AnyContentAsEmpty
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
+import uk.gov.hmrc.pensionschemereturn.models.enumeration.CipPsrStatus
+import uk.gov.hmrc.pensionschemereturn.models._
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
@@ -37,6 +40,8 @@ import com.softwaremill.diffx.generic.AutoDerivation
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import java.time.LocalDateTime
 
 class PsrSubmissionServiceSpec
     extends BaseSpec
@@ -142,7 +147,7 @@ class PsrSubmissionServiceSpec
       when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
       when(mockJSONSchemaValidator.validatePayload(any(), any()))
         .thenReturn(SchemaValidationResult(Set.empty))
-      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(expectedResponse))
 
       whenReady(
@@ -163,7 +168,7 @@ class PsrSubmissionServiceSpec
 
         verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
         verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-        verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any())(
+        verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
           any(),
           any(),
           any()
@@ -197,14 +202,18 @@ class PsrSubmissionServiceSpec
 
       verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
       verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-      verify(mockPsrConnector, never).submitStandardPsr(any(), any(), any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrConnector, never).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+        any(),
+        any(),
+        any()
+      )
     }
 
     "throw exception when connector call not successful for submitStandardPsr" in {
       when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
       when(mockJSONSchemaValidator.validatePayload(any(), any()))
         .thenReturn(SchemaValidationResult(Set.empty))
-      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.failed(new BadRequestException("invalid-request")))
 
       val thrown = intercept[ExpectationFailedException] {
@@ -228,11 +237,47 @@ class PsrSubmissionServiceSpec
 
       verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
       verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
-      verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any())(
+      verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
         any(),
         any(),
         any()
       )
+    }
+    "getCipPsrStatus" should {
+      List(
+        (Some("000"), Some(Compiled), None),
+        (Some("000"), Some(Submitted), None),
+        (Some("001"), Some(Compiled), None),
+        (Some("001"), Some(Submitted), None),
+        (Some("002"), Some(Compiled), Some(CipPsrStatus.CHANGED_COMPILED.toString)),
+        (Some("002"), Some(Submitted), Some(CipPsrStatus.CHANGED_SUBMITTED.toString)),
+        (Some("003"), Some(Compiled), Some(CipPsrStatus.CHANGED_COMPILED.toString)),
+        (Some("003"), Some(Submitted), Some(CipPsrStatus.CHANGED_SUBMITTED.toString)),
+        (None, Some(Compiled), Some(CipPsrStatus.CHANGED_COMPILED.toString)),
+        (None, Some(Submitted), Some(CipPsrStatus.CHANGED_SUBMITTED.toString)),
+        (Some("000"), None, None),
+        (None, None, None)
+      ).foreach {
+        case (version, status, expected) =>
+          s"$version and $status should return $expected" in {
+            val minimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
+              reportDetails = ReportDetails(
+                fbVersion = version,
+                fbstatus = status,
+                pstr = pstr,
+                periodStart = sampleToday,
+                periodEnd = sampleToday,
+                compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
+              ),
+              accountingPeriodDetails = sampleAccountingPeriodDetails,
+              schemeDesignatory = sampleSchemeDesignatory
+            )
+
+            val actual =
+              service.getCipPsrStatus(samplePsrSubmission.copy(minimalRequiredSubmission = minimalRequiredSubmission))
+            expected shouldMatchTo actual
+          }
+      }
     }
   }
 

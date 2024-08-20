@@ -264,13 +264,14 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         ok()
       )
 
-      whenReady(connector.submitStandardPsr(pstr, createJsonObject(), schemeName, "psaPspId", PSA, "userName")) {
-        result: HttpResponse =>
-          WireMock.verify(
-            postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
-          )
+      whenReady(
+        connector.submitStandardPsr(pstr, createJsonObject(), schemeName, "psaPspId", PSA, "userName", cipPsrStatus)
+      ) { result: HttpResponse =>
+        WireMock.verify(
+          postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
+        )
 
-          result.status mustBe OK
+        result.status mustBe OK
       }
     }
   }

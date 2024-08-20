@@ -59,10 +59,26 @@ trait TestValues {
   val schemeName = "SchemeName"
   val userName = "userName"
   val psaPspId = "psaPspId"
+  val cipPsrStatus = None
   val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
 
   // Standard - PSR
 
+  val sampleAccountingPeriodDetails: AccountingPeriodDetails =
+    AccountingPeriodDetails(recordVersion = Some("001"), accountingPeriods = List(sampleToday -> sampleToday))
+  val sampleSchemeDesignatory: SchemeDesignatory = SchemeDesignatory(
+    recordVersion = Some("001"),
+    reasonForNoBankAccount = None,
+    openBankAccount = true,
+    activeMembers = 1,
+    deferredMembers = 2,
+    pensionerMembers = 3,
+    totalAssetValueStart = Some(12.34),
+    totalAssetValueEnd = None,
+    totalCashStart = Some(34.56),
+    totalCashEnd = None,
+    totalPayments = Some(56.78)
+  )
   val sampleMinimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
     reportDetails = ReportDetails(
       fbVersion = Some("001"),
@@ -72,21 +88,8 @@ trait TestValues {
       periodEnd = sampleToday,
       compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
     ),
-    accountingPeriodDetails =
-      AccountingPeriodDetails(recordVersion = Some("001"), accountingPeriods = List(sampleToday -> sampleToday)),
-    schemeDesignatory = SchemeDesignatory(
-      recordVersion = Some("001"),
-      reasonForNoBankAccount = None,
-      openBankAccount = true,
-      activeMembers = 1,
-      deferredMembers = 2,
-      pensionerMembers = 3,
-      totalAssetValueStart = Some(12.34),
-      totalAssetValueEnd = None,
-      totalCashStart = Some(34.56),
-      totalCashEnd = None,
-      totalPayments = Some(56.78)
-    )
+    accountingPeriodDetails = sampleAccountingPeriodDetails,
+    schemeDesignatory = sampleSchemeDesignatory
   )
 
   val samplePsrSubmission: PsrSubmission = PsrSubmission(
