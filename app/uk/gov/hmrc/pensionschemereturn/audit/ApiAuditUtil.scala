@@ -40,7 +40,7 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
     cipPsrStatus: Option[String]
   )(implicit ec: ExecutionContext, request: RequestHeader): PartialFunction[Try[HttpResponse], Unit] = {
     case Success(httpResponse) =>
-      logger.info(s"PsrPostAuditEvent ->> Status: ${Status.OK}, Payload: ${Json.prettyPrint(data)}")
+      logger.info(s"PsrPostAuditEvent ->> Status: ${Status.OK}}")
       auditService.sendEvent(
         PsrPostAuditEvent(
           pstr = pstr,
@@ -119,7 +119,7 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
     request: RequestHeader
   ): PartialFunction[Try[Option[PsrSubmissionEtmpResponse]], Unit] = {
     case Success(optPsrSubmissionEtmpResponse) =>
-      logger.info(s"PsrGetAuditEvent ->> Status: ${Status.OK}, Response: ${Json.toJson(optPsrSubmissionEtmpResponse)}")
+      logger.info(s"PsrGetAuditEvent ->> Status: ${Status.OK}")
       auditService.sendEvent(
         PsrGetAuditEvent(
           pstr = pstr,

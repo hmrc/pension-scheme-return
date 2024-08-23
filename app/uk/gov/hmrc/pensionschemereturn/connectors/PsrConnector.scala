@@ -52,8 +52,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
 
     val url: String = config.submitStandardPsrUrl.format(pstr)
-    // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
-    logger.info(s"Submit standard PSR called URL: $url with payload: ${Json.prettyPrint(data)}")
+    logger.info(s"Submit standard PSR called URL: $url for pstr: $pstr")
 
     http
       .post(url"$url")
@@ -63,8 +62,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
       .map { response =>
         response.status match {
           case OK =>
-            // TODO even when this is at debug level and it is very useful for development, we'd need to take the body out before go-live:
-            logger.debug(s"Submit standard PSR ----<<RESPONSE>>----: ${Json.prettyPrint(response.json)}")
+            logger.debug(s"Submit standard PSR response status is OK")
             response
           case _ => handleErrorResponse("POST", url)(response)
         }
@@ -166,12 +164,11 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
           case OK =>
             response.json.as[Seq[PsrVersionsEtmpResponse]]
           case SERVICE_UNAVAILABLE =>
-            // TODO even when this is at info level and it is very useful for development, we'd need to take the body out before go-live:
             // TODO - must be a temporary solution to check QA env issues
-            logger.info(s"$logMessage and returned ${response.status}, ${response.json} - returning empty response")
+            logger.info(s"$logMessage and returned status ${response.status} - returning empty response")
             Seq.empty[PsrVersionsEtmpResponse]
           case NOT_FOUND =>
-            logger.info(s"$logMessage and returned ${response.status}, ${response.json}")
+            logger.info(s"$logMessage and returned status ${response.status}")
             Seq.empty[PsrVersionsEtmpResponse]
           case _ => handleErrorResponse("GET", url)(response)
         }
