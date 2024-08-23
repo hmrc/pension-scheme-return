@@ -27,11 +27,11 @@ trait HttpResponseHelper extends HttpErrorFunctions {
 
   private val logger = Logger(classOf[HttpResponseHelper])
 
-  def handleErrorResponse(httpMethod: String, url: String, args: String*)(response: HttpResponse): Nothing =
+  def handleErrorResponse(httpMethod: String, url: String)(response: HttpResponse): Nothing =
     response.status match {
       case BAD_REQUEST =>
         if (response.body.contains("INVALID_PAYLOAD"))
-          logger.warn(s"INVALID_PAYLOAD returned for: ${args.headOption.getOrElse(url)} from: $url")
+          logger.warn(s"INVALID_PAYLOAD returned from: $url")
         throw new BadRequestException(
           badRequestMessage(httpMethod, url, response.body)
         )
