@@ -16,38 +16,48 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
-import uk.gov.hmrc.pensionschemereturn.models.response._
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
-import play.api.mvc.RequestHeader
-import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.inject.bind
-import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
-import uk.gov.hmrc.auth.core.AuthConnector
-import play.api.test.FakeRequest
 import com.github.tomakehurst.wiremock.client.WireMock
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import play.api.Application
+import com.github.tomakehurst.wiremock.client.WireMock._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.times
+import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.libs.json.{JsObject, Json}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.Application
 import play.api.http.Status.{BAD_REQUEST, OK}
+import play.api.inject.bind
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
+import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
+import uk.gov.hmrc.pensionschemereturn.models.response._
+import utils.TestValues
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PsrConnectorSpec extends BaseConnectorSpec {
+class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   private implicit lazy val rh: RequestHeader = FakeRequest("", "")
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockApiAuditUtil: ApiAuditUtil = mock[ApiAuditUtil]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    Mockito.reset(mockApiAuditUtil)
+  }
 
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(5, Seconds)), interval = scaled(Span(50, Millis)))
 
   val modules: Seq[GuiceableModule] =
     Seq(
-      bind[AuthConnector].toInstance(mockAuthConnector)
+      bind[ApiAuditUtil].toInstance(mockApiAuditUtil)
     )
   val app: Application = new GuiceApplicationBuilder()
     .overrides(modules: _*)
@@ -62,29 +72,39 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   private lazy val connector: PsrConnector = app.injector.instanceOf[PsrConnector]
 
   "getOverview" should {
+    val getOverview = s"/pension-online/reports/overview/pods/$pstr/PSR"
 
     "return overview details when returns were found" in {
 
       stubGet(
-        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
+        getOverview,
+        Map(
+          "fromDate" -> sampleToday.toString,
+          "toDate" -> sampleToday.toString
+        ),
         ok(sampleOverviewResponseAsJsonString)
       )
 
-      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
-        WireMock.verify(
-          getRequestedFor(
-            urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05")
+      whenReady(connector.getOverview(pstr, sampleToday.toString, sampleToday.toString)) {
+        result: Seq[PsrOverviewEtmpResponse] =>
+          WireMock.verify(
+            getRequestedFor(
+              urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2023-10-19&toDate=2023-10-19")
+            )
           )
-        )
 
-        result shouldMatchTo sampleOverviewResponse
+          result shouldMatchTo sampleOverviewResponse
       }
     }
 
     "return empty list when pstr not found in etmp" in {
 
       stubGet(
-        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05",
+        getOverview,
+        Map(
+          "fromDate" -> sampleToday.toString,
+          "toDate" -> sampleToday.toString
+        ),
         notFound().withBody(
           errorResponse(
             "NO_REPORT_FOUND",
@@ -93,22 +113,27 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         )
       )
 
-      whenReady(connector.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: Seq[PsrOverviewEtmpResponse] =>
-        WireMock.verify(
-          getRequestedFor(
-            urlEqualTo(
-              "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=2024-04-05"
+      whenReady(connector.getOverview(pstr, sampleToday.toString, sampleToday.toString)) {
+        result: Seq[PsrOverviewEtmpResponse] =>
+          WireMock.verify(
+            getRequestedFor(
+              urlEqualTo(
+                "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2023-10-19&toDate=2023-10-19"
+              )
             )
           )
-        )
-        result mustBe Seq.empty
+          result mustBe Seq.empty
       }
     }
 
     "return 400 BadRequest when missing parameters" in {
 
       stubGet(
-        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate=",
+        getOverview,
+        Map(
+          "fromDate" -> sampleToday.toString,
+          "toDate" -> ""
+        ),
         badRequest().withBody(
           errorResponse(
             "MISSING_TO_DATE",
@@ -118,12 +143,12 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       )
 
       val thrown = intercept[BadRequestException] {
-        await(connector.getOverview("testPstr", "2020-04-06", ""))
+        await(connector.getOverview(pstr, sampleToday.toString, ""))
       }
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2020-04-06&toDate="
+            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2023-10-19&toDate="
           )
         )
       )
@@ -135,7 +160,11 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 403 Forbidden when invalid date range" in {
 
       stubGet(
-        "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2024-04-05&toDate=2020-04-06",
+        getOverview,
+        Map(
+          "fromDate" -> sampleToday.toString,
+          "toDate" -> sampleToday.toString
+        ),
         forbidden().withBody(
           errorResponse(
             "FROM_DATE_NOT_IN_RANGE",
@@ -145,12 +174,12 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       )
 
       val thrown = intercept[UpstreamErrorResponse] {
-        await(connector.getOverview("testPstr", "2024-04-05", "2020-04-06"))
+        await(connector.getOverview(pstr, sampleToday.toString, sampleToday.toString))
       }
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2024-04-05&toDate=2020-04-06"
+            "/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2023-10-19&toDate=2023-10-19"
           )
         )
       )
@@ -161,18 +190,21 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   }
 
   "getVersions" should {
+    val getVersionsUrl = s"/pension-online/reports/$pstr/PSR/versions"
 
     "return reporting version details when returns were found" in {
-
       stubGet(
-        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        getVersionsUrl,
+        Map(
+          "startDate" -> sampleToday.toString
+        ),
         ok(sampleVersionsResponseAsJsonString)
       )
 
-      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+      whenReady(connector.getVersions(pstr, sampleToday.toString)) { result: Seq[PsrVersionsEtmpResponse] =>
         WireMock.verify(
           getRequestedFor(
-            urlEqualTo("/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06")
+            urlEqualTo("/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19")
           )
         )
 
@@ -183,7 +215,10 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return empty list when pstr not found in etmp" in {
 
       stubGet(
-        "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06",
+        getVersionsUrl,
+        Map(
+          "startDate" -> sampleToday.toString
+        ),
         notFound().withBody(
           errorResponse(
             "NO_DATA_FOUND",
@@ -192,11 +227,11 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         )
       )
 
-      whenReady(connector.getVersions("testPstr", "2020-04-06")) { result: Seq[PsrVersionsEtmpResponse] =>
+      whenReady(connector.getVersions(pstr, sampleToday.toString)) { result: Seq[PsrVersionsEtmpResponse] =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(
-              "/pension-online/reports/testPstr/PSR/versions?startDate=2020-04-06"
+              "/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19"
             )
           )
         )
@@ -207,19 +242,22 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when invalid pstr - versions" in {
 
       stubGet(
-        "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06",
+        getVersionsUrl,
+        Map(
+          "startDate" -> sampleToday.toString
+        ),
         badRequest().withBody(
           errorResponse("INVALID_PSTR", "Submission has not passed validation. Invalid parameter pstr.")
         )
       )
 
       val thrown = intercept[BadRequestException] {
-        await(connector.getVersions("testPstr_Invalid", "2020-04-06"))
+        await(connector.getVersions(pstr, sampleToday.toString))
       }
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/reports/testPstr_Invalid/PSR/versions?startDate=2020-04-06"
+            "/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19"
           )
         )
       )
@@ -231,7 +269,10 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 403 Forbidden when invalid date - versions" in {
 
       stubGet(
-        "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05",
+        getVersionsUrl,
+        Map(
+          "startDate" -> sampleToday.toString
+        ),
         forbidden().withBody(
           errorResponse(
             "PERIOD_START_DATE_NOT_IN_RANGE",
@@ -241,12 +282,12 @@ class PsrConnectorSpec extends BaseConnectorSpec {
       )
 
       val thrown = intercept[UpstreamErrorResponse] {
-        await(connector.getVersions("testPstr", "2050-04-05"))
+        await(connector.getVersions(pstr, sampleToday.toString))
       }
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/reports/testPstr/PSR/versions?startDate=2050-04-05"
+            "/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19"
           )
         )
       )
@@ -257,20 +298,32 @@ class PsrConnectorSpec extends BaseConnectorSpec {
   }
 
   "submitStandardPsr" should {
+    val submitStandardPsrDetailsUrl = s"/pension-online/scheme-return/$pstr"
     "return 200 - ok" in {
+      val jsObject = createJsonObject()
       stubPost(
-        "/pension-online/scheme-return/testPstr",
-        Json.stringify(createJsonObject()),
+        submitStandardPsrDetailsUrl,
+        Json.stringify(jsObject),
         ok()
       )
 
       whenReady(
-        connector.submitStandardPsr(pstr, createJsonObject(), schemeName, "psaPspId", PSA, "userName", cipPsrStatus)
+        connector.submitStandardPsr(pstr, jsObject, schemeName, psaPspId, credentialRole, userName, cipPsrStatus)
       ) { result: HttpResponse =>
         WireMock.verify(
           postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
         )
-
+        Mockito
+          .verify(mockApiAuditUtil, times(1))
+          .firePsrPostAuditEvent(
+            ArgumentMatchers.eq(pstr),
+            ArgumentMatchers.eq(jsObject),
+            ArgumentMatchers.eq(schemeName),
+            ArgumentMatchers.eq(credentialRole),
+            ArgumentMatchers.eq(psaPspId),
+            ArgumentMatchers.eq(userName),
+            ArgumentMatchers.eq(cipPsrStatus)
+          )(any(), any())
         result.status mustBe OK
       }
     }
@@ -278,20 +331,38 @@ class PsrConnectorSpec extends BaseConnectorSpec {
 
   "getStandardPsr" should {
 
+    val getStandardPsrDetailsUrl = s"/pension-online/scheme-return/$pstr"
+
     "return a standard PSR value with only fbNumber" in {
 
       stubGet(
-        "/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber",
+        getStandardPsrDetailsUrl,
+        Map(
+          "psrFormBundleNumber" -> psrFormBundleNumber
+        ),
         ok(sampleStandardPsrResponseAsJsonString)
+          .withHeader("Content-Type", "application/json")
       )
 
       whenReady(
-        connector.getStandardPsr("testPstr", Some("testFbNumber"), None, None, schemeName, "psaPspId", PSA, "userName")
+        connector
+          .getStandardPsr(pstr, Some(psrFormBundleNumber), None, None, schemeName, psaPspId, credentialRole, userName)
       ) { result: Option[PsrSubmissionEtmpResponse] =>
         WireMock.verify(
-          getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=testFbNumber"))
+          getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=1234567890"))
         )
-
+        Mockito
+          .verify(mockApiAuditUtil, times(1))
+          .firePsrGetAuditEvent(
+            ArgumentMatchers.eq(pstr),
+            ArgumentMatchers.eq(Some(psrFormBundleNumber)),
+            ArgumentMatchers.eq(None),
+            ArgumentMatchers.eq(None),
+            ArgumentMatchers.eq(credentialRole),
+            ArgumentMatchers.eq(psaPspId),
+            ArgumentMatchers.eq(userName),
+            ArgumentMatchers.eq(schemeName)
+          )(any(), any())
         result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
@@ -299,29 +370,46 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return a standard PSR value with periodStartDate and psrVersion" in {
 
       stubGet(
-        "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        getStandardPsrDetailsUrl,
+        Map(
+          "periodStartDate" -> sampleToday.toString,
+          "psrVersion" -> psrVersion
+        ),
         ok(sampleStandardPsrResponseAsJsonString)
+          .withHeader("Content-Type", "application/json")
       )
 
       whenReady(
         connector.getStandardPsr(
-          "testPstr",
+          pstr,
           None,
-          Some("testPeriodStartDate"),
-          Some("testPsrVersion"),
+          Some(sampleToday.toString),
+          Some(psrVersion),
           schemeName,
-          "psaPspId",
-          PSA,
-          "userName"
+          psaPspId,
+          credentialRole,
+          userName
         )
       ) { result: Option[PsrSubmissionEtmpResponse] =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(
-              "/pension-online/scheme-return/testPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+              "/pension-online/scheme-return/testPstr?periodStartDate=2023-10-19&psrVersion=001"
             )
           )
         )
+        Mockito
+          .verify(mockApiAuditUtil, times(1))
+          .firePsrGetAuditEvent(
+            ArgumentMatchers.eq(pstr),
+            ArgumentMatchers.eq(None),
+            ArgumentMatchers.eq(Some(sampleToday.toString)),
+            ArgumentMatchers.eq(Some(psrVersion)),
+            ArgumentMatchers.eq(credentialRole),
+            ArgumentMatchers.eq(psaPspId),
+            ArgumentMatchers.eq(userName),
+            ArgumentMatchers.eq(schemeName)
+          )(any(), any())
         result shouldMatchTo Some(samplePsrSubmissionEtmpResponse)
       }
     }
@@ -329,7 +417,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 422 (PSR_NOT_FOUND) when pstr not found in etmp" in {
 
       stubGet(
-        "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=2023-10-19&psrVersion=001",
         badRequestEntity().withBody(
           errorResponse("PSR_NOT_FOUND", "The remote endpoint has indicated no PSR found for requested details. ")
         )
@@ -339,21 +427,33 @@ class PsrConnectorSpec extends BaseConnectorSpec {
         connector.getStandardPsr(
           "notFoundTestPstr",
           None,
-          Some("testPeriodStartDate"),
-          Some("testPsrVersion"),
+          Some(sampleToday.toString),
+          Some(psrVersion),
           schemeName,
-          "psaPspId",
-          PSA,
-          "userName"
+          psaPspId,
+          credentialRole,
+          userName
         )
       ) { result: Option[_] =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(
-              "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+              "/pension-online/scheme-return/notFoundTestPstr?periodStartDate=2023-10-19&psrVersion=001"
             )
           )
         )
+        Mockito
+          .verify(mockApiAuditUtil, times(1))
+          .firePsrGetAuditEvent(
+            ArgumentMatchers.eq("notFoundTestPstr"),
+            ArgumentMatchers.eq(None),
+            ArgumentMatchers.eq(Some(sampleToday.toString)),
+            ArgumentMatchers.eq(Some(psrVersion)),
+            ArgumentMatchers.eq(credentialRole),
+            ArgumentMatchers.eq(psaPspId),
+            ArgumentMatchers.eq(userName),
+            ArgumentMatchers.eq(schemeName)
+          )(any(), any())
         result mustBe None
       }
     }
@@ -361,7 +461,7 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when etmp returns badRequest" in {
 
       stubGet(
-        "/pension-online/scheme-return/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion",
+        "/pension-online/scheme-return/invalidTestPstr?periodStartDate=2023-10-19&psrVersion=001",
         badRequest().withBody("INVALID_PAYLOAD")
       )
 
@@ -370,22 +470,34 @@ class PsrConnectorSpec extends BaseConnectorSpec {
           connector.getStandardPsr(
             "invalidTestPstr",
             None,
-            Some("testPeriodStartDate"),
-            Some("testPsrVersion"),
+            Some(sampleToday.toString),
+            Some(psrVersion),
             schemeName,
-            "psaPspId",
-            PSA,
-            "userName"
+            psaPspId,
+            credentialRole,
+            userName
           )
         )
       }
       WireMock.verify(
         getRequestedFor(
           urlEqualTo(
-            "/pension-online/scheme-return/invalidTestPstr?periodStartDate=testPeriodStartDate&psrVersion=testPsrVersion"
+            "/pension-online/scheme-return/invalidTestPstr?periodStartDate=2023-10-19&psrVersion=001"
           )
         )
       )
+      Mockito
+        .verify(mockApiAuditUtil, times(1))
+        .firePsrGetAuditEvent(
+          ArgumentMatchers.eq("invalidTestPstr"),
+          ArgumentMatchers.eq(None),
+          ArgumentMatchers.eq(Some(sampleToday.toString)),
+          ArgumentMatchers.eq(Some(psrVersion)),
+          ArgumentMatchers.eq(credentialRole),
+          ArgumentMatchers.eq(psaPspId),
+          ArgumentMatchers.eq(userName),
+          ArgumentMatchers.eq(schemeName)
+        )(any(), any())
       thrown.responseCode mustBe BAD_REQUEST
       thrown.message must include(s"Response body 'INVALID_PAYLOAD'")
 
@@ -394,9 +506,21 @@ class PsrConnectorSpec extends BaseConnectorSpec {
     "return 400 BadRequest when missing parameters" in {
 
       val thrown = intercept[BadRequestException] {
-        await(connector.getStandardPsr("testPstr", None, None, None, schemeName, "psaPspId", PSA, "userName"))
+        await(connector.getStandardPsr(pstr, None, None, None, schemeName, psaPspId, credentialRole, userName))
       }
 
+      Mockito
+        .verify(mockApiAuditUtil, Mockito.never)
+        .firePsrGetAuditEvent(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any()
+        )(any(), any())
       thrown.responseCode mustBe BAD_REQUEST
       thrown.message mustEqual "Missing url parameters"
     }
