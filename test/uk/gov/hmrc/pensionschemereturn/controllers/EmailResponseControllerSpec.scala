@@ -55,15 +55,12 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
 
   private val injector = application.injector
   private val controller = injector.instanceOf[EmailResponseController]
-  private val encryptedPsaId =
-    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(psaOrPspId)).value
-  private val encryptedPstr = injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(pstr)).value
-  private val encryptedEmail =
-    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(emailAddress)).value
-  private val encryptedSchemeName =
-    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(schemeName)).value
-  private val encryptedUserName =
-    injector.instanceOf[ApplicationCrypto].QueryParameterCrypto.encrypt(PlainText(userName)).value
+  private val crypto = injector.instanceOf[ApplicationCrypto].QueryParameterCrypto
+  private val encryptedPsaId = crypto.encrypt(PlainText(psaOrPspId)).value
+  private val encryptedPstr = crypto.encrypt(PlainText(pstr)).value
+  private val encryptedEmail = crypto.encrypt(PlainText(emailAddress)).value
+  private val encryptedSchemeName = crypto.encrypt(PlainText(schemeName)).value
+  private val encryptedUserName = crypto.encrypt(PlainText(userName)).value
 
   override def beforeEach(): Unit = {
     reset(mockAuditService)
@@ -124,6 +121,27 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
 
       verify(mockAuditService, never).sendEvent(any())(any(), any())
       status(result) mustBe BAD_REQUEST
+    }
+
+    "respond with FORBIDDEN when email address is invalid" in {
+      val invalidEmail = "invalid"
+
+      val result = controller.sendAuditEvents(
+        schemeAdministratorTypeAsPsp,
+        requestId,
+        email = crypto.encrypt(PlainText(invalidEmail)).value,
+        encryptedPsaId,
+        encryptedPstr,
+        reportVersion,
+        encryptedSchemeName,
+        taxYear,
+        encryptedUserName
+      )(
+        fakeRequest.withBody(Json.obj("name" -> "invalid"))
+      )
+
+      verify(mockAuditService, never).sendEvent(any())(any(), any())
+      status(result) mustBe FORBIDDEN
     }
   }
 }

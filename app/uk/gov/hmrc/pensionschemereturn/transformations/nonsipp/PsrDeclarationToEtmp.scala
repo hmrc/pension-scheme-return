@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{PSA, PSP}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.SubmitterType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrDeclaration
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -30,10 +30,10 @@ class PsrDeclarationToEtmp @Inject() extends Transformer {
       submittedBy = psrDeclaration.submittedBy,
       submitterId = psrDeclaration.submitterId,
       psaId = psrDeclaration.optAuthorisingPSAID,
-      psaDeclaration = Option.when(PSA == psrDeclaration.submittedBy)(
+      psaDeclaration = Option.when(SubmitterType.PSA == psrDeclaration.submittedBy)(
         EtmpPsaDeclaration(psaDeclaration1 = psrDeclaration.declaration1, psaDeclaration2 = psrDeclaration.declaration2)
       ),
-      pspDeclaration = Option.when(PSP == psrDeclaration.submittedBy)(
+      pspDeclaration = Option.when(SubmitterType.PSP == psrDeclaration.submittedBy)(
         EtmpPspDeclaration(pspDeclaration1 = psrDeclaration.declaration1, pspDeclaration2 = psrDeclaration.declaration2)
       )
     )

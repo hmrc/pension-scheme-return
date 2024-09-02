@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
-import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{SectionStatus, YesNo}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
@@ -56,7 +56,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = true,
+          surrenderMade = Some(true),
           surrenderedBenefits = Some(List(etmpPensionSurrender))
         )
 
@@ -74,7 +74,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = false,
+          surrenderMade = Some(false),
           surrenderedBenefits = Some(List(etmpPensionSurrender))
         )
 
@@ -92,7 +92,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = true,
+          surrenderMade = Some(true),
           surrenderedBenefits = Some(Nil)
         )
 
@@ -110,7 +110,25 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = false,
+          surrenderMade = Some(false),
+          surrenderedBenefits = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "surrenders made is FALSE, completed is FALSE indicating Not Started" in {
+
+        val memberPayments = transformSurrenderedBenefits(
+          made = false,
+          completed = false,
+          surrenderedBenefits = None
+        )
+
+        val etmpMemberPayments = transformEtmpSurrenderedBenefits(
+          surrenderMade = None,
           surrenderedBenefits = None
         )
 
@@ -124,7 +142,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
       "surrenders made is TRUE, BOTH surrendered benefits are provided" in {
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = true,
+          surrenderMade = Some(true),
           surrenderedBenefits = Some(List(etmpPensionSurrender))
         )
 
@@ -142,7 +160,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
       "surrenders made is TRUE, NO surrendered benefits are provided" in {
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = true,
+          surrenderMade = Some(true),
           surrenderedBenefits = Some(Nil)
         )
 
@@ -160,7 +178,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
       "surrenders made is FALSE and BOTH surrendered benefits are provided" in {
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = false,
+          surrenderMade = Some(false),
           surrenderedBenefits = Some(List(etmpPensionSurrender))
         )
 
@@ -272,6 +290,25 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
         result shouldMatchTo etmpMemberPayments
       }
+
+      "Not valid state: case (false, 0, true)" in {
+
+        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
+          made = false,
+          completed = true,
+          employerContributions = List.empty
+        )
+
+        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
+          employerContributionMade = Some(false),
+          noOfContributions = None,
+          employerContributions = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
     }
 
     "successfully transform Employer Contributions section from ETMP format" when {
@@ -370,6 +407,125 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
         result shouldMatchTo Right(memberPayments)
       }
+
+      "Not valid state: case (None, 1)" in {
+
+        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
+          made = false,
+          completed = true,
+          employerContributions = List.empty
+        )
+
+        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
+          employerContributionMade = Some(false),
+          noOfContributions = None,
+          employerContributions = None
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+    }
+
+    "successfully transform Member Details section to ETMP format" when {
+      "member state is Changed" in {
+        val memberDetails = sampleMemberDetails1.copy(state = MemberState.Changed)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberStatus = SectionStatus.Changed)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "member state is Deleted" in {
+        val memberDetails = sampleMemberDetails1.copy(state = MemberState.Deleted)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberStatus = SectionStatus.Deleted)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "there are no transfers in" in {
+        val memberDetails = sampleMemberDetails1.copy(transfersIn = Nil)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberTransfersIn = None, noOfTransfersIn = Some(0))
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "there are no transfers out" in {
+        val memberDetails = sampleMemberDetails1.copy(transfersOut = Nil)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberTransfersOut = None, noOfTransfersOut = Some(0))
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+    }
+
+    "successfully transform Member Details section from ETMP format" when {
+      "member state is Changed" in {
+        val memberDetails = sampleMemberDetails1.copy(state = MemberState.Changed)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberStatus = SectionStatus.Changed)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "member state is Deleted" in {
+        val memberDetails = sampleMemberDetails1.copy(state = MemberState.Deleted)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberStatus = SectionStatus.Deleted)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "there are no transfers in" in {
+        val memberDetails = sampleMemberDetails1.copy(transfersIn = Nil)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberTransfersIn = None)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "there are no transfers out" in {
+        val memberDetails = sampleMemberDetails1.copy(transfersOut = Nil)
+        val memberPayments = sampleMemberPayments.copy(memberDetails = List(memberDetails))
+
+        val etmpMemberDetails = sampleEtmpMemberDetail1.copy(memberTransfersOut = None)
+        val etmpMemberPayments = sampleEtmpMemberPayments.copy(memberDetails = List(etmpMemberDetails))
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
     }
   }
 
@@ -387,11 +543,11 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
     )
 
   private def transformEtmpSurrenderedBenefits(
-    surrenderMade: Boolean,
+    surrenderMade: Option[Boolean],
     surrenderedBenefits: Option[List[EtmpPensionSurrender]]
   ): EtmpMemberPayments =
     sampleEtmpMemberPayments.copy(
-      surrenderMade = Some(surrenderMade),
+      surrenderMade = surrenderMade,
       memberDetails = sampleEtmpMemberPayments.memberDetails.map(_.copy(memberPensionSurrender = surrenderedBenefits))
     )
 

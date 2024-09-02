@@ -437,7 +437,7 @@ trait TestValues {
     Shares(recordVersion = Some("001"), optShareTransactions = None, optTotalValueQuotedShares = None)
 
   val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
-    submittedBy = PSA,
+    submittedBy = SubmitterType.PSA,
     submitterId = "A0000000",
     optAuthorisingPSAID = None,
     declaration1 = true,
@@ -636,6 +636,78 @@ trait TestValues {
     )
   )
 
+  val sampleEtmpMemberDetail1: EtmpMemberDetails = EtmpMemberDetails(
+    memberStatus = SectionStatus.New,
+    memberPSRVersion = Some("001"),
+    noOfContributions = Some(2),
+    totalContributions = Some(Double.MaxValue),
+    noOfTransfersIn = Some(1),
+    noOfTransfersOut = Some(1),
+    pensionAmountReceived = Some(12.34),
+    personalDetails = EtmpMemberPersonalDetails(
+      foreName = sampleMemberDetails1.personalDetails.firstName,
+      middleName = None,
+      lastName = sampleMemberDetails1.personalDetails.lastName,
+      nino = sampleMemberDetails1.personalDetails.nino,
+      reasonNoNINO = None,
+      dateOfBirth = sampleToday
+    ),
+    memberEmpContribution = Some(
+      List(
+        EtmpEmployerContributions(
+          orgName = sampleEmployerContribution1.employerName,
+          organisationIdentity = OrganisationIdentity(
+            orgType = EmployerContributionsOrgType.UKCompany,
+            idNumber = Some("test company id"),
+            reasonNoIdNumber = None,
+            otherDescription = None
+          ),
+          totalContribution = 12.34
+        ),
+        EtmpEmployerContributions(
+          orgName = sampleEmployerContribution2.employerName,
+          organisationIdentity = OrganisationIdentity(
+            orgType = EmployerContributionsOrgType.UKCompany,
+            idNumber = None,
+            reasonNoIdNumber = Some("test reason"),
+            otherDescription = None
+          ),
+          totalContribution = 34.56
+        )
+      )
+    ),
+    memberTransfersIn = Some(
+      List(
+        EtmpTransfersIn(
+          schemeName = sampleTransfersIn1.schemeName,
+          dateOfTransfer = sampleTransfersIn1.dateOfTransfer,
+          transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme"),
+          transferValue = 12.34,
+          transferIncludedAsset = Yes
+        )
+      )
+    ),
+    memberTransfersOut = Some(
+      List(
+        EtmpTransfersOut(
+          schemeName = sampleTransfersOut1.schemeName,
+          dateOfTransfer = sampleTransfersOut1.dateOfTransfer,
+          transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
+        )
+      )
+    ),
+    memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue))),
+    memberPensionSurrender = Some(
+      List(
+        EtmpPensionSurrender(
+          totalSurrendered = 12.34,
+          dateOfSurrender = LocalDate.of(2022, 12, 12),
+          surrenderReason = "some reason"
+        )
+      )
+    )
+  )
+
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
     recordVersion = Some("001"),
     employerContributionMade = Some(Yes),
@@ -648,77 +720,7 @@ trait TestValues {
     pensionReceived = Some(Yes),
     surrenderMade = Some(Yes),
     memberDetails = List(
-      EtmpMemberDetails(
-        memberStatus = SectionStatus.New,
-        memberPSRVersion = Some("001"),
-        noOfContributions = Some(2),
-        totalContributions = Some(Double.MaxValue),
-        noOfTransfersIn = Some(1),
-        noOfTransfersOut = Some(1),
-        pensionAmountReceived = Some(12.34),
-        personalDetails = EtmpMemberPersonalDetails(
-          foreName = sampleMemberDetails1.personalDetails.firstName,
-          middleName = None,
-          lastName = sampleMemberDetails1.personalDetails.lastName,
-          nino = sampleMemberDetails1.personalDetails.nino,
-          reasonNoNINO = None,
-          dateOfBirth = sampleToday
-        ),
-        memberEmpContribution = Some(
-          List(
-            EtmpEmployerContributions(
-              orgName = sampleEmployerContribution1.employerName,
-              organisationIdentity = OrganisationIdentity(
-                orgType = EmployerContributionsOrgType.UKCompany,
-                idNumber = Some("test company id"),
-                reasonNoIdNumber = None,
-                otherDescription = None
-              ),
-              totalContribution = 12.34
-            ),
-            EtmpEmployerContributions(
-              orgName = sampleEmployerContribution2.employerName,
-              organisationIdentity = OrganisationIdentity(
-                orgType = EmployerContributionsOrgType.UKCompany,
-                idNumber = None,
-                reasonNoIdNumber = Some("test reason"),
-                otherDescription = None
-              ),
-              totalContribution = 34.56
-            )
-          )
-        ),
-        memberTransfersIn = Some(
-          List(
-            EtmpTransfersIn(
-              schemeName = sampleTransfersIn1.schemeName,
-              dateOfTransfer = sampleTransfersIn1.dateOfTransfer,
-              transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme"),
-              transferValue = 12.34,
-              transferIncludedAsset = Yes
-            )
-          )
-        ),
-        memberTransfersOut = Some(
-          List(
-            EtmpTransfersOut(
-              schemeName = sampleTransfersOut1.schemeName,
-              dateOfTransfer = sampleTransfersOut1.dateOfTransfer,
-              transferSchemeType = TransferSchemeType.registeredScheme("some pension scheme")
-            )
-          )
-        ),
-        memberLumpSumReceived = Some(List(EtmpMemberLumpSumReceived(Double.MaxValue, Double.MaxValue))),
-        memberPensionSurrender = Some(
-          List(
-            EtmpPensionSurrender(
-              totalSurrendered = 12.34,
-              dateOfSurrender = LocalDate.of(2022, 12, 12),
-              surrenderReason = "some reason"
-            )
-          )
-        )
-      ),
+      sampleEtmpMemberDetail1,
       EtmpMemberDetails(
         memberStatus = SectionStatus.New,
         memberPSRVersion = None,
@@ -886,7 +888,7 @@ trait TestValues {
 
   val sampleEtmpPsrDeclaration: EtmpPsrDeclaration =
     EtmpPsrDeclaration(
-      submittedBy = PSA,
+      submittedBy = SubmitterType.PSA,
       submitterId = "A2100005",
       psaId = None,
       psaDeclaration = Some(EtmpPsaDeclaration(psaDeclaration1 = true, psaDeclaration2 = true)),
@@ -1481,7 +1483,7 @@ trait TestValues {
     ),
     psrDeclaration = Some(
       EtmpPsrDeclaration(
-        submittedBy = PSP,
+        submittedBy = SubmitterType.PSP,
         submitterId = "21000005",
         psaId = Some("A2100005"),
         psaDeclaration = None,

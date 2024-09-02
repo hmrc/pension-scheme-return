@@ -22,15 +22,15 @@ sealed trait SubmitterType {
   val name: String
 }
 
-case object PSA extends SubmitterType {
-  val name = "PSA"
-}
-
-case object PSP extends SubmitterType {
-  val name = "PSP"
-}
-
 object SubmitterType {
+
+  case object PSA extends SubmitterType {
+    val name = "PSA"
+  }
+
+  case object PSP extends SubmitterType {
+    val name = "PSP"
+  }
 
   private val values: List[SubmitterType] =
     List(PSA, PSP)
