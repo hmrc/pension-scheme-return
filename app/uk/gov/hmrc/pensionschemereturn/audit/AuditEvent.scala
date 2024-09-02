@@ -37,13 +37,13 @@ trait ExtendedAuditEvent extends AuditEvent {
     credentialRole match {
       case PSA =>
         Json.obj(
-          "PensionSchemeAdministratorId" -> psaPspId,
-          "SchemeAdministratorName" -> schemeAdministratorOrPractitionerName
+          "pensionSchemeAdministratorId" -> psaPspId,
+          "schemeAdministratorName" -> schemeAdministratorOrPractitionerName
         )
       case _ =>
         Json.obj(
-          "PensionSchemePractitionerId" -> psaPspId,
-          "SchemePractitionerName" -> schemeAdministratorOrPractitionerName
+          "pensionSchemePractitionerId" -> psaPspId,
+          "schemePractitionerName" -> schemeAdministratorOrPractitionerName
         )
     }
 }

@@ -36,17 +36,17 @@ case class PsrGetAuditEvent(
 
   override def details: JsObject = {
 
-    val optFbNumber = fbNumber.fold[JsObject](Json.obj())(s => Json.obj("FbNumber" -> s))
-    val optPeriodStartDate = periodStartDate.fold[JsObject](Json.obj())(s => Json.obj("PeriodStartDate" -> s))
-    val optPsrVersion = psrVersion.fold[JsObject](Json.obj())(s => Json.obj("PsrVersion" -> s))
+    val optFbNumber = fbNumber.fold[JsObject](Json.obj())(s => Json.obj("fbNumber" -> s))
+    val optPeriodStartDate = periodStartDate.fold[JsObject](Json.obj())(s => Json.obj("periodStartDate" -> s))
+    val optPsrVersion = psrVersion.fold[JsObject](Json.obj())(s => Json.obj("psrVersion" -> s))
 
-    val optStatus = status.fold[JsObject](Json.obj())(s => Json.obj("HttpStatus" -> s))
-    val optResponse = response.fold[JsObject](Json.obj())(s => Json.obj("Response" -> s))
-    val optErrorMessage = errorMessage.fold[JsObject](Json.obj())(s => Json.obj("ErrorMessage" -> s))
+    val optStatus = status.fold[JsObject](Json.obj())(s => Json.obj("httpStatus" -> s))
+    val optResponse = response.fold[JsObject](Json.obj())(s => Json.obj("response" -> s))
+    val optErrorMessage = errorMessage.fold[JsObject](Json.obj())(s => Json.obj("errorMessage" -> s))
 
     val apiDetails =
       Json.obj(
-        "PensionSchemeTaxReference" -> pstr
+        "pensionSchemeTaxReference" -> pstr
       )
     psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optFbNumber ++ optPeriodStartDate ++ optPsrVersion ++ optStatus ++ optResponse ++ optErrorMessage
   }
