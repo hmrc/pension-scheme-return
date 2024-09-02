@@ -35,16 +35,16 @@ case class PsrPostAuditEvent(
 
   override def details: JsObject = {
 
-    val optStatus = status.fold[JsObject](Json.obj())(s => Json.obj("HttpStatus" -> s))
-    val optResponse = response.fold[JsObject](Json.obj())(s => Json.obj("Response" -> s))
-    val optErrorMessage = errorMessage.fold[JsObject](Json.obj())(s => Json.obj("ErrorMessage" -> s))
-    val optPsrStatus = psrStatus.fold[JsObject](Json.obj())(s => Json.obj("PsrStatus" -> s))
+    val optStatus = status.fold[JsObject](Json.obj())(s => Json.obj("httpStatus" -> s))
+    val optResponse = response.fold[JsObject](Json.obj())(s => Json.obj("response" -> s))
+    val optErrorMessage = errorMessage.fold[JsObject](Json.obj())(s => Json.obj("errorMessage" -> s))
+    val optPsrStatus = psrStatus.fold[JsObject](Json.obj())(s => Json.obj("psrStatus" -> s))
 
     val apiDetails =
       Json.obj(
-        "PensionSchemeTaxReference" -> pstr,
-        "SchemeName" -> schemeName,
-        "Payload" -> payload
+        "pensionSchemeTaxReference" -> pstr,
+        "schemeName" -> schemeName,
+        "payload" -> payload
       )
     psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage ++ optPsrStatus
   }

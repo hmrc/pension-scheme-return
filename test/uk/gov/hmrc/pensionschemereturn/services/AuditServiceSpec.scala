@@ -71,16 +71,16 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with Inside {
           auditType mustBe event.auditType
 
           detail mustBe Json.obj(
-            "EmailInitiationRequestId" -> "test-request-id",
-            "PensionSchemeTaxReference" -> "test-pstr",
-            "SchemeAdministratorName" -> "test user",
-            "EmailAddress" -> "test@test.com",
-            "Event" -> "Sent",
-            "SubmittedBy" -> "PSA",
-            "ReportVersion" -> "001",
-            "PensionSchemeAdministratorId" -> "A2500001",
-            "SchemeName" -> "Test Scheme",
-            "TaxYear" -> "test tax year"
+            "emailInitiationRequestId" -> "test-request-id",
+            "pensionSchemeTaxReference" -> "test-pstr",
+            "schemeAdministratorName" -> "test user",
+            "emailAddress" -> "test@test.com",
+            "event" -> "Sent",
+            "submittedBy" -> "PSA",
+            "reportVersion" -> "001",
+            "pensionSchemeAdministratorId" -> "A2500001",
+            "schemeName" -> "Test Scheme",
+            "taxYear" -> "test tax year"
           )
       }
     }

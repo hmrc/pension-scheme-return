@@ -36,14 +36,14 @@ case class EmailAuditEvent(
   override def details: JsObject = {
     val emailDetails =
       Json.obj(
-        fields = "EmailInitiationRequestId" -> requestId,
-        "EmailAddress" -> emailAddress,
-        "Event" -> event.toString,
-        "SubmittedBy" -> submittedBy,
-        "ReportVersion" -> reportVersion,
-        "PensionSchemeTaxReference" -> pstr,
-        "SchemeName" -> schemeName,
-        "TaxYear" -> taxYear
+        fields = "emailInitiationRequestId" -> requestId,
+        "emailAddress" -> emailAddress,
+        "event" -> event.toString,
+        "submittedBy" -> submittedBy,
+        "reportVersion" -> reportVersion,
+        "pensionSchemeTaxReference" -> pstr,
+        "schemeName" -> schemeName,
+        "taxYear" -> taxYear
       )
     psaOrPspIdDetails(submittedBy, psaPspId, userName) ++ emailDetails
   }
