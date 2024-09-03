@@ -32,7 +32,7 @@ case class PsrGetAuditEvent(
   errorMessage: Option[String]
 ) extends ExtendedAuditEvent {
 
-  override def auditType: String = "PSRGet"
+  override def auditType: String = "PensionSchemeReturnGet"
 
   override def details: JsObject = {
 

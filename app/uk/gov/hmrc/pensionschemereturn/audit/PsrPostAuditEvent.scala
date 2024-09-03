@@ -31,7 +31,7 @@ case class PsrPostAuditEvent(
   psrStatus: Option[String]
 ) extends ExtendedAuditEvent {
 
-  override def auditType: String = "PSRPost"
+  override def auditType: String = "PensionSchemeReturnPost"
 
   override def details: JsObject = {
 
