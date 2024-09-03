@@ -51,15 +51,16 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
       val json = readJsonFromFile("/api-1999-invalid-example.json")
       val result = jsonPayloadSchemaValidator.validatePayload(API_1999, json)
       result.hasErrors mustBe true
-      val errorsAsString = result.errors.map(_.toString)
 
-      errorsAsString.equals(
-        Set(
-          "$.reportDetails.psrStatus: does not have a value in the enumeration [Compiled, Submitted]",
-          "$.reportDetails.periodStart: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$",
-          "$.reportDetails.periodEnd: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
-        )
-      ) mustBe true
+      val actualErrors = result.errors.map(_.getMessage)
+
+      val expectedErrors = Set(
+        "$.reportDetails.psrStatus: does not have a value in the enumeration [\"Compiled\", \"Submitted\"]",
+        "$.reportDetails.periodStart: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$",
+        "$.reportDetails.periodEnd: does not match the regex pattern ^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+      )
+
+      actualErrors.equals(expectedErrors) mustBe true
     }
 
     "Behaviour for valid payload for API 1999 loans only" in {

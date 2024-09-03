@@ -86,7 +86,6 @@ class PsrSubmissionServiceSpec
           PsrAuthContext(
             externalId = "externalId",
             psaPspId = "psaPspId",
-            name = None,
             credentialRole = PSA,
             request = rq
           ),
@@ -120,7 +119,6 @@ class PsrSubmissionServiceSpec
           PsrAuthContext(
             externalId = "externalId",
             psaPspId = "psaPspId",
-            name = None,
             credentialRole = PSA,
             request = rq
           ),
@@ -156,7 +154,6 @@ class PsrSubmissionServiceSpec
           PsrAuthContext(
             externalId = "externalId",
             psaPspId = "psaPspId",
-            name = None,
             credentialRole = PSA,
             request = rq
           ),
@@ -188,7 +185,6 @@ class PsrSubmissionServiceSpec
             PsrAuthContext(
               externalId = "externalId",
               psaPspId = "psaPspId",
-              name = None,
               credentialRole = PSA,
               request = rq
             ),
@@ -223,7 +219,6 @@ class PsrSubmissionServiceSpec
             PsrAuthContext(
               externalId = "externalId",
               psaPspId = "psaPspId",
-              name = None,
               credentialRole = PSA,
               request = rq
             ),

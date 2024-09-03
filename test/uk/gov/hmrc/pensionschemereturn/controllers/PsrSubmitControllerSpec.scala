@@ -79,7 +79,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
 
     "return 401 - Bearer token not supplied" in {
 
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.failed(new MissingBearerToken)
         )
@@ -96,9 +96,9 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
     "return 204" in {
       val responseJson: JsObject = Json.obj("mock" -> "pass")
 
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(mockPsrSubmissionService.submitStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
@@ -705,9 +705,9 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
 
   "GET standard PSR" must {
     "return 200" in {
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(
         mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
@@ -726,9 +726,9 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues {
     }
 
     "return 404" in {
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(
         mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
