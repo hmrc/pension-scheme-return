@@ -56,9 +56,12 @@ trait TestValues {
     )
   )
   val pstr = "testPstr"
+  val psrVersion = "001"
+  val psrFormBundleNumber = "1234567890"
   val schemeName = "SchemeName"
   val userName = "userName"
   val psaPspId = "psaPspId"
+  val credentialRole = "credentialRole"
   val cipPsrStatus = None
   val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
 
