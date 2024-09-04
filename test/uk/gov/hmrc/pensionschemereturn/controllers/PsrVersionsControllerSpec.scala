@@ -79,7 +79,7 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
 
     "return 401 - Bearer token not supplied" in {
 
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.failed(new MissingBearerToken)
         )
@@ -96,9 +96,9 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
     "return success" in {
       val responseJson: JsObject = Json.obj("mock" -> "pass")
 
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(responseJson))
@@ -108,9 +108,9 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
     }
 
     "return success when empty" in {
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new ~(new ~(Some(externalId), enrolments), Some(Name(Some("FirstName"), Some("lastName")))))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.arr()))

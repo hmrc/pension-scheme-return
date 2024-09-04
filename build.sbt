@@ -7,8 +7,7 @@ inThisBuild(
     scalaVersion := "2.13.12",
     majorVersion := 0,
     semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision,
-    scalafixScalaBinaryVersion := "2.13"
+    semanticdbVersion := scalafixSemanticdb.revision
   )
 )
 
