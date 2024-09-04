@@ -21,7 +21,7 @@ import uk.gov.hmrc.pensionschemereturn.services.PsrVersionsService
 import play.api.http.Status
 import play.api.inject.bind
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{~, Name}
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import org.mockito.ArgumentMatchers.any
 import play.api.test.Helpers._
@@ -62,7 +62,7 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
 
     "return 401 - Bearer token expired" in {
 
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments ~ Option[Name]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.failed(new BearerTokenExpired)
         )
@@ -116,6 +116,20 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         .thenReturn(Future.successful(Json.arr()))
 
       val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest)
+      status(result) mustBe Status.OK
+    }
+  }
+
+  "getVersionsForYears" must {
+    "return success" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
+      when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
+        .thenReturn(Future.successful(responseJson))
+
+      val result = controller.getVersionsForYears("testPstr", List("2020-04-06"))(fakeRequest)
       status(result) mustBe Status.OK
     }
   }

@@ -17,12 +17,12 @@
 package uk.gov.hmrc.pensionschemereturn
 
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import play.api.Application
 
 class HealthEndpointIntegrationSpec
     extends AnyWordSpec

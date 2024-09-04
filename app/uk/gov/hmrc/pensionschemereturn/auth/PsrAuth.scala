@@ -19,7 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.auth
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.pensionschemereturn.config.Constants._
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment, Enrolments}
-import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import play.api.Logging
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
@@ -36,7 +36,8 @@ final case class PsrAuthContext[A](
 trait PsrAuth extends AuthorisedFunctions with Logging {
 
   private val AuthPredicate = Enrolment(psaEnrolmentKey).or(Enrolment(pspEnrolmentKey))
-  private val PsrRetrievals = Retrievals.externalId.and(Retrievals.allEnrolments)
+  private val PsrRetrievals: Retrieval[Option[String] ~ Enrolments] =
+    Retrievals.externalId.and(Retrievals.allEnrolments)
 
   private type PsrAction[A] = PsrAuthContext[A] => Future[Result]
 

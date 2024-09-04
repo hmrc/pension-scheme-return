@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.pensionschemereturn.models.etmp.PSA
+import uk.gov.hmrc.pensionschemereturn.models.etmp.SubmitterType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrDeclaration
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.EtmpPsrDeclaration
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -26,7 +26,7 @@ import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 class PsrDeclarationFromEtmp @Inject() extends Transformer {
 
   def transform(psrDeclaration: EtmpPsrDeclaration): PsrDeclaration = {
-    val submittedByPsa = PSA == psrDeclaration.submittedBy
+    val submittedByPsa = SubmitterType.PSA == psrDeclaration.submittedBy
     PsrDeclaration(
       submittedBy = psrDeclaration.submittedBy,
       submitterId = psrDeclaration.submitterId,

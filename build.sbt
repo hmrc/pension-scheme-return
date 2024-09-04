@@ -1,3 +1,5 @@
+import CodeCoverageSettings.excludedPackages
+import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "pension-scheme-return"
@@ -45,3 +47,5 @@ lazy val it = project
     Test / scalafmtOnCompile := true,
     Test / unmanagedResourceDirectories += baseDirectory.value / "it" / "test" / "resources"
   )
+
+addCommandAlias("testc", "; clean ; coverage ; test ; it/test ; coverageReport ;")

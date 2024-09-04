@@ -25,10 +25,12 @@ trait PsrBaseController {
     request.body.asJson.getOrElse(throw new BadRequestException("Request does not contain Json body"))
 
   protected def requiredHeaders(headers: String*)(implicit request: Request[AnyContent]): Seq[String] = {
-    val headerData = headers.map(request.headers.get)
+    val headerData: Seq[Option[String]] = headers.map(request.headers.get)
     val allHeadersDefined = headerData.forall(_.isDefined)
-    if (allHeadersDefined) headerData.collect { case Some(value) => value } else {
-      val missingHeaders = headers.zip(headerData)
+    if (allHeadersDefined) {
+      headerData.collect { case Some(value) => value }
+    } else {
+      val missingHeaders: Seq[(String, Option[String])] = headers.zip(headerData)
       val errorString = missingHeaders
         .map {
           case (headerName, data) =>

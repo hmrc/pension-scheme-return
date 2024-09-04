@@ -53,7 +53,7 @@ class EmailResponseController @Inject()(
     encryptedUserName: String
   ): Action[JsValue] = Action(parser.tolerantJson) { implicit request =>
     decryptDetails(encryptedPsaOrPspId, encryptedPstr, email, encryptedSchemeName, encryptedUserName) match {
-      case Right(Tuple5(psaOrPspId, pstr, emailAddress, schemeName, userName)) =>
+      case Right((psaOrPspId, pstr, emailAddress, schemeName, userName)) =>
         request.body
           .validate[EmailEvents]
           .fold(
@@ -99,7 +99,7 @@ class EmailResponseController @Inject()(
     try {
       require(emailAddress.matches(emailRegex))
       Right(
-        Tuple5(
+        (
           decrypt(encryptedPsaOrPspId),
           decrypt(encryptedPstr),
           emailAddress,

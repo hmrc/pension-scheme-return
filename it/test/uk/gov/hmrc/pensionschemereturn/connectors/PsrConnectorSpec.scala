@@ -16,27 +16,27 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.times
-import org.mockito.{ArgumentMatchers, Mockito}
-import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.Application
-import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.RequestHeader
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
-import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
 import uk.gov.hmrc.pensionschemereturn.models.response._
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
+import play.api.mvc.RequestHeader
+import com.github.tomakehurst.wiremock.client.WireMock._
+import play.api.inject.bind
+import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
+import org.mockito.{ArgumentMatchers, Mockito}
+import play.api.test.FakeRequest
+import com.github.tomakehurst.wiremock.client.WireMock
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
+import org.mockito.Mockito.times
 import utils.TestValues
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.Application
+import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.libs.json.{JsObject, Json}
+import play.api.http.Status.{BAD_REQUEST, OK}
+import uk.gov.hmrc.http._
+import org.mockito.ArgumentMatchers.any
+import org.scalatestplus.mockito.MockitoSugar.mock
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -299,6 +299,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
 
   "submitStandardPsr" should {
     val submitStandardPsrDetailsUrl = s"/pension-online/scheme-return/$pstr"
+
     "return 200 - ok" in {
       val jsObject = createJsonObject()
       stubPost(
@@ -326,6 +327,36 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
           )(any(), any())
         result.status mustBe OK
       }
+    }
+
+    "return bad request exception when on 400 response" in {
+      val jsObject = createJsonObject()
+      stubPost(
+        submitStandardPsrDetailsUrl,
+        Json.stringify(jsObject),
+        badRequest()
+      )
+
+      intercept[BadRequestException](
+        await(
+          connector.submitStandardPsr(pstr, jsObject, schemeName, psaPspId, credentialRole, userName, cipPsrStatus)
+        )
+      )
+
+      WireMock.verify(
+        postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
+      )
+      Mockito
+        .verify(mockApiAuditUtil, times(1))
+        .firePsrPostAuditEvent(
+          ArgumentMatchers.eq(pstr),
+          ArgumentMatchers.eq(jsObject),
+          ArgumentMatchers.eq(schemeName),
+          ArgumentMatchers.eq(credentialRole),
+          ArgumentMatchers.eq(psaPspId),
+          ArgumentMatchers.eq(userName),
+          ArgumentMatchers.eq(cipPsrStatus)
+        )(any(), any())
     }
   }
 

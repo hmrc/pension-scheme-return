@@ -17,18 +17,18 @@
 package uk.gov.hmrc.pensionschemereturn
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
+import org.scalatest.concurrent.ScalaFutures
+import play.api.inject.guice.GuiceApplicationBuilder
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.StringValuePattern
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import com.softwaremill.diffx.generic.AutoDerivation
-import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.time.{Millis, Span}
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.test.{HttpClientV2Support, WireMockSupport}
+import com.softwaremill.diffx.generic.AutoDerivation
+import org.scalatest.wordspec.AnyWordSpec
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.scalatest.matchers.must.Matchers
+import play.api.Application
+import org.scalatest.time.{Millis, Span}
 
 import scala.jdk.CollectionConverters._
 import scala.reflect.ClassTag
