@@ -10,7 +10,7 @@ get {
   auth: bearer
 }
 
-query {
+params:query {
   periodStartDate: 2021-04-06
   psrVersion: 001
   ~fbNumber: 123
@@ -19,6 +19,7 @@ query {
 headers {
   userName: TestUserName
   schemeName: TestSchemeName
+  srn: S0000000042
 }
 
 auth:bearer {

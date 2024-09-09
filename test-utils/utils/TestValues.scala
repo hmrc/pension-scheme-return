@@ -19,7 +19,7 @@ package utils
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.IdentityType.{Individual, UKCompany}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
-import uk.gov.hmrc.pensionschemereturn.config.Constants.{psaEnrolmentKey, psaIdKey}
+import uk.gov.hmrc.pensionschemereturn.config.Constants.psaEnrolmentKey
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.SchemeHoldBond.Contribution
 import uk.gov.hmrc.pensionschemereturn.models.requests.PsrSubmissionEtmpRequest
@@ -48,7 +48,7 @@ trait TestValues {
       Enrolment(
         psaEnrolmentKey,
         Seq(
-          EnrolmentIdentifier(psaIdKey, "A0000000")
+          EnrolmentIdentifier("PSAID", "A0000000")
         ),
         "Activated",
         None
@@ -56,6 +56,7 @@ trait TestValues {
     )
   )
   val pstr = "testPstr"
+  val srn = "S2400000001"
   val psrVersion = "001"
   val psrFormBundleNumber = "1234567890"
   val schemeName = "SchemeName"

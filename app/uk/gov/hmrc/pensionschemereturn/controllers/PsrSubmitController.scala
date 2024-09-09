@@ -23,6 +23,7 @@ import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
 import play.api.Logging
 import play.api.libs.json.Json
 
@@ -34,7 +35,8 @@ import javax.inject.{Inject, Singleton}
 class PsrSubmitController @Inject()(
   cc: ControllerComponents,
   psrSubmissionService: PsrSubmissionService,
-  val authConnector: AuthConnector
+  override val authConnector: AuthConnector,
+  override protected val schemeDetailsConnector: SchemeDetailsConnector
 )(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
@@ -45,8 +47,8 @@ class PsrSubmitController @Inject()(
     with Logging {
 
   def submitStandardPsr: Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { psrAuth =>
-      val Seq(userName, schemeName) = requiredHeaders("userName", "schemeName")
+    val Seq(userName, schemeName, srnS) = requiredHeaders("userName", "schemeName", "srn")
+    authorisedAsPsrUser(srnS) { psrAuth =>
       val psrSubmission = requiredBody.as[PsrSubmission]
       logger.info(message = s"Submitting standard PSR for ${psrSubmission.minimalRequiredSubmission.reportDetails}")
       psrSubmissionService
@@ -64,8 +66,8 @@ class PsrSubmitController @Inject()(
     optPeriodStartDate: Option[String],
     optPsrVersion: Option[String]
   ): Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { psrAuth =>
-      val Seq(userName, schemeName) = requiredHeaders("userName", "schemeName")
+    val Seq(userName, schemeName, srnS) = requiredHeaders("userName", "schemeName", "srn")
+    authorisedAsPsrUser(srnS) { psrAuth =>
       logger.debug(
         s"Retrieving standard PSR - with pstr: $pstr, fbNumber: $optFbNumber, periodStartDate: $optPeriodStartDate, psrVersion: $optPsrVersion"
       )

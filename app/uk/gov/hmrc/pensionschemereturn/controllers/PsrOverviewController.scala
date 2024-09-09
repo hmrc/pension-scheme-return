@@ -23,6 +23,7 @@ import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.auth.core.AuthConnector
 import play.api.Logging
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
 
 import scala.concurrent.ExecutionContext
 
@@ -32,7 +33,8 @@ import javax.inject.{Inject, Singleton}
 class PsrOverviewController @Inject()(
   cc: ControllerComponents,
   psrOverviewService: PsrOverviewService,
-  val authConnector: AuthConnector
+  override val authConnector: AuthConnector,
+  override protected val schemeDetailsConnector: SchemeDetailsConnector
 )(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
@@ -47,7 +49,8 @@ class PsrOverviewController @Inject()(
     fromDate: String,
     toDate: String
   ): Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { _ =>
+    val Seq(srnS) = requiredHeaders("srn")
+    authorisedAsPsrUser(srnS) { _ =>
       logger.debug(
         s"Retrieving overview - with pstr: $pstr, fromDate: $fromDate, toDate: $toDate"
       )
@@ -55,6 +58,5 @@ class PsrOverviewController @Inject()(
         Ok(data)
       }
     }
-
   }
 }

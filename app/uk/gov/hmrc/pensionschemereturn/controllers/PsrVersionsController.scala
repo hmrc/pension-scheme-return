@@ -22,6 +22,7 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuth
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
 import play.api.Logging
 import play.api.libs.json._
 
@@ -33,7 +34,8 @@ import javax.inject.{Inject, Singleton}
 class PsrVersionsController @Inject()(
   cc: ControllerComponents,
   psrVersionsService: PsrVersionsService,
-  val authConnector: AuthConnector
+  override val authConnector: AuthConnector,
+  override protected val schemeDetailsConnector: SchemeDetailsConnector
 )(
   implicit ec: ExecutionContext
 ) extends BackendController(cc)
@@ -47,7 +49,8 @@ class PsrVersionsController @Inject()(
     pstr: String,
     startDates: Seq[String]
   ): Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { _ =>
+    val Seq(srnS) = requiredHeaders("srn")
+    authorisedAsPsrUser(srnS) { _ =>
       logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates")
       Future
         .sequence(
@@ -71,7 +74,8 @@ class PsrVersionsController @Inject()(
     pstr: String,
     startDate: String
   ): Action[AnyContent] = Action.async { implicit request =>
-    authorisedAsPsrUser { _ =>
+    val Seq(srnS) = requiredHeaders("srn")
+    authorisedAsPsrUser(srnS) { _ =>
       logger.debug(
         s"Retrieving reporting versions - with pstr: $pstr, startDate: $startDate"
       )

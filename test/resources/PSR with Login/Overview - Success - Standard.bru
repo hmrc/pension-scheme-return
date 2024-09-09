@@ -10,9 +10,13 @@ get {
   auth: bearer
 }
 
-query {
+params:query {
   toDate: 2024-04-06
   fromDate: 2021-04-05
+}
+
+headers {
+  srn: S0000000042
 }
 
 auth:bearer {
