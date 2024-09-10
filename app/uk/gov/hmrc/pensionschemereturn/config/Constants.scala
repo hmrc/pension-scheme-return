@@ -21,8 +21,8 @@ object Constants {
   val psaEnrolmentKey = "HMRC-PODS-ORG"
   val pspEnrolmentKey = "HMRC-PODSPP-ORG"
 
-  val psaIdKey = "PSAID"
-  val pspIdKey = "PSPID"
+  val psaId = "psaId"
+  val pspId = "pspId"
 
   val PSA = "PSA"
   val PSP = "PSP"

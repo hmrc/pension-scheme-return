@@ -22,7 +22,8 @@ import play.api.http.Status
 import play.api.inject.bind
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
 import org.mockito.ArgumentMatchers.any
 import play.api.test.Helpers._
 import org.mockito.Mockito._
@@ -39,16 +40,19 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
   private val fakeRequest = FakeRequest("GET", "/")
   private val mockPsrVersionsService = mock[PsrVersionsService]
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  private val mockSchemeDetailsConnector: SchemeDetailsConnector = mock[SchemeDetailsConnector]
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockPsrVersionsService)
+    reset(mockSchemeDetailsConnector)
   }
 
   val modules: Seq[GuiceableModule] =
     Seq(
       bind[PsrVersionsService].toInstance(mockPsrVersionsService),
-      bind[AuthConnector].toInstance(mockAuthConnector)
+      bind[AuthConnector].toInstance(mockAuthConnector),
+      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector)
     )
 
   val application: Application = new GuiceApplicationBuilder()
@@ -60,6 +64,30 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
 
   "Get Reporting Versions" must {
 
+    "return 400 - Bad Request with missing parameter: srn" in {
+
+      val thrown = intercept[BadRequestException] {
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest))
+      }
+
+      thrown.message.trim mustBe "Bad Request with missing parameters: srn missing"
+
+      verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 400 - Bad Request with Invalid scheme reference number" in {
+
+      val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> "INVALID_SRN"))
+      status(result) mustBe Status.BAD_REQUEST
+      contentAsString(result) mustBe "Invalid scheme reference number"
+
+      verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
     "return 401 - Bearer token expired" in {
 
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -68,13 +96,14 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         )
 
       val thrown = intercept[AuthorisationException] {
-        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest))
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> srn)))
       }
 
       thrown.reason mustBe "Bearer token expired"
 
       verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 401 - Bearer token not supplied" in {
@@ -85,12 +114,31 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         )
 
       val thrown = intercept[AuthorisationException] {
-        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest))
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> srn)))
       }
 
       thrown.reason mustBe "Bearer token not supplied"
       verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 401 - Scheme is not associated with the user" in {
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(Some(externalId), enrolments))
+        )
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      val thrown = intercept[UnauthorizedException] {
+        await(controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> srn)))
+      }
+
+      thrown.message mustBe "Not Authorised - scheme is not associated with the user"
+      verify(mockPsrVersionsService, never).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return success" in {
@@ -102,9 +150,14 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(responseJson))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
-      val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest)
+      val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> srn))
       status(result) mustBe Status.OK
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return success when empty" in {
@@ -114,9 +167,14 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         )
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.arr()))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
-      val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest)
+      val result = controller.getVersions("testPstr", "2020-04-06")(fakeRequest.withHeaders("srn" -> srn))
       status(result) mustBe Status.OK
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
   }
 
@@ -128,9 +186,14 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
         .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
       when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(responseJson))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
-      val result = controller.getVersionsForYears("testPstr", List("2020-04-06"))(fakeRequest)
+      val result = controller.getVersionsForYears("testPstr", List("2020-04-06"))(fakeRequest.withHeaders("srn" -> srn))
       status(result) mustBe Status.OK
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), any())(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
   }
 }

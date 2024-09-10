@@ -20,9 +20,12 @@ import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.pensionschemereturn.config.Constants._
 import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import play.api.Logging
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
+import play.api.mvc.Results.BadRequest
+import uk.gov.hmrc.pensionschemereturn.models.Srn
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,50 +38,61 @@ final case class PsrAuthContext[A](
 
 trait PsrAuth extends AuthorisedFunctions with Logging {
 
+  protected val schemeDetailsConnector: SchemeDetailsConnector
   private val AuthPredicate = Enrolment(psaEnrolmentKey).or(Enrolment(pspEnrolmentKey))
   private val PsrRetrievals: Retrieval[Option[String] ~ Enrolments] =
     Retrievals.externalId.and(Retrievals.allEnrolments)
 
   private type PsrAction[A] = PsrAuthContext[A] => Future[Result]
 
-  def authorisedAsPsrUser(
+  def authorisedAsPsrUser(srnS: String)(
     body: PsrAction[Any]
   )(implicit ec: ExecutionContext, hc: HeaderCarrier, request: Request[_]): Future[Result] =
-    authorisedUser(body)
+    authorisedUser(srnS)(body)
 
-  private def authorisedUser[A](
+  private def authorisedUser[A](srnS: String)(
     block: PsrAction[A]
   )(implicit ec: ExecutionContext, hc: HeaderCarrier, request: Request[A]): Future[Result] =
-    authorised(AuthPredicate)
-      .retrieve(PsrRetrievals) {
-        case Some(externalId) ~ enrolments =>
-          getPsaPspId(enrolments) match {
-            case Some((psaPspId, credentialRole)) =>
-              block(PsrAuthContext(externalId, psaPspId, credentialRole, request))
-            case psa => Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
+    Srn(srnS) match {
+      case Some(srn) =>
+        authorised(AuthPredicate)
+          .retrieve(PsrRetrievals) {
+            case Some(externalId) ~ enrolments =>
+              getPsaPspId(enrolments) match {
+                case Some((psaPspId, credentialRole, idType)) =>
+                  schemeDetailsConnector.checkAssociation(psaPspId, idType, srn).flatMap {
+                    case true => block(PsrAuthContext(externalId, psaPspId, credentialRole, request))
+                    case false =>
+                      Future
+                        .failed(new UnauthorizedException("Not Authorised - scheme is not associated with the user"))
+                  }
+
+                case psa => Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
+              }
+            case _ =>
+              Future.failed(new UnauthorizedException("Not Authorised - Unable to retrieve credentials - externalId"))
           }
-        case _ =>
-          Future.failed(new UnauthorizedException("Not Authorised - Unable to retrieve credentials - externalId"))
-      }
+      case _ => Future.successful(BadRequest("Invalid scheme reference number"))
+    }
 
   private def getPsaId(enrolments: Enrolments): Option[String] =
     enrolments
       .getEnrolment(psaEnrolmentKey)
-      .flatMap(_.getIdentifier(psaIdKey))
+      .flatMap(_.getIdentifier(psaId.toUpperCase))
       .map(_.value)
 
   private def getPspId(enrolments: Enrolments): Option[String] =
     enrolments
       .getEnrolment(pspEnrolmentKey)
-      .flatMap(_.getIdentifier(pspIdKey))
+      .flatMap(_.getIdentifier(pspId.toUpperCase))
       .map(_.value)
 
-  private def getPsaPspId(enrolments: Enrolments): Option[(String, String)] =
+  private def getPsaPspId(enrolments: Enrolments): Option[(String, String, String)] =
     getPsaId(enrolments) match {
-      case Some(id) => Some((id, PSA))
+      case Some(id) => Some((id, PSA, psaId))
       case _ =>
         getPspId(enrolments) match {
-          case Some(id) => Some((id, PSP))
+          case Some(id) => Some((id, PSP, pspId))
           case _ => None
         }
     }

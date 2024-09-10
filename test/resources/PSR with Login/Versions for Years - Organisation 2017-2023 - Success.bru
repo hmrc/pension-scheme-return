@@ -10,7 +10,7 @@ get {
   auth: bearer
 }
 
-query {
+params:query {
   startDates: 2023-04-06
   startDates: 2022-04-06
   startDates: 2021-04-06
@@ -18,6 +18,10 @@ query {
   startDates: 2019-04-06
   startDates: 2018-04-06
   startDates: 2017-04-06
+}
+
+headers {
+  srn: S0000000042
 }
 
 auth:bearer {

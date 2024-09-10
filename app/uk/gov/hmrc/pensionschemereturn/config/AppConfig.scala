@@ -26,6 +26,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
 
   lazy val appName: String = config.get[String](path = "appName")
   private val ifURL: String = servicesConfig.baseUrl(serviceName = "if-hod")
+  private val pensionsSchemeURL: String = servicesConfig.baseUrl(serviceName = "pensionsScheme")
 
   lazy val integrationFrameworkEnvironment: String =
     runModeConfiguration.getOptional[String](path = "microservice.services.if-hod.env").getOrElse("local")
@@ -37,5 +38,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig,
   val getVersionsUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-versions")}"
   val submitStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-standard-psr")}"
   val getStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-standard-psr")}"
+  val isPsaAssociatedUrl: String = s"$pensionsSchemeURL${config.get[String](path = "serviceUrls.is-psa-associated")}"
 
 }

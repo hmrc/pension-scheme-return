@@ -22,9 +22,8 @@ import play.api.http.Status
 import play.api.inject.bind
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
-import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitControllerSpec.submitPsrPayload
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import play.api.test.Helpers._
@@ -33,6 +32,8 @@ import utils.{BaseSpec, TestValues}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.Application
 import play.api.libs.json.{JsObject, JsValue, Json}
+import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
+import uk.gov.hmrc.pensionschemereturn.controllers.PsrSubmitControllerSpec.submitPsrPayload
 
 import scala.concurrent.Future
 
@@ -42,16 +43,19 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
   private val fakeRequest = FakeRequest("POST", "/")
   private val mockPsrSubmissionService = mock[PsrSubmissionService]
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  private val mockSchemeDetailsConnector: SchemeDetailsConnector = mock[SchemeDetailsConnector]
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockPsrSubmissionService)
+    reset(mockSchemeDetailsConnector)
   }
 
   val modules: Seq[GuiceableModule] =
     Seq(
       bind[PsrSubmissionService].toInstance(mockPsrSubmissionService),
-      bind[AuthConnector].toInstance(mockAuthConnector)
+      bind[AuthConnector].toInstance(mockAuthConnector),
+      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector)
     )
 
   val application: Application = new GuiceApplicationBuilder()
@@ -63,6 +67,32 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
 
   "POST standard PSR" must {
 
+    "return 400 - Bad Request with missing parameter: srn" in {
+
+      val thrown = intercept[BadRequestException] {
+        await(controller.submitStandardPsr(fakeRequest))
+      }
+
+      thrown.message.trim mustBe "Bad Request with missing parameters: userName missing  schemeName missing  srn missing"
+
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 400 - Bad Request with Invalid scheme reference number" in {
+
+      val result = controller.submitStandardPsr(
+        fakeRequest.withHeaders("srn" -> "INVALID_SRN", "schemeName" -> schemeName, "userName" -> userName)
+      )
+      status(result) mustBe Status.BAD_REQUEST
+      contentAsString(result) mustBe "Invalid scheme reference number"
+
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
     "return 401 - Bearer token expired" in {
 
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
@@ -71,13 +101,18 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         )
 
       val thrown = intercept[AuthorisationException] {
-        await(controller.submitStandardPsr(fakeRequest))
+        await(
+          controller.submitStandardPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
       }
 
       thrown.reason mustBe "Bearer token expired"
 
       verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 401 - Bearer token not supplied" in {
@@ -88,12 +123,39 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         )
 
       val thrown = intercept[AuthorisationException] {
-        await(controller.submitStandardPsr(fakeRequest))
+        await(
+          controller.submitStandardPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
       }
 
       thrown.reason mustBe "Bearer token not supplied"
       verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 401 - Scheme is not associated with the user" in {
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(Some(externalId), enrolments))
+        )
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      val thrown = intercept[UnauthorizedException] {
+        await(
+          controller.submitStandardPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
+      }
+
+      thrown.message mustBe "Not Authorised - scheme is not associated with the user"
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 204" in {
@@ -105,14 +167,17 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         )
       when(mockPsrSubmissionService.submitStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val postRequest = fakeRequest.withJsonBody(submitPsrPayload)
       val result = controller.submitStandardPsr(
-        postRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+        postRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
       )
       status(result) mustBe Status.NO_CONTENT
       verify(mockPsrSubmissionService, times(1)).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 400 when request body does not contain JSON" in {
@@ -122,17 +187,20 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
       when(mockPsrSubmissionService.submitStandardPsr(any(), any(), any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val postRequest = fakeRequest
       intercept[BadRequestException](
         await(
           controller.submitStandardPsr(
-            postRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+            postRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
           )
         )
       )
       verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
   }
 
@@ -145,9 +213,11 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
       when(
         mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Future.successful(Some(Right(samplePsrSubmission))))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val result = controller.getStandardPsr("testPstr", Some("fbNumber"), None, None)(
-        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+        fakeRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
       )
       status(result) mustBe Status.OK
       verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any())(
@@ -156,15 +226,10 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         any()
       )
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 400 when required headers don't exist" in {
-      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
-        .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
-      when(
-        mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
-      ).thenReturn(Future.successful(None))
-
       intercept[BadRequestException] {
         await(controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(fakeRequest))
       }
@@ -174,7 +239,8 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         any(),
         any()
       )
-      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 404" in {
@@ -185,9 +251,11 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
       when(
         mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Future.successful(None))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(
-        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+        fakeRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
       )
       status(result) mustBe Status.NOT_FOUND
       verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any())(
@@ -196,6 +264,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         any()
       )
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
 
     "return 500" in {
@@ -204,9 +273,11 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
       when(
         mockPsrSubmissionService.getStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any())
       ).thenReturn(Future.successful(Some(Left(TransformerError.NoIdOrReason))))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
 
       val result = controller.getStandardPsr("testPstr", None, Some("periodStartDate"), Some("psrVersion"))(
-        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName)
+        fakeRequest.withHeaders(newHeaders = "schemeName" -> schemeName, "userName" -> userName, "srn" -> srn)
       )
       status(result) mustBe Status.INTERNAL_SERVER_ERROR
       verify(mockPsrSubmissionService, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any())(
@@ -215,6 +286,7 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
         any()
       )
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
   }
 }
