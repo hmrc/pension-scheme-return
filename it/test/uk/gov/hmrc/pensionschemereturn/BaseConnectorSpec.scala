@@ -17,20 +17,19 @@
 package uk.gov.hmrc.pensionschemereturn
 
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import org.scalatest.concurrent.ScalaFutures
-import play.api.inject.guice.GuiceApplicationBuilder
-import com.softwaremill.diffx.scalatest.DiffShouldMatcher
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.StringValuePattern
-import uk.gov.hmrc.http.test.{HttpClientV2Support, WireMockSupport}
-import com.softwaremill.diffx.generic.AutoDerivation
-import org.scalatest.wordspec.AnyWordSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import com.softwaremill.diffx.scalatest.DiffShouldMatcher
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
-import play.api.Application
 import org.scalatest.time.{Millis, Span}
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import uk.gov.hmrc.http.test.{HttpClientV2Support, WireMockSupport}
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.reflect.ClassTag
 
 abstract class BaseConnectorSpec
@@ -38,7 +37,6 @@ abstract class BaseConnectorSpec
     with WireMockSupport
     with HttpClientV2Support
     with DiffShouldMatcher
-    with AutoDerivation
     with ScalaFutures
     with Matchers {
 
@@ -52,8 +50,9 @@ abstract class BaseConnectorSpec
         "metric.enabled" -> false
       )
 
-  private implicit val queryParamsToJava: Map[String, String] => java.util.Map[String, StringValuePattern] = _.map {
-    case (k, v) => k -> equalTo(v)
+  given queryParamsToJava: Conversion[Map[String, String], java.util.Map[String, StringValuePattern]] = _.map {
+    case (k, v) =>
+      k -> equalTo(v)
   }.asJava
 
   protected def injected[A: ClassTag](implicit app: Application): A = app.injector.instanceOf[A]

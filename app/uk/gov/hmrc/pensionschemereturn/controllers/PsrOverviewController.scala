@@ -30,13 +30,13 @@ import scala.concurrent.ExecutionContext
 import javax.inject.{Inject, Singleton}
 
 @Singleton()
-class PsrOverviewController @Inject()(
+class PsrOverviewController @Inject() (
   cc: ControllerComponents,
   psrOverviewService: PsrOverviewService,
   override val authConnector: AuthConnector,
   override protected val schemeDetailsConnector: SchemeDetailsConnector
-)(
-  implicit ec: ExecutionContext
+)(implicit
+  ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
     with PsrAuth

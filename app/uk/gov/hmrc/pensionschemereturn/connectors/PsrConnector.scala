@@ -20,7 +20,7 @@ import uk.gov.hmrc.pensionschemereturn.models.response._
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.RequestHeader
 import com.google.inject.Inject
-import play.api.libs.ws.WSRequest
+import play.api.libs.ws.{writeableOf_JsValue, WSRequest}
 import uk.gov.hmrc.pensionschemereturn.utils.HttpResponseHelper
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 import java.util.UUID.randomUUID
 
-class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil: ApiAuditUtil)
+class PsrConnector @Inject() (config: AppConfig, http: HttpClientV2, apiAuditUtil: ApiAuditUtil)
     extends HttpErrorFunctions
     with HttpResponseHelper
     with Logging {
@@ -81,8 +81,8 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
     psaPspId: String,
     credentialRole: String,
     userName: String
-  )(
-    implicit headerCarrier: HeaderCarrier,
+  )(implicit
+    headerCarrier: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader
   ): Future[Option[PsrSubmissionEtmpResponse]] = {
@@ -121,8 +121,8 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
       )
   }
 
-  def getOverview(pstr: String, fromDate: String, toDate: String)(
-    implicit headerCarrier: HeaderCarrier,
+  def getOverview(pstr: String, fromDate: String, toDate: String)(implicit
+    headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Seq[PsrOverviewEtmpResponse]] = {
 
@@ -146,8 +146,8 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
       }
   }
 
-  def getVersions(pstr: String, startDate: String)(
-    implicit headerCarrier: HeaderCarrier,
+  def getVersions(pstr: String, startDate: String)(implicit
+    headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Seq[PsrVersionsEtmpResponse]] = {
 

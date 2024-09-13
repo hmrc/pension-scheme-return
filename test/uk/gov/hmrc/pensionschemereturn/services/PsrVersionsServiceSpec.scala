@@ -46,7 +46,7 @@ class PsrVersionsServiceSpec extends BaseSpec with MockitoSugar with TestValues 
       when(mockPsrConnector.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
-      whenReady(service.getVersions("testPstr", "2020-04-06")) { result: JsValue =>
+      whenReady(service.getVersions("testPstr", "2020-04-06")) { (result: JsValue) =>
         verify(mockPsrConnector, times(1)).getVersions(any(), any())(any(), any())
 
         result mustBe Json.arr()
@@ -57,7 +57,7 @@ class PsrVersionsServiceSpec extends BaseSpec with MockitoSugar with TestValues 
       when(mockPsrConnector.getVersions(any(), any())(any(), any()))
         .thenReturn(Future.successful(sampleVersionsResponse))
 
-      whenReady(service.getVersions("testPstr", "2020-04-06")) { result: JsValue =>
+      whenReady(service.getVersions("testPstr", "2020-04-06")) { (result: JsValue) =>
         verify(mockPsrConnector, times(1)).getVersions(any(), any())(any(), any())
 
         result mustBe Json.toJson(sampleVersionsResponse)

@@ -18,10 +18,10 @@ package uk.gov.hmrc.pensionschemereturn.services
 
 import play.api.test.FakeRequest
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
-import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Submitted}
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, ReportDetails}
-import play.api.libs.json.Json
-import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, EtmpPsrStatus, Submitted}
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.{MinimalRequiredSubmission, PsrSubmission, ReportDetails}
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
+import com.softwaremill.diffx.generic.auto.indicator
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import utils.{BaseSpec, TestValues}
@@ -33,22 +33,19 @@ import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToE
 import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
 import uk.gov.hmrc.pensionschemereturn.models.enumeration.CipPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models._
+import org.scalatest.Assertion
+import play.api.libs.json.Json
 import play.api.http.Status.{BAD_REQUEST, EXPECTATION_FAILED}
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import com.softwaremill.diffx.generic.AutoDerivation
+import uk.gov.hmrc.pensionschemereturn.validators.{JSONSchemaValidator, SchemaValidationResult}
+import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import java.time.LocalDateTime
 
-class PsrSubmissionServiceSpec
-    extends BaseSpec
-    with MockitoSugar
-    with TestValues
-    with DiffShouldMatcher
-    with AutoDerivation {
+class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValues with DiffShouldMatcher {
 
   override def beforeEach(): Unit = {
     reset(mockPsrConnector)
@@ -125,8 +122,10 @@ class PsrSubmissionServiceSpec
           "userName",
           "schemeName"
         )
-      ) { result =>
-        result shouldMatchTo Some(Right(samplePsrSubmission))
+      ) { (result: Option[Either[TransformerError, PsrSubmission]]) =>
+
+        val actual: Option[Right[TransformerError, PsrSubmission]] = Some(Right(samplePsrSubmission))
+        result shouldMatchTo actual
 
         verify(mockPsrConnector, times(1)).getStandardPsr(any(), any(), any(), any(), any(), any(), any(), any())(
           any(),
@@ -160,7 +159,7 @@ class PsrSubmissionServiceSpec
           "userName",
           "schemeName"
         )
-      ) { result: HttpResponse =>
+      ) { (result: HttpResponse) =>
         result mustEqual expectedResponse
 
         verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
@@ -252,26 +251,25 @@ class PsrSubmissionServiceSpec
         (None, Some(Submitted), Some(CipPsrStatus.CHANGED_SUBMITTED.toString)),
         (Some("000"), None, None),
         (None, None, None)
-      ).foreach {
-        case (version, status, expected) =>
-          s"$version and $status should return $expected" in {
-            val minimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
-              reportDetails = ReportDetails(
-                fbVersion = version,
-                fbstatus = status,
-                pstr = pstr,
-                periodStart = sampleToday,
-                periodEnd = sampleToday,
-                compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
-              ),
-              accountingPeriodDetails = sampleAccountingPeriodDetails,
-              schemeDesignatory = sampleSchemeDesignatory
-            )
+      ).foreach { case (version: Option[String], status: Option[EtmpPsrStatus], expected: Option[String]) =>
+        s"$version and $status should return $expected" in {
+          val minimalRequiredSubmission: MinimalRequiredSubmission = MinimalRequiredSubmission(
+            reportDetails = ReportDetails(
+              fbVersion = version,
+              fbstatus = status,
+              pstr = pstr,
+              periodStart = sampleToday,
+              periodEnd = sampleToday,
+              compilationOrSubmissionDate = Some(LocalDateTime.parse("2023-04-02T09:30:47"))
+            ),
+            accountingPeriodDetails = sampleAccountingPeriodDetails,
+            schemeDesignatory = sampleSchemeDesignatory
+          )
 
-            val actual =
-              service.getCipPsrStatus(samplePsrSubmission.copy(minimalRequiredSubmission = minimalRequiredSubmission))
-            expected shouldMatchTo actual
-          }
+          val actual: Option[String] =
+            service.getCipPsrStatus(samplePsrSubmission.copy(minimalRequiredSubmission = minimalRequiredSubmission))
+          expected shouldMatchTo actual
+        }
       }
     }
   }

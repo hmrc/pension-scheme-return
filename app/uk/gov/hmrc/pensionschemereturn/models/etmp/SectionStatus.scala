@@ -33,7 +33,7 @@ object SectionStatus {
     val value = "Deleted"
   }
 
-  implicit val format: Format[SectionStatus] = Format(
+  given format: Format[SectionStatus] = Format(
     {
       case JsString(New.value) => JsSuccess(New)
       case JsString(Changed.value) => JsSuccess(Changed)

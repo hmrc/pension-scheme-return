@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.{PensionSchemeType, TransfersOut}
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{EtmpTransfersOut, TransferSchemeType}
+import com.softwaremill.diffx.generic.auto.indicator
 
 import java.time.LocalDate
 

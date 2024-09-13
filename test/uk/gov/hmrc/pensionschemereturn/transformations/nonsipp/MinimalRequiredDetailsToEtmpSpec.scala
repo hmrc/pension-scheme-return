@@ -21,7 +21,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.generic.auto.indicator
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
 
@@ -90,7 +90,10 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
         )
       )
 
-      transformation.transform(minimalRequiredSubmission = minimalRequiredSubmission, isSubmitted = false) shouldMatchTo expected
+      transformation.transform(
+        minimalRequiredSubmission = minimalRequiredSubmission,
+        isSubmitted = false
+      ) shouldMatchTo expected
     }
 
     "PSR minimalRequiredDetails should successfully transform to etmp format when isSubmitted true" in {
@@ -151,7 +154,10 @@ class MinimalRequiredDetailsToEtmpSpec extends PlaySpec with MockitoSugar with T
         )
       )
 
-      transformation.transform(minimalRequiredSubmission = minimalRequiredSubmission, isSubmitted = true) shouldMatchTo expected
+      transformation.transform(
+        minimalRequiredSubmission = minimalRequiredSubmission,
+        isSubmitted = true
+      ) shouldMatchTo expected
     }
   }
 }

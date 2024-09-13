@@ -31,7 +31,7 @@ case class SchemaValidationResult(errors: Set[ValidationMessage]) {
 }
 
 @Singleton()
-class JSONSchemaValidator @Inject()() {
+class JSONSchemaValidator @Inject() {
 
   def validatePayload(jsonSchemaPath: String, data: JsValue): SchemaValidationResult = {
     val schemaUrl = getClass.getResourceAsStream(jsonSchemaPath)

@@ -33,13 +33,11 @@ trait BasicGenerators {
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
-      seq1.toSeq.zip(seq2).foldLeft("") {
-        case (acc, (n, Some(v))) =>
-          acc + n + v
-        case (acc, (n, _)) =>
-          acc + n
-      }
+    } yield seq1.toSeq.zip(seq2).foldLeft("") {
+      case (acc, (n, Some(v))) =>
+        acc + n + v
+      case (acc, (n, _)) =>
+        acc + n
     }
   }
 

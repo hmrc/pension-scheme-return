@@ -48,6 +48,10 @@ case class PsrGetAuditEvent(
       Json.obj(
         "pensionSchemeTaxReference" -> pstr
       )
-    psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optFbNumber ++ optPeriodStartDate ++ optPsrVersion ++ optStatus ++ optResponse ++ optErrorMessage
+    psaOrPspIdDetails(
+      credentialRole,
+      psaPspId,
+      userName
+    ) ++ apiDetails ++ optFbNumber ++ optPeriodStartDate ++ optPsrVersion ++ optStatus ++ optResponse ++ optErrorMessage
   }
 }
