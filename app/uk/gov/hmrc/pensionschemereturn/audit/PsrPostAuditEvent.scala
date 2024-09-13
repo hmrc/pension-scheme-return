@@ -46,6 +46,10 @@ case class PsrPostAuditEvent(
         "schemeName" -> schemeName,
         "payload" -> payload
       )
-    psaOrPspIdDetails(credentialRole, psaPspId, userName) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage ++ optPsrStatus
+    psaOrPspIdDetails(
+      credentialRole,
+      psaPspId,
+      userName
+    ) ++ apiDetails ++ optStatus ++ optResponse ++ optErrorMessage ++ optPsrStatus
   }
 }

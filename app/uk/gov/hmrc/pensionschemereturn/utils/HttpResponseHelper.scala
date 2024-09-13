@@ -16,16 +16,14 @@
 
 package uk.gov.hmrc.pensionschemereturn.utils
 
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status._
 import uk.gov.hmrc.http._
 
-trait HttpResponseHelper extends HttpErrorFunctions {
+trait HttpResponseHelper extends HttpErrorFunctions with Logging {
 
   implicit val httpResponseReads: HttpReads[HttpResponse] = (method: String, url: String, response: HttpResponse) =>
     response
-
-  private val logger = Logger(classOf[HttpResponseHelper])
 
   def handleErrorResponse(httpMethod: String, url: String)(response: HttpResponse): Nothing =
     response.status match {

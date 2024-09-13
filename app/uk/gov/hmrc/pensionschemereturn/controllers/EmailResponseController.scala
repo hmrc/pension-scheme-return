@@ -25,12 +25,12 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.pensionschemereturn.models.{EmailEvents, Opened}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Crypted}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext
 
-class EmailResponseController @Inject()(
+class EmailResponseController @Inject() (
   auditService: AuditService,
   cc: ControllerComponents,
   crypto: ApplicationCrypto,
@@ -38,8 +38,8 @@ class EmailResponseController @Inject()(
   val authConnector: AuthConnector
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
-    with AuthorisedFunctions {
-  private val logger = Logger(classOf[EmailResponseController])
+    with AuthorisedFunctions
+    with Logging {
 
   def sendAuditEvents(
     submittedBy: String,

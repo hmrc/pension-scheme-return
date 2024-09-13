@@ -29,12 +29,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SchemeDetailsConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
+class SchemeDetailsConnector @Inject() (appConfig: AppConfig, http: HttpClientV2)
     extends HttpResponseHelper
     with Logging {
 
-  def checkAssociation(idValue: String, idType: String, srn: Srn)(
-    implicit hc: HeaderCarrier,
+  def checkAssociation(idValue: String, idType: String, srn: Srn)(implicit
+    hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Boolean] = {
     val url = appConfig.isPsaAssociatedUrl

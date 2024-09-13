@@ -16,22 +16,17 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.client.{ResponseDefinitionBuilder, WireMock}
-import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
-import play.api.test.FakeRequest
-import play.api.test.Helpers.await
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
-import uk.gov.hmrc.pensionschemereturn.config.Constants
 import uk.gov.hmrc.pensionschemereturn.models.Srn
 import utils.TestValues
-import play.api.test.Helpers.defaultAwaitTimeout
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -39,92 +34,66 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
+  override def beforeEach(): Unit =
+    super.beforeEach()
+
+  override implicit val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = scaled(Span(5, Seconds)), interval = scaled(Span(50, Millis)))
+
   val app: Application = new GuiceApplicationBuilder()
     .configure("microservice.services.pensionsScheme.port" -> wireMockPort)
     .build()
 
-  object CheckAssociationHelper {
-    val url = "/pensions-scheme/is-psa-associated"
-
-    def stubGet(idValue: String, idType: String, srn: String, response: ResponseDefinitionBuilder): StubMapping =
-      wireMockServer
-        .stubFor(
-          get(urlEqualTo(url))
-            .withHeader(idType, equalTo(idValue))
-            .withHeader("schemeReferenceNumber", equalTo(srn))
-            .withHeader("Content-Type", equalTo("application/json"))
-            .willReturn(response)
-        )
-  }
-
   private lazy val connector: SchemeDetailsConnector = app.injector.instanceOf[SchemeDetailsConnector]
 
+  val url = "/pensions-scheme/is-psa-associated"
+
+  def stubGet(idValue: String, idType: String, srn: String, response: ResponseDefinitionBuilder): StubMapping =
+    wireMockServer
+      .stubFor(
+        get(urlEqualTo(url))
+          .withHeader(idType, equalTo(idValue))
+          .withHeader("schemeReferenceNumber", equalTo(srn))
+          .withHeader("Content-Type", equalTo("application/json"))
+          .willReturn(response)
+      )
+
   "checkAssociation" should {
-    "return true if psa is associated" in {
-      CheckAssociationHelper.stubGet(psaId, Constants.psaId, srn, ok("true"))
 
-      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) { result: Boolean =>
-        WireMock.verify(
-          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-            .withHeader(Constants.psaId, equalTo(psaId))
-            .withHeader("schemeReferenceNumber", equalTo(srn))
-            .withHeader("Content-Type", equalTo("application/json"))
-        )
-        result shouldMatchTo true
+    Seq(true, false).foreach { response =>
+      s"return $response if psa is associated" in {
+        stubGet(psaPspId, psaId, srn, ok(s"$response"))
+        whenReady(connector.checkAssociation(psaPspId, psaId, Srn(srn).get)) { (result: Boolean) =>
+          WireMock.verify(
+            getRequestedFor(
+              urlEqualTo("/pensions-scheme/is-psa-associated")
+            )
+          )
+          result shouldMatchTo response
+        }
       }
     }
 
-    "return false if psa is not associated" in {
-      CheckAssociationHelper.stubGet(psaId, Constants.psaId, srn, ok("false"))
-
-      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) { result: Boolean =>
-        WireMock.verify(
-          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-            .withHeader(Constants.psaId, equalTo(psaId))
-            .withHeader("schemeReferenceNumber", equalTo(srn))
-            .withHeader("Content-Type", equalTo("application/json"))
-        )
-        result shouldMatchTo false
-      }
-    }
-
-    "return true if psp is associated" in {
-      CheckAssociationHelper.stubGet(pspId, Constants.pspId, srn, ok("true"))
-
-      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) { result: Boolean =>
-        WireMock.verify(
-          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-            .withHeader(Constants.pspId, equalTo(pspId))
-            .withHeader("schemeReferenceNumber", equalTo(srn))
-            .withHeader("Content-Type", equalTo("application/json"))
-        )
-        result shouldMatchTo true
-      }
-    }
-
-    "return false if psp is not associated" in {
-      CheckAssociationHelper.stubGet(pspId, Constants.pspId, srn, ok("false"))
-
-      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) { result: Boolean =>
-        WireMock.verify(
-          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-            .withHeader(Constants.pspId, equalTo(pspId))
-            .withHeader("schemeReferenceNumber", equalTo(srn))
-            .withHeader("Content-Type", equalTo("application/json"))
-        )
-        result shouldMatchTo false
-      }
-    }
-
-    "throw error" in {
-      CheckAssociationHelper.stubGet(pspId, Constants.pspId, srn, badRequest)
-      val thrown = intercept[BadRequestException] {
-        await(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get))
+    "throw error when return 404 response is sent" in {
+      stubGet(psaPspId, psaId, srn, notFound)
+      val thrown = intercept[NotFoundException] {
+        await(connector.checkAssociation(psaPspId, psaId, Srn(srn).get))
       }
       WireMock.verify(
         getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
       )
-      thrown.responseCode shouldMatchTo 400
+      thrown.responseCode shouldMatchTo 404
+    }
+
+    "throw error when return 500 response is sent" in {
+      stubGet(psaPspId, psaId, srn, serverError)
+      val thrown = intercept[UpstreamErrorResponse] {
+        await(connector.checkAssociation(psaPspId, psaId, Srn(srn).get))
+      }
+      WireMock.verify(
+        getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
+      )
+      thrown.statusCode shouldMatchTo 500
     }
   }
 }

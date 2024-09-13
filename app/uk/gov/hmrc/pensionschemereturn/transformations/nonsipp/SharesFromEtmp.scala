@@ -72,41 +72,37 @@ class SharesFromEtmp @Inject() extends Transformer {
         totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
       ),
       optDisposedSharesTransaction = shareTransactions.disposedSharesTransaction.map(
-        _.map(
-          dst =>
-            DisposedSharesTransaction(
-              methodOfDisposal = stringToHowSharesDisposed(dst.methodOfDisposal),
-              optOtherMethod = dst.otherMethod,
-              optSalesQuestions = dst.salesQuestions.map(
-                sq => {
-                  val purchaserType = sq.purchaserType
-                  SalesQuestions(
-                    dateOfSale = sq.dateOfSale,
-                    noOfSharesSold = sq.noOfSharesSold,
-                    amountReceived = sq.amountReceived,
-                    nameOfPurchaser = sq.nameOfPurchaser,
-                    purchaserType = PropertyAcquiredFrom(
-                      identityType = stringToIdentityType(purchaserType.indivOrOrgType),
-                      idNumber = purchaserType.idNumber,
-                      reasonNoIdNumber = purchaserType.reasonNoIdNumber,
-                      otherDescription = purchaserType.otherDescription
-                    ),
-                    connectedPartyStatus = sq.connectedPartyStatus == Connected,
-                    supportedByIndepValuation = YesNo.unapply(sq.supportedByIndepValuation)
-                  )
-                }
-              ),
-              optRedemptionQuestions = dst.redemptionQuestions
-                .map(
-                  rq =>
-                    RedemptionQuestions(
-                      dateOfRedemption = rq.dateOfRedemption,
-                      noOfSharesRedeemed = rq.noOfSharesRedeemed,
-                      amountReceived = rq.amountReceived
-                    )
+        _.map(dst =>
+          DisposedSharesTransaction(
+            methodOfDisposal = stringToHowSharesDisposed(dst.methodOfDisposal),
+            optOtherMethod = dst.otherMethod,
+            optSalesQuestions = dst.salesQuestions.map { sq =>
+              val purchaserType = sq.purchaserType
+              SalesQuestions(
+                dateOfSale = sq.dateOfSale,
+                noOfSharesSold = sq.noOfSharesSold,
+                amountReceived = sq.amountReceived,
+                nameOfPurchaser = sq.nameOfPurchaser,
+                purchaserType = PropertyAcquiredFrom(
+                  identityType = stringToIdentityType(purchaserType.indivOrOrgType),
+                  idNumber = purchaserType.idNumber,
+                  reasonNoIdNumber = purchaserType.reasonNoIdNumber,
+                  otherDescription = purchaserType.otherDescription
                 ),
-              totalSharesNowHeld = dst.totalSharesNowHeld
-            )
+                connectedPartyStatus = sq.connectedPartyStatus == Connected,
+                supportedByIndepValuation = YesNo.unapply(sq.supportedByIndepValuation)
+              )
+            },
+            optRedemptionQuestions = dst.redemptionQuestions
+              .map(rq =>
+                RedemptionQuestions(
+                  dateOfRedemption = rq.dateOfRedemption,
+                  noOfSharesRedeemed = rq.noOfSharesRedeemed,
+                  amountReceived = rq.amountReceived
+                )
+              ),
+            totalSharesNowHeld = dst.totalSharesNowHeld
+          )
         )
       )
     )

@@ -17,8 +17,9 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
-import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
+import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberState
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
+import com.softwaremill.diffx.generic.auto.indicator
 
 class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 

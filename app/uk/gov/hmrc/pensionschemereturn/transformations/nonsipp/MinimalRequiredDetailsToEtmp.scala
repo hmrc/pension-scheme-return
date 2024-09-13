@@ -37,13 +37,13 @@ class MinimalRequiredDetailsToEtmp @Inject() extends Transformer {
       ),
       EtmpAccountingPeriodDetails(
         recordVersion = minimalRequiredSubmission.accountingPeriodDetails.recordVersion,
-        accountingPeriods = minimalRequiredSubmission.accountingPeriodDetails.accountingPeriods.map {
-          case (start, end) =>
+        accountingPeriods =
+          minimalRequiredSubmission.accountingPeriodDetails.accountingPeriods.map { case (start, end) =>
             EtmpAccountingPeriod(
               accPeriodStart = start,
               accPeriodEnd = end
             )
-        }
+          }
       ),
       EtmpSchemeDesignatory(
         recordVersion = minimalRequiredSubmission.schemeDesignatory.recordVersion,

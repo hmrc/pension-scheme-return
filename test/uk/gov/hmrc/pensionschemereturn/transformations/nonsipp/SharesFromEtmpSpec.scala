@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.HowSharesDisposed._
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.generic.auto.indicator
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import org.scalatestplus.play.PlaySpec

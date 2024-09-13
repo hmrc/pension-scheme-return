@@ -23,24 +23,23 @@ import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
 import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Submitted}
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
+import play.api.libs.json._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models.enumeration.CipPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeReturnValidationFailureException
-import play.api.Logging
-import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class PsrSubmissionService @Inject()(
+class PsrSubmissionService @Inject() (
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
   psrSubmissionToEtmp: PsrSubmissionToEtmp,
   standardPsrFromEtmp: StandardPsrFromEtmp
-) extends Logging {
+) {
 
   def submitStandardPsr(
     psrSubmission: PsrSubmission,
@@ -65,9 +64,8 @@ class PsrSubmissionService @Inject()(
           userName,
           getCipPsrStatus(psrSubmission)
         )
-        .recover {
-          case badReq: BadRequestException =>
-            throw new ExpectationFailedException(s"${badReq.message}")
+        .recover { case badReq: BadRequestException =>
+          throw new ExpectationFailedException(s"${badReq.message}")
         }
     }
   }
@@ -95,9 +93,8 @@ class PsrSubmissionService @Inject()(
           userName,
           getCipPsrStatus(psrSubmission)
         )
-        .recover {
-          case badReq: BadRequestException =>
-            throw new ExpectationFailedException(s"${badReq.message}")
+        .recover { case badReq: BadRequestException =>
+          throw new ExpectationFailedException(s"${badReq.message}")
         }
     }
   }
@@ -122,8 +119,8 @@ class PsrSubmissionService @Inject()(
     psrAuth: PsrAuthContext[Any],
     userName: String,
     schemeName: String
-  )(
-    implicit headerCarrier: HeaderCarrier,
+  )(implicit
+    headerCarrier: HeaderCarrier,
     ec: ExecutionContext,
     request: RequestHeader
   ): Future[Option[Either[TransformerError, PsrSubmission]]] =

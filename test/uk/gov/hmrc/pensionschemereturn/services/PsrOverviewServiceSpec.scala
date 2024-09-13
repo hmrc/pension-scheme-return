@@ -46,7 +46,7 @@ class PsrOverviewServiceSpec extends BaseSpec with MockitoSugar with TestValues 
       when(mockPsrConnector.getOverview(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Seq.empty))
 
-      whenReady(service.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: JsValue =>
+      whenReady(service.getOverview("testPstr", "2020-04-06", "2024-04-05")) { (result: JsValue) =>
         verify(mockPsrConnector, times(1)).getOverview(any(), any(), any())(any(), any())
 
         result mustBe Json.arr()
@@ -57,7 +57,7 @@ class PsrOverviewServiceSpec extends BaseSpec with MockitoSugar with TestValues 
       when(mockPsrConnector.getOverview(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(sampleOverviewResponse))
 
-      whenReady(service.getOverview("testPstr", "2020-04-06", "2024-04-05")) { result: JsValue =>
+      whenReady(service.getOverview("testPstr", "2020-04-06", "2024-04-05")) { (result: JsValue) =>
         verify(mockPsrConnector, times(1)).getOverview(any(), any(), any())(any(), any())
 
         result mustBe Json.toJson(sampleOverviewResponse)

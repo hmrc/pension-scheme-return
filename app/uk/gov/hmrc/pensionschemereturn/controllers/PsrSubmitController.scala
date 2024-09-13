@@ -32,13 +32,13 @@ import scala.concurrent.ExecutionContext
 import javax.inject.{Inject, Singleton}
 
 @Singleton()
-class PsrSubmitController @Inject()(
+class PsrSubmitController @Inject() (
   cc: ControllerComponents,
   psrSubmissionService: PsrSubmissionService,
   override val authConnector: AuthConnector,
   override protected val schemeDetailsConnector: SchemeDetailsConnector
-)(
-  implicit ec: ExecutionContext
+)(implicit
+  ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
     with PsrAuth
@@ -53,10 +53,10 @@ class PsrSubmitController @Inject()(
       logger.info(message = s"Submitting standard PSR for ${psrSubmission.minimalRequiredSubmission.reportDetails}")
       psrSubmissionService
         .submitStandardPsr(psrSubmission, psrAuth, userName, schemeName)
-        .map(response => {
+        .map { response =>
           logger.debug(message = s"Submit standard PSR - response status: ${response.status}")
           NoContent
-        })
+        }
     }
   }
 
@@ -69,10 +69,10 @@ class PsrSubmitController @Inject()(
       )
       psrSubmissionService
         .submitPrePopulatedPsr(psrSubmission, psrAuth, userName, schemeName)
-        .map(response => {
+        .map { response =>
           logger.debug(message = s"Submit pre-populated PSR - response status: ${response.status}")
           NoContent
-        })
+        }
     }
   }
 

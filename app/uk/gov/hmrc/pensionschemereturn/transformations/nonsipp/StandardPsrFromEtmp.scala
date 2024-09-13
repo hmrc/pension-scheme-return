@@ -25,7 +25,7 @@ import uk.gov.hmrc.pensionschemereturn.models.response.PsrSubmissionEtmpResponse
 import java.time.LocalDate
 
 @Singleton()
-class StandardPsrFromEtmp @Inject()(
+class StandardPsrFromEtmp @Inject() (
   minimalRequiredSubmissionFromEtmp: MinimalRequiredSubmissionFromEtmp,
   loansFromEtmp: LoansFromEtmp,
   assetsFromEtmp: AssetsFromEtmp,
