@@ -50,7 +50,7 @@ class PsrAuthSpec extends BaseSpec {
       Enrolment(
         psaEnrolmentKey,
         Seq(
-          EnrolmentIdentifier("PSAID", "A0000000")
+          EnrolmentIdentifier("PSAID", psaId)
         ),
         "Activated",
         None
@@ -63,7 +63,7 @@ class PsrAuthSpec extends BaseSpec {
       Enrolment(
         pspEnrolmentKey,
         Seq(
-          EnrolmentIdentifier("PSPID", "A0000000")
+          EnrolmentIdentifier("PSPID", psaId)
         ),
         "Activated",
         None
@@ -76,7 +76,7 @@ class PsrAuthSpec extends BaseSpec {
       Enrolment(
         "unknownEnrolmentId",
         Seq(
-          EnrolmentIdentifier("unknownId", "A0000000")
+          EnrolmentIdentifier("unknownId", psaId)
         ),
         "Activated",
         None
