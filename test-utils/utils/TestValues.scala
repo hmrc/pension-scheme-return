@@ -65,6 +65,8 @@ trait TestValues {
   val credentialRole = "credentialRole"
   val cipPsrStatus = None
   val sampleToday: LocalDate = LocalDate.of(2023, 10, 19)
+  val psaId = "A0000000"
+  val pspId = "21000005"
 
   // Standard - PSR
 
