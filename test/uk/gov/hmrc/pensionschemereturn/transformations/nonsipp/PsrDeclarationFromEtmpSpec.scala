@@ -20,6 +20,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.SubmitterType
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrDeclaration
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpPsaDeclaration, EtmpPspDeclaration, EtmpPsrDeclaration}
+import com.softwaremill.diffx.generic.auto.indicator
 
 class PsrDeclarationFromEtmpSpec extends EtmpTransformerSpec {
 

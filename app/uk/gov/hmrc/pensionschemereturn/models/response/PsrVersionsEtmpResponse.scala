@@ -17,7 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.response
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.ReportStatus
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
 import java.time.LocalDateTime
 
@@ -62,19 +62,19 @@ case class PsaIndividualDetails(
 )
 
 object PsrVersionsEtmpResponse {
-  private implicit val formatOrganisationOrPartnershipDetails: Format[OrganisationOrPartnershipDetails] =
+  private given formatOrganisationOrPartnershipDetails: Format[OrganisationOrPartnershipDetails] =
     Json.format[OrganisationOrPartnershipDetails]
-  private implicit val formatIndividualDetails: Format[IndividualDetails] =
+  private given formatIndividualDetails: Format[IndividualDetails] =
     Json.format[IndividualDetails]
-  private implicit val formatReportSubmitterDetails: Format[ReportSubmitterDetails] =
+  private given formatReportSubmitterDetails: Format[ReportSubmitterDetails] =
     Json.format[ReportSubmitterDetails]
 
-  private implicit val formatPsaOrganisationOrPartnershipDetails: Format[PsaOrganisationOrPartnershipDetails] =
+  private given formatPsaOrganisationOrPartnershipDetails: Format[PsaOrganisationOrPartnershipDetails] =
     Json.format[PsaOrganisationOrPartnershipDetails]
-  private implicit val formatPsaIndividualDetails: Format[PsaIndividualDetails] =
+  private given formatPsaIndividualDetails: Format[PsaIndividualDetails] =
     Json.format[PsaIndividualDetails]
-  private implicit val formatPsaDetails: Format[PsaDetails] =
+  private given formatPsaDetails: Format[PsaDetails] =
     Json.format[PsaDetails]
 
-  implicit val formats: Format[PsrVersionsEtmpResponse] = Json.format[PsrVersionsEtmpResponse]
+  given formats: Format[PsrVersionsEtmpResponse] = Json.format[PsrVersionsEtmpResponse]
 }

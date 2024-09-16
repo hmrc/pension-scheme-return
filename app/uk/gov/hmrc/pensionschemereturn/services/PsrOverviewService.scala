@@ -17,20 +17,19 @@
 package uk.gov.hmrc.pensionschemereturn.services
 
 import com.google.inject.{Inject, Singleton}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
-import play.api.Logging
-import play.api.libs.json._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class PsrOverviewService @Inject()(
+class PsrOverviewService @Inject() (
   psrConnector: PsrConnector
-) extends Logging {
+) {
 
-  def getOverview(pstr: String, fromDate: String, toDate: String)(
-    implicit headerCarrier: HeaderCarrier,
+  def getOverview(pstr: String, fromDate: String, toDate: String)(implicit
+    headerCarrier: HeaderCarrier,
     ec: ExecutionContext
   ): Future[JsValue] =
     psrConnector

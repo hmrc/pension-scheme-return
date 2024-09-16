@@ -32,9 +32,8 @@ trait PsrBaseController {
     } else {
       val missingHeaders: Seq[(String, Option[String])] = headers.zip(headerData)
       val errorString = missingHeaders
-        .map {
-          case (headerName, data) =>
-            prettyMissingParamError(data, headerName + " missing")
+        .map { case (headerName, data) =>
+          prettyMissingParamError(data, headerName + " missing")
         }
         .mkString(" ")
       throw new BadRequestException("Bad Request with missing parameters: " + errorString)

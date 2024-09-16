@@ -77,14 +77,14 @@ class EmployerContributionsTransformer @Inject()
     case EmployerContributionsOrgType.UKCompany =>
       (o.reasonNoIdNumber, o.idNumber)
         .toEither(TransformerError.NoIdOrReason)
-        .map(EmployerType.UKCompany)
+        .map(EmployerType.UKCompany.apply)
     case EmployerContributionsOrgType.UKPartnership =>
       (o.reasonNoIdNumber, o.idNumber)
         .toEither(TransformerError.NoIdOrReason)
-        .map(EmployerType.UKPartnership)
+        .map(EmployerType.UKPartnership.apply)
     case EmployerContributionsOrgType.Other =>
       o.otherDescription
         .toRight(TransformerError.OtherNoDescription)
-        .map(EmployerType.Other)
+        .map(EmployerType.Other.apply)
   }
 }

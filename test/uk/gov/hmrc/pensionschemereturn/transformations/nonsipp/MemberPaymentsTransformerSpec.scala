@@ -24,6 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
   EtmpMemberPayments,
   EtmpPensionSurrender
 }
+import com.softwaremill.diffx.generic.auto.indicator
 
 import java.time.LocalDate
 

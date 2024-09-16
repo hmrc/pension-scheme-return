@@ -42,7 +42,7 @@ trait Transformer {
 
   protected def toYesNo(condition: Boolean): String = if (condition) Yes else No
 
-  protected def optToYesNo(optValue: Option[_]): String = optValue.map(_ => Yes).getOrElse(No)
+  protected def optToYesNo(optValue: Option[?]): String = optValue.map(_ => Yes).getOrElse(No)
 
   protected def fromYesNo(value: String): Boolean = value == Yes
 

@@ -37,7 +37,7 @@ trait AuditService {
 
 }
 
-class AuditServiceImpl @Inject()(
+class AuditServiceImpl @Inject() (
   config: AppConfig,
   connector: AuditConnector
 ) extends AuditService {

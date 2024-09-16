@@ -30,7 +30,7 @@ import play.api.libs.json.JsValue
 
 import scala.concurrent.ExecutionContext
 
-class EmailResponseController @Inject()(
+class EmailResponseController @Inject() (
   auditService: AuditService,
   cc: ControllerComponents,
   crypto: ApplicationCrypto,

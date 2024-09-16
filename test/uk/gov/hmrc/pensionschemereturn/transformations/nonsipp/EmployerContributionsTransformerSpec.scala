@@ -23,6 +23,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
   OrganisationIdentity
 }
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
+import com.softwaremill.diffx.generic.auto.indicator
 
 class EmployerContributionsTransformerSpec extends EtmpTransformerSpec {
 

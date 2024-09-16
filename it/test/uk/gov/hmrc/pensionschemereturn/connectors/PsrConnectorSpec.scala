@@ -16,27 +16,28 @@
 
 package uk.gov.hmrc.pensionschemereturn.connectors
 
-import uk.gov.hmrc.pensionschemereturn.models.response._
-import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec._
-import play.api.mvc.RequestHeader
-import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.inject.bind
-import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
-import org.mockito.{ArgumentMatchers, Mockito}
-import play.api.test.FakeRequest
 import com.github.tomakehurst.wiremock.client.WireMock
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
-import org.mockito.Mockito.times
-import utils.TestValues
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.Application
-import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.libs.json.{JsObject, Json}
-import play.api.http.Status.{BAD_REQUEST, OK}
-import uk.gov.hmrc.http._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.softwaremill.diffx.generic.auto.indicator
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.times
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.Application
+import play.api.http.Status.{BAD_REQUEST, OK}
+import play.api.inject.bind
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.RequestHeader
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.pensionschemereturn.BaseConnectorSpec
+import uk.gov.hmrc.pensionschemereturn.audit.ApiAuditUtil
+import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnectorSpec.*
+import uk.gov.hmrc.pensionschemereturn.models.response.*
+import utils.TestValues
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -60,7 +61,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
       bind[ApiAuditUtil].toInstance(mockApiAuditUtil)
     )
   val app: Application = new GuiceApplicationBuilder()
-    .overrides(modules: _*)
+    .overrides(modules*)
     .configure("microservice.services.if-hod.port" -> wireMockPort)
     .build()
 
@@ -86,7 +87,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
       )
 
       whenReady(connector.getOverview(pstr, sampleToday.toString, sampleToday.toString)) {
-        result: Seq[PsrOverviewEtmpResponse] =>
+        (result: Seq[PsrOverviewEtmpResponse]) =>
           WireMock.verify(
             getRequestedFor(
               urlEqualTo("/pension-online/reports/overview/pods/testPstr/PSR?fromDate=2023-10-19&toDate=2023-10-19")
@@ -114,7 +115,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
       )
 
       whenReady(connector.getOverview(pstr, sampleToday.toString, sampleToday.toString)) {
-        result: Seq[PsrOverviewEtmpResponse] =>
+        (result: Seq[PsrOverviewEtmpResponse]) =>
           WireMock.verify(
             getRequestedFor(
               urlEqualTo(
@@ -201,7 +202,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
         ok(sampleVersionsResponseAsJsonString)
       )
 
-      whenReady(connector.getVersions(pstr, sampleToday.toString)) { result: Seq[PsrVersionsEtmpResponse] =>
+      whenReady(connector.getVersions(pstr, sampleToday.toString)) { (result: Seq[PsrVersionsEtmpResponse]) =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo("/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19")
@@ -227,7 +228,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
         )
       )
 
-      whenReady(connector.getVersions(pstr, sampleToday.toString)) { result: Seq[PsrVersionsEtmpResponse] =>
+      whenReady(connector.getVersions(pstr, sampleToday.toString)) { (result: Seq[PsrVersionsEtmpResponse]) =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(
@@ -295,6 +296,28 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
         "'{\"failures\":[{\"code\":\"PERIOD_START_DATE_NOT_IN_RANGE\",\"reason\":\"The remote endpoint has indicated that Period Start Date cannot be in the future.\"}]}'"
       )
     }
+
+    "return empty PsrVersionsEtmpResponse when 503 Forbidden - versions" in {
+
+      stubGet(
+        getVersionsUrl,
+        Map(
+          "startDate" -> sampleToday.toString
+        ),
+        serviceUnavailable()
+      )
+
+      whenReady(connector.getVersions(pstr, sampleToday.toString)) { (result: Seq[PsrVersionsEtmpResponse]) =>
+        WireMock.verify(
+          getRequestedFor(
+            urlEqualTo(
+              "/pension-online/reports/testPstr/PSR/versions?startDate=2023-10-19"
+            )
+          )
+        )
+        result mustBe Seq.empty
+      }
+    }
   }
 
   "submitStandardPsr" should {
@@ -310,7 +333,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
 
       whenReady(
         connector.submitStandardPsr(pstr, jsObject, schemeName, psaPspId, credentialRole, userName, cipPsrStatus)
-      ) { result: HttpResponse =>
+      ) { (result: HttpResponse) =>
         WireMock.verify(
           postRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr"))
         )
@@ -378,7 +401,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
       whenReady(
         connector
           .getStandardPsr(pstr, Some(psrFormBundleNumber), None, None, schemeName, psaPspId, credentialRole, userName)
-      ) { result: Option[PsrSubmissionEtmpResponse] =>
+      ) { (result: Option[PsrSubmissionEtmpResponse]) =>
         WireMock.verify(
           getRequestedFor(urlEqualTo("/pension-online/scheme-return/testPstr?psrFormBundleNumber=1234567890"))
         )
@@ -421,7 +444,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
           credentialRole,
           userName
         )
-      ) { result: Option[PsrSubmissionEtmpResponse] =>
+      ) { (result: Option[PsrSubmissionEtmpResponse]) =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(
@@ -465,7 +488,7 @@ class PsrConnectorSpec extends BaseConnectorSpec with TestValues {
           credentialRole,
           userName
         )
-      ) { result: Option[_] =>
+      ) { (result: Option[?]) =>
         WireMock.verify(
           getRequestedFor(
             urlEqualTo(

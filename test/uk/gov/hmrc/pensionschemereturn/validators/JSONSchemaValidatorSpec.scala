@@ -34,7 +34,7 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
       bind[AuthConnector].toInstance(mockAuthConnector)
     )
   val app: Application = new GuiceApplicationBuilder()
-    .overrides(modules: _*)
+    .overrides(modules*)
     .build()
 
   private lazy val jsonPayloadSchemaValidator: JSONSchemaValidator = app.injector.instanceOf[JSONSchemaValidator]

@@ -70,13 +70,11 @@ class SharesToEtmp @Inject() extends Transformer {
     typeOfShares: TypeOfShares
   ): YesNo =
     YesNo(
-      optShareTransactions.fold(false)(
-        shareTransactions =>
-          shareTransactions
-            .exists(
-              shareTransaction =>
-                (shareTransaction.typeOfSharesHeld == typeOfShares) && shareTransaction.optDisposedSharesTransaction.nonEmpty && shareTransaction.optDisposedSharesTransaction.get.nonEmpty
-            )
+      optShareTransactions.fold(false)(shareTransactions =>
+        shareTransactions
+          .exists(shareTransaction =>
+            (shareTransaction.typeOfSharesHeld == typeOfShares) && shareTransaction.optDisposedSharesTransaction.nonEmpty && shareTransaction.optDisposedSharesTransaction.get.nonEmpty
+          )
       )
     )
 
@@ -95,16 +93,17 @@ class SharesToEtmp @Inject() extends Transformer {
         methodOfHolding = heldSharesTransaction.schemeHoldShare.name,
         dateOfAcqOrContrib = heldSharesTransaction.optDateOfAcqOrContrib,
         totalShares = heldSharesTransaction.totalShares,
-        acquiredFromName = heldSharesTransaction.optAcquiredFromName.getOrElse("Default-Acquired-From-Name"), // TODO: Waiting confirmation from Josh
+        acquiredFromName = heldSharesTransaction.optAcquiredFromName.getOrElse(
+          "Default-Acquired-From-Name"
+        ), // TODO: Waiting confirmation from Josh
         acquiredFromType = heldSharesTransaction.optPropertyAcquiredFrom
-          .map(
-            propertyAcquiredFrom =>
-              toEtmpIdentityType(
-                identityType = propertyAcquiredFrom.identityType,
-                optIdNumber = propertyAcquiredFrom.idNumber,
-                optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-                optOtherDescription = propertyAcquiredFrom.otherDescription
-              )
+          .map(propertyAcquiredFrom =>
+            toEtmpIdentityType(
+              identityType = propertyAcquiredFrom.identityType,
+              optIdNumber = propertyAcquiredFrom.idNumber,
+              optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+              optOtherDescription = propertyAcquiredFrom.otherDescription
+            )
           )
           .getOrElse( // TODO: Waiting confirmation from Josh
             EtmpIdentityType(
@@ -122,38 +121,35 @@ class SharesToEtmp @Inject() extends Transformer {
       ),
       disposedSharesTransaction = sharesTransaction.optDisposedSharesTransaction
         .map(
-          _.map(
-            disposedSharesTransaction =>
-              EtmpDisposedSharesTransaction(
-                methodOfDisposal = howSharesDisposedToString(disposedSharesTransaction.methodOfDisposal),
-                otherMethod = disposedSharesTransaction.optOtherMethod,
-                salesQuestions = disposedSharesTransaction.optSalesQuestions.map(
-                  salesQuestions =>
-                    EtmpSalesQuestions(
-                      dateOfSale = salesQuestions.dateOfSale,
-                      noOfSharesSold = salesQuestions.noOfSharesSold,
-                      amountReceived = salesQuestions.amountReceived,
-                      nameOfPurchaser = salesQuestions.nameOfPurchaser,
-                      purchaserType = toEtmpIdentityType(
-                        identityType = salesQuestions.purchaserType.identityType,
-                        optIdNumber = salesQuestions.purchaserType.idNumber,
-                        optReasonNoIdNumber = salesQuestions.purchaserType.reasonNoIdNumber,
-                        optOtherDescription = salesQuestions.purchaserType.otherDescription
-                      ),
-                      connectedPartyStatus = transformToEtmpConnectedPartyStatus(salesQuestions.connectedPartyStatus),
-                      supportedByIndepValuation = salesQuestions.supportedByIndepValuation
-                    )
-                ),
-                redemptionQuestions = disposedSharesTransaction.optRedemptionQuestions.map(
-                  redemptionQuestions =>
-                    EtmpRedemptionQuestions(
-                      dateOfRedemption = redemptionQuestions.dateOfRedemption,
-                      noOfSharesRedeemed = redemptionQuestions.noOfSharesRedeemed,
-                      amountReceived = redemptionQuestions.amountReceived
-                    )
-                ),
-                totalSharesNowHeld = disposedSharesTransaction.totalSharesNowHeld
-              )
+          _.map(disposedSharesTransaction =>
+            EtmpDisposedSharesTransaction(
+              methodOfDisposal = howSharesDisposedToString(disposedSharesTransaction.methodOfDisposal),
+              otherMethod = disposedSharesTransaction.optOtherMethod,
+              salesQuestions = disposedSharesTransaction.optSalesQuestions.map(salesQuestions =>
+                EtmpSalesQuestions(
+                  dateOfSale = salesQuestions.dateOfSale,
+                  noOfSharesSold = salesQuestions.noOfSharesSold,
+                  amountReceived = salesQuestions.amountReceived,
+                  nameOfPurchaser = salesQuestions.nameOfPurchaser,
+                  purchaserType = toEtmpIdentityType(
+                    identityType = salesQuestions.purchaserType.identityType,
+                    optIdNumber = salesQuestions.purchaserType.idNumber,
+                    optReasonNoIdNumber = salesQuestions.purchaserType.reasonNoIdNumber,
+                    optOtherDescription = salesQuestions.purchaserType.otherDescription
+                  ),
+                  connectedPartyStatus = transformToEtmpConnectedPartyStatus(salesQuestions.connectedPartyStatus),
+                  supportedByIndepValuation = salesQuestions.supportedByIndepValuation
+                )
+              ),
+              redemptionQuestions = disposedSharesTransaction.optRedemptionQuestions.map(redemptionQuestions =>
+                EtmpRedemptionQuestions(
+                  dateOfRedemption = redemptionQuestions.dateOfRedemption,
+                  noOfSharesRedeemed = redemptionQuestions.noOfSharesRedeemed,
+                  amountReceived = redemptionQuestions.amountReceived
+                )
+              ),
+              totalSharesNowHeld = disposedSharesTransaction.totalSharesNowHeld
+            )
           ).toList
         )
         .filter(_.nonEmpty)

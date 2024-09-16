@@ -20,10 +20,11 @@ import org.mockito.Mockito._
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.Assets
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.shares.Shares
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
-import uk.gov.hmrc.pensionschemereturn.models.requests.PsrSubmissionEtmpRequest
 import org.mockito.ArgumentMatchers.any
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPayments
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
+import com.softwaremill.diffx.generic.auto.indicator
+import uk.gov.hmrc.pensionschemereturn.models.requests.PsrSubmissionEtmpRequest
 
 class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
 

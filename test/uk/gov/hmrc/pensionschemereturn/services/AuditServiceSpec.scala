@@ -65,23 +65,22 @@ class AuditServiceSpec extends AnyWordSpec with Matchers with Inside {
         .thenReturn(Future.successful(Success))
       auditService().sendEvent(event)
       verify(mockAuditConnector, times(1)).sendExtendedEvent(templateCaptor.capture())(any(), any())
-      inside(templateCaptor.getValue) {
-        case ExtendedDataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
-          auditSource mustBe appName
-          auditType mustBe event.auditType
+      inside(templateCaptor.getValue) { case ExtendedDataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
+        auditSource mustBe appName
+        auditType mustBe event.auditType
 
-          detail mustBe Json.obj(
-            "emailInitiationRequestId" -> "test-request-id",
-            "pensionSchemeTaxReference" -> "test-pstr",
-            "schemeAdministratorName" -> "test user",
-            "emailAddress" -> "test@test.com",
-            "event" -> "Sent",
-            "submittedBy" -> "PSA",
-            "reportVersion" -> "001",
-            "pensionSchemeAdministratorId" -> "A2500001",
-            "schemeName" -> "Test Scheme",
-            "taxYear" -> "test tax year"
-          )
+        detail mustBe Json.obj(
+          "emailInitiationRequestId" -> "test-request-id",
+          "pensionSchemeTaxReference" -> "test-pstr",
+          "schemeAdministratorName" -> "test user",
+          "emailAddress" -> "test@test.com",
+          "event" -> "Sent",
+          "submittedBy" -> "PSA",
+          "reportVersion" -> "001",
+          "pensionSchemeAdministratorId" -> "A2500001",
+          "schemeName" -> "Test Scheme",
+          "taxYear" -> "test tax year"
+        )
       }
     }
   }

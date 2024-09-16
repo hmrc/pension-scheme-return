@@ -21,7 +21,6 @@ import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp._
 import org.scalatest.{AppendedClues, BeforeAndAfterEach}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import com.softwaremill.diffx.generic.AutoDerivation
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
 
@@ -32,7 +31,6 @@ trait EtmpTransformerSpec
     with BeforeAndAfterEach
     with TestValues
     with DiffShouldMatcher
-    with AutoDerivation
     with AppendedClues {
 
   val employerContributionsTransformer = new EmployerContributionsTransformer()
