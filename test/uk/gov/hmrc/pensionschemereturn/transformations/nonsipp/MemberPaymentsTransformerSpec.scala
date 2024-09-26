@@ -225,7 +225,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
-          surrenderMade = Some(false),
+          surrenderMade = Some(true),
           surrenderedBenefits = Some(List(etmpPensionSurrender))
         )
 
@@ -244,7 +244,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
         val etmpMemberPayments = transformEtmpSurrenderedBenefits(
           surrenderMade = Some(true),
-          surrenderedBenefits = Some(Nil)
+          surrenderedBenefits = None
         )
 
         val result = memberPaymentsTransformer.toEtmp(memberPayments)
@@ -347,7 +347,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
     "successfully transform Employer Contributions section to ETMP format" when {
 
-      "Completed with 0 contributions: case (true, 0, true)" in {
+      "made is TRUE, completed is TRUE, and employerContributions are NOT provided" in {
 
         val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
           made = true,
@@ -356,7 +356,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
-          employerContributionMade = Some(false), // transformed from true in this case
+          employerContributionMade = Some(true),
           noOfContributions = None,
           employerContributions = None
         )
@@ -366,7 +366,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo etmpMemberPayments
       }
 
-      "Completed with 1+ contributions: case (true, _, true)" in {
+      "made is TRUE, completed is TRUE, and employerContributions are provided" in {
 
         val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
           made = true,
@@ -385,7 +385,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo etmpMemberPayments
       }
 
-      "In Progress with 0 contributions: case (true, 0, false)" in {
+      "made is TRUE, completed is FALSE, and employerContributions are NOT provided" in {
 
         val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
           made = true,
@@ -404,7 +404,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo etmpMemberPayments
       }
 
-      "In Progress with 1+ contributions: case (true, _, false)" in {
+      "made is TRUE, completed is FALSE, and employerContributions are provided" in {
 
         val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
           made = true,
@@ -413,7 +413,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         )
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
-          employerContributionMade = Some(false), // transformed from true in this case
+          employerContributionMade = Some(true),
           noOfContributions = Some(2),
           employerContributions = Some(List(sampleEtmpEmployerContribution2, sampleEtmpEmployerContribution3))
         )
@@ -423,7 +423,26 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo etmpMemberPayments
       }
 
-      "Not Started: case (false, 0, false)" in {
+      "made is FALSE, completed is TRUE, and employerContributions not stored in ETMP when made is FALSE" in {
+
+        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
+          made = false,
+          completed = true,
+          employerContributions = List.empty
+        )
+
+        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
+          employerContributionMade = Some(false),
+          noOfContributions = None,
+          employerContributions = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "made is FALSE, completed is FALSE, and employerContributions not stored in ETMP when made is FALSE" in {
 
         val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
           made = false,
@@ -441,30 +460,11 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
         result shouldMatchTo etmpMemberPayments
       }
-
-      "Not valid state: case (false, 0, true)" in {
-
-        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
-          made = false,
-          completed = true,
-          employerContributions = List.empty
-        )
-
-        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
-          employerContributionMade = Some(false),
-          noOfContributions = None,
-          employerContributions = None
-        )
-
-        val result = memberPaymentsTransformer.toEtmp(memberPayments)
-
-        result shouldMatchTo etmpMemberPayments
-      }
     }
 
     "successfully transform Employer Contributions section from ETMP format" when {
 
-      "Answer is \"No\" and 0 contributions made: case (Some(false), 0)" in {
+      "made is FALSE and employerContributions not stored in ETMP when made is FALSE" in {
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
           employerContributionMade = Some(false),
@@ -483,26 +483,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo Right(memberPayments)
       }
 
-      "Answer is \"No\" (transformed from \"Yes\") and 1+ contributions made: case (Some(false), _)" in {
-
-        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
-          employerContributionMade = Some(false),
-          noOfContributions = Some(1),
-          employerContributions = Some(List(sampleEtmpEmployerContribution4))
-        )
-
-        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
-          made = false,
-          completed = false,
-          employerContributions = List(sampleEmployerContribution4)
-        )
-
-        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
-
-        result shouldMatchTo Right(memberPayments)
-      }
-
-      "Answer is \"Yes\" and 0 contributions made: case (Some(true), 0)" in {
+      "made is TRUE and employerContributions are NOT provided" in {
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
           employerContributionMade = Some(true),
@@ -521,7 +502,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo Right(memberPayments)
       }
 
-      "Answer is \"Yes\" and 1+ contributions made: case (Some(true), _)" in {
+      "made is TRUE and employerContributions are provided" in {
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
           employerContributionMade = Some(true),
@@ -540,7 +521,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
         result shouldMatchTo Right(memberPayments)
       }
 
-      "Answer not provided: case (None, 0)" in {
+      "made is NOT provided" in {
 
         val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
           employerContributionMade = None,
@@ -552,25 +533,6 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
           made = false,
           completed = false,
           employerContributions = List.empty
-        )
-
-        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
-
-        result shouldMatchTo Right(memberPayments)
-      }
-
-      "Not valid state: case (None, 1)" in {
-
-        val memberPayments: MemberPayments = transformEmployerContributionsToEtmp(
-          made = false,
-          completed = true,
-          employerContributions = List.empty
-        )
-
-        val etmpMemberPayments: EtmpMemberPayments = transformEmployerContributionsFromEtmp(
-          employerContributionMade = Some(false),
-          noOfContributions = None,
-          employerContributions = None
         )
 
         val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
