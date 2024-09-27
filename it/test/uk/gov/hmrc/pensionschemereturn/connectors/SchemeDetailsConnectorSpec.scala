@@ -33,10 +33,9 @@ import uk.gov.hmrc.pensionschemereturn.models.Srn
 import utils.TestValues
 import play.api.test.Helpers.defaultAwaitTimeout
 
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues{
+class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues {
 
   private implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -47,8 +46,7 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues{
   object CheckAssociationHelper {
     val url = "/pensions-scheme/is-psa-associated"
 
-    def stubGet(idValue: String, idType: String, srn: String, response: ResponseDefinitionBuilder): StubMapping = {
-
+    def stubGet(idValue: String, idType: String, srn: String, response: ResponseDefinitionBuilder): StubMapping =
       wireMockServer
         .stubFor(
           get(urlEqualTo(url))
@@ -57,7 +55,6 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues{
             .withHeader("Content-Type", equalTo("application/json"))
             .willReturn(response)
         )
-    }
   }
 
   private lazy val connector: SchemeDetailsConnector = app.injector.instanceOf[SchemeDetailsConnector]
@@ -66,60 +63,56 @@ class SchemeDetailsConnectorSpec extends BaseConnectorSpec with TestValues{
     "return true if psa is associated" in {
       CheckAssociationHelper.stubGet(psaId, Constants.psaId, srn, ok("true"))
 
-      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) {
-        result: Boolean =>
-          WireMock.verify(
-            getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-              .withHeader(Constants.psaId, equalTo(psaId))
-              .withHeader("schemeReferenceNumber", equalTo(srn))
-              .withHeader("Content-Type", equalTo("application/json"))
-          )
-          result shouldMatchTo true
+      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) { result: Boolean =>
+        WireMock.verify(
+          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
+            .withHeader(Constants.psaId, equalTo(psaId))
+            .withHeader("schemeReferenceNumber", equalTo(srn))
+            .withHeader("Content-Type", equalTo("application/json"))
+        )
+        result shouldMatchTo true
       }
     }
 
     "return false if psa is not associated" in {
       CheckAssociationHelper.stubGet(psaId, Constants.psaId, srn, ok("false"))
 
-      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) {
-        result: Boolean =>
-          WireMock.verify(
-            getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-              .withHeader(Constants.psaId, equalTo(psaId))
-              .withHeader("schemeReferenceNumber", equalTo(srn))
-              .withHeader("Content-Type", equalTo("application/json"))
-          )
-          result shouldMatchTo false
+      whenReady(connector.checkAssociation(psaId, Constants.psaId, Srn(srn).get)) { result: Boolean =>
+        WireMock.verify(
+          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
+            .withHeader(Constants.psaId, equalTo(psaId))
+            .withHeader("schemeReferenceNumber", equalTo(srn))
+            .withHeader("Content-Type", equalTo("application/json"))
+        )
+        result shouldMatchTo false
       }
     }
 
     "return true if psp is associated" in {
       CheckAssociationHelper.stubGet(pspId, Constants.pspId, srn, ok("true"))
 
-      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) {
-        result: Boolean =>
-          WireMock.verify(
-            getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-              .withHeader(Constants.pspId, equalTo(pspId))
-              .withHeader("schemeReferenceNumber", equalTo(srn))
-              .withHeader("Content-Type", equalTo("application/json"))
-          )
-          result shouldMatchTo true
+      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) { result: Boolean =>
+        WireMock.verify(
+          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
+            .withHeader(Constants.pspId, equalTo(pspId))
+            .withHeader("schemeReferenceNumber", equalTo(srn))
+            .withHeader("Content-Type", equalTo("application/json"))
+        )
+        result shouldMatchTo true
       }
     }
 
     "return false if psp is not associated" in {
       CheckAssociationHelper.stubGet(pspId, Constants.pspId, srn, ok("false"))
 
-      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) {
-        result: Boolean =>
-          WireMock.verify(
-            getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
-              .withHeader(Constants.pspId, equalTo(pspId))
-              .withHeader("schemeReferenceNumber", equalTo(srn))
-              .withHeader("Content-Type", equalTo("application/json"))
-          )
-          result shouldMatchTo false
+      whenReady(connector.checkAssociation(pspId, Constants.pspId, Srn(srn).get)) { result: Boolean =>
+        WireMock.verify(
+          getRequestedFor(urlEqualTo("/pensions-scheme/is-psa-associated"))
+            .withHeader(Constants.pspId, equalTo(pspId))
+            .withHeader("schemeReferenceNumber", equalTo(srn))
+            .withHeader("Content-Type", equalTo("application/json"))
+        )
+        result shouldMatchTo false
       }
     }
 

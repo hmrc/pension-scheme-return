@@ -1,0 +1,29 @@
+meta {
+  name: Versions - OK
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/versions/24000001IN?startDate=2021-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  startDate: 2021-04-06
+}
+
+headers {
+  srn: S0000000042
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}

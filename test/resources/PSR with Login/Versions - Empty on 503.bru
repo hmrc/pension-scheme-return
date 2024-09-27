@@ -1,0 +1,29 @@
+meta {
+  name: Versions - Empty on 503
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/versions/24000001IN?startDate=2018-04-06
+  body: none
+  auth: bearer
+}
+
+query {
+  startDate: 2018-04-06
+}
+
+headers {
+  srn: S0000000042
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 503", function () {
+      expect(res.getStatus()).to.equal(203);
+  });
+}
