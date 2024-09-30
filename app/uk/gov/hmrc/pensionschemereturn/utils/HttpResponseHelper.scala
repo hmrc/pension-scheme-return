@@ -50,7 +50,7 @@ trait HttpResponseHelper extends HttpErrorFunctions {
         throw UpstreamErrorResponse(
           upstreamResponseMessage(httpMethod, url, status, response.body),
           status,
-          BAD_GATEWAY
+          status
         )
       case _ =>
         throw new UnrecognisedHttpResponseException(httpMethod, url, response)

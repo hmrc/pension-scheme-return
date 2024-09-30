@@ -164,8 +164,7 @@ class PsrConnector @Inject()(config: AppConfig, http: HttpClientV2, apiAuditUtil
           case OK =>
             response.json.as[Seq[PsrVersionsEtmpResponse]]
           case SERVICE_UNAVAILABLE =>
-            // TODO - must be a temporary solution to check QA env issues
-            logger.info(s"$logMessage and returned status ${response.status} - returning empty response")
+            logger.warn(s"$logMessage and returned status ${response.status} - returning empty response")
             Seq.empty[PsrVersionsEtmpResponse]
           case NOT_FOUND =>
             logger.info(s"$logMessage and returned status ${response.status}")
