@@ -95,7 +95,7 @@ class SharesToEtmp @Inject() extends Transformer {
         methodOfHolding = heldSharesTransaction.schemeHoldShare.name,
         dateOfAcqOrContrib = heldSharesTransaction.optDateOfAcqOrContrib,
         totalShares = heldSharesTransaction.totalShares,
-        acquiredFromName = heldSharesTransaction.optAcquiredFromName.getOrElse("Default-Acquired-From-Name"), // TODO: Waiting confirmation from Josh
+        acquiredFromName = heldSharesTransaction.optAcquiredFromName.getOrElse("QUESTION NOT ASKED"),
         acquiredFromType = heldSharesTransaction.optPropertyAcquiredFrom
           .map(
             propertyAcquiredFrom =>
@@ -106,12 +106,12 @@ class SharesToEtmp @Inject() extends Transformer {
                 optOtherDescription = propertyAcquiredFrom.otherDescription
               )
           )
-          .getOrElse( // TODO: Waiting confirmation from Josh
+          .getOrElse(
             EtmpIdentityType(
               indivOrOrgType = "04",
               idNumber = None,
               reasonNoIdNumber = None,
-              otherDescription = Some("Default-Other-Description")
+              otherDescription = Some("QUESTION NOT ASKED")
             )
           ),
         connectedPartyStatus = heldSharesTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),

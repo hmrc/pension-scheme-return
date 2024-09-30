@@ -239,12 +239,12 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           methodOfHolding = "02",
           dateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          acquiredFromName = "Default-Acquired-From-Name",
+          acquiredFromName = "QUESTION NOT ASKED",
           acquiredFromType = EtmpIdentityType(
             indivOrOrgType = "04",
             idNumber = None,
             reasonNoIdNumber = None,
-            otherDescription = Some("Default-Other-Description")
+            otherDescription = Some("QUESTION NOT ASKED")
           ),
           connectedPartyStatus = Some("01"),
           costOfShares = Double.MaxValue,
@@ -289,12 +289,12 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           methodOfHolding = "03",
           dateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          acquiredFromName = "Default-Acquired-From-Name",
+          acquiredFromName = "QUESTION NOT ASKED",
           acquiredFromType = EtmpIdentityType(
             indivOrOrgType = "04",
             idNumber = None,
             reasonNoIdNumber = None,
-            otherDescription = Some("Default-Other-Description")
+            otherDescription = Some("QUESTION NOT ASKED")
           ),
           connectedPartyStatus = None,
           costOfShares = Double.MaxValue,
