@@ -108,12 +108,12 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           methodOfHolding = "02",
           dateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          acquiredFromName = "Default-Acquired-From-Name",
+          acquiredFromName = "QUESTION NOT ASKED",
           acquiredFromType = EtmpIdentityType(
             indivOrOrgType = "04",
             idNumber = None,
             reasonNoIdNumber = None,
-            otherDescription = Some("Default-Other-Description")
+            otherDescription = Some("QUESTION NOT ASKED")
           ),
           connectedPartyStatus = Some("02"),
           costOfShares = Double.MaxValue,
@@ -158,12 +158,12 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           methodOfHolding = "03",
           dateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          acquiredFromName = "Default-Acquired-From-Name",
+          acquiredFromName = "QUESTION NOT ASKED",
           acquiredFromType = EtmpIdentityType(
             indivOrOrgType = "04",
             idNumber = None,
             reasonNoIdNumber = None,
-            otherDescription = Some("Default-Other-Description")
+            otherDescription = Some("QUESTION NOT ASKED")
           ),
           connectedPartyStatus = None,
           costOfShares = Double.MaxValue,
@@ -248,13 +248,13 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           schemeHoldShare = SchemeHoldShare.Contribution,
           optDateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          optAcquiredFromName = Some("Default-Acquired-From-Name"),
+          optAcquiredFromName = Some("QUESTION NOT ASKED"),
           optPropertyAcquiredFrom = Some(
             PropertyAcquiredFrom(
               IdentityType.Other,
               None,
               None,
-              Some("Default-Other-Description")
+              Some("QUESTION NOT ASKED")
             )
           ),
           optConnectedPartyStatus = Some(false),
@@ -300,13 +300,13 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           schemeHoldShare = SchemeHoldShare.Transfer,
           optDateOfAcqOrContrib = None,
           totalShares = Int.MaxValue,
-          optAcquiredFromName = Some("Default-Acquired-From-Name"),
+          optAcquiredFromName = Some("QUESTION NOT ASKED"),
           optPropertyAcquiredFrom = Some(
             PropertyAcquiredFrom(
               IdentityType.Other,
               None,
               None,
-              Some("Default-Other-Description")
+              Some("QUESTION NOT ASKED")
             )
           ),
           optConnectedPartyStatus = None,
