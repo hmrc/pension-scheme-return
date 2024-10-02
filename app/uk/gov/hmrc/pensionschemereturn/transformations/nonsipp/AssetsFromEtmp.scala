@@ -56,7 +56,9 @@ class AssetsFromEtmp @Inject() extends Transformer {
                         addressLine2 = addressDetails.addressLine4.map(_ => addressDetails.addressLine2),
                         addressLine3 = addressDetails.addressLine3,
                         town = addressDetails.addressLine4.getOrElse(addressDetails.addressLine2),
-                        postCode = addressDetails.ukPostCode,
+                        postCode =
+                          if (fromYesNo(propertyDetails.landOrPropertyInUK)) addressDetails.ukPostCode
+                          else addressDetails.addressLine5,
                         countryCode = addressDetails.countryCode
                       ),
                       landRegistryTitleNumberKey =
