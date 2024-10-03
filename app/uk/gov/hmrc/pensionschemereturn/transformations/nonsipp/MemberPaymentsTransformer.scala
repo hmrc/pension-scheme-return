@@ -63,7 +63,12 @@ class MemberPaymentsTransformer @Inject()(
       schemeReceivedTransferIn = memberPayments.transfersInMade,
       schemeMadeTransferOut = memberPayments.transfersOutMade,
       lumpSumReceived = memberPayments.lumpSumReceived,
-      pensionReceived = Option.when(memberPayments.pensionReceived.started)(memberPayments.pensionReceived.made),
+      pensionReceived = memberPayments.pensionReceived match {
+        case SectionDetails(made @ true, completed @ true) => Some(true)
+        case SectionDetails(made @ true, completed @ false) => Some(true)
+        case SectionDetails(made @ false, completed @ true) => Some(false)
+        case SectionDetails(made @ false, completed @ false) => None // not started
+      },
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
         case SectionDetails(made @ true, completed @ true) => Some(true)
         case SectionDetails(made @ true, completed @ false) => Some(false)
