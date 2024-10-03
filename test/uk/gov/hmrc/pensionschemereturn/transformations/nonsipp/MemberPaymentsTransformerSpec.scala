@@ -31,6 +31,7 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
 
   private val pensionSurrender = PensionSurrender(12.34, LocalDate.of(2022, 12, 12), "some reason")
   private val etmpPensionSurrender = EtmpPensionSurrender(12.34, LocalDate.of(2022, 12, 12), "some reason")
+  private val pensionAmountReceived = 12.34
 
   "MemberPaymentsTransformer" should {
     "successfully transform to ETMP format" in {
@@ -43,6 +44,156 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
       val result = memberPaymentsTransformer.fromEtmp(sampleEtmpMemberPayments)
 
       result shouldMatchTo Right(sampleMemberPayments)
+    }
+
+    "successfully transform Pension Payments section to ETMP format" when {
+
+      "pensionReceived.made is TRUE, pensionReceived.completed is TRUE and pensionAmountReceived is provided" in {
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = true,
+          completed = true,
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(true),
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "pensionReceived.made is TRUE, pensionReceived.completed is FALSE and pensionAmountReceived is provided" in {
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = true,
+          completed = false,
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(true),
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "pensionReceived.made is TRUE, pensionReceived.completed is TRUE and pensionAmountReceived is NOT provided" in {
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = true,
+          completed = true,
+          pensionAmountReceived = None
+        )
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(true),
+          pensionAmountReceived = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "pensionReceived.made is FALSE, pensionReceived.completed is TRUE and pensionAmountReceived is NOT provided" in {
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = false,
+          completed = true,
+          pensionAmountReceived = None
+        )
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(false),
+          pensionAmountReceived = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+
+      "pensionReceived.made is FALSE, pensionReceived.completed is FALSE indicating Not Started" in {
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = false,
+          completed = false,
+          pensionAmountReceived = None
+        )
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = None,
+          pensionAmountReceived = None
+        )
+
+        val result = memberPaymentsTransformer.toEtmp(memberPayments)
+
+        result shouldMatchTo etmpMemberPayments
+      }
+    }
+
+    "successfully transform Pension Payments section from ETMP format" when {
+
+      "pensionReceived.made is TRUE, pensionAmountReceived is provided" in {
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(true),
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = true,
+          completed = true,
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "pensionReceived.made is TRUE, pensionAmountReceived is NOT provided" in {
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(true),
+          pensionAmountReceived = None
+        )
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = true,
+          completed = false,
+          pensionAmountReceived = None
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
+
+      "pensionReceived.made is FALSE and pensionAmountReceived is provided" in {
+
+        val etmpMemberPayments = transformPensionPaymentsFromEtmp(
+          pensionReceived = Some(false),
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val memberPayments = transformPensionPaymentsToEtmp(
+          made = false,
+          completed = true,
+          pensionAmountReceived = Some(pensionAmountReceived)
+        )
+
+        val result = memberPaymentsTransformer.fromEtmp(etmpMemberPayments)
+
+        result shouldMatchTo Right(memberPayments)
+      }
     }
 
     "successfully transform surrenderedBenefits section to ETMP format" when {
@@ -528,6 +679,28 @@ class MemberPaymentsTransformerSpec extends EtmpTransformerSpec {
       }
     }
   }
+
+  private def transformPensionPaymentsToEtmp(
+    made: Boolean,
+    completed: Boolean,
+    pensionAmountReceived: Option[Double]
+  ): MemberPayments =
+    sampleMemberPayments.copy(
+      pensionReceived = SectionDetails(
+        made = made,
+        completed = completed
+      ),
+      memberDetails = sampleMemberPayments.memberDetails.map(_.copy(pensionAmountReceived = pensionAmountReceived))
+    )
+
+  private def transformPensionPaymentsFromEtmp(
+    pensionReceived: Option[Boolean],
+    pensionAmountReceived: Option[Double]
+  ): EtmpMemberPayments =
+    sampleEtmpMemberPayments.copy(
+      pensionReceived = pensionReceived,
+      memberDetails = sampleEtmpMemberPayments.memberDetails.map(_.copy(pensionAmountReceived = pensionAmountReceived))
+    )
 
   private def transformSurrenderedBenefits(
     made: Boolean,
