@@ -1,0 +1,32 @@
+meta {
+  name: Standard PSR
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/standard/24000001IN?periodStartDate=2022-04-06&psrVersion=001
+  body: none
+  auth: bearer
+}
+
+query {
+  periodStartDate: 2022-04-06
+  psrVersion: 001
+}
+
+headers {
+  userName: TestUserName
+  schemeName: TestSchemeName
+  srn: S0000000042
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}
