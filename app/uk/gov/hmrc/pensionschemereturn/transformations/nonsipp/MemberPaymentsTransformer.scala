@@ -20,11 +20,7 @@ import cats.syntax.traverse._
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.models.etmp.SectionStatus
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments._
-import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.{
-  EtmpMemberDetails,
-  EtmpMemberLumpSumReceived,
-  EtmpMemberPayments
-}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
@@ -39,23 +35,11 @@ class MemberPaymentsTransformer @Inject()(
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
       recordVersion = memberPayments.recordVersion,
-      employerContributionMade = (
-        memberPayments.employerContributionsDetails.made,
-        memberPayments.memberDetails.flatMap(_.employerContributions).size,
-        memberPayments.employerContributionsDetails.completed
-      ) match {
-        // Completed with 0 contributions: transform to false, as both cases are logically equivalent
-        case (true, 0, true) => Some(false)
-        // Completed with 1+ contributions: no transformation required
-        case (true, _, true) => Some(true)
-        // In Progress with 0 contributions: no transformation required
-        case (true, 0, false) => Some(true)
-        // In Progress with 1+ contributions: transform to false, to differentiate from Completed with 1+ contributions
-        case (true, _, false) => Some(false)
-        // Not Started: transform to None
-        case (false, 0, false) => None
-        // (Not a valid state, but included for completeness)
-        case (answer, _, _) => Some(answer)
+      employerContributionMade = memberPayments.employerContributionsDetails match {
+        case SectionDetails(true, true) => Some(true)
+        case SectionDetails(true, false) => Some(true)
+        case SectionDetails(false, true) => Some(false)
+        case SectionDetails(false, false) => None // not started
       },
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
       unallocatedContribAmount = memberPayments.unallocatedContribAmount,
@@ -64,16 +48,16 @@ class MemberPaymentsTransformer @Inject()(
       schemeMadeTransferOut = memberPayments.transfersOutMade,
       lumpSumReceived = memberPayments.lumpSumReceived,
       pensionReceived = memberPayments.pensionReceived match {
-        case SectionDetails(made @ true, completed @ true) => Some(true)
-        case SectionDetails(made @ true, completed @ false) => Some(true)
-        case SectionDetails(made @ false, completed @ true) => Some(false)
-        case SectionDetails(made @ false, completed @ false) => None // not started
+        case SectionDetails(true, true) => Some(true)
+        case SectionDetails(true, false) => Some(true)
+        case SectionDetails(false, true) => Some(false)
+        case SectionDetails(false, false) => None // not started
       },
       surrenderMade = memberPayments.benefitsSurrenderedDetails match {
-        case SectionDetails(made @ true, completed @ true) => Some(true)
-        case SectionDetails(made @ true, completed @ false) => Some(false)
-        case SectionDetails(made @ false, completed @ true) => Some(false)
-        case SectionDetails(made @ false, completed @ false) => None // not started
+        case SectionDetails(true, true) => Some(true)
+        case SectionDetails(true, false) => Some(true)
+        case SectionDetails(false, true) => Some(false)
+        case SectionDetails(false, false) => None // not started
       },
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
@@ -105,11 +89,8 @@ class MemberPaymentsTransformer @Inject()(
             case Nil => None
             case list => Some(list)
           },
-          memberPensionSurrender = Option.when(memberPayments.benefitsSurrenderedDetails.made)(
-            memberDetails.benefitsSurrendered.map(pensionSurrenderTransformer.toEtmp) match {
-              case Some(surrender) => List(surrender)
-              case None => Nil
-            }
+          memberPensionSurrender = memberDetails.benefitsSurrendered.map(
+            x => List(EtmpPensionSurrender(x.totalSurrendered, x.dateOfSurrender, x.surrenderReason))
           )
         )
       }
@@ -154,17 +135,13 @@ class MemberPaymentsTransformer @Inject()(
             made = out.employerContributionMade.exists(_.boolean),
             completed =
               (out.employerContributionMade.map(_.boolean), details.flatMap(_.employerContributions).size) match {
-                // "No" answer provided for contributions made, and 0 contributions: Completed
-                case (Some(false), 0) => true
-                // "No" answer (transformed from "Yes") for contributions made, and 1+ contributions: In Progress
-                case (Some(false), _) => false
+                // "No" answer provided for contributions made: Completed
+                case (Some(false), _) => true
                 // "Yes" answer provided for contributions made, and 0 contributions: In Progress
                 case (Some(true), 0) => false
                 // "Yes" answer provided for contributions made, and 1+ contributions: Completed
                 case (Some(true), _) => true
                 // Answer not provided for contributions made: Not Started
-                case (None, 0) => false
-                // (Not a valid state, but included for completeness)
                 case (None, _) => false
               }
           ),
