@@ -18,37 +18,18 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments
 
 import play.api.libs.json.{Format, Json}
 
-/**
- * Contains a representation of the important yes / no questions for a section
- * (made = false && completed = false) = section not started
- * (made = false && completed = true)  = initial section question is no
- * (made = true && completed = true)   = initial section question is yes and the user has said they don't want to add anymore
- * (made = true && completed = false)  = initial section question is yes and the user has changed or removed something in a section
- *                                       this will be changed to (made = true && completed = true) when the user says they don't want to add anymore
- */
-case class SectionDetails(
-  made: Boolean,
-  completed: Boolean
-) {
-  val started: Boolean = !(!made && !completed)
-}
-
-object SectionDetails {
-  val notStarted: SectionDetails = SectionDetails(made = false, completed = false)
-}
-
 case class MemberPayments(
   recordVersion: Option[String],
   memberDetails: List[MemberDetails],
-  employerContributionsDetails: SectionDetails,
+  employerContributionMade: Option[Boolean],
   transfersInMade: Option[Boolean],
   transfersOutMade: Option[Boolean],
   unallocatedContribsMade: Option[Boolean],
   unallocatedContribAmount: Option[Double],
   memberContributionMade: Option[Boolean],
   lumpSumReceived: Option[Boolean],
-  pensionReceived: SectionDetails,
-  benefitsSurrenderedDetails: SectionDetails
+  pensionReceived: Option[Boolean],
+  surrenderMade: Option[Boolean]
 )
 
 case class MemberDetails(
@@ -70,7 +51,6 @@ case class MemberLumpSumReceived(
 )
 
 object MemberPayments {
-  private implicit val formatSectionDetails: Format[SectionDetails] = Json.format[SectionDetails]
   private implicit val formatMemberLumpSumReceived: Format[MemberLumpSumReceived] = Json.format[MemberLumpSumReceived]
   private implicit val formatMemberDetails: Format[MemberDetails] = Json.format[MemberDetails]
   implicit val format: Format[MemberPayments] = Json.format[MemberPayments]
