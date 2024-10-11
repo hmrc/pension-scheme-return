@@ -427,13 +427,13 @@ trait TestValues {
       sampleMemberDetails1,
       sampleMemberDetails2
     ),
-    employerContributionsDetails = SectionDetails(made = true, completed = true),
+    employerContributionMade = Some(true),
     memberContributionMade = Some(true),
     transfersInMade = Some(true),
     transfersOutMade = Some(true),
     lumpSumReceived = Some(true),
-    pensionReceived = SectionDetails(made = true, completed = true),
-    benefitsSurrenderedDetails = SectionDetails(made = true, completed = true)
+    pensionReceived = Some(true),
+    surrenderMade = Some(true)
   )
 
   val sampleShares: Shares =
