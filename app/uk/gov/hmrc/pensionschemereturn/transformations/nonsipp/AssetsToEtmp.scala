@@ -84,7 +84,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                         heldPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
                       totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
                       indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                      residentialSchedule29A = heldPropertyTransaction.isLandOrPropertyResidential.map(toYesNo),
+                      residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
                       landOrPropertyLeased = toYesNo(heldPropertyTransaction.landOrPropertyLeased),
                       leaseDetails = heldPropertyTransaction.optLeaseDetails.map(
                         leaseDetails =>

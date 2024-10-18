@@ -170,7 +170,7 @@ trait TestValues {
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = Some(true),
+              optIsLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
                   lesseeName = "lesseeName",

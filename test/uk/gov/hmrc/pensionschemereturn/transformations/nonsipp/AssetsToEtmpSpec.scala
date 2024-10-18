@@ -63,7 +63,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = Some(true),
+              optIsLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
                   lesseeName = "lesseeName",
@@ -676,7 +676,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   optConnectedPartyStatus = Some(false),
                   totalCostOfLandOrProperty = Double.MaxValue,
                   optIndepValuationSupport = Some(false),
-                  isLandOrPropertyResidential = Some(false),
+                  optIsLandOrPropertyResidential = Some(false),
                   optLeaseDetails = None,
                   landOrPropertyLeased = false,
                   totalIncomeOrReceipts = Double.MaxValue

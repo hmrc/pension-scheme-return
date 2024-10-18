@@ -378,7 +378,7 @@ object PsrSubmitControllerSpec {
       |            "optConnectedPartyStatus": true,
       |            "totalCostOfLandOrProperty": 1000000,
       |            "optIndepValuationSupport": true,
-      |            "isLandOrPropertyResidential": true,
+      |            "optIsLandOrPropertyResidential": true,
       |            "landOrPropertyLeased": false,
       |            "totalIncomeOrReceipts": 25000
       |          },
@@ -423,7 +423,7 @@ object PsrSubmitControllerSpec {
       |            "optConnectedPartyStatus": true,
       |            "totalCostOfLandOrProperty": 1000000,
       |            "optIndepValuationSupport": false,
-      |            "isLandOrPropertyResidential": true,
+      |            "optIsLandOrPropertyResidential": true,
       |            "landOrPropertyLeased": false,
       |            "totalIncomeOrReceipts": 25000
       |          },
@@ -466,7 +466,7 @@ object PsrSubmitControllerSpec {
       |            "optConnectedPartyStatus": false,
       |            "totalCostOfLandOrProperty": 14000000,
       |            "optIndepValuationSupport": false,
-      |            "isLandOrPropertyResidential": false,
+      |            "optIsLandOrPropertyResidential": false,
       |            "optLeaseDetails": {
       |              "lesseeName": "Leasee",
       |              "leaseGrantDate": "2023-01-17",
