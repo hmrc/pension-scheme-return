@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 case class EtmpLandOrProperty(
   recordVersion: Option[String],
-  heldAnyLandOrProperty: String,
+  heldAnyLandOrProperty: Option[String],
   disposeAnyLandOrProperty: String,
   noOfTransactions: Option[Int],
   landOrPropertyTransactions: Option[Seq[EtmpLandOrPropertyTransactions]]

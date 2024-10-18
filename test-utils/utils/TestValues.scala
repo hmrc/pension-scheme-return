@@ -145,7 +145,7 @@ trait TestValues {
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = true,
+        landOrPropertyHeld = Some(true),
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = Seq(
           LandOrPropertyTransactions(
@@ -505,7 +505,7 @@ trait TestValues {
 
   private val sampleEtmpLandOrProperty: EtmpLandOrProperty = EtmpLandOrProperty(
     recordVersion = Some("001"),
-    heldAnyLandOrProperty = "Yes",
+    heldAnyLandOrProperty = Some("Yes"),
     disposeAnyLandOrProperty = "Yes",
     noOfTransactions = Some(1),
     landOrPropertyTransactions = Some(
