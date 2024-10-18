@@ -170,7 +170,7 @@ trait TestValues {
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = true,
+              isLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
                   lesseeName = "lesseeName",
@@ -535,7 +535,7 @@ trait TestValues {
             connectedPartyStatus = Some("01"),
             totalCostOfLandOrProperty = Double.MaxValue,
             indepValuationSupport = Some("Yes"),
-            residentialSchedule29A = "Yes",
+            residentialSchedule29A = Some("Yes"),
             landOrPropertyLeased = "Yes",
             leaseDetails = Some(
               EtmpLeaseDetails(

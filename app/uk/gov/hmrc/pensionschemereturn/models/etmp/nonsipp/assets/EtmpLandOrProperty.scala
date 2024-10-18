@@ -49,7 +49,7 @@ case class EtmpHeldPropertyTransaction(
   connectedPartyStatus: Option[String],
   totalCostOfLandOrProperty: Double,
   indepValuationSupport: Option[String],
-  residentialSchedule29A: String,
+  residentialSchedule29A: Option[String],
   landOrPropertyLeased: String,
   leaseDetails: Option[EtmpLeaseDetails],
   totalIncomeOrReceipts: Double

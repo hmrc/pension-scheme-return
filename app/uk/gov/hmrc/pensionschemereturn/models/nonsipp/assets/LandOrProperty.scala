@@ -49,7 +49,7 @@ case class HeldPropertyTransaction(
   optConnectedPartyStatus: Option[Boolean],
   totalCostOfLandOrProperty: Double,
   optIndepValuationSupport: Option[Boolean],
-  isLandOrPropertyResidential: Boolean,
+  isLandOrPropertyResidential: Option[Boolean],
   optLeaseDetails: Option[LeaseDetails],
   landOrPropertyLeased: Boolean,
   totalIncomeOrReceipts: Double

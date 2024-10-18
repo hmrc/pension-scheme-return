@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.API_1999
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.{API_1999, API_1999_optional}
 import play.api.mvc.RequestHeader
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
@@ -72,6 +72,35 @@ class PsrSubmissionService @Inject()(
     }
   }
 
+  def submitPrePopulatedPsr(
+    psrSubmission: PsrSubmission,
+    psrAuth: PsrAuthContext[Any],
+    userName: String,
+    schemeName: String
+  )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
+    val payloadAsJson = Json.toJson(psrSubmissionToEtmp.transform(psrSubmission))
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(API_1999_optional, payloadAsJson)
+    if (validationResult.hasErrors) {
+      throw PensionSchemeReturnValidationFailureException(
+        s"Invalid payload when submitPrePopulatedPsr :-\n${validationResult.toString}"
+      )
+    } else {
+      psrConnector
+        .submitStandardPsr(
+          psrSubmission.minimalRequiredSubmission.reportDetails.pstr,
+          payloadAsJson,
+          schemeName,
+          psrAuth.psaPspId,
+          psrAuth.credentialRole,
+          userName,
+          getCipPsrStatus(psrSubmission)
+        )
+        .recover {
+          case badReq: BadRequestException =>
+            throw new ExpectationFailedException(s"${badReq.message}")
+        }
+    }
+  }
   def getCipPsrStatus(psrSubmission: PsrSubmission): Option[String] =
     (
       psrSubmission.minimalRequiredSubmission.reportDetails.fbVersion,

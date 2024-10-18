@@ -63,7 +63,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = true,
+              isLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
                   lesseeName = "lesseeName",
@@ -326,7 +326,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 connectedPartyStatus = Some(Connected),
                 totalCostOfLandOrProperty = Double.MaxValue,
                 indepValuationSupport = Some(Yes),
-                residentialSchedule29A = Yes,
+                residentialSchedule29A = Some(Yes),
                 landOrPropertyLeased = Yes,
                 leaseDetails = Some(
                   EtmpLeaseDetails(
@@ -676,7 +676,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   optConnectedPartyStatus = Some(false),
                   totalCostOfLandOrProperty = Double.MaxValue,
                   optIndepValuationSupport = Some(false),
-                  isLandOrPropertyResidential = false,
+                  isLandOrPropertyResidential = Some(false),
                   optLeaseDetails = None,
                   landOrPropertyLeased = false,
                   totalIncomeOrReceipts = Double.MaxValue
@@ -823,7 +823,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                     connectedPartyStatus = Some(Unconnected),
                     totalCostOfLandOrProperty = Double.MaxValue,
                     indepValuationSupport = Some(No),
-                    residentialSchedule29A = No,
+                    residentialSchedule29A = Some(No),
                     landOrPropertyLeased = No,
                     leaseDetails = None,
                     totalIncomeOrReceipts = Double.MaxValue

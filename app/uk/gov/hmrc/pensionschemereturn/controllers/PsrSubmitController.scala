@@ -60,6 +60,22 @@ class PsrSubmitController @Inject()(
     }
   }
 
+  def submitPrePopulatedPsr: Action[AnyContent] = Action.async { implicit request =>
+    val Seq(userName, schemeName, srnS) = requiredHeaders("userName", "schemeName", "srn")
+    authorisedAsPsrUser(srnS) { psrAuth =>
+      val psrSubmission = requiredBody.as[PsrSubmission]
+      logger.info(
+        message = s"Submitting pre-populated PSR for ${psrSubmission.minimalRequiredSubmission.reportDetails}"
+      )
+      psrSubmissionService
+        .submitPrePopulatedPsr(psrSubmission, psrAuth, userName, schemeName)
+        .map(response => {
+          logger.debug(message = s"Submit pre-populated PSR - response status: ${response.status}")
+          NoContent
+        })
+    }
+  }
+
   def getStandardPsr(
     pstr: String,
     optFbNumber: Option[String],
