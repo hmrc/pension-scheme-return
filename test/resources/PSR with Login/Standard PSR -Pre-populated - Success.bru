@@ -1,5 +1,5 @@
 meta {
-  name: Standard PSR -Pre pop - Success
+  name: Standard PSR -Pre-populated - Success
   type: http
   seq: 25
 }
@@ -13,7 +13,7 @@ post {
 headers {
   userName: TestUserName
   schemeName: TestSchemeName
-  srn: S0000000042
+  srn: S2400000018
 }
 
 auth:bearer {
@@ -24,7 +24,7 @@ body:json {
   {
     "minimalRequiredSubmission": {
       "reportDetails": {
-        "pstr": "00000042IN",
+        "pstr": "24000018IN",
         "periodStart": "2023-04-06",
         "periodEnd": "2024-04-05"
       },
@@ -82,7 +82,6 @@ body:json {
     "assets": {
       "optLandOrProperty": {
         "recordVersion": "001",
-        "landOrPropertyHeld": true,
         "disposeAnyLandOrProperty": true,
         "landOrPropertyTransactions": [
           {
@@ -152,7 +151,6 @@ body:json {
               "optConnectedPartyStatus": true,
               "totalCostOfLandOrProperty": 1000000,
               "optIndepValuationSupport": false,
-              "isLandOrPropertyResidential": true,
               "landOrPropertyLeased": false,
               "totalIncomeOrReceipts": 25000
             },
@@ -195,7 +193,6 @@ body:json {
               "optConnectedPartyStatus": false,
               "totalCostOfLandOrProperty": 14000000,
               "optIndepValuationSupport": false,
-              "isLandOrPropertyResidential": false,
               "optLeaseDetails": {
                 "lesseeName": "Leasee",
                 "leaseGrantDate": "2023-01-17",

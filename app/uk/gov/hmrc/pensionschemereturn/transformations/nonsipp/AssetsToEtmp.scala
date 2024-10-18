@@ -38,7 +38,7 @@ class AssetsToEtmp @Inject() extends Transformer {
             disposeAnyLandOrProperty = toYesNo(landOrProperty.disposeAnyLandOrProperty),
             noOfTransactions = Option
               .when(landOrProperty.landOrPropertyHeld.getOrElse(false))(landOrProperty.landOrPropertyTransactions.size),
-            landOrPropertyTransactions = Option.when(landOrProperty.landOrPropertyHeld.getOrElse(false))(
+            landOrPropertyTransactions = Some( //TODO keep None if there are no details
               landOrProperty.landOrPropertyTransactions.map(
                 landOrPropertyTransaction => {
 
