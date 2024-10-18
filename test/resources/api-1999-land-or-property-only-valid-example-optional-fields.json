@@ -1,0 +1,67 @@
+{
+  "reportDetails": {
+    "psrStatus": "Compiled",
+    "periodStart": "2022-04-06",
+    "periodEnd": "2023-04-05"
+  },
+  "accountingPeriodDetails": {
+    "recordVersion": "002",
+    "accountingPeriods": [
+      {
+        "accPeriodStart": "2022-04-06",
+        "accPeriodEnd": "2022-12-31"
+      },
+      {
+        "accPeriodStart": "2023-01-01",
+        "accPeriodEnd": "2023-04-05"
+      }
+    ]
+  },
+  "schemeDesignatory": {
+    "recordVersion": "002",
+    "openBankAccount": "Yes",
+    "noOfActiveMembers": 5,
+    "noOfDeferredMembers": 2,
+    "noOfPensionerMembers": 10,
+    "totalAssetValueStart": 10000000,
+    "totalAssetValueEnd": 11000000,
+    "totalCashStart": 2500000,
+    "totalCashEnd": 2800000,
+    "totalPayments": 2000000
+  },
+  "assets": {
+    "landOrProperty": {
+      "noOfTransactions": 1,
+      "landOrPropertyTransactions": [
+        {
+          "propertyDetails": {
+            "landOrPropertyInUK": "Yes",
+            "addressDetails": {
+              "addressLine1": "Flat 2",
+              "addressLine2": "7 Other Place",
+              "addressLine3": "Some District",
+              "ukPostCode": "ZZ1 1ZZ",
+              "countryCode": "GB"
+            },
+            "landRegistryDetails": {
+              "landRegistryReferenceExists": "Yes",
+              "landRegistryReference": "MS123456"
+            }
+          },
+          "heldPropertyTransaction": {
+            "methodOfHolding": "01",
+            "dateOfAcquisitionOrContribution": "2009-03-01",
+            "propertyAcquiredFromName": "Seller-Test",
+            "propertyAcquiredFrom": {
+              "indivOrOrgType": "01",
+              "idNumber": "SX123456D"
+            },
+            "connectedPartyStatus": "01",
+            "totalCostOfLandOrProperty": 87,
+            "indepValuationSupport": "Yes"
+          }
+        }
+      ]
+    }
+  }
+}

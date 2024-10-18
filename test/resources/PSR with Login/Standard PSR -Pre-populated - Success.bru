@@ -1,11 +1,11 @@
 meta {
-  name: Standard PSR - Full Body - Success -Declaration-
+  name: Standard PSR -Pre-populated - Success
   type: http
-  seq: 4
+  seq: 25
 }
 
 post {
-  url: {{pension-scheme-return}}/psr/standard
+  url: {{pension-scheme-return}}/psr/pre-populated
   body: json
   auth: bearer
 }
@@ -13,7 +13,7 @@ post {
 headers {
   userName: TestUserName
   schemeName: TestSchemeName
-  srn: S0000000042
+  srn: S2400000018
 }
 
 auth:bearer {
@@ -24,7 +24,7 @@ body:json {
   {
     "minimalRequiredSubmission": {
       "reportDetails": {
-        "pstr": "00000042IN",
+        "pstr": "24000018IN",
         "periodStart": "2023-04-06",
         "periodEnd": "2024-04-05"
       },
@@ -38,6 +38,7 @@ body:json {
         ]
       },
       "schemeDesignatory": {
+        "recordVersion": "001",
         "openBankAccount": true,
         "activeMembers": 23,
         "deferredMembers": 45,
@@ -79,8 +80,7 @@ body:json {
     },
     "assets": {
       "optLandOrProperty": {
-        "optLandOrPropertyHeld": true,
-        "optDisposeAnyLandOrProperty": true,
+        "recordVersion": "001",
         "landOrPropertyTransactions": [
           {
             "propertyDetails": {
@@ -105,25 +105,9 @@ body:json {
               "optConnectedPartyStatus": true,
               "totalCostOfLandOrProperty": 1000000,
               "optIndepValuationSupport": true,
-              "optIsLandOrPropertyResidential": true,
               "optLandOrPropertyLeased": false,
               "optTotalIncomeOrReceipts": 25000
-            },
-            "optDisposedPropertyTransaction": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateOfSale": "2022-10-19",
-                "optNameOfPurchaser": "Victor Enterprises Inc.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "ukCompany",
-                  "idNumber": "24896221"
-                },
-                "optSaleProceeds": 1500000,
-                "optConnectedPartyStatus": true,
-                "optIndepValuationSupport": false,
-                "portionStillHeld": false
-              }
-            ]
+            }
           },
           {
             "propertyDetails": {
@@ -150,25 +134,9 @@ body:json {
               "optConnectedPartyStatus": true,
               "totalCostOfLandOrProperty": 1000000,
               "optIndepValuationSupport": false,
-              "optIsLandOrPropertyResidential": true,
               "optLandOrPropertyLeased": false,
               "optTotalIncomeOrReceipts": 25000
-            },
-            "optDisposedPropertyTransaction": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateOfSale": "2022-10-19",
-                "optNameOfPurchaser": "Victor Enterprises Inc.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "ukCompany",
-                  "idNumber": "24896221"
-                },
-                "optSaleProceeds": 1500000,
-                "optConnectedPartyStatus": true,
-                "optIndepValuationSupport": false,
-                "portionStillHeld": false
-              }
-            ]
+            }
           },
           {
             "propertyDetails": {
@@ -193,58 +161,8 @@ body:json {
               "optConnectedPartyStatus": false,
               "totalCostOfLandOrProperty": 14000000,
               "optIndepValuationSupport": false,
-              "optIsLandOrPropertyResidential": false,
-              "optLeaseDetails": {
-                "optLesseeName": "Leasee",
-                "optLeaseGrantDate": "2023-01-17",
-                "optAnnualLeaseAmount": 500000,
-                "optConnectedPartyStatus": false
-              },
-              "optLandOrPropertyLeased": true,
               "optTotalIncomeOrReceipts": 500000
-            },
-            "optDisposedPropertyTransaction": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateOfSale": "2022-11-09",
-                "optNameOfPurchaser": "Realty Purchasers Co.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "ukCompany",
-                  "idNumber": "JE463863"
-                },
-                "optSaleProceeds": 1550000,
-                "optConnectedPartyStatus": true,
-                "optIndepValuationSupport": false,
-                "portionStillHeld": true
-              },
-              {
-                "methodOfDisposal": "Sold",
-                "optDateOfSale": "2023-01-26",
-                "optNameOfPurchaser": "ABC Company Inc.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "ukCompany",
-                  "idNumber": "DA576257"
-                },
-                "optSaleProceeds": 10234.56,
-                "optConnectedPartyStatus": false,
-                "optIndepValuationSupport": false,
-                "portionStillHeld": true
-              }
-            ]
-          }
-        ]
-      },
-      "optBorrowing": {
-        "moneyWasBorrowed": true,
-        "moneyBorrowed": [
-          {
-            "dateOfBorrow": "2022-10-18",
-            "schemeAssetsValue": 0,
-            "amountBorrowed": 2000,
-            "interestRate": 5.55,
-            "borrowingFromName": "Loans R Us",
-            "connectedPartyStatus": false,
-            "reasonForBorrow": "We needed the money."
+            }
           }
         ]
       },
@@ -259,26 +177,7 @@ body:json {
             "costOfBonds": 10234.56,
             "optConnectedPartyStatus": false,
             "bondsUnregulated": false,
-            "totalIncomeOrReceipts": 50,
-            "optBondsDisposed": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateSold": "2022-11-30",
-                "optAmountReceived": 12333.59,
-                "optBondsPurchaserName": "Happy Bond Buyers Inc.",
-                "optConnectedPartyStatus": false,
-                "totalNowHeld": 120
-              },
-              {
-                "methodOfDisposal": "Transferred",
-                "totalNowHeld": 12
-              },
-              {
-                "methodOfDisposal": "Other",
-                "optOtherMethod": "OtherMethod",
-                "totalNowHeld": 10
-              }
-            ]
+            "totalIncomeOrReceipts": 50
           },
           {
             "nameOfBonds": "Really Goods Bonds ABC",
@@ -308,45 +207,12 @@ body:json {
             "optConnectedStatus": false,
             "optIndepValuationSupport": false,
             "movableSchedule29A": false,
-            "totalIncomeOrReceipts": 34.56,
-            "optOtherAssetDisposed": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateSold": "2022-11-30",
-                "optPurchaserName": "Acme Express Ltd.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "individual",
-                  "idNumber": "SX123456A"
-                },
-                "optTotalAmountReceived": 12333.59,
-                "optConnectedStatus": false,
-                "optSupportedByIndepValuation": false,
-                "anyPartAssetStillHeld": true
-              },
-              {
-                "methodOfDisposal": "Transferred",
-                "anyPartAssetStillHeld": true
-              },
-              {
-                "methodOfDisposal": "Other",
-                "optOtherMethod": "OtherMethod",
-                "anyPartAssetStillHeld": true
-              }
-            ]
+            "totalIncomeOrReceipts": 34.56
           }
         ]
       }
     },
     "membersPayments": {
-      "employerContributionMade": false,
-      "unallocatedContribsMade": false,
-      "employerContributionMade": true,
-      "transfersInMade": true,
-      "transfersOutMade": true,
-      "lumpSumReceived": true,
-      "memberContributionMade": true,
-      "pensionReceived": true,
-      "surrenderMade": true,
       "memberDetails": [
         {
           "personalDetails": {
@@ -395,13 +261,7 @@ body:json {
                 "value": "76509173AA"
               }
             }
-          ],
-          "benefitsSurrendered": {
-            "totalSurrendered": 12.34,
-            "dateOfSurrender": "2022-12-12",
-            "surrenderReason": "some reason"
-          },
-          "pensionAmountReceived": 12.34
+          ]
         },
         {
           "personalDetails": {
@@ -468,17 +328,12 @@ body:json {
                 "value": "other value"
               }
             }
-          ],
-          "benefitsSurrendered": {
-            "totalSurrendered": 12.34,
-            "dateOfSurrender": "2022-12-12",
-            "surrenderReason": "some reason"
-          },
-          "pensionAmountReceived": 12.34
+          ]
         }
       ]
     },
     "shares": {
+      "recordVersion": "001",
       "optShareTransactions": [
         {
           "typeOfSharesHeld": "01",
@@ -588,13 +443,6 @@ body:json {
         }
       ],
       "optTotalValueQuotedShares": 12.34
-    },
-    "psrDeclaration": {
-      "submittedBy": "PSP",
-      "submitterId": "21000005",
-      "optAuthorisingPSAID": "A2100005",
-      "declaration1": true,
-      "declaration2": true
     }
   }
 }
