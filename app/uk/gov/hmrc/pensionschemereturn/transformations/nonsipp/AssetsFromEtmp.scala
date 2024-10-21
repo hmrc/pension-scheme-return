@@ -36,7 +36,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
         landOrProperty =>
           LandOrProperty(
             recordVersion = landOrProperty.recordVersion,
-            landOrPropertyHeld = landOrProperty.heldAnyLandOrProperty.map(fromYesNo),
+            optLandOrPropertyHeld = landOrProperty.heldAnyLandOrProperty.map(fromYesNo),
             disposeAnyLandOrProperty = fromYesNo(landOrProperty.disposeAnyLandOrProperty),
             landOrPropertyTransactions = landOrProperty.landOrPropertyTransactions
               .getOrElse(Seq.empty)

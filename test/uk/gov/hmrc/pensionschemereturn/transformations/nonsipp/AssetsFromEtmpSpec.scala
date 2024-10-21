@@ -311,7 +311,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = Some(true),
+        optLandOrPropertyHeld = Some(true),
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = List(
           LandOrPropertyTransactions(

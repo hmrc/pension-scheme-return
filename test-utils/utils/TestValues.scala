@@ -145,7 +145,7 @@ trait TestValues {
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = Some(true),
+        optLandOrPropertyHeld = Some(true),
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = Seq(
           LandOrPropertyTransactions(

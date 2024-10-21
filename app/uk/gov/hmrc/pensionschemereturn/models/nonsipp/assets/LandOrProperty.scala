@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 case class LandOrProperty(
   recordVersion: Option[String],
-  landOrPropertyHeld: Option[Boolean],
+  optLandOrPropertyHeld: Option[Boolean],
   disposeAnyLandOrProperty: Boolean,
   landOrPropertyTransactions: Seq[LandOrPropertyTransactions]
 )
