@@ -276,4 +276,105 @@ class PsrSubmissionServiceSpec
     }
   }
 
+  "submitPrePopulatedPsr" should {
+    "successfully submit only minimal required submission details" in {
+      val expectedResponse = HttpResponse(200, Json.obj(), Map.empty)
+
+      when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set.empty))
+      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(expectedResponse))
+
+      whenReady(
+        service.submitPrePopulatedPsr(
+          samplePsrSubmission,
+          PsrAuthContext(
+            externalId = "externalId",
+            psaPspId = "psaPspId",
+            credentialRole = PSA,
+            request = rq
+          ),
+          "userName",
+          "schemeName"
+        )
+      ) { result: HttpResponse =>
+        result mustEqual expectedResponse
+
+        verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
+        verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+        verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+          any(),
+          any(),
+          any()
+        )
+      }
+    }
+
+    "throw exception when validation fails" in {
+      when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set(validationMessage)))
+
+      val thrown = intercept[PensionSchemeReturnValidationFailureException] {
+        await(
+          service.submitPrePopulatedPsr(
+            samplePsrSubmission,
+            PsrAuthContext(
+              externalId = "externalId",
+              psaPspId = "psaPspId",
+              credentialRole = PSA,
+              request = rq
+            ),
+            "userName",
+            "schemeName"
+          )
+        )
+      }
+      thrown.responseCode mustBe BAD_REQUEST
+      thrown.message must include("Invalid payload when submitPrePopulatedPsr :-\ncustomMessage")
+
+      verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
+      verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+      verify(mockPsrConnector, never).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+        any(),
+        any(),
+        any()
+      )
+    }
+
+    "throw exception when connector call not successful" in {
+      when(mockPsrSubmissionToEtmp.transform(any())).thenReturn(samplePsrSubmissionEtmpRequest)
+      when(mockJSONSchemaValidator.validatePayload(any(), any()))
+        .thenReturn(SchemaValidationResult(Set.empty))
+      when(mockPsrConnector.submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.failed(new BadRequestException("invalid-request")))
+
+      val thrown = intercept[ExpectationFailedException] {
+        await(
+          service.submitPrePopulatedPsr(
+            samplePsrSubmission,
+            PsrAuthContext(
+              externalId = "externalId",
+              psaPspId = "psaPspId",
+              credentialRole = PSA,
+              request = rq
+            ),
+            "userName",
+            "schemeName"
+          )
+        )
+      }
+      thrown.responseCode mustBe EXPECTATION_FAILED
+      thrown.message must include("invalid-request")
+
+      verify(mockPsrSubmissionToEtmp, times(1)).transform(any())
+      verify(mockJSONSchemaValidator, times(1)).validatePayload(any(), any())
+      verify(mockPsrConnector, times(1)).submitStandardPsr(any(), any(), any(), any(), any(), any(), any())(
+        any(),
+        any(),
+        any()
+      )
+    }
+  }
 }

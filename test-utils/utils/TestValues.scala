@@ -145,7 +145,7 @@ trait TestValues {
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = true,
+        optLandOrPropertyHeld = Some(true),
         disposeAnyLandOrProperty = true,
         landOrPropertyTransactions = Seq(
           LandOrPropertyTransactions(
@@ -170,7 +170,7 @@ trait TestValues {
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = true,
+              optIsLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
                   lesseeName = "lesseeName",
@@ -505,7 +505,7 @@ trait TestValues {
 
   private val sampleEtmpLandOrProperty: EtmpLandOrProperty = EtmpLandOrProperty(
     recordVersion = Some("001"),
-    heldAnyLandOrProperty = "Yes",
+    heldAnyLandOrProperty = Some("Yes"),
     disposeAnyLandOrProperty = "Yes",
     noOfTransactions = Some(1),
     landOrPropertyTransactions = Some(
@@ -535,7 +535,7 @@ trait TestValues {
             connectedPartyStatus = Some("01"),
             totalCostOfLandOrProperty = Double.MaxValue,
             indepValuationSupport = Some("Yes"),
-            residentialSchedule29A = "Yes",
+            residentialSchedule29A = Some("Yes"),
             landOrPropertyLeased = "Yes",
             leaseDetails = Some(
               EtmpLeaseDetails(

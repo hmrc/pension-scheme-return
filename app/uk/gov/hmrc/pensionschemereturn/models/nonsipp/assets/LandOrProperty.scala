@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 case class LandOrProperty(
   recordVersion: Option[String],
-  landOrPropertyHeld: Boolean,
+  optLandOrPropertyHeld: Option[Boolean],
   disposeAnyLandOrProperty: Boolean,
   landOrPropertyTransactions: Seq[LandOrPropertyTransactions]
 )
@@ -49,7 +49,7 @@ case class HeldPropertyTransaction(
   optConnectedPartyStatus: Option[Boolean],
   totalCostOfLandOrProperty: Double,
   optIndepValuationSupport: Option[Boolean],
-  isLandOrPropertyResidential: Boolean,
+  optIsLandOrPropertyResidential: Option[Boolean],
   optLeaseDetails: Option[LeaseDetails],
   landOrPropertyLeased: Boolean,
   totalIncomeOrReceipts: Double

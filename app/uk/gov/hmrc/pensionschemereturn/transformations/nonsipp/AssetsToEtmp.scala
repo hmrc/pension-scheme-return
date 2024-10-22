@@ -34,11 +34,16 @@ class AssetsToEtmp @Inject() extends Transformer {
         landOrProperty =>
           EtmpLandOrProperty(
             recordVersion = landOrProperty.recordVersion,
-            heldAnyLandOrProperty = toYesNo(landOrProperty.landOrPropertyHeld),
+            heldAnyLandOrProperty = landOrProperty.optLandOrPropertyHeld.map(toYesNo),
             disposeAnyLandOrProperty = toYesNo(landOrProperty.disposeAnyLandOrProperty),
-            noOfTransactions =
-              Option.when(landOrProperty.landOrPropertyHeld)(landOrProperty.landOrPropertyTransactions.size),
-            landOrPropertyTransactions = Option.when(landOrProperty.landOrPropertyHeld)(
+            noOfTransactions = Option
+              .when(landOrProperty.optLandOrPropertyHeld.getOrElse(false))(
+                landOrProperty.landOrPropertyTransactions.size
+              ),
+            landOrPropertyTransactions = Option.when(
+              landOrProperty.landOrPropertyTransactions.nonEmpty ||
+                (landOrProperty.optLandOrPropertyHeld.nonEmpty && landOrProperty.optLandOrPropertyHeld.get)
+            )(
               landOrProperty.landOrPropertyTransactions.map(
                 landOrPropertyTransaction => {
 
@@ -84,7 +89,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                         heldPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
                       totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
                       indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                      residentialSchedule29A = toYesNo(heldPropertyTransaction.isLandOrPropertyResidential),
+                      residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
                       landOrPropertyLeased = toYesNo(heldPropertyTransaction.landOrPropertyLeased),
                       leaseDetails = heldPropertyTransaction.optLeaseDetails.map(
                         leaseDetails =>

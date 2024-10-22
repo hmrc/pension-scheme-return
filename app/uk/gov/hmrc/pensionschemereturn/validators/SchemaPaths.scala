@@ -18,4 +18,5 @@ package uk.gov.hmrc.pensionschemereturn.validators
 
 object SchemaPaths {
   val API_1999 = "/resources/schemas/api-1999-submit-pension-scheme-return-request-schema-v1.1.5.json"
+  val API_1999_optional = "/resources/schemas/api-1999-submit-pension-scheme-return-request-schema-v1.1.5-optional.json"
 }

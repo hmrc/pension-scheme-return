@@ -36,7 +36,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
         landOrProperty =>
           LandOrProperty(
             recordVersion = landOrProperty.recordVersion,
-            landOrPropertyHeld = fromYesNo(landOrProperty.heldAnyLandOrProperty),
+            optLandOrPropertyHeld = landOrProperty.heldAnyLandOrProperty.map(fromYesNo),
             disposeAnyLandOrProperty = fromYesNo(landOrProperty.disposeAnyLandOrProperty),
             landOrPropertyTransactions = landOrProperty.landOrPropertyTransactions
               .getOrElse(Seq.empty)
@@ -84,7 +84,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
                       optConnectedPartyStatus = heldPropertyTransaction.connectedPartyStatus.map(_ == Connected),
                       totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
                       optIndepValuationSupport = heldPropertyTransaction.indepValuationSupport.map(fromYesNo),
-                      isLandOrPropertyResidential = fromYesNo(heldPropertyTransaction.residentialSchedule29A),
+                      optIsLandOrPropertyResidential = heldPropertyTransaction.residentialSchedule29A.map(fromYesNo),
                       optLeaseDetails = heldPropertyTransaction.leaseDetails.map(
                         leaseDetail =>
                           LeaseDetails(
