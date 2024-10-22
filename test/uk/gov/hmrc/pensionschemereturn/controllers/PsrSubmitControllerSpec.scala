@@ -204,6 +204,151 @@ class PsrSubmitControllerSpec extends BaseSpec with TestValues with MockitoSugar
     }
   }
 
+  "POST pre-populated PSR" must {
+
+    "return 400 - Bad Request with missing parameter: srn" in {
+
+      val thrown = intercept[BadRequestException] {
+        await(controller.submitPrePopulatedPsr(fakeRequest))
+      }
+
+      thrown.message.trim mustBe "Bad Request with missing parameters: userName missing  schemeName missing  srn missing"
+
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 400 - Bad Request with Invalid scheme reference number" in {
+
+      val result = controller.submitPrePopulatedPsr(
+        fakeRequest.withHeaders("srn" -> "INVALID_SRN", "schemeName" -> schemeName, "userName" -> userName)
+      )
+      status(result) mustBe Status.BAD_REQUEST
+      contentAsString(result) mustBe "Invalid scheme reference number"
+
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, never).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 401 - Bearer token expired" in {
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.failed(new BearerTokenExpired)
+        )
+
+      val thrown = intercept[AuthorisationException] {
+        await(
+          controller.submitPrePopulatedPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
+      }
+
+      thrown.reason mustBe "Bearer token expired"
+
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 401 - Bearer token not supplied" in {
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.failed(new MissingBearerToken)
+        )
+
+      val thrown = intercept[AuthorisationException] {
+        await(
+          controller.submitPrePopulatedPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
+      }
+
+      thrown.reason mustBe "Bearer token not supplied"
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 401 - Scheme is not associated with the user" in {
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(Some(externalId), enrolments))
+        )
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      val thrown = intercept[UnauthorizedException] {
+        await(
+          controller.submitPrePopulatedPsr(
+            fakeRequest.withHeaders("srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
+      }
+
+      thrown.message mustBe "Not Authorised - scheme is not associated with the user"
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 204" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new ~(Some(externalId), enrolments))
+        )
+      when(mockPsrSubmissionService.submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      val postRequest = fakeRequest.withJsonBody(submitPsrPayload)
+      val result = controller.submitPrePopulatedPsr(
+        postRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+      )
+      status(result) mustBe Status.NO_CONTENT
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, times(1)).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "return 400 when request body does not contain JSON" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
+      when(mockPsrSubmissionService.submitStandardPsr(any(), any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, responseJson.toString)))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      val postRequest = fakeRequest
+      intercept[BadRequestException](
+        await(
+          controller.submitPrePopulatedPsr(
+            postRequest.withHeaders(newHeaders = "srn" -> srn, "schemeName" -> schemeName, "userName" -> userName)
+          )
+        )
+      )
+      verify(mockPsrSubmissionService, never).submitStandardPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockPsrSubmissionService, never).submitPrePopulatedPsr(any(), any(), any(), any())(any(), any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+  }
+
   "GET standard PSR" must {
     "return 200" in {
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))

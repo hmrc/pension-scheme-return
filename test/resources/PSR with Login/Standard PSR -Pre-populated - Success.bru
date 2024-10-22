@@ -48,7 +48,6 @@ body:json {
     },
     "checkReturnDates": true,
     "loans": {
-      "recordVersion": "001",
       "schemeHadLoans": true,
       "loanTransactions": [
         {
@@ -233,23 +232,7 @@ body:json {
           }
         ]
       },
-      "optBorrowing": {
-        "recordVersion": "001",
-        "moneyWasBorrowed": true,
-        "moneyBorrowed": [
-          {
-            "dateOfBorrow": "2022-10-18",
-            "schemeAssetsValue": 0,
-            "amountBorrowed": 2000,
-            "interestRate": 5.55,
-            "borrowingFromName": "Loans R Us",
-            "connectedPartyStatus": false,
-            "reasonForBorrow": "We needed the money."
-          }
-        ]
-      },
       "optBonds": {
-        "recordVersion": "001",
         "bondsWereAdded": true,
         "bondsWereDisposed": false,
         "bondTransactions": [
@@ -260,26 +243,7 @@ body:json {
             "costOfBonds": 10234.56,
             "optConnectedPartyStatus": false,
             "bondsUnregulated": false,
-            "totalIncomeOrReceipts": 50,
-            "optBondsDisposed": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateSold": "2022-11-30",
-                "optAmountReceived": 12333.59,
-                "optBondsPurchaserName": "Happy Bond Buyers Inc.",
-                "optConnectedPartyStatus": false,
-                "totalNowHeld": 120
-              },
-              {
-                "methodOfDisposal": "Transferred",
-                "totalNowHeld": 12
-              },
-              {
-                "methodOfDisposal": "Other",
-                "optOtherMethod": "OtherMethod",
-                "totalNowHeld": 10
-              }
-            ]
+            "totalIncomeOrReceipts": 50
           },
           {
             "nameOfBonds": "Really Goods Bonds ABC",
@@ -293,7 +257,6 @@ body:json {
         ]
       },
       "optOtherAssets": {
-        "recordVersion": "001",
         "otherAssetsWereHeld": true,
         "otherAssetsWereDisposed": false,
         "otherAssetTransactions": [
@@ -310,46 +273,12 @@ body:json {
             "optConnectedStatus": false,
             "optIndepValuationSupport": false,
             "movableSchedule29A": false,
-            "totalIncomeOrReceipts": 34.56,
-            "optOtherAssetDisposed": [
-              {
-                "methodOfDisposal": "Sold",
-                "optDateSold": "2022-11-30",
-                "optPurchaserName": "Acme Express Ltd.",
-                "optPropertyAcquiredFrom": {
-                  "identityType": "individual",
-                  "idNumber": "SX123456A"
-                },
-                "optTotalAmountReceived": 12333.59,
-                "optConnectedStatus": false,
-                "optSupportedByIndepValuation": false,
-                "anyPartAssetStillHeld": true
-              },
-              {
-                "methodOfDisposal": "Transferred",
-                "anyPartAssetStillHeld": true
-              },
-              {
-                "methodOfDisposal": "Other",
-                "optOtherMethod": "OtherMethod",
-                "anyPartAssetStillHeld": true
-              }
-            ]
+            "totalIncomeOrReceipts": 34.56
           }
         ]
       }
     },
     "membersPayments": {
-      "recordVersion": "001",
-      "employerContributionMade": false,
-      "unallocatedContribsMade": false,
-      "employerContributionMade": true,
-      "transfersInMade": true,
-      "transfersOutMade": true,
-      "lumpSumReceived": true,
-      "memberContributionMade": true,
-      "pensionReceived": true,
-      "surrenderMade": true,
       "memberDetails": [
         {
           "personalDetails": {
@@ -398,13 +327,7 @@ body:json {
                 "value": "76509173AA"
               }
             }
-          ],
-          "benefitsSurrendered": {
-            "totalSurrendered": 12.34,
-            "dateOfSurrender": "2022-12-12",
-            "surrenderReason": "some reason"
-          },
-          "pensionAmountReceived": 12.34
+          ]
         },
         {
           "personalDetails": {
@@ -471,13 +394,7 @@ body:json {
                 "value": "other value"
               }
             }
-          ],
-          "benefitsSurrendered": {
-            "totalSurrendered": 12.34,
-            "dateOfSurrender": "2022-12-12",
-            "surrenderReason": "some reason"
-          },
-          "pensionAmountReceived": 12.34
+          ]
         }
       ]
     },
