@@ -316,11 +316,7 @@
             "$ref": "#/definitions/bondTransactionDetailsType"
           }
         }
-      },
-      "required": [
-        "bondsWereAdded",
-        "bondsWereDisposed"
-      ]
+      }
     },
     "booleanType": {
       "description": "Boolean type - options are 'Yes' or 'No'",
@@ -939,9 +935,7 @@
           },
           "required": [
             "methodOfHolding",
-            "totalCostOfLandOrProperty",
-            "landOrPropertyLeased",
-            "totalIncomeOrReceipts"
+            "totalCostOfLandOrProperty"
           ]
         },
         "disposedPropertyTransaction": {
@@ -1035,10 +1029,7 @@
             "$ref": "#/definitions/landOrPropertyTransactionDetailsType"
           }
         }
-      },
-      "required": [
-        "disposeAnyLandOrProperty"
-      ]
+      }
     },
     "leaseDetailsType": {
       "type": "object",
@@ -1061,13 +1052,7 @@
           "description": "Q24p: What is the annual lease amount?",
           "$ref": "#/definitions/currencyType"
         }
-      },
-      "required": [
-        "lesseeName",
-        "connectedPartyStatus",
-        "leaseGrantDate",
-        "annualLeaseAmount"
-      ]
+      }
     },
     "loanTransactionDetailType": {
       "type": "object",
@@ -1161,11 +1146,7 @@
         "loanPeriodInMonths",
         "equalInstallments",
         "loanInterestRate",
-        "securityGiven",
-        "capRepaymentCY",
-        "intReceivedCY",
-        "arrearsPrevYears",
-        "amountOutstanding"
+        "securityGiven"
       ]
     },
     "loansType": {
@@ -1192,10 +1173,7 @@
             "$ref": "#/definitions/loanTransactionDetailType"
           }
         }
-      },
-      "required": [
-        "schemeHadLoans"
-      ]
+      }
     },
     "memberDetailsType": {
       "type": "object",
@@ -1500,9 +1478,7 @@
       "required": [
         "assetDescription",
         "methodOfHolding",
-        "costOfAsset",
-        "movableSchedule29A",
-        "totalIncomeOrReceipts"
+        "costOfAsset"
       ]
     },
     "otherAssetsType": {
@@ -1534,11 +1510,7 @@
             "$ref": "#/definitions/otherAssetTransactionDetailsType"
           }
         }
-      },
-      "required": [
-        "otherAssetsWereHeld",
-        "otherAssetsWereDisposed"
-      ]
+      }
     },
     "percentage2DecType": {
       "type": "number",
@@ -1840,8 +1812,7 @@
                   "acquiredFromName",
                   "acquiredFromType",
                   "costOfShares",
-                  "supportedByIndepValuation",
-                  "totalDividendsOrReceipts"
+                  "supportedByIndepValuation"
                 ]
               },
               "disposedSharesTransaction": {
@@ -1959,16 +1930,7 @@
           "description": "Q23: What is the total value of quoted shares held?",
           "$ref": "#/definitions/currencyType"
         }
-      },
-      "required": [
-        "sponsorEmployerSharesWereHeld",
-        "unquotedSharesWereHeld",
-        "connectedPartySharesWereHeld",
-        "sponsorEmployerSharesWereDisposed",
-        "unquotedSharesWereDisposed",
-        "connectedPartySharesWereDisposed",
-        "totalValueQuotedShares"
-      ]
+      }
     },
     "string160Type": {
       "description": "String with minLength 1 and maxLength 160",
