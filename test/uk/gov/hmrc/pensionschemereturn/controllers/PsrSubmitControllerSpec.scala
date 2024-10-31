@@ -497,7 +497,7 @@ object PsrSubmitControllerSpec {
       |  },
       |  "assets": {
       |    "optLandOrProperty": {
-      |      "landOrPropertyHeld": true,
+      |      "optLandOrPropertyHeld": true,
       |      "disposeAnyLandOrProperty": true,
       |      "landOrPropertyTransactions": [
       |        {
