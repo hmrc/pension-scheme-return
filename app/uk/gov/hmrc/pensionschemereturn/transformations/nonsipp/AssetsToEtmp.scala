@@ -34,11 +34,16 @@ class AssetsToEtmp @Inject() extends Transformer {
         landOrProperty =>
           EtmpLandOrProperty(
             recordVersion = landOrProperty.recordVersion,
-            heldAnyLandOrProperty = toYesNo(landOrProperty.landOrPropertyHeld),
-            disposeAnyLandOrProperty = toYesNo(landOrProperty.disposeAnyLandOrProperty),
-            noOfTransactions =
-              Option.when(landOrProperty.landOrPropertyHeld)(landOrProperty.landOrPropertyTransactions.size),
-            landOrPropertyTransactions = Option.when(landOrProperty.landOrPropertyHeld)(
+            heldAnyLandOrProperty = landOrProperty.optLandOrPropertyHeld.map(toYesNo),
+            disposeAnyLandOrProperty = landOrProperty.optDisposeAnyLandOrProperty.map(toYesNo),
+            noOfTransactions = Option
+              .when(landOrProperty.optLandOrPropertyHeld.getOrElse(false))(
+                landOrProperty.landOrPropertyTransactions.size
+              ),
+            landOrPropertyTransactions = Option.when(
+              landOrProperty.landOrPropertyTransactions.nonEmpty ||
+                (landOrProperty.optLandOrPropertyHeld.nonEmpty && landOrProperty.optLandOrPropertyHeld.get)
+            )(
               landOrProperty.landOrPropertyTransactions.map(
                 landOrPropertyTransaction => {
 
@@ -84,19 +89,19 @@ class AssetsToEtmp @Inject() extends Transformer {
                         heldPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
                       totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
                       indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                      residentialSchedule29A = toYesNo(heldPropertyTransaction.isLandOrPropertyResidential),
-                      landOrPropertyLeased = toYesNo(heldPropertyTransaction.landOrPropertyLeased),
+                      residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
+                      landOrPropertyLeased = heldPropertyTransaction.optLandOrPropertyLeased.map(toYesNo),
                       leaseDetails = heldPropertyTransaction.optLeaseDetails.map(
                         leaseDetails =>
                           EtmpLeaseDetails(
-                            lesseeName = leaseDetails.lesseeName,
+                            lesseeName = leaseDetails.optLesseeName,
                             connectedPartyStatus =
-                              transformToEtmpConnectedPartyStatus(leaseDetails.connectedPartyStatus),
-                            leaseGrantDate = leaseDetails.leaseGrantDate,
-                            annualLeaseAmount = leaseDetails.annualLeaseAmount
+                              leaseDetails.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                            leaseGrantDate = leaseDetails.optLeaseGrantDate,
+                            annualLeaseAmount = leaseDetails.optAnnualLeaseAmount
                           )
                       ),
-                      totalIncomeOrReceipts = heldPropertyTransaction.totalIncomeOrReceipts
+                      totalIncomeOrReceipts = heldPropertyTransaction.optTotalIncomeOrReceipts
                     ),
                     disposedPropertyTransaction = optDisposedPropertyTransaction
                       .map(

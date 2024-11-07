@@ -145,8 +145,8 @@ trait TestValues {
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = true,
-        disposeAnyLandOrProperty = true,
+        optLandOrPropertyHeld = Some(true),
+        optDisposeAnyLandOrProperty = Some(true),
         landOrPropertyTransactions = Seq(
           LandOrPropertyTransactions(
             propertyDetails = PropertyDetails(
@@ -170,17 +170,17 @@ trait TestValues {
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = true,
+              optIsLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
-                  lesseeName = "lesseeName",
-                  leaseGrantDate = sampleToday,
-                  annualLeaseAmount = Double.MaxValue,
-                  connectedPartyStatus = true
+                  optLesseeName = Some("lesseeName"),
+                  optLeaseGrantDate = Some(sampleToday),
+                  optAnnualLeaseAmount = Some(Double.MaxValue),
+                  optConnectedPartyStatus = Some(true)
                 )
               ),
-              landOrPropertyLeased = true,
-              totalIncomeOrReceipts = Double.MaxValue
+              optLandOrPropertyLeased = Some(true),
+              optTotalIncomeOrReceipts = Some(Double.MaxValue)
             ),
             optDisposedPropertyTransaction = Some(
               Seq(
@@ -505,8 +505,8 @@ trait TestValues {
 
   private val sampleEtmpLandOrProperty: EtmpLandOrProperty = EtmpLandOrProperty(
     recordVersion = Some("001"),
-    heldAnyLandOrProperty = "Yes",
-    disposeAnyLandOrProperty = "Yes",
+    heldAnyLandOrProperty = Some("Yes"),
+    disposeAnyLandOrProperty = Some("Yes"),
     noOfTransactions = Some(1),
     landOrPropertyTransactions = Some(
       List(
@@ -535,17 +535,17 @@ trait TestValues {
             connectedPartyStatus = Some("01"),
             totalCostOfLandOrProperty = Double.MaxValue,
             indepValuationSupport = Some("Yes"),
-            residentialSchedule29A = "Yes",
-            landOrPropertyLeased = "Yes",
+            residentialSchedule29A = Some("Yes"),
+            landOrPropertyLeased = Some("Yes"),
             leaseDetails = Some(
               EtmpLeaseDetails(
-                lesseeName = "lesseeName",
-                connectedPartyStatus = "01",
-                leaseGrantDate = sampleToday,
-                annualLeaseAmount = Double.MaxValue
+                lesseeName = Some("lesseeName"),
+                connectedPartyStatus = Some("01"),
+                leaseGrantDate = Some(sampleToday),
+                annualLeaseAmount = Some(Double.MaxValue)
               )
             ),
-            totalIncomeOrReceipts = Double.MaxValue
+            totalIncomeOrReceipts = Some(Double.MaxValue)
           ),
           disposedPropertyTransaction = Some(
             List(

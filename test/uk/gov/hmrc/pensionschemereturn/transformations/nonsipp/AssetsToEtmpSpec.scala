@@ -38,8 +38,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     optLandOrProperty = Some(
       LandOrProperty(
         recordVersion = Some("001"),
-        landOrPropertyHeld = true,
-        disposeAnyLandOrProperty = true,
+        optLandOrPropertyHeld = Some(true),
+        optDisposeAnyLandOrProperty = Some(true),
         landOrPropertyTransactions = List(
           LandOrPropertyTransactions(
             propertyDetails = PropertyDetails(
@@ -63,17 +63,17 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
               optConnectedPartyStatus = Some(true),
               totalCostOfLandOrProperty = Double.MaxValue,
               optIndepValuationSupport = Some(true),
-              isLandOrPropertyResidential = true,
+              optIsLandOrPropertyResidential = Some(true),
               optLeaseDetails = Some(
                 LeaseDetails(
-                  lesseeName = "lesseeName",
-                  leaseGrantDate = today,
-                  annualLeaseAmount = Double.MaxValue,
-                  connectedPartyStatus = false
+                  optLesseeName = Some("lesseeName"),
+                  optLeaseGrantDate = Some(today),
+                  optAnnualLeaseAmount = Some(Double.MaxValue),
+                  optConnectedPartyStatus = Some(false)
                 )
               ),
-              landOrPropertyLeased = true,
-              totalIncomeOrReceipts = Double.MaxValue
+              optLandOrPropertyLeased = Some(true),
+              optTotalIncomeOrReceipts = Some(Double.MaxValue)
             ),
             optDisposedPropertyTransaction = Some(
               Seq(
@@ -296,8 +296,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     landOrProperty = Some(
       EtmpLandOrProperty(
         recordVersion = Some("001"),
-        heldAnyLandOrProperty = Yes,
-        disposeAnyLandOrProperty = Yes,
+        heldAnyLandOrProperty = Some(Yes),
+        disposeAnyLandOrProperty = Some(Yes),
         noOfTransactions = Some(1),
         landOrPropertyTransactions = Some(
           Seq(
@@ -326,17 +326,17 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 connectedPartyStatus = Some(Connected),
                 totalCostOfLandOrProperty = Double.MaxValue,
                 indepValuationSupport = Some(Yes),
-                residentialSchedule29A = Yes,
-                landOrPropertyLeased = Yes,
+                residentialSchedule29A = Some(Yes),
+                landOrPropertyLeased = Some(Yes),
                 leaseDetails = Some(
                   EtmpLeaseDetails(
-                    lesseeName = "lesseeName",
-                    connectedPartyStatus = Unconnected,
-                    leaseGrantDate = today,
-                    annualLeaseAmount = Double.MaxValue
+                    lesseeName = Some("lesseeName"),
+                    connectedPartyStatus = Some(Unconnected),
+                    leaseGrantDate = Some(today),
+                    annualLeaseAmount = Some(Double.MaxValue)
                   )
                 ),
-                totalIncomeOrReceipts = Double.MaxValue
+                totalIncomeOrReceipts = Some(Double.MaxValue)
               ),
               disposedPropertyTransaction = Some(
                 Seq(
@@ -644,8 +644,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         optLandOrProperty = Some(
           LandOrProperty(
             recordVersion = None,
-            landOrPropertyHeld = true,
-            disposeAnyLandOrProperty = false,
+            optLandOrPropertyHeld = Some(true),
+            optDisposeAnyLandOrProperty = Some(false),
             landOrPropertyTransactions = List(
               LandOrPropertyTransactions(
                 propertyDetails = PropertyDetails(
@@ -676,10 +676,10 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   optConnectedPartyStatus = Some(false),
                   totalCostOfLandOrProperty = Double.MaxValue,
                   optIndepValuationSupport = Some(false),
-                  isLandOrPropertyResidential = false,
+                  optIsLandOrPropertyResidential = Some(false),
                   optLeaseDetails = None,
-                  landOrPropertyLeased = false,
-                  totalIncomeOrReceipts = Double.MaxValue
+                  optLandOrPropertyLeased = Some(false),
+                  optTotalIncomeOrReceipts = Some(Double.MaxValue)
                 ),
                 optDisposedPropertyTransaction = Some(
                   Seq.empty
@@ -785,8 +785,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         landOrProperty = Some(
           EtmpLandOrProperty(
             recordVersion = None,
-            heldAnyLandOrProperty = Yes,
-            disposeAnyLandOrProperty = No,
+            heldAnyLandOrProperty = Option(Yes),
+            disposeAnyLandOrProperty = Option(No),
             noOfTransactions = Some(1),
             landOrPropertyTransactions = Some(
               Seq(
@@ -823,10 +823,10 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                     connectedPartyStatus = Some(Unconnected),
                     totalCostOfLandOrProperty = Double.MaxValue,
                     indepValuationSupport = Some(No),
-                    residentialSchedule29A = No,
-                    landOrPropertyLeased = No,
+                    residentialSchedule29A = Some(No),
+                    landOrPropertyLeased = Some(No),
                     leaseDetails = None,
-                    totalIncomeOrReceipts = Double.MaxValue
+                    totalIncomeOrReceipts = Some(Double.MaxValue)
                   ),
                   disposedPropertyTransaction = None
                 )
