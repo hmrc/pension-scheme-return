@@ -22,14 +22,17 @@ import play.api.http.Status
 import uk.gov.hmrc.pensionschemereturn.config.Constants._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.pensionschemereturn.models.Srn
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import play.api.mvc.Results.Ok
 import org.mockito.ArgumentMatchers.any
 import utils.BaseSpec
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
+import uk.gov.hmrc.pensionschemereturn.config.Constants
 import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers
+import play.api.mvc.Results.Ok
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -94,7 +97,7 @@ class PsrAuthSpec extends BaseSpec {
     override protected val schemeDetailsConnector: SchemeDetailsConnector = mockSchemeDetailsConnector
   }
 
-  "PsrAuth" should {
+  "authorisedAsPsrUser" should {
 
     "fail when srn is not in valid format" in {
       val result = auth.authorisedAsPsrUser("INVALID_SRN")(body)
@@ -121,7 +124,9 @@ class PsrAuthSpec extends BaseSpec {
       verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
       verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
     }
+  }
 
+  "authorisedAsPsrUser without a `requestRole` header present" should {
     "fail when it's not possible to authorise as the scheme is not associated with the user" in {
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(Some(externalId), psaEnrolment)))
@@ -155,6 +160,130 @@ class PsrAuthSpec extends BaseSpec {
       status(result) mustBe Status.OK
       verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
       verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+  }
+
+  "authorisedAsPsrUser with a `requestRole` header present" should {
+    "throw BadRequestException when request role is not allowed value" in {
+      val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "xxx")
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some(externalId), psaEnrolment)))
+
+      intercept[BadRequestException](
+        Await.result(auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req), Duration.Inf)
+      )
+      verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, never).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "throw UnauthorizedException when it's not possible to authorise PSA as the scheme is not associated with the user" in {
+      val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "PSA")
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some(externalId), psaEnrolment)))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      intercept[UnauthorizedException](
+        Await.result(auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req), Duration.Inf)
+      )
+      verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "authorisedAsPsrUser with a `requestRole` header value 'PSA' present" should {
+      "throw UnauthorizedException when it's not possible to authorise PSA as the scheme is only associated with the user as a PSP" in {
+        val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "PSA")
+        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some(externalId), psaEnrolment)))
+        when(
+          mockSchemeDetailsConnector
+            .checkAssociation(any(), ArgumentMatchers.eq(Constants.pspId), ArgumentMatchers.eq(Srn(srn).value))(
+              any(),
+              any()
+            )
+        ).thenReturn(Future.successful(true))
+        when(
+          mockSchemeDetailsConnector
+            .checkAssociation(any(), ArgumentMatchers.eq(Constants.psaId), ArgumentMatchers.eq(Srn(srn).value))(
+              any(),
+              any()
+            )
+        ).thenReturn(Future.successful(false))
+
+        intercept[UnauthorizedException](
+          Await.result(auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req), Duration.Inf)
+        )
+        verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+      }
+
+      "return ok when PSA is associated" in {
+        val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "psA")
+        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some(externalId), psaEnrolment)))
+        when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(true))
+
+        val result = auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req)
+        status(result) mustBe Status.OK
+        verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+      }
+    }
+
+    "authorisedAsPsrUser with a `requestRole` header value 'PSP' present" should {
+      "throw UnauthorizedException when it's not possible to authorise PSP as the scheme is not associated with the user" in {
+        val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "PSP")
+        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some(externalId), pspEnrolment)))
+        when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(false))
+
+        intercept[UnauthorizedException](
+          Await.result(auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req), Duration.Inf)
+        )
+        verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+      }
+
+      "throw UnauthorizedException when it's not possible to authorise PSP as the scheme is only associated with the user as a PSA" in {
+        val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "PSP")
+        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some(externalId), pspEnrolment)))
+        when(
+          mockSchemeDetailsConnector
+            .checkAssociation(any(), ArgumentMatchers.eq(Constants.psaId), ArgumentMatchers.eq(Srn(srn).value))(
+              any(),
+              any()
+            )
+        ).thenReturn(Future.successful(true))
+        when(
+          mockSchemeDetailsConnector
+            .checkAssociation(any(), ArgumentMatchers.eq(Constants.pspId), ArgumentMatchers.eq(Srn(srn).value))(
+              any(),
+              any()
+            )
+        ).thenReturn(Future.successful(false))
+
+        intercept[UnauthorizedException](
+          Await.result(auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req), Duration.Inf)
+        )
+        verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+      }
+
+      "return ok when PSP is associated" in {
+        val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(requestRoleHeader -> "psP")
+        when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(Some(externalId), pspEnrolment)))
+        when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(true))
+
+        val result = auth.authorisedAsPsrUser(srn)(body)(implicitly, implicitly, req)
+        status(result) mustBe Status.OK
+        verify(mockAuthConnector, times(1)).authorise[Option[String] ~ Enrolments](any(), any())(any(), any())
+        verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+      }
     }
   }
 }

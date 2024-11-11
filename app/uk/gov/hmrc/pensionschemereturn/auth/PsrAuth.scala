@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.auth
 
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.pensionschemereturn.config.Constants._
-import uk.gov.hmrc.auth.core.{AuthorisedFunctions, Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{~, Retrieval}
 import play.api.Logging
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
@@ -58,16 +58,14 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
         authorised(AuthPredicate)
           .retrieve(PsrRetrievals) {
             case Some(externalId) ~ enrolments =>
-              getPsaPspId(enrolments) match {
-                case Some((psaPspId, credentialRole, idType)) =>
-                  schemeDetailsConnector.checkAssociation(psaPspId, idType, srn).flatMap {
-                    case true => block(PsrAuthContext(externalId, psaPspId, credentialRole, request))
-                    case false =>
-                      Future
-                        .failed(new UnauthorizedException("Not Authorised - scheme is not associated with the user"))
-                  }
-
-                case psa => Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
+              request.headers.get(requestRoleHeader).map(_.toUpperCase()) match {
+                case Some(PSA) =>
+                  checkPsa(srn, externalId, enrolments)(block)
+                case Some(PSP) =>
+                  checkPsp(srn, externalId, enrolments)(block)
+                case None =>
+                  checkPsaOrPsp(srn, externalId, enrolments)(block)
+                case _ => Future.failed(new BadRequestException(s"Bad Request invalid $requestRoleHeader header value"))
               }
             case _ =>
               Future.failed(new UnauthorizedException("Not Authorised - Unable to retrieve credentials - externalId"))
@@ -75,6 +73,59 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
       case _ => Future.successful(BadRequest("Invalid scheme reference number"))
     }
 
+  private def checkPsa[A](srn: Srn, externalId: String, enrolments: Enrolments)(
+    block: PsrAction[A]
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, request: Request[A]): Future[Result] =
+    getPsaId(enrolments) match {
+      case Some(id) =>
+        schemeDetailsConnector.checkAssociation(id, psaId, srn).flatMap {
+          case true => block(PsrAuthContext(externalId, id, psaId, request))
+          case false =>
+            Future
+              .failed(
+                new UnauthorizedException("Not Authorised - scheme is not associated with the PSA")
+              )
+        }
+
+      case psa =>
+        Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
+    }
+
+  private def checkPsp[A](srn: Srn, externalId: String, enrolments: Enrolments)(
+    block: PsrAction[A]
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, request: Request[A]): Future[Result] =
+    getPspId(enrolments) match {
+      case Some(id) =>
+        schemeDetailsConnector.checkAssociation(id, pspId, srn).flatMap {
+          case true => block(PsrAuthContext(externalId, id, pspId, request))
+          case false =>
+            Future
+              .failed(
+                new UnauthorizedException("Not Authorised - scheme is not associated with the PSP")
+              )
+        }
+
+      case psp =>
+        Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psp"))
+    }
+
+  private def checkPsaOrPsp[A](srn: Srn, externalId: String, enrolments: Enrolments)(
+    block: PsrAction[A]
+  )(implicit ec: ExecutionContext, hc: HeaderCarrier, request: Request[A]): Future[Result] =
+    getPsaPspId(enrolments) match {
+      case Some((psaPspId, credentialRole, idType)) =>
+        schemeDetailsConnector.checkAssociation(psaPspId, idType, srn).flatMap {
+          case true => block(PsrAuthContext(externalId, psaPspId, credentialRole, request))
+          case false =>
+            Future
+              .failed(
+                new UnauthorizedException("Not Authorised - scheme is not associated with the user")
+              )
+        }
+
+      case psa =>
+        Future.failed(new BadRequestException(s"Bad Request without psaPspId/credentialRole $psa"))
+    }
   private def getPsaId(enrolments: Enrolments): Option[String] =
     enrolments
       .getEnrolment(psaEnrolmentKey)
@@ -96,4 +147,19 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
           case _ => None
         }
     }
+
+  object IsPSA {
+    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+      enrolments.enrolments
+        .find(_.key == psaEnrolmentKey)
+        .flatMap(_.getIdentifier(psaId.toUpperCase))
+  }
+
+  object IsPSP {
+    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
+      enrolments.enrolments
+        .find(_.key == pspEnrolmentKey)
+        .flatMap(_.getIdentifier(pspId.toUpperCase))
+  }
+
 }

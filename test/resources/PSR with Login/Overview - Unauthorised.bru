@@ -1,0 +1,31 @@
+meta {
+  name: Overview - Unauthorised
+  type: http
+  seq: 30
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/overview/24000001IN?fromDate=2024-04-05&toDate=2024-04-05
+  body: none
+  auth: bearer
+}
+
+query {
+  fromDate: 2024-04-05
+  toDate: 2024-04-05
+}
+
+headers {
+  srn: S2400000041
+  requestRole: PSA
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 401", function () {
+      expect(res.getStatus()).to.equal(401);
+  });
+}
