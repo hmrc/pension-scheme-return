@@ -147,19 +147,4 @@ trait PsrAuth extends AuthorisedFunctions with Logging {
           case _ => None
         }
     }
-
-  object IsPSA {
-    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
-      enrolments.enrolments
-        .find(_.key == psaEnrolmentKey)
-        .flatMap(_.getIdentifier(psaId.toUpperCase))
-  }
-
-  object IsPSP {
-    def unapply(enrolments: Enrolments): Option[EnrolmentIdentifier] =
-      enrolments.enrolments
-        .find(_.key == pspEnrolmentKey)
-        .flatMap(_.getIdentifier(pspId.toUpperCase))
-  }
-
 }
