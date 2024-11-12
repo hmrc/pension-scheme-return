@@ -1,0 +1,31 @@
+meta {
+  name: Overview - Authorised as PSP
+  type: http
+  seq: 32
+}
+
+get {
+  url: {{pension-scheme-return}}/psr/overview/24000041IN?fromDate=2024-04-05&toDate=2024-04-05
+  body: none
+  auth: bearer
+}
+
+query {
+  fromDate: 2024-04-05
+  toDate: 2024-04-05
+}
+
+headers {
+  srn: S2400000041
+  requestRole: PSP
+}
+
+auth:bearer {
+  token: {{bearer_token}}
+}
+
+tests {
+  test("Status code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+}
