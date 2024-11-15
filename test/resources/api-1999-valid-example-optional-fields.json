@@ -233,10 +233,7 @@
         "loanInterestRate": 5.55,
         "securityGiven": "Yes",
         "securityDetails": "Japanese ming vase #344343444.",
-        "capRepaymentCY": 5000,
-        "intReceivedCY": 555,
-        "arrearsPrevYears": "No",
-        "amountOutstanding": 5000
+        "intReceivedCY": 555
       }
     ]
   },

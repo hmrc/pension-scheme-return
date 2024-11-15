@@ -44,6 +44,8 @@ trait Transformer {
 
   protected def optToYesNo(optValue: Option[?]): String = optValue.map(_ => Yes).getOrElse(No)
 
+  protected def optToOptYesNo(optValue: Option[_]): Option[String] = optValue.map(_ => Some(Yes)).getOrElse(Some(No))
+
   protected def fromYesNo(value: String): Boolean = value == Yes
 
   protected def toEtmpIdentityType(

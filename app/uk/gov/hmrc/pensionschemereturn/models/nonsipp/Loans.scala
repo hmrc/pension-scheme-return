@@ -20,11 +20,23 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-case class LoanPeriod(dateOfLoan: LocalDate, loanTotalSchemeAssets: Double, loanPeriodInMonths: Int)
+case class LoanPeriod(
+  dateOfLoan: LocalDate,
+  loanTotalSchemeAssets: Double,
+  loanPeriodInMonths: Int
+)
 
-case class LoanAmountDetails(loanAmount: Double, capRepaymentCY: Double, amountOutstanding: Double)
+case class LoanAmountDetails(
+  loanAmount: Double,
+  optCapRepaymentCY: Option[Double],
+  optAmountOutstanding: Option[Double]
+)
 
-case class LoanInterestDetails(loanInterestAmount: Double, loanInterestRate: Double, intReceivedCY: Double)
+case class LoanInterestDetails(
+  loanInterestAmount: Double,
+  loanInterestRate: Double,
+  intReceivedCY: Double
+)
 
 case class RecipientIdentityType(
   identityType: IdentityType,
@@ -46,7 +58,11 @@ case class LoanTransactions(
   optOutstandingArrearsOnLoan: Option[Double]
 )
 
-case class Loans(recordVersion: Option[String], schemeHadLoans: Boolean, loanTransactions: Seq[LoanTransactions])
+case class Loans(
+  recordVersion: Option[String],
+  schemeHadLoans: Boolean,
+  loanTransactions: Seq[LoanTransactions]
+)
 
 object Loans {
   private implicit val formatLoanInterestDetails: OFormat[LoanInterestDetails] = Json.format[LoanInterestDetails]

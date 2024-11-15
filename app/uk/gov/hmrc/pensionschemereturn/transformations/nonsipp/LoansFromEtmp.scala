@@ -56,8 +56,8 @@ class LoansFromEtmp @Inject() extends Transformer {
             ),
             loanAmountDetails = LoanAmountDetails(
               loanAmount = loanTransaction.loanAmount,
-              capRepaymentCY = loanTransaction.capRepaymentCY,
-              amountOutstanding = loanTransaction.amountOutstanding
+              optCapRepaymentCY = loanTransaction.capRepaymentCY,
+              optAmountOutstanding = loanTransaction.amountOutstanding
             ),
             equalInstallments = fromYesNo(loanTransaction.equalInstallments),
             loanInterestDetails = LoanInterestDetails(

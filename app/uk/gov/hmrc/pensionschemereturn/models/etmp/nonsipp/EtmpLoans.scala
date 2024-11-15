@@ -42,11 +42,11 @@ case class EtmpLoanTransactions(
   loanInterestRate: Double,
   securityGiven: String,
   securityDetails: Option[String],
-  capRepaymentCY: Double,
+  capRepaymentCY: Option[Double],
   intReceivedCY: Double,
-  arrearsPrevYears: String,
+  arrearsPrevYears: Option[String],
   amountOfArrears: Option[Double],
-  amountOutstanding: Double
+  amountOutstanding: Option[Double]
 )
 
 object EtmpLoans {
