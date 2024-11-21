@@ -24,7 +24,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments._
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
-class MemberPaymentsTransformer @Inject()(
+class MemberPaymentsTransformer @Inject() (
   employerContributionsTransformer: EmployerContributionsTransformer,
   memberPersonalDetailsTransformer: MemberPersonalDetailsTransformer,
   transferInTransformer: TransferInTransformer,
@@ -67,15 +67,15 @@ class MemberPaymentsTransformer @Inject()(
             case Nil => None
             case list => Some(list)
           },
-          memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(
-            x => List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
+          memberLumpSumReceived = memberDetails.memberLumpSumReceived.map(x =>
+            List(EtmpMemberLumpSumReceived(x.lumpSumAmount, x.designatedPensionAmount))
           ),
           memberTransfersOut = memberDetails.transfersOut.map(transferOutTransformer.toEtmp) match {
             case Nil => None
             case list => Some(list)
           },
-          memberPensionSurrender = memberDetails.benefitsSurrendered.map(
-            x => List(EtmpPensionSurrender(x.totalSurrendered, x.dateOfSurrender, x.surrenderReason))
+          memberPensionSurrender = memberDetails.benefitsSurrendered.map(x =>
+            List(EtmpPensionSurrender(x.totalSurrendered, x.dateOfSurrender, x.surrenderReason))
           )
         )
       }
@@ -102,30 +102,29 @@ class MemberPaymentsTransformer @Inject()(
         employerContributions = employerContributions,
         totalContributions = member.totalContributions,
         transfersIn = transfersIn,
-        memberLumpSumReceived = member.memberLumpSumReceived.map(t => {
+        memberLumpSumReceived = member.memberLumpSumReceived.map { t =>
           val head = t.head
           MemberLumpSumReceived(head.lumpSumAmount, head.designatedPensionAmount)
-        }),
+        },
         transfersOut = transfersOut,
         benefitsSurrendered = pensionSurrenders.headOption,
         pensionAmountReceived = member.pensionAmountReceived
       )
     }
-    memberDetails.map(
-      details =>
-        MemberPayments(
-          recordVersion = out.recordVersion,
-          memberDetails = details,
-          employerContributionMade = out.employerContributionMade,
-          transfersInMade = out.schemeReceivedTransferIn,
-          transfersOutMade = out.schemeMadeTransferOut,
-          unallocatedContribsMade = out.unallocatedContribsMade.map(_.boolean),
-          unallocatedContribAmount = out.unallocatedContribAmount,
-          memberContributionMade = out.memberContributionMade,
-          lumpSumReceived = out.lumpSumReceived,
-          pensionReceived = out.pensionReceived,
-          surrenderMade = out.surrenderMade
-        )
+    memberDetails.map(details =>
+      MemberPayments(
+        recordVersion = out.recordVersion,
+        memberDetails = details,
+        employerContributionMade = out.employerContributionMade,
+        transfersInMade = out.schemeReceivedTransferIn,
+        transfersOutMade = out.schemeMadeTransferOut,
+        unallocatedContribsMade = out.unallocatedContribsMade.map(_.boolean),
+        unallocatedContribAmount = out.unallocatedContribAmount,
+        memberContributionMade = out.memberContributionMade,
+        lumpSumReceived = out.lumpSumReceived,
+        pensionReceived = out.pensionReceived,
+        surrenderMade = out.surrenderMade
+      )
     )
   }
 }

@@ -51,7 +51,7 @@ class EmailAuditEventSpec extends AnyFlatSpec with Matchers {
       "taxYear" -> "test tax year"
     )
 
-    event.auditType shouldBe "PensionSchemeReturnEmailEvent"
     event.details shouldBe expected
+    event.auditType shouldBe "PensionSchemeReturnEmailEvent"
   }
 }

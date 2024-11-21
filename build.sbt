@@ -1,12 +1,10 @@
-import CodeCoverageSettings.excludedPackages
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "pension-scheme-return"
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.12",
+    scalaVersion := "3.5.2",
     majorVersion := 0,
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision
@@ -18,12 +16,16 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-    // suppress warnings in generated routes files
-    scalacOptions += "-Wconf:src=routes/.*:s",
     scalafmtOnCompile := true,
     scalafixOnCompile := true,
     PlayKeys.playDefaultPort := 10700
+  )
+  .settings(scalacOptions ++= Seq(
+    "-feature",
+    "-deprecation",
+    "-Wconf:msg=unused import&src=conf/.*:s",
+    "-Wconf:msg=Flag.*repeatedly:s",
+    "-Wconf:src=routes/.*:s")
   )
   .settings(inConfig(Test)(testSettings) *)
   .settings(resolvers += Resolver.jcenterRepo)

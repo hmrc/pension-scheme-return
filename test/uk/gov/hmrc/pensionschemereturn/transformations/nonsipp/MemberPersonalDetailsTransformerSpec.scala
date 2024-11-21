@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments.MemberPersonalDetails
 import uk.gov.hmrc.pensionschemereturn.base.EtmpTransformerSpec
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMemberPersonalDetails
+import com.softwaremill.diffx.generic.auto.indicator
 
 class MemberPersonalDetailsTransformerSpec extends EtmpTransformerSpec {
 

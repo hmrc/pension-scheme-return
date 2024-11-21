@@ -30,235 +30,217 @@ class AssetsToEtmp @Inject() extends Transformer {
 
   def transform(assets: Assets): EtmpAssets =
     EtmpAssets(
-      landOrProperty = assets.optLandOrProperty.map(
-        landOrProperty =>
-          EtmpLandOrProperty(
-            recordVersion = landOrProperty.recordVersion,
-            heldAnyLandOrProperty = landOrProperty.optLandOrPropertyHeld.map(toYesNo),
-            disposeAnyLandOrProperty = landOrProperty.optDisposeAnyLandOrProperty.map(toYesNo),
-            noOfTransactions = Option
-              .when(landOrProperty.optLandOrPropertyHeld.getOrElse(false))(
-                landOrProperty.landOrPropertyTransactions.size
-              ),
-            landOrPropertyTransactions = Option.when(
-              landOrProperty.landOrPropertyTransactions.nonEmpty ||
-                (landOrProperty.optLandOrPropertyHeld.nonEmpty && landOrProperty.optLandOrPropertyHeld.get)
-            )(
-              landOrProperty.landOrPropertyTransactions.map(
-                landOrPropertyTransaction => {
+      landOrProperty = assets.optLandOrProperty.map(landOrProperty =>
+        EtmpLandOrProperty(
+          recordVersion = landOrProperty.recordVersion,
+          heldAnyLandOrProperty = landOrProperty.optLandOrPropertyHeld.map(toYesNo),
+          disposeAnyLandOrProperty = landOrProperty.optDisposeAnyLandOrProperty.map(toYesNo),
+          noOfTransactions = Option.when(landOrProperty.optLandOrPropertyHeld.getOrElse(false))(
+            landOrProperty.landOrPropertyTransactions.size
+          ),
+          landOrPropertyTransactions = Option.when(
+            landOrProperty.landOrPropertyTransactions.nonEmpty ||
+              (landOrProperty.optLandOrPropertyHeld.nonEmpty && landOrProperty.optLandOrPropertyHeld.get)
+          )(
+            landOrProperty.landOrPropertyTransactions.map { landOrPropertyTransaction =>
 
-                  val propertyDetails = landOrPropertyTransaction.propertyDetails
-                  val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
-                  val optDisposedPropertyTransaction = landOrPropertyTransaction.optDisposedPropertyTransaction
-                  val landRegistryReferenceExist = propertyDetails.landRegistryTitleNumberKey
-                  val landRegistryReferenceValue = propertyDetails.landRegistryTitleNumberValue
-                  val addressDetails = propertyDetails.addressDetails
+              val propertyDetails = landOrPropertyTransaction.propertyDetails
+              val heldPropertyTransaction = landOrPropertyTransaction.heldPropertyTransaction
+              val optDisposedPropertyTransaction = landOrPropertyTransaction.optDisposedPropertyTransaction
+              val landRegistryReferenceExist = propertyDetails.landRegistryTitleNumberKey
+              val landRegistryReferenceValue = propertyDetails.landRegistryTitleNumberValue
+              val addressDetails = propertyDetails.addressDetails
 
-                  EtmpLandOrPropertyTransactions(
-                    propertyDetails = EtmpPropertyDetails(
-                      landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
-                      addressDetails = EtmpAddress(
-                        addressLine1 = addressDetails.addressLine1,
-                        addressLine2 = addressDetails.addressLine2.getOrElse(addressDetails.town),
-                        addressLine3 = addressDetails.addressLine3,
-                        addressLine4 = addressDetails.addressLine2.map(_ => addressDetails.town),
-                        addressLine5 = if (!propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
-                        ukPostCode = if (propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
-                        countryCode = addressDetails.countryCode
-                      ),
-                      landRegistryDetails = EtmpLandRegistryDetails(
-                        toYesNo(landRegistryReferenceExist),
-                        Option.when(landRegistryReferenceExist)(landRegistryReferenceValue),
-                        Option.when(!landRegistryReferenceExist)(landRegistryReferenceValue)
+              EtmpLandOrPropertyTransactions(
+                propertyDetails = EtmpPropertyDetails(
+                  landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
+                  addressDetails = EtmpAddress(
+                    addressLine1 = addressDetails.addressLine1,
+                    addressLine2 = addressDetails.addressLine2.getOrElse(addressDetails.town),
+                    addressLine3 = addressDetails.addressLine3,
+                    addressLine4 = addressDetails.addressLine2.map(_ => addressDetails.town),
+                    addressLine5 = if (!propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
+                    ukPostCode = if (propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
+                    countryCode = addressDetails.countryCode
+                  ),
+                  landRegistryDetails = EtmpLandRegistryDetails(
+                    toYesNo(landRegistryReferenceExist),
+                    Option.when(landRegistryReferenceExist)(landRegistryReferenceValue),
+                    Option.when(!landRegistryReferenceExist)(landRegistryReferenceValue)
+                  )
+                ),
+                heldPropertyTransaction = EtmpHeldPropertyTransaction(
+                  methodOfHolding = schemeHoldLandPropertyToString(heldPropertyTransaction.methodOfHolding),
+                  dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
+                  propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
+                  propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(propertyAcquiredFrom =>
+                    toEtmpIdentityType(
+                      identityType = propertyAcquiredFrom.identityType,
+                      optIdNumber = propertyAcquiredFrom.idNumber,
+                      optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                      optOtherDescription = propertyAcquiredFrom.otherDescription
+                    )
+                  ),
+                  connectedPartyStatus =
+                    heldPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                  totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
+                  indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
+                  residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
+                  landOrPropertyLeased = heldPropertyTransaction.optLandOrPropertyLeased.map(toYesNo),
+                  leaseDetails = heldPropertyTransaction.optLeaseDetails.map(leaseDetails =>
+                    EtmpLeaseDetails(
+                      lesseeName = leaseDetails.optLesseeName,
+                      connectedPartyStatus =
+                        leaseDetails.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                      leaseGrantDate = leaseDetails.optLeaseGrantDate,
+                      annualLeaseAmount = leaseDetails.optAnnualLeaseAmount
+                    )
+                  ),
+                  totalIncomeOrReceipts = heldPropertyTransaction.optTotalIncomeOrReceipts
+                ),
+                disposedPropertyTransaction = optDisposedPropertyTransaction
+                  .map(
+                    _.map(disposedPropertyTransaction =>
+                      EtmpDisposedPropertyTransaction(
+                        methodOfDisposal = howDisposedToString(disposedPropertyTransaction.methodOfDisposal),
+                        otherMethod = disposedPropertyTransaction.optOtherMethod,
+                        dateOfSale = disposedPropertyTransaction.optDateOfSale,
+                        nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
+                        purchaseOrgDetails =
+                          disposedPropertyTransaction.optPropertyAcquiredFrom.map(propertyAcquiredFrom =>
+                            toEtmpIdentityType(
+                              identityType = propertyAcquiredFrom.identityType,
+                              optIdNumber = propertyAcquiredFrom.idNumber,
+                              optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                              optOtherDescription = propertyAcquiredFrom.otherDescription
+                            )
+                          ),
+                        saleProceeds = disposedPropertyTransaction.optSaleProceeds,
+                        connectedPartyStatus = disposedPropertyTransaction.optConnectedPartyStatus
+                          .map(transformToEtmpConnectedPartyStatus),
+                        indepValuationSupport = disposedPropertyTransaction.optIndepValuationSupport.map(toYesNo),
+                        portionStillHeld = toYesNo(disposedPropertyTransaction.portionStillHeld)
                       )
-                    ),
-                    heldPropertyTransaction = EtmpHeldPropertyTransaction(
-                      methodOfHolding = schemeHoldLandPropertyToString(heldPropertyTransaction.methodOfHolding),
-                      dateOfAcquisitionOrContribution = heldPropertyTransaction.dateOfAcquisitionOrContribution,
-                      propertyAcquiredFromName = heldPropertyTransaction.optPropertyAcquiredFromName,
-                      propertyAcquiredFrom = heldPropertyTransaction.optPropertyAcquiredFrom.map(
-                        propertyAcquiredFrom =>
+                    )
+                  )
+                  .filter(_.nonEmpty)
+              )
+            }
+          )
+        )
+      ),
+      borrowing = assets.optBorrowing.map(borrowing =>
+        EtmpBorrowing(
+          recordVersion = borrowing.recordVersion,
+          moneyWasBorrowed = toYesNo(borrowing.moneyWasBorrowed),
+          noOfBorrows = Option.when(borrowing.moneyWasBorrowed)(borrowing.moneyBorrowed.size),
+          moneyBorrowed = Option.when(borrowing.moneyWasBorrowed)(
+            borrowing.moneyBorrowed.map(mb =>
+              EtmpMoneyBorrowed(
+                dateOfBorrow = mb.dateOfBorrow,
+                schemeAssetsValue = mb.schemeAssetsValue,
+                amountBorrowed = mb.amountBorrowed,
+                interestRate = mb.interestRate,
+                borrowingFromName = mb.borrowingFromName,
+                connectedPartyStatus = transformToEtmpConnectedPartyStatus(mb.connectedPartyStatus),
+                reasonForBorrow = mb.reasonForBorrow
+              )
+            )
+          )
+        )
+      ),
+      bonds = assets.optBonds.map(bonds =>
+        EtmpBonds(
+          recordVersion = bonds.recordVersion,
+          bondsWereAdded = toYesNo(bonds.bondsWereAdded),
+          bondsWereDisposed = toYesNo(bonds.bondsWereDisposed),
+          noOfTransactions = Option.when(bonds.bondsWereAdded)(bonds.bondTransactions.size),
+          bondTransactions = Option.when(bonds.bondsWereAdded)(
+            bonds.bondTransactions.map(bondTransaction =>
+              EtmpBondTransactions(
+                nameOfBonds = bondTransaction.nameOfBonds,
+                methodOfHolding = schemeHoldBondToString(bondTransaction.methodOfHolding),
+                dateOfAcqOrContrib = bondTransaction.optDateOfAcqOrContrib,
+                costOfBonds = bondTransaction.costOfBonds,
+                connectedPartyStatus = bondTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                bondsUnregulated = toYesNo(bondTransaction.bondsUnregulated),
+                totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts,
+                bondsDisposed = bondTransaction.optBondsDisposed
+                  .map(
+                    _.map(bondsDisposed =>
+                      EtmpBondsDisposed(
+                        methodOfDisposal = howDisposedToString(bondsDisposed.methodOfDisposal),
+                        otherMethod = bondsDisposed.optOtherMethod,
+                        dateSold = bondsDisposed.optDateSold,
+                        amountReceived = bondsDisposed.optAmountReceived,
+                        bondsPurchaserName = bondsDisposed.optBondsPurchaserName,
+                        connectedPartyStatus = bondsDisposed.optConnectedPartyStatus
+                          .map(transformToEtmpConnectedPartyStatus),
+                        totalNowHeld = bondsDisposed.totalNowHeld
+                      )
+                    )
+                  )
+                  .filter(_.nonEmpty)
+              )
+            )
+          )
+        )
+      ),
+      otherAssets = assets.optOtherAssets.map(otherAssets =>
+        EtmpOtherAssets(
+          recordVersion = otherAssets.recordVersion,
+          otherAssetsWereHeld = toYesNo(otherAssets.otherAssetsWereHeld),
+          otherAssetsWereDisposed = toYesNo(otherAssets.otherAssetsWereDisposed),
+          noOfTransactions = Option.when(otherAssets.otherAssetsWereHeld)(otherAssets.otherAssetTransactions.size),
+          otherAssetTransactions = Option.when(otherAssets.otherAssetsWereHeld)(
+            otherAssets.otherAssetTransactions.map(otherAssetTransaction =>
+              EtmpOtherAssetTransaction(
+                assetDescription = otherAssetTransaction.assetDescription,
+                methodOfHolding = schemeHoldAssetToString(otherAssetTransaction.methodOfHolding),
+                dateOfAcqOrContrib = otherAssetTransaction.optDateOfAcqOrContrib,
+                costOfAsset = otherAssetTransaction.costOfAsset,
+                acquiredFromName = otherAssetTransaction.optPropertyAcquiredFromName,
+                acquiredFromType = otherAssetTransaction.optPropertyAcquiredFrom.map(propertyAcquiredFrom =>
+                  toEtmpIdentityType(
+                    identityType = propertyAcquiredFrom.identityType,
+                    optIdNumber = propertyAcquiredFrom.idNumber,
+                    optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
+                    optOtherDescription = propertyAcquiredFrom.otherDescription
+                  )
+                ),
+                connectedStatus = otherAssetTransaction.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
+                supportedByIndepValuation = otherAssetTransaction.optIndepValuationSupport.map(toYesNo),
+                movableSchedule29A = toYesNo(otherAssetTransaction.movableSchedule29A),
+                totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts,
+                assetsDisposed = otherAssetTransaction.optOtherAssetDisposed
+                  .map(
+                    _.map(otherAssetDisposed =>
+                      EtmpAssetsDisposed(
+                        methodOfDisposal = howDisposedToString(otherAssetDisposed.methodOfDisposal),
+                        otherMethod = otherAssetDisposed.optOtherMethod,
+                        dateSold = otherAssetDisposed.optDateSold,
+                        purchaserName = otherAssetDisposed.optPurchaserName,
+                        purchaserType = otherAssetDisposed.optPropertyAcquiredFrom.map(propertyAcquiredFrom =>
                           toEtmpIdentityType(
                             identityType = propertyAcquiredFrom.identityType,
                             optIdNumber = propertyAcquiredFrom.idNumber,
                             optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
                             optOtherDescription = propertyAcquiredFrom.otherDescription
                           )
-                      ),
-                      connectedPartyStatus =
-                        heldPropertyTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
-                      totalCostOfLandOrProperty = heldPropertyTransaction.totalCostOfLandOrProperty,
-                      indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                      residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
-                      landOrPropertyLeased = heldPropertyTransaction.optLandOrPropertyLeased.map(toYesNo),
-                      leaseDetails = heldPropertyTransaction.optLeaseDetails.map(
-                        leaseDetails =>
-                          EtmpLeaseDetails(
-                            lesseeName = leaseDetails.optLesseeName,
-                            connectedPartyStatus =
-                              leaseDetails.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
-                            leaseGrantDate = leaseDetails.optLeaseGrantDate,
-                            annualLeaseAmount = leaseDetails.optAnnualLeaseAmount
-                          )
-                      ),
-                      totalIncomeOrReceipts = heldPropertyTransaction.optTotalIncomeOrReceipts
-                    ),
-                    disposedPropertyTransaction = optDisposedPropertyTransaction
-                      .map(
-                        _.map(
-                          disposedPropertyTransaction =>
-                            EtmpDisposedPropertyTransaction(
-                              methodOfDisposal = howDisposedToString(disposedPropertyTransaction.methodOfDisposal),
-                              otherMethod = disposedPropertyTransaction.optOtherMethod,
-                              dateOfSale = disposedPropertyTransaction.optDateOfSale,
-                              nameOfPurchaser = disposedPropertyTransaction.optNameOfPurchaser,
-                              purchaseOrgDetails = disposedPropertyTransaction.optPropertyAcquiredFrom.map(
-                                propertyAcquiredFrom =>
-                                  toEtmpIdentityType(
-                                    identityType = propertyAcquiredFrom.identityType,
-                                    optIdNumber = propertyAcquiredFrom.idNumber,
-                                    optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-                                    optOtherDescription = propertyAcquiredFrom.otherDescription
-                                  )
-                              ),
-                              saleProceeds = disposedPropertyTransaction.optSaleProceeds,
-                              connectedPartyStatus = disposedPropertyTransaction.optConnectedPartyStatus
-                                .map(transformToEtmpConnectedPartyStatus),
-                              indepValuationSupport = disposedPropertyTransaction.optIndepValuationSupport.map(toYesNo),
-                              portionStillHeld = toYesNo(disposedPropertyTransaction.portionStillHeld)
-                            )
-                        )
+                        ),
+                        totalAmountReceived = otherAssetDisposed.optTotalAmountReceived,
+                        connectedStatus =
+                          otherAssetDisposed.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
+                        supportedByIndepValuation = otherAssetDisposed.optSupportedByIndepValuation.map(toYesNo),
+                        fullyDisposedOf = toYesNo(!otherAssetDisposed.anyPartAssetStillHeld)
                       )
-                      .filter(_.nonEmpty)
+                    )
                   )
-                }
+                  .filter(_.nonEmpty)
               )
             )
           )
-      ),
-      borrowing = assets.optBorrowing.map(
-        borrowing =>
-          EtmpBorrowing(
-            recordVersion = borrowing.recordVersion,
-            moneyWasBorrowed = toYesNo(borrowing.moneyWasBorrowed),
-            noOfBorrows = Option.when(borrowing.moneyWasBorrowed)(borrowing.moneyBorrowed.size),
-            moneyBorrowed = Option.when(borrowing.moneyWasBorrowed)(
-              borrowing.moneyBorrowed.map(
-                mb =>
-                  EtmpMoneyBorrowed(
-                    dateOfBorrow = mb.dateOfBorrow,
-                    schemeAssetsValue = mb.schemeAssetsValue,
-                    amountBorrowed = mb.amountBorrowed,
-                    interestRate = mb.interestRate,
-                    borrowingFromName = mb.borrowingFromName,
-                    connectedPartyStatus = transformToEtmpConnectedPartyStatus(mb.connectedPartyStatus),
-                    reasonForBorrow = mb.reasonForBorrow
-                  )
-              )
-            )
-          )
-      ),
-      bonds = assets.optBonds.map(
-        bonds =>
-          EtmpBonds(
-            recordVersion = bonds.recordVersion,
-            bondsWereAdded = toYesNo(bonds.bondsWereAdded),
-            bondsWereDisposed = toYesNo(bonds.bondsWereDisposed),
-            noOfTransactions = Option.when(bonds.bondsWereAdded)(bonds.bondTransactions.size),
-            bondTransactions = Option.when(bonds.bondsWereAdded)(
-              bonds.bondTransactions.map(
-                bondTransaction =>
-                  EtmpBondTransactions(
-                    nameOfBonds = bondTransaction.nameOfBonds,
-                    methodOfHolding = schemeHoldBondToString(bondTransaction.methodOfHolding),
-                    dateOfAcqOrContrib = bondTransaction.optDateOfAcqOrContrib,
-                    costOfBonds = bondTransaction.costOfBonds,
-                    connectedPartyStatus =
-                      bondTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
-                    bondsUnregulated = toYesNo(bondTransaction.bondsUnregulated),
-                    totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts,
-                    bondsDisposed = bondTransaction.optBondsDisposed
-                      .map(
-                        _.map(
-                          bondsDisposed =>
-                            EtmpBondsDisposed(
-                              methodOfDisposal = howDisposedToString(bondsDisposed.methodOfDisposal),
-                              otherMethod = bondsDisposed.optOtherMethod,
-                              dateSold = bondsDisposed.optDateSold,
-                              amountReceived = bondsDisposed.optAmountReceived,
-                              bondsPurchaserName = bondsDisposed.optBondsPurchaserName,
-                              connectedPartyStatus = bondsDisposed.optConnectedPartyStatus
-                                .map(transformToEtmpConnectedPartyStatus),
-                              totalNowHeld = bondsDisposed.totalNowHeld
-                            )
-                        )
-                      )
-                      .filter(_.nonEmpty)
-                  )
-              )
-            )
-          )
-      ),
-      otherAssets = assets.optOtherAssets.map(
-        otherAssets =>
-          EtmpOtherAssets(
-            recordVersion = otherAssets.recordVersion,
-            otherAssetsWereHeld = toYesNo(otherAssets.otherAssetsWereHeld),
-            otherAssetsWereDisposed = toYesNo(otherAssets.otherAssetsWereDisposed),
-            noOfTransactions = Option.when(otherAssets.otherAssetsWereHeld)(otherAssets.otherAssetTransactions.size),
-            otherAssetTransactions = Option.when(otherAssets.otherAssetsWereHeld)(
-              otherAssets.otherAssetTransactions.map(
-                otherAssetTransaction =>
-                  EtmpOtherAssetTransaction(
-                    assetDescription = otherAssetTransaction.assetDescription,
-                    methodOfHolding = schemeHoldAssetToString(otherAssetTransaction.methodOfHolding),
-                    dateOfAcqOrContrib = otherAssetTransaction.optDateOfAcqOrContrib,
-                    costOfAsset = otherAssetTransaction.costOfAsset,
-                    acquiredFromName = otherAssetTransaction.optPropertyAcquiredFromName,
-                    acquiredFromType = otherAssetTransaction.optPropertyAcquiredFrom.map(
-                      propertyAcquiredFrom =>
-                        toEtmpIdentityType(
-                          identityType = propertyAcquiredFrom.identityType,
-                          optIdNumber = propertyAcquiredFrom.idNumber,
-                          optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-                          optOtherDescription = propertyAcquiredFrom.otherDescription
-                        )
-                    ),
-                    connectedStatus = otherAssetTransaction.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
-                    supportedByIndepValuation = otherAssetTransaction.optIndepValuationSupport.map(toYesNo),
-                    movableSchedule29A = toYesNo(otherAssetTransaction.movableSchedule29A),
-                    totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts,
-                    assetsDisposed = otherAssetTransaction.optOtherAssetDisposed
-                      .map(
-                        _.map(
-                          otherAssetDisposed =>
-                            EtmpAssetsDisposed(
-                              methodOfDisposal = howDisposedToString(otherAssetDisposed.methodOfDisposal),
-                              otherMethod = otherAssetDisposed.optOtherMethod,
-                              dateSold = otherAssetDisposed.optDateSold,
-                              purchaserName = otherAssetDisposed.optPurchaserName,
-                              purchaserType = otherAssetDisposed.optPropertyAcquiredFrom.map(
-                                propertyAcquiredFrom =>
-                                  toEtmpIdentityType(
-                                    identityType = propertyAcquiredFrom.identityType,
-                                    optIdNumber = propertyAcquiredFrom.idNumber,
-                                    optReasonNoIdNumber = propertyAcquiredFrom.reasonNoIdNumber,
-                                    optOtherDescription = propertyAcquiredFrom.otherDescription
-                                  )
-                              ),
-                              totalAmountReceived = otherAssetDisposed.optTotalAmountReceived,
-                              connectedStatus =
-                                otherAssetDisposed.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
-                              supportedByIndepValuation = otherAssetDisposed.optSupportedByIndepValuation.map(toYesNo),
-                              fullyDisposedOf = toYesNo(!otherAssetDisposed.anyPartAssetStillHeld)
-                            )
-                        )
-                      )
-                      .filter(_.nonEmpty)
-                  )
-              )
-            )
-          )
+        )
       )
     )
 }

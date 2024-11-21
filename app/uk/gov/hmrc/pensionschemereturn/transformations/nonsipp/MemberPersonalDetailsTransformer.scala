@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.memberpayments.EtmpMe
 import uk.gov.hmrc.pensionschemereturn.transformations.{ETMPTransformer, TransformerError}
 
 @Singleton()
-class MemberPersonalDetailsTransformer @Inject()()
+class MemberPersonalDetailsTransformer @Inject()
     extends ETMPTransformer[MemberPersonalDetails, EtmpMemberPersonalDetails] {
 
   override def toEtmp(memberPersonalDetails: MemberPersonalDetails): EtmpMemberPersonalDetails =

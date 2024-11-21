@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.Submitted
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp._
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import com.softwaremill.diffx.generic.AutoDerivation
+import com.softwaremill.diffx.generic.auto.indicator
 import org.mockito.ArgumentMatchers.any
 import utils.TestValues
 import org.mockito.Mockito._
@@ -37,7 +37,6 @@ class StandardPsrFromEtmpSpec
     with Transformer
     with BeforeAndAfterEach
     with DiffShouldMatcher
-    with AutoDerivation
     with TestValues {
 
   override protected def beforeEach(): Unit = {

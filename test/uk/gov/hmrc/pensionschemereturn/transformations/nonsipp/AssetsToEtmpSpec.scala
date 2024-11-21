@@ -23,7 +23,7 @@ import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other,
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.generic.auto.indicator
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
 

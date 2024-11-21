@@ -31,13 +31,13 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.{Inject, Singleton}
 
 @Singleton()
-class PsrVersionsController @Inject()(
+class PsrVersionsController @Inject() (
   cc: ControllerComponents,
   psrVersionsService: PsrVersionsService,
   override val authConnector: AuthConnector,
   override protected val schemeDetailsConnector: SchemeDetailsConnector
-)(
-  implicit ec: ExecutionContext
+)(implicit
+  ec: ExecutionContext
 ) extends BackendController(cc)
     with PsrBaseController
     with PsrAuth
@@ -54,17 +54,15 @@ class PsrVersionsController @Inject()(
       logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates")
       Future
         .sequence(
-          startDates.map(
-            startDate => {
-              psrVersionsService.getVersions(pstr, startDate).map { data =>
-                val props: List[(String, JsValue)] = List(
-                  Some("startDate" -> JsString(startDate)),
-                  Some("data" -> data)
-                ).flatten
-                JsObject(props)
-              }
+          startDates.map { startDate =>
+            psrVersionsService.getVersions(pstr, startDate).map { data =>
+              val props: List[(String, JsValue)] = List(
+                Some("startDate" -> JsString(startDate)),
+                Some("data" -> data)
+              ).flatten
+              JsObject(props)
             }
-          )
+          }
         )
         .map(v => Ok(JsArray.apply(v)))
     }

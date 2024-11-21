@@ -31,7 +31,7 @@ object Event extends Enumerable.Implicits {
   override def toString: String = super.toString.toLowerCase
 
   implicit val enumerable: Enumerable[Event] = Enumerable(
-    Seq(Sent, Delivered, PermanentBounce, Opened, Complained).map(v => v.toString -> v): _*
+    Seq(Sent, Delivered, PermanentBounce, Opened, Complained).map(v => v.toString -> v)*
   )
 }
 
@@ -55,18 +55,17 @@ object EmailEvent {
     JsString(isoZonedDateFormatter.format(localDateTime))
   }
 
-  implicit val read: Reads[EmailEvent] = {
+  implicit val read: Reads[EmailEvent] =
     (JsPath \ "event")
       .read[Event]
       .and((JsPath \ "detected").read[String].map(detected => LocalDateTime.parse(detected, isoZonedDateFormatter)))(
-        EmailEvent.apply _
+        EmailEvent.apply
       )
-  }
   implicit val write: Writes[EmailEvent] =
     (JsPath \ "event")
       .write[Event]
-      .and((JsPath \ "detected").write[LocalDateTime](dateTimeWritesWithMilliseconds))(
-        emailEvent => (emailEvent.event, emailEvent.detected)
+      .and((JsPath \ "detected").write[LocalDateTime](dateTimeWritesWithMilliseconds))(emailEvent =>
+        (emailEvent.event, emailEvent.detected)
       )
 }
 

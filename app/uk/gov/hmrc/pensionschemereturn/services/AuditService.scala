@@ -20,7 +20,7 @@ import play.api.mvc.RequestHeader
 import com.google.inject.{ImplementedBy, Inject}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.play.audit.AuditExtensions._
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.pensionschemereturn.config.AppConfig
@@ -37,12 +37,11 @@ trait AuditService {
 
 }
 
-class AuditServiceImpl @Inject()(
+class AuditServiceImpl @Inject() (
   config: AppConfig,
   connector: AuditConnector
-) extends AuditService {
-
-  private val logger = Logger(classOf[AuditServiceImpl])
+) extends AuditService
+    with Logging {
 
   private implicit def toHc(request: RequestHeader): AuditHeaderCarrier =
     auditHeaderCarrier(HeaderCarrierConverter.fromRequest(request))

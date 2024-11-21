@@ -28,7 +28,7 @@ import play.api.libs.json._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
-class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
+class ApiAuditUtil @Inject() (auditService: AuditService) extends Logging {
 
   def firePsrPostAuditEvent(
     pstr: String,
@@ -114,8 +114,8 @@ class ApiAuditUtil @Inject()(auditService: AuditService) extends Logging {
     psaPspId: String,
     userName: String,
     schemeName: String
-  )(
-    implicit ec: ExecutionContext,
+  )(implicit
+    ec: ExecutionContext,
     request: RequestHeader
   ): PartialFunction[Try[Option[PsrSubmissionEtmpResponse]], Unit] = {
     case Success(optPsrSubmissionEtmpResponse) =>

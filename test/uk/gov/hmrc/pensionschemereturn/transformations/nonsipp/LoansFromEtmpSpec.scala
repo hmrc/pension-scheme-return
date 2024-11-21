@@ -22,7 +22,7 @@ import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityTy
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
-import com.softwaremill.diffx.generic.auto.diffForCaseClass
+import com.softwaremill.diffx.generic.auto.indicator
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.mockito.MockitoSugar
 
