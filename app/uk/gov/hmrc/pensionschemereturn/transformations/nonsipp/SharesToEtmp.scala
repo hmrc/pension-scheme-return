@@ -40,17 +40,17 @@ class SharesToEtmp @Inject() extends Transformer {
 
     EtmpShares(
       recordVersion = shares.recordVersion,
-      sponsorEmployerSharesWereHeld = YesNo(sponsoringEmployerFlag),
+      sponsorEmployerSharesWereHeld = Some(YesNo(sponsoringEmployerFlag)), // TOTO handle None for all 6
       noOfSponsEmplyrShareTransactions = Option.when(sponsoringEmployerFlag)(sponsoringEmployerCount),
-      unquotedSharesWereHeld = YesNo(unquotedFlag),
+      unquotedSharesWereHeld = Some(YesNo(unquotedFlag)),
       noOfUnquotedShareTransactions = Option.when(unquotedFlag)(unquotedCount),
-      connectedPartySharesWereHeld = YesNo(connectedPartyFlag),
+      connectedPartySharesWereHeld = Some(YesNo(connectedPartyFlag)),
       noOfConnPartyTransactions = Option.when(connectedPartyFlag)(connectedPartyCount),
       sponsorEmployerSharesWereDisposed =
-        transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.SponsoringEmployer),
-      unquotedSharesWereDisposed = transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted),
+        Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.SponsoringEmployer)),
+      unquotedSharesWereDisposed = Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted)),
       connectedPartySharesWereDisposed =
-        transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty),
+        Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty)),
       shareTransactions = optShareTransactions.map(_.map(transformShareTransactions)),
       totalValueQuotedShares = shares.optTotalValueQuotedShares.getOrElse(holderValue)
     )
@@ -115,7 +115,7 @@ class SharesToEtmp @Inject() extends Transformer {
         costOfShares = heldSharesTransaction.costOfShares,
         supportedByIndepValuation = heldSharesTransaction.supportedByIndepValuation,
         totalAssetValue = heldSharesTransaction.optTotalAssetValue,
-        totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
+        totalDividendsOrReceipts = heldSharesTransaction.optTotalDividendsOrReceipts
       ),
       disposedSharesTransaction = sharesTransaction.optDisposedSharesTransaction
         .map(

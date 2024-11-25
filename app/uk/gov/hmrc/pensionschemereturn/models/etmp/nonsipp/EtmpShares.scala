@@ -24,15 +24,15 @@ import java.time.LocalDate
 
 case class EtmpShares(
   recordVersion: Option[String],
-  sponsorEmployerSharesWereHeld: YesNo,
+  sponsorEmployerSharesWereHeld: Option[YesNo],
   noOfSponsEmplyrShareTransactions: Option[Int],
-  unquotedSharesWereHeld: YesNo,
+  unquotedSharesWereHeld: Option[YesNo],
   noOfUnquotedShareTransactions: Option[Int],
-  connectedPartySharesWereHeld: YesNo,
+  connectedPartySharesWereHeld: Option[YesNo],
   noOfConnPartyTransactions: Option[Int],
-  sponsorEmployerSharesWereDisposed: YesNo,
-  unquotedSharesWereDisposed: YesNo,
-  connectedPartySharesWereDisposed: YesNo,
+  sponsorEmployerSharesWereDisposed: Option[YesNo],
+  unquotedSharesWereDisposed: Option[YesNo],
+  connectedPartySharesWereDisposed: Option[YesNo],
   shareTransactions: Option[List[EtmpShareTransaction]],
   totalValueQuotedShares: Double
 )
@@ -61,7 +61,7 @@ case class EtmpHeldSharesTransaction(
   costOfShares: Double,
   supportedByIndepValuation: YesNo,
   totalAssetValue: Option[Double],
-  totalDividendsOrReceipts: Double
+  totalDividendsOrReceipts: Option[Double]
 )
 
 case class EtmpDisposedSharesTransaction(

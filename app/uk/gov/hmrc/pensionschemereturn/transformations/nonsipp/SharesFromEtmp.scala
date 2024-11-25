@@ -69,7 +69,7 @@ class SharesFromEtmp @Inject() extends Transformer {
         costOfShares = heldSharesTransaction.costOfShares,
         supportedByIndepValuation = YesNo.unapply(heldSharesTransaction.supportedByIndepValuation),
         optTotalAssetValue = heldSharesTransaction.totalAssetValue,
-        totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
+        optTotalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
       ),
       optDisposedSharesTransaction = shareTransactions.disposedSharesTransaction.map(
         _.map(dst =>

@@ -60,7 +60,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = Some(Double.MaxValue),
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = Some(
           List(
@@ -119,7 +119,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = Some(
           List(
@@ -169,7 +169,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = None
       )
@@ -200,7 +200,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = false,
           optTotalAssetValue = Some(Double.MaxValue),
-          totalDividendsOrReceipts = Double.MaxValue
+          optTotalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         optDisposedSharesTransaction = Some(
           Seq(
@@ -261,7 +261,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = false,
           optTotalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          optTotalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         optDisposedSharesTransaction = Some(
           Seq(
@@ -313,7 +313,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = false,
           optTotalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          optTotalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         optDisposedSharesTransaction = None
       )
@@ -323,15 +323,15 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
 
       val shares = EtmpShares(
         recordVersion = None,
-        sponsorEmployerSharesWereHeld = YesNo.Yes,
+        sponsorEmployerSharesWereHeld = Some(YesNo.Yes),
         noOfSponsEmplyrShareTransactions = Some(1),
-        unquotedSharesWereHeld = YesNo.Yes,
+        unquotedSharesWereHeld = Some(YesNo.Yes),
         noOfUnquotedShareTransactions = Some(1),
-        connectedPartySharesWereHeld = YesNo.Yes,
+        connectedPartySharesWereHeld = Some(YesNo.Yes),
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = YesNo.Yes,
-        unquotedSharesWereDisposed = YesNo.Yes,
-        connectedPartySharesWereDisposed = YesNo.No,
+        sponsorEmployerSharesWereDisposed = Some(YesNo.Yes),
+        unquotedSharesWereDisposed = Some(YesNo.Yes),
+        connectedPartySharesWereDisposed = Some(YesNo.No),
         shareTransactions = Some(etmpShareTransactions),
         totalValueQuotedShares = -0.01
       )
@@ -347,15 +347,15 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
 
       val shares = EtmpShares(
         recordVersion = Some("002"),
-        sponsorEmployerSharesWereHeld = YesNo.Yes,
+        sponsorEmployerSharesWereHeld = Some(YesNo.Yes),
         noOfSponsEmplyrShareTransactions = Some(1),
-        unquotedSharesWereHeld = YesNo.Yes,
+        unquotedSharesWereHeld = Some(YesNo.Yes),
         noOfUnquotedShareTransactions = Some(1),
-        connectedPartySharesWereHeld = YesNo.Yes,
+        connectedPartySharesWereHeld = Some(YesNo.Yes),
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = YesNo.Yes,
-        unquotedSharesWereDisposed = YesNo.Yes,
-        connectedPartySharesWereDisposed = YesNo.No,
+        sponsorEmployerSharesWereDisposed = Some(YesNo.Yes),
+        unquotedSharesWereDisposed = Some(YesNo.Yes),
+        connectedPartySharesWereDisposed = Some(YesNo.No),
         shareTransactions = Some(etmpShareTransactions),
         totalValueQuotedShares = Double.MaxValue
       )
