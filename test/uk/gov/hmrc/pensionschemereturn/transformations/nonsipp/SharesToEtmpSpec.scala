@@ -35,7 +35,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
   private val transformation: SharesToEtmp = new SharesToEtmp()
   val today: LocalDate = LocalDate.now
 
-  "SharesToEtmp - PSR Shares should successfully transform to etmp format " should {
+  "SharesToEtmp - PSR Shares" should {
     val shareTransactions =
       List(
         ShareTransaction(
@@ -306,7 +306,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     )
 
-    "Shares with all types" in {
+    "successfully transform to etmp format" in {
 
       val shares = Shares(
         recordVersion = Some("001"),
@@ -332,7 +332,34 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
       transformation.transform(shares) shouldMatchTo expected
     }
-    "Shares with quoted shares" in {
+    "successfully transform to etmp format in pre-population" in {
+
+      val shares = Shares(
+        recordVersion = None,
+        optDidSchemeHoldAnyShares = None,
+        optShareTransactions = Some(shareTransactions),
+        optTotalValueQuotedShares = Some(Double.MaxValue)
+      )
+
+      val expected = EtmpShares(
+        recordVersion = None,
+        sponsorEmployerSharesWereHeld = None,
+        noOfSponsEmplyrShareTransactions = None,
+        unquotedSharesWereHeld = None,
+        noOfUnquotedShareTransactions = None,
+        connectedPartySharesWereHeld = None,
+        noOfConnPartyTransactions = None,
+        sponsorEmployerSharesWereDisposed = None,
+        unquotedSharesWereDisposed = None,
+        connectedPartySharesWereDisposed = None,
+        shareTransactions = Some(etmpShareTransactions),
+        totalValueQuotedShares = Double.MaxValue
+      )
+
+      transformation.transform(shares) shouldMatchTo expected
+    }
+
+    "successfully transform to etmp format with quoted shares" in {
 
       val shares = Shares(
         recordVersion = None,

@@ -319,6 +319,32 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       )
     )
 
+    "Shares in pre-population" in {
+
+      val shares = EtmpShares(
+        recordVersion = None,
+        sponsorEmployerSharesWereHeld = None,
+        noOfSponsEmplyrShareTransactions = None,
+        unquotedSharesWereHeld = None,
+        noOfUnquotedShareTransactions = None,
+        connectedPartySharesWereHeld = None,
+        noOfConnPartyTransactions = None,
+        sponsorEmployerSharesWereDisposed = None,
+        unquotedSharesWereDisposed = None,
+        connectedPartySharesWereDisposed = None,
+        shareTransactions = Some(etmpShareTransactions),
+        totalValueQuotedShares = -0.01
+      )
+      val expected = Shares(
+        recordVersion = None,
+        optDidSchemeHoldAnyShares = None,
+        optShareTransactions = Some(shareTransactions),
+        optTotalValueQuotedShares = None
+      )
+
+      transformation.transform(shares) shouldMatchTo expected
+    }
+
     "Shares with an empty disposedSharesTransaction sequence" in {
 
       val shares = EtmpShares(
