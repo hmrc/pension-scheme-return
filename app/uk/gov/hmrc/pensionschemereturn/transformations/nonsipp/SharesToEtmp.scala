@@ -32,25 +32,40 @@ class SharesToEtmp @Inject() extends Transformer {
     val optShareTransactions = shares.optShareTransactions
 
     val (sponsoringEmployerFlag, sponsoringEmployerCount) =
-      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.SponsoringEmployer)
+      transformToSharesFlagCountTuple(
+        optShareTransactions,
+        TypeOfShares.SponsoringEmployer,
+        shares.optDidSchemeHoldAnyShares
+      )
     val (unquotedFlag, unquotedCount) =
-      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.Unquoted)
+      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.Unquoted, shares.optDidSchemeHoldAnyShares)
     val (connectedPartyFlag, connectedPartyCount) =
-      transformToSharesFlagCountTuple(optShareTransactions, TypeOfShares.ConnectedParty)
+      transformToSharesFlagCountTuple(
+        optShareTransactions,
+        TypeOfShares.ConnectedParty,
+        shares.optDidSchemeHoldAnyShares
+      )
 
     EtmpShares(
       recordVersion = shares.recordVersion,
-      sponsorEmployerSharesWereHeld = Some(YesNo(sponsoringEmployerFlag)), // TOTO handle None for all 6
-      noOfSponsEmplyrShareTransactions = Option.when(sponsoringEmployerFlag)(sponsoringEmployerCount),
-      unquotedSharesWereHeld = Some(YesNo(unquotedFlag)),
-      noOfUnquotedShareTransactions = Option.when(unquotedFlag)(unquotedCount),
-      connectedPartySharesWereHeld = Some(YesNo(connectedPartyFlag)),
-      noOfConnPartyTransactions = Option.when(connectedPartyFlag)(connectedPartyCount),
-      sponsorEmployerSharesWereDisposed =
-        Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.SponsoringEmployer)),
-      unquotedSharesWereDisposed = Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted)),
-      connectedPartySharesWereDisposed =
-        Some(transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.ConnectedParty)),
+      sponsorEmployerSharesWereHeld = sponsoringEmployerFlag.map(bool => YesNo(bool)),
+      noOfSponsEmplyrShareTransactions = Option.when(sponsoringEmployerCount.nonEmpty)(sponsoringEmployerCount.get),
+      unquotedSharesWereHeld = unquotedFlag.map(bool => YesNo(bool)),
+      noOfUnquotedShareTransactions = Option.when(unquotedCount.nonEmpty)(unquotedCount.get),
+      connectedPartySharesWereHeld = connectedPartyFlag.map(bool => YesNo(bool)),
+      noOfConnPartyTransactions = Option.when(connectedPartyCount.nonEmpty)(connectedPartyCount.get),
+      sponsorEmployerSharesWereDisposed = transformToSharesDisposalFlag(
+        optShareTransactions,
+        TypeOfShares.SponsoringEmployer,
+        shares.optDidSchemeHoldAnyShares
+      ),
+      unquotedSharesWereDisposed =
+        transformToSharesDisposalFlag(optShareTransactions, TypeOfShares.Unquoted, shares.optDidSchemeHoldAnyShares),
+      connectedPartySharesWereDisposed = transformToSharesDisposalFlag(
+        optShareTransactions,
+        TypeOfShares.ConnectedParty,
+        shares.optDidSchemeHoldAnyShares
+      ),
       shareTransactions = optShareTransactions.map(_.map(transformShareTransactions)),
       totalValueQuotedShares = shares.optTotalValueQuotedShares.getOrElse(holderValue)
     )
@@ -58,23 +73,27 @@ class SharesToEtmp @Inject() extends Transformer {
 
   private def transformToSharesFlagCountTuple(
     optShareTransactions: Option[List[ShareTransaction]],
-    typeOfShares: TypeOfShares
-  ): (Boolean, Int) = {
+    typeOfShares: TypeOfShares,
+    optDidSchemeHoldAnyShares: Option[Boolean]
+  ): (Option[Boolean], Option[Int]) = {
     val count = optShareTransactions.fold(0)(_.count(_.typeOfSharesHeld == typeOfShares))
     val flag = count > 0
-    (flag, count)
+    (Option.when(optDidSchemeHoldAnyShares.nonEmpty)(flag), Option.when(optDidSchemeHoldAnyShares.nonEmpty)(count))
   }
 
   private def transformToSharesDisposalFlag(
     optShareTransactions: Option[List[ShareTransaction]],
-    typeOfShares: TypeOfShares
-  ): YesNo =
-    YesNo(
-      optShareTransactions.fold(false)(shareTransactions =>
-        shareTransactions
-          .exists(shareTransaction =>
-            (shareTransaction.typeOfSharesHeld == typeOfShares) && shareTransaction.optDisposedSharesTransaction.nonEmpty && shareTransaction.optDisposedSharesTransaction.get.nonEmpty
-          )
+    typeOfShares: TypeOfShares,
+    optDidSchemeHoldAnyShares: Option[Boolean]
+  ): Option[YesNo] =
+    Option.when(optDidSchemeHoldAnyShares.nonEmpty)(
+      YesNo(
+        optShareTransactions.fold(false)(shareTransactions =>
+          shareTransactions
+            .exists(shareTransaction =>
+              (shareTransaction.typeOfSharesHeld == typeOfShares) && shareTransaction.optDisposedSharesTransaction.nonEmpty && shareTransaction.optDisposedSharesTransaction.get.nonEmpty
+            )
+        )
       )
     )
 

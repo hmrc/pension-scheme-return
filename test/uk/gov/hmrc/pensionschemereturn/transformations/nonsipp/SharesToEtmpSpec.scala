@@ -310,6 +310,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
       val shares = Shares(
         recordVersion = Some("001"),
+        optDidSchemeHoldAnyShares = Some(true),
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = None
       )
@@ -335,6 +336,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
       val shares = Shares(
         recordVersion = None,
+        optDidSchemeHoldAnyShares = Some(true),
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = Some(Double.MaxValue)
       )

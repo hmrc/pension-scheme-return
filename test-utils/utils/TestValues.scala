@@ -437,7 +437,12 @@ trait TestValues {
   )
 
   val sampleShares: Shares =
-    Shares(recordVersion = Some("001"), optShareTransactions = None, optTotalValueQuotedShares = None)
+    Shares(
+      recordVersion = Some("001"),
+      optDidSchemeHoldAnyShares = Some(false),
+      optShareTransactions = None,
+      optTotalValueQuotedShares = None
+    )
 
   val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
     submittedBy = SubmitterType.PSA,
