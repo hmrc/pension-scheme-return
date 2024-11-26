@@ -437,7 +437,12 @@ trait TestValues {
   )
 
   val sampleShares: Shares =
-    Shares(recordVersion = Some("001"), optShareTransactions = None, optTotalValueQuotedShares = None)
+    Shares(
+      recordVersion = Some("001"),
+      optDidSchemeHoldAnyShares = Some(false),
+      optShareTransactions = None,
+      optTotalValueQuotedShares = None
+    )
 
   val samplePsrDeclaration: PsrDeclaration = PsrDeclaration(
     submittedBy = SubmitterType.PSA,
@@ -836,15 +841,15 @@ trait TestValues {
 
   val sampleEtmpShares: EtmpShares = EtmpShares(
     recordVersion = Some("001"),
-    sponsorEmployerSharesWereHeld = Yes,
+    sponsorEmployerSharesWereHeld = Some(Yes),
     noOfSponsEmplyrShareTransactions = Some(1),
-    unquotedSharesWereHeld = Yes,
+    unquotedSharesWereHeld = Some(Yes),
     noOfUnquotedShareTransactions = Some(1),
-    connectedPartySharesWereHeld = Yes,
+    connectedPartySharesWereHeld = Some(Yes),
     noOfConnPartyTransactions = Some(1),
-    sponsorEmployerSharesWereDisposed = No,
-    unquotedSharesWereDisposed = No,
-    connectedPartySharesWereDisposed = No,
+    sponsorEmployerSharesWereDisposed = Some(No),
+    unquotedSharesWereDisposed = Some(No),
+    connectedPartySharesWereDisposed = Some(No),
     shareTransactions = Some(
       List(
         EtmpShareTransaction(
@@ -870,7 +875,7 @@ trait TestValues {
             costOfShares = 10000,
             supportedByIndepValuation = Yes,
             totalAssetValue = Some(2000),
-            totalDividendsOrReceipts = 500
+            totalDividendsOrReceipts = Some(500)
           ),
           disposedSharesTransaction = Some(
             List(
@@ -1273,15 +1278,15 @@ trait TestValues {
     shares = Some(
       EtmpShares(
         recordVersion = Some("001"),
-        sponsorEmployerSharesWereHeld = Yes,
+        sponsorEmployerSharesWereHeld = Some(Yes),
         noOfSponsEmplyrShareTransactions = Some(1),
-        unquotedSharesWereHeld = Yes,
+        unquotedSharesWereHeld = Some(Yes),
         noOfUnquotedShareTransactions = Some(1),
-        connectedPartySharesWereHeld = Yes,
+        connectedPartySharesWereHeld = Some(Yes),
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = No,
-        unquotedSharesWereDisposed = No,
-        connectedPartySharesWereDisposed = No,
+        sponsorEmployerSharesWereDisposed = Some(No),
+        unquotedSharesWereDisposed = Some(No),
+        connectedPartySharesWereDisposed = Some(No),
         shareTransactions = Some(
           List(
             EtmpShareTransaction(
@@ -1307,7 +1312,7 @@ trait TestValues {
                 costOfShares = 10000,
                 supportedByIndepValuation = Yes,
                 totalAssetValue = Some(2000),
-                totalDividendsOrReceipts = 500
+                totalDividendsOrReceipts = Some(500)
               ),
               disposedSharesTransaction = Some(
                 List(
@@ -1372,7 +1377,7 @@ trait TestValues {
                 costOfShares = 50000,
                 supportedByIndepValuation = Yes,
                 totalAssetValue = Some(40000),
-                totalDividendsOrReceipts = 200
+                totalDividendsOrReceipts = Some(200)
               ),
               disposedSharesTransaction = Some(
                 List(
@@ -1437,7 +1442,7 @@ trait TestValues {
                 costOfShares = 120220.34,
                 supportedByIndepValuation = Yes,
                 totalAssetValue = Some(10000),
-                totalDividendsOrReceipts = 599.99
+                totalDividendsOrReceipts = Some(599.99)
               ),
               disposedSharesTransaction = Some(
                 List(

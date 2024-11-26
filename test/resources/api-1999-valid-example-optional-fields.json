@@ -271,36 +271,8 @@
           "connectedPartyStatus": "02",
           "costOfShares": 10000,
           "supportedByIndepValuation": "Yes",
-          "totalAssetValue": 2000,
-          "totalDividendsOrReceipts": 500
-        },
-        "disposedSharesTransaction": [
-          {
-            "methodOfDisposal": "01",
-            "salesQuestions": {
-              "dateOfSale": "2023-02-16",
-              "noOfSharesSold": 50,
-              "amountReceived": 8000,
-              "nameOfPurchaser": "Sharebuyers Inc.",
-              "purchaserType": {
-                "indivOrOrgType": "01",
-                "idNumber": "0008503350"
-              },
-              "connectedPartyStatus": "02",
-              "supportedByIndepValuation": "Yes"
-            },
-            "totalSharesNowHeld": 150
-          },
-          {
-            "methodOfDisposal": "02",
-            "redemptionQuestions": {
-              "dateOfRedemption": "2023-03-06",
-              "noOfSharesRedeemed": 50,
-              "amountReceived": 7600
-            },
-            "totalSharesNowHeld": 100
-          }
-        ]
+          "totalAssetValue": 2000
+        }
       },
       {
         "typeOfSharesHeld": "03",
@@ -321,36 +293,8 @@
           "connectedPartyStatus": "02",
           "costOfShares": 50000,
           "supportedByIndepValuation": "Yes",
-          "totalAssetValue": 40000,
-          "totalDividendsOrReceipts": 200
-        },
-        "disposedSharesTransaction": [
-          {
-            "methodOfDisposal": "01",
-            "salesQuestions": {
-              "dateOfSale": "2022-10-31",
-              "noOfSharesSold": 1100,
-              "amountReceived": 30000,
-              "nameOfPurchaser": "Share Acquisitions Inc.",
-              "purchaserType": {
-                "indivOrOrgType": "01",
-                "idNumber": "JJ507888A"
-              },
-              "connectedPartyStatus": "02",
-              "supportedByIndepValuation": "Yes"
-            },
-            "totalSharesNowHeld": 8000
-          },
-          {
-            "methodOfDisposal": "02",
-            "redemptionQuestions": {
-              "dateOfRedemption": "2022-12-20",
-              "noOfSharesRedeemed": 900,
-              "amountReceived": 27005.78
-            },
-            "totalSharesNowHeld": 8000
-          }
-        ]
+          "totalAssetValue": 40000
+        }
       },
       {
         "typeOfSharesHeld": "03",
@@ -371,36 +315,8 @@
           "connectedPartyStatus": "02",
           "costOfShares": 120220.34,
           "supportedByIndepValuation": "Yes",
-          "totalAssetValue": 10000,
-          "totalDividendsOrReceipts": 599.99
-        },
-        "disposedSharesTransaction": [
-          {
-            "methodOfDisposal": "02",
-            "redemptionQuestions": {
-              "dateOfRedemption": "2022-11-03",
-              "noOfSharesRedeemed": 200,
-              "amountReceived": 50000
-            },
-            "totalSharesNowHeld": 800
-          },
-          {
-            "methodOfDisposal": "01",
-            "salesQuestions": {
-              "dateOfSale": "2022-12-31",
-              "noOfSharesSold": 200,
-              "amountReceived": 52000,
-              "nameOfPurchaser": "Sam Smithsonian",
-              "purchaserType": {
-                "indivOrOrgType": "01",
-                "idNumber": "JE443364A"
-              },
-              "connectedPartyStatus": "01",
-              "supportedByIndepValuation": "Yes"
-            },
-            "totalSharesNowHeld": 400
-          }
-        ]
+          "totalAssetValue": 10000
+        }
       }
     ],
     "totalValueQuotedShares": 5600000

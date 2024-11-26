@@ -35,7 +35,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
   private val transformation: SharesToEtmp = new SharesToEtmp()
   val today: LocalDate = LocalDate.now
 
-  "SharesToEtmp - PSR Shares should successfully transform to etmp format " should {
+  "SharesToEtmp - PSR Shares" should {
     val shareTransactions =
       List(
         ShareTransaction(
@@ -63,7 +63,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             costOfShares = Double.MaxValue,
             supportedByIndepValuation = false,
             optTotalAssetValue = Some(Double.MaxValue),
-            totalDividendsOrReceipts = Double.MaxValue
+            optTotalDividendsOrReceipts = Some(Double.MaxValue)
           ),
           optDisposedSharesTransaction = Some(
             Seq(
@@ -117,7 +117,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             costOfShares = Double.MaxValue,
             supportedByIndepValuation = false,
             optTotalAssetValue = None,
-            totalDividendsOrReceipts = Double.MaxValue
+            optTotalDividendsOrReceipts = Some(Double.MaxValue)
           ),
           optDisposedSharesTransaction = Some(
             Seq(
@@ -162,7 +162,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             costOfShares = Double.MaxValue,
             supportedByIndepValuation = false,
             optTotalAssetValue = None,
-            totalDividendsOrReceipts = Double.MaxValue
+            optTotalDividendsOrReceipts = Some(Double.MaxValue)
           ),
           optDisposedSharesTransaction = None
         )
@@ -191,7 +191,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = Some(Double.MaxValue),
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = Some(
           List(
@@ -250,7 +250,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = Some(
           List(
@@ -300,56 +300,85 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           costOfShares = Double.MaxValue,
           supportedByIndepValuation = YesNo.No,
           totalAssetValue = None,
-          totalDividendsOrReceipts = Double.MaxValue
+          totalDividendsOrReceipts = Some(Double.MaxValue)
         ),
         disposedSharesTransaction = None
       )
     )
 
-    "Shares with all types" in {
+    "successfully transform to etmp format" in {
 
       val shares = Shares(
         recordVersion = Some("001"),
+        optDidSchemeHoldAnyShares = Some(true),
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = None
       )
 
       val expected = EtmpShares(
         recordVersion = Some("001"),
-        sponsorEmployerSharesWereHeld = YesNo.Yes,
+        sponsorEmployerSharesWereHeld = Some(YesNo.Yes),
         noOfSponsEmplyrShareTransactions = Some(1),
-        unquotedSharesWereHeld = YesNo.Yes,
+        unquotedSharesWereHeld = Some(YesNo.Yes),
         noOfUnquotedShareTransactions = Some(1),
-        connectedPartySharesWereHeld = YesNo.Yes,
+        connectedPartySharesWereHeld = Some(YesNo.Yes),
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = YesNo.Yes,
-        unquotedSharesWereDisposed = YesNo.Yes,
-        connectedPartySharesWereDisposed = YesNo.No,
+        sponsorEmployerSharesWereDisposed = Some(YesNo.Yes),
+        unquotedSharesWereDisposed = Some(YesNo.Yes),
+        connectedPartySharesWereDisposed = Some(YesNo.No),
         shareTransactions = Some(etmpShareTransactions),
         totalValueQuotedShares = -0.01
       )
 
       transformation.transform(shares) shouldMatchTo expected
     }
-    "Shares with quoted shares" in {
+    "successfully transform to etmp format in pre-population" in {
 
       val shares = Shares(
         recordVersion = None,
+        optDidSchemeHoldAnyShares = None,
         optShareTransactions = Some(shareTransactions),
         optTotalValueQuotedShares = Some(Double.MaxValue)
       )
 
       val expected = EtmpShares(
         recordVersion = None,
-        sponsorEmployerSharesWereHeld = YesNo.Yes,
+        sponsorEmployerSharesWereHeld = None,
+        noOfSponsEmplyrShareTransactions = None,
+        unquotedSharesWereHeld = None,
+        noOfUnquotedShareTransactions = None,
+        connectedPartySharesWereHeld = None,
+        noOfConnPartyTransactions = None,
+        sponsorEmployerSharesWereDisposed = None,
+        unquotedSharesWereDisposed = None,
+        connectedPartySharesWereDisposed = None,
+        shareTransactions = Some(etmpShareTransactions),
+        totalValueQuotedShares = Double.MaxValue
+      )
+
+      transformation.transform(shares) shouldMatchTo expected
+    }
+
+    "successfully transform to etmp format with quoted shares" in {
+
+      val shares = Shares(
+        recordVersion = None,
+        optDidSchemeHoldAnyShares = Some(true),
+        optShareTransactions = Some(shareTransactions),
+        optTotalValueQuotedShares = Some(Double.MaxValue)
+      )
+
+      val expected = EtmpShares(
+        recordVersion = None,
+        sponsorEmployerSharesWereHeld = Some(YesNo.Yes),
         noOfSponsEmplyrShareTransactions = Some(1),
-        unquotedSharesWereHeld = YesNo.Yes,
+        unquotedSharesWereHeld = Some(YesNo.Yes),
         noOfUnquotedShareTransactions = Some(1),
-        connectedPartySharesWereHeld = YesNo.Yes,
+        connectedPartySharesWereHeld = Some(YesNo.Yes),
         noOfConnPartyTransactions = Some(1),
-        sponsorEmployerSharesWereDisposed = YesNo.Yes,
-        unquotedSharesWereDisposed = YesNo.Yes,
-        connectedPartySharesWereDisposed = YesNo.No,
+        sponsorEmployerSharesWereDisposed = Some(YesNo.Yes),
+        unquotedSharesWereDisposed = Some(YesNo.Yes),
+        connectedPartySharesWereDisposed = Some(YesNo.No),
         shareTransactions = Some(etmpShareTransactions),
         totalValueQuotedShares = Double.MaxValue
       )

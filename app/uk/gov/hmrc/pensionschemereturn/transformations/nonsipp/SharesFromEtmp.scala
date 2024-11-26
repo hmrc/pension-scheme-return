@@ -33,9 +33,19 @@ class SharesFromEtmp @Inject() extends Transformer {
   def transform(shares: EtmpShares): Shares =
     Shares(
       recordVersion = shares.recordVersion,
+      optDidSchemeHoldAnyShares = didSchemeHoldShares(shares),
       optShareTransactions = shares.shareTransactions.map(_.map(transformShareTransactions)),
       optTotalValueQuotedShares =
         Option.when(shares.totalValueQuotedShares != holderValue)(shares.totalValueQuotedShares)
+    )
+
+  private def didSchemeHoldShares(shares: EtmpShares) =
+    Option.when(
+      shares.sponsorEmployerSharesWereHeld.nonEmpty || shares.unquotedSharesWereHeld.nonEmpty || shares.connectedPartySharesWereHeld.nonEmpty
+    )(
+      shares.sponsorEmployerSharesWereHeld.getOrElse(YesNo.No) == YesNo.Yes ||
+        shares.unquotedSharesWereHeld.getOrElse(YesNo.No) == YesNo.Yes ||
+        shares.connectedPartySharesWereHeld.getOrElse(YesNo.No) == YesNo.Yes
     )
 
   private def transformShareTransactions(shareTransactions: EtmpShareTransaction): ShareTransaction = {
@@ -69,7 +79,7 @@ class SharesFromEtmp @Inject() extends Transformer {
         costOfShares = heldSharesTransaction.costOfShares,
         supportedByIndepValuation = YesNo.unapply(heldSharesTransaction.supportedByIndepValuation),
         optTotalAssetValue = heldSharesTransaction.totalAssetValue,
-        totalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
+        optTotalDividendsOrReceipts = heldSharesTransaction.totalDividendsOrReceipts
       ),
       optDisposedSharesTransaction = shareTransactions.disposedSharesTransaction.map(
         _.map(dst =>
