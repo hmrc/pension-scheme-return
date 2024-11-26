@@ -488,7 +488,7 @@ object PsrSubmitControllerSpec {
       |        "loanInterestDetails": {
       |          "loanInterestAmount": 8,
       |          "loanInterestRate": 8,
-      |          "intReceivedCY": 6
+      |          "optIntReceivedCY": 6
       |        },
       |        "optSecurityGivenDetails": "kjsdfvsd",
       |        "optOutstandingArrearsOnLoan": 273

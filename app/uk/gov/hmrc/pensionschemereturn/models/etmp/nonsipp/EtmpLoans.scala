@@ -43,7 +43,7 @@ case class EtmpLoanTransactions(
   securityGiven: String,
   securityDetails: Option[String],
   capRepaymentCY: Option[Double],
-  intReceivedCY: Double,
+  intReceivedCY: Option[Double],
   arrearsPrevYears: Option[String],
   amountOfArrears: Option[Double],
   amountOutstanding: Option[Double]
