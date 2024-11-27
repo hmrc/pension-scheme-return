@@ -1,0 +1,57 @@
+{
+  "reportDetails": {
+    "psrStatus": "Compiled",
+    "periodStart": "2022-04-06",
+    "periodEnd": "2023-04-05"
+  },
+  "accountingPeriodDetails": {
+    "recordVersion": "002",
+    "accountingPeriods": [
+      {
+        "accPeriodStart": "2022-04-06",
+        "accPeriodEnd": "2022-12-31"
+      },
+      {
+        "accPeriodStart": "2023-01-01",
+        "accPeriodEnd": "2023-04-05"
+      }
+    ]
+  },
+  "schemeDesignatory": {
+    "recordVersion": "002",
+    "openBankAccount": "Yes",
+    "noOfActiveMembers": 5,
+    "noOfDeferredMembers": 2,
+    "noOfPensionerMembers": 10,
+    "totalAssetValueStart": 10000000,
+    "totalAssetValueEnd": 11000000,
+    "totalCashStart": 2500000,
+    "totalCashEnd": 2800000,
+    "totalPayments": 2000000
+  },
+  "loans": {
+    "recordVersion": "003",
+    "schemeHadLoans": "Yes",
+    "noOfLoans": 1,
+    "loanTransactions": [
+      {
+        "dateOfLoan": "2023-03-30",
+        "loanRecipientName": "Electric Car Co.",
+        "recipientIdentityType": {
+          "indivOrOrgType": "01",
+          "idNumber": "SX123456A"
+        },
+        "recipientSponsoringEmployer": "No",
+        "connectedPartyStatus": "01",
+        "loanAmount": 10000,
+        "loanInterestAmount": 2000,
+        "loanTotalSchemeAssets": 2000,
+        "loanPeriodInMonths": 24,
+        "equalInstallments": "Yes",
+        "loanInterestRate": 5.55,
+        "securityGiven": "Yes",
+        "securityDetails": "Japanese ming vase #344343444."
+      }
+    ]
+  }
+}

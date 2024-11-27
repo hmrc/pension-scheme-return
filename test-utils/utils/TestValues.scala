@@ -123,7 +123,7 @@ trait TestValues {
         connectedPartyStatus = true,
         optRecipientSponsoringEmployer = None,
         datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
-        loanAmountDetails = LoanAmountDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+        loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
         equalInstallments = true,
         loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
         optSecurityGivenDetails = None,
@@ -604,11 +604,11 @@ trait TestValues {
           loanInterestRate = Double.MaxValue,
           securityGiven = "Yes",
           securityDetails = Some("SecurityGivenDetails"),
-          capRepaymentCY = Double.MaxValue,
+          capRepaymentCY = Some(Double.MaxValue),
           intReceivedCY = Double.MaxValue,
-          arrearsPrevYears = "No",
+          arrearsPrevYears = Some("No"),
           amountOfArrears = None,
-          amountOutstanding = Double.MaxValue
+          amountOutstanding = Some(Double.MaxValue)
         )
       )
     )
@@ -952,11 +952,11 @@ trait TestValues {
               loanInterestRate = 5.55,
               securityGiven = "Yes",
               securityDetails = Some("Japanese ming vase #344343444."),
-              capRepaymentCY = 5000,
+              capRepaymentCY = Some(5000),
               intReceivedCY = 555,
-              arrearsPrevYears = "No",
+              arrearsPrevYears = Some("No"),
               amountOfArrears = None,
-              amountOutstanding = 5000
+              amountOutstanding = Some(5000)
             )
           )
         )
