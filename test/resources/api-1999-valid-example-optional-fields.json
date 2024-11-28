@@ -212,9 +212,6 @@
     ]
   },
   "loans": {
-    "recordVersion": "003",
-    "schemeHadLoans": "Yes",
-    "noOfLoans": 1,
     "loanTransactions": [
       {
         "dateOfLoan": "2023-03-30",

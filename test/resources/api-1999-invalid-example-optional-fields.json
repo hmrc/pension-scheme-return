@@ -212,9 +212,6 @@
     ]
   },
   "loans": {
-    "recordVersion": "003",
-    "schemeHadLoans": "Yes",
-    "noOfLoans": 1,
     "loanTransactions": [
       {
         "dateOfLoan": "2023-03-30",
@@ -232,11 +229,7 @@
         "equalInstallments": "Yes",
         "loanInterestRate": 5.55,
         "securityGiven": "Yes",
-        "securityDetails": "Japanese ming vase #344343444.",
-        "capRepaymentCY": 5000,
-        "intReceivedCY": 555,
-        "arrearsPrevYears": "No",
-        "amountOutstanding": 5000
+        "securityDetails": "Japanese ming vase #344343444."
       }
     ]
   },
@@ -629,4 +622,3 @@
     }
   }
 }
-

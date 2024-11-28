@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 case class EtmpLoans(
   recordVersion: Option[String],
-  schemeHadLoans: String,
+  schemeHadLoans: Option[String],
   noOfLoans: Option[Int],
   loanTransactions: Option[Seq[EtmpLoanTransactions]]
 )

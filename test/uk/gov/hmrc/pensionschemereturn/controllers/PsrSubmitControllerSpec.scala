@@ -465,7 +465,7 @@ object PsrSubmitControllerSpec {
       |  },
       |  "checkReturnDates": true,
       |  "loans": {
-      |    "schemeHadLoans": true,
+      |    "optSchemeHadLoans": true,
       |    "loanTransactions": [
       |      {
       |        "recipientIdentityType": {

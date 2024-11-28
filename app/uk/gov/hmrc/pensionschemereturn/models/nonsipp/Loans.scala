@@ -60,7 +60,7 @@ case class LoanTransactions(
 
 case class Loans(
   recordVersion: Option[String],
-  schemeHadLoans: Boolean,
+  optSchemeHadLoans: Option[Boolean],
   loanTransactions: Seq[LoanTransactions]
 )
 
