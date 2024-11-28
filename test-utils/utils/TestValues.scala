@@ -125,7 +125,7 @@ trait TestValues {
         datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
         loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
         equalInstallments = true,
-        loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+        loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
         optSecurityGivenDetails = None,
         optOutstandingArrearsOnLoan = Some(Double.MaxValue)
       )
@@ -605,7 +605,7 @@ trait TestValues {
           securityGiven = "Yes",
           securityDetails = Some("SecurityGivenDetails"),
           capRepaymentCY = Some(Double.MaxValue),
-          intReceivedCY = Double.MaxValue,
+          intReceivedCY = Some(Double.MaxValue),
           arrearsPrevYears = Some("No"),
           amountOfArrears = None,
           amountOutstanding = Some(Double.MaxValue)
@@ -953,7 +953,7 @@ trait TestValues {
               securityGiven = "Yes",
               securityDetails = Some("Japanese ming vase #344343444."),
               capRepaymentCY = Some(5000),
-              intReceivedCY = 555,
+              intReceivedCY = Some(555),
               arrearsPrevYears = Some("No"),
               amountOfArrears = None,
               amountOutstanding = Some(5000)

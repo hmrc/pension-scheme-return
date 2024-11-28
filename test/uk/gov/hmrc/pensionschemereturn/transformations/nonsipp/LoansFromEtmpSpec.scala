@@ -77,7 +77,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
               securityGiven = No,
               securityDetails = None,
               capRepaymentCY = Some(Double.MaxValue),
-              intReceivedCY = Double.MaxValue,
+              intReceivedCY = Some(Double.MaxValue),
               arrearsPrevYears = Some(Yes),
               amountOfArrears = Some(Double.MaxValue),
               amountOutstanding = Some(Double.MaxValue)
@@ -103,7 +103,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
             equalInstallments = true,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
@@ -139,7 +139,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
               securityGiven = No,
               securityDetails = None,
               capRepaymentCY = Some(Double.MaxValue),
-              intReceivedCY = Double.MaxValue,
+              intReceivedCY = Some(Double.MaxValue),
               arrearsPrevYears = Some(Yes),
               amountOfArrears = Some(Double.MaxValue),
               amountOutstanding = Some(Double.MaxValue)
@@ -165,7 +165,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
             equalInstallments = true,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
@@ -203,7 +203,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
               securityGiven = Yes,
               securityDetails = Some("SecurityGivenDetails"),
               capRepaymentCY = Some(Double.MaxValue),
-              intReceivedCY = Double.MaxValue,
+              intReceivedCY = Some(Double.MaxValue),
               arrearsPrevYears = Some(No),
               amountOfArrears = None,
               amountOutstanding = Some(Double.MaxValue)
@@ -229,7 +229,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
             equalInstallments = false,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
             optOutstandingArrearsOnLoan = None
           )
@@ -267,7 +267,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
               securityGiven = Yes,
               securityDetails = Some("SecurityGivenDetails"),
               capRepaymentCY = Some(Double.MaxValue),
-              intReceivedCY = Double.MaxValue,
+              intReceivedCY = Some(Double.MaxValue),
               arrearsPrevYears = Some(No),
               amountOfArrears = None,
               amountOutstanding = Some(Double.MaxValue)
@@ -293,7 +293,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             datePeriodLoanDetails = LoanPeriod(sampleToday, Double.MaxValue, Int.MaxValue),
             loanAmountDetails = LoanAmountDetails(Double.MaxValue, Some(Double.MaxValue), Some(Double.MaxValue)),
             equalInstallments = false,
-            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Double.MaxValue),
+            loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
             optOutstandingArrearsOnLoan = None
           )

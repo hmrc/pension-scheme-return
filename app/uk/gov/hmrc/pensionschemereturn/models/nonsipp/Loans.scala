@@ -35,7 +35,7 @@ case class LoanAmountDetails(
 case class LoanInterestDetails(
   loanInterestAmount: Double,
   loanInterestRate: Double,
-  intReceivedCY: Double
+  optIntReceivedCY: Option[Double]
 )
 
 case class RecipientIdentityType(
