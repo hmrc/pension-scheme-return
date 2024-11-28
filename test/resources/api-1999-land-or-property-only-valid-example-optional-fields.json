@@ -31,7 +31,6 @@
   },
   "assets": {
     "landOrProperty": {
-      "noOfTransactions": 1,
       "landOrPropertyTransactions": [
         {
           "propertyDetails": {
