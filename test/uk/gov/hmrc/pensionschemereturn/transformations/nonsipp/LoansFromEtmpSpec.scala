@@ -105,6 +105,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
+            optArrearsPrevYears = Some(true),
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
         )
@@ -167,6 +168,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
+            optArrearsPrevYears = Some(true),
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
         )
@@ -231,6 +233,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
+            optArrearsPrevYears = Some(false),
             optOutstandingArrearsOnLoan = None
           )
         )
@@ -295,6 +298,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
+            optArrearsPrevYears = Some(false),
             optOutstandingArrearsOnLoan = None
           )
         )

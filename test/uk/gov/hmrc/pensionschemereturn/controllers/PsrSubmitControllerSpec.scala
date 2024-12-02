@@ -491,6 +491,7 @@ object PsrSubmitControllerSpec {
       |          "optIntReceivedCY": 6
       |        },
       |        "optSecurityGivenDetails": "kjsdfvsd",
+      |        "optArrearsPrevYears": true,
       |        "optOutstandingArrearsOnLoan": 273
       |      }
       |    ]

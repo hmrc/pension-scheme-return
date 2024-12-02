@@ -58,6 +58,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
               equalInstallments = true,
               loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
               optSecurityGivenDetails = None,
+              optArrearsPrevYears = Some(true),
               optOutstandingArrearsOnLoan = Some(Double.MaxValue)
             )
           )

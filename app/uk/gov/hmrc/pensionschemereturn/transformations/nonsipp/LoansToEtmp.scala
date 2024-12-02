@@ -53,7 +53,7 @@ class LoansToEtmp @Inject() extends Transformer {
           securityDetails = loanTransaction.optSecurityGivenDetails,
           capRepaymentCY = loanTransaction.loanAmountDetails.optCapRepaymentCY,
           intReceivedCY = loanTransaction.loanInterestDetails.optIntReceivedCY,
-          arrearsPrevYears = optToOptYesNo(loanTransaction.optOutstandingArrearsOnLoan),
+          arrearsPrevYears = loanTransaction.optArrearsPrevYears.map(toYesNo),
           amountOfArrears = loanTransaction.optOutstandingArrearsOnLoan,
           amountOutstanding = loanTransaction.loanAmountDetails.optAmountOutstanding
         )
