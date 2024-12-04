@@ -465,7 +465,7 @@ object PsrSubmitControllerSpec {
       |  },
       |  "checkReturnDates": true,
       |  "loans": {
-      |    "schemeHadLoans": true,
+      |    "optSchemeHadLoans": true,
       |    "loanTransactions": [
       |      {
       |        "recipientIdentityType": {
@@ -491,6 +491,7 @@ object PsrSubmitControllerSpec {
       |          "optIntReceivedCY": 6
       |        },
       |        "optSecurityGivenDetails": "kjsdfvsd",
+      |        "optArrearsPrevYears": true,
       |        "optOutstandingArrearsOnLoan": 273
       |      }
       |    ]

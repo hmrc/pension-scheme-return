@@ -110,7 +110,7 @@ trait TestValues {
 
   val sampleLoans: Loans = Loans(
     recordVersion = Some("001"),
-    schemeHadLoans = true,
+    optSchemeHadLoans = Some(true),
     loanTransactions = List(
       LoanTransactions(
         recipientIdentityType = RecipientIdentityType(
@@ -127,6 +127,7 @@ trait TestValues {
         equalInstallments = true,
         loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
         optSecurityGivenDetails = None,
+        optArrearsPrevYears = Some(true),
         optOutstandingArrearsOnLoan = Some(Double.MaxValue)
       )
     )
@@ -581,7 +582,7 @@ trait TestValues {
 
   val sampleEtmpLoans: EtmpLoans = EtmpLoans(
     recordVersion = Some("001"),
-    schemeHadLoans = "Yes",
+    schemeHadLoans = Some("Yes"),
     noOfLoans = Some(1),
     loanTransactions = Some(
       List(
@@ -929,7 +930,7 @@ trait TestValues {
     loans = Some(
       EtmpLoans(
         recordVersion = Some("003"),
-        schemeHadLoans = "Yes",
+        schemeHadLoans = Some("Yes"),
         noOfLoans = Some(1),
         loanTransactions = Some(
           Seq(

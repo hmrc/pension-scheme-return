@@ -55,12 +55,13 @@ case class LoanTransactions(
   equalInstallments: Boolean,
   loanInterestDetails: LoanInterestDetails,
   optSecurityGivenDetails: Option[String],
+  optArrearsPrevYears: Option[Boolean],
   optOutstandingArrearsOnLoan: Option[Double]
 )
 
 case class Loans(
   recordVersion: Option[String],
-  schemeHadLoans: Boolean,
+  optSchemeHadLoans: Option[Boolean],
   loanTransactions: Seq[LoanTransactions]
 )
 

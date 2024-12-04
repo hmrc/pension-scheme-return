@@ -36,14 +36,14 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val etmpLoans = EtmpLoans(
         recordVersion = None,
-        schemeHadLoans = No,
+        schemeHadLoans = Some(No),
         noOfLoans = None,
         loanTransactions = None
       )
 
       val expected: Loans = Loans(
         recordVersion = None,
-        schemeHadLoans = false,
+        optSchemeHadLoans = Some(false),
         loanTransactions = List.empty
       )
       transformation.transform(etmpLoans) shouldMatchTo expected
@@ -53,7 +53,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val etmpLoans = EtmpLoans(
         recordVersion = Some("001"),
-        schemeHadLoans = Yes,
+        schemeHadLoans = Some(Yes),
         noOfLoans = Some(1),
         loanTransactions = Some(
           List(
@@ -88,7 +88,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val expected: Loans = Loans(
         recordVersion = Some("001"),
-        schemeHadLoans = true,
+        optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
             recipientIdentityType = RecipientIdentityType(
@@ -105,6 +105,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
+            optArrearsPrevYears = Some(true),
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
         )
@@ -115,7 +116,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
     "for UKCompany" in {
       val etmpLoans = EtmpLoans(
         recordVersion = Some("001"),
-        schemeHadLoans = Yes,
+        schemeHadLoans = Some(Yes),
         noOfLoans = Some(1),
         loanTransactions = Some(
           List(
@@ -150,7 +151,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val expected: Loans = Loans(
         recordVersion = Some("001"),
-        schemeHadLoans = true,
+        optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
             recipientIdentityType = RecipientIdentityType(
@@ -167,6 +168,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = true,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = None,
+            optArrearsPrevYears = Some(true),
             optOutstandingArrearsOnLoan = Some(Double.MaxValue)
           )
         )
@@ -179,7 +181,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val etmpLoans = EtmpLoans(
         recordVersion = Some("001"),
-        schemeHadLoans = Yes,
+        schemeHadLoans = Some(Yes),
         noOfLoans = Some(1),
         loanTransactions = Some(
           List(
@@ -214,7 +216,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val expected: Loans = Loans(
         recordVersion = Some("001"),
-        schemeHadLoans = true,
+        optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
             recipientIdentityType = RecipientIdentityType(
@@ -231,6 +233,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
+            optArrearsPrevYears = Some(false),
             optOutstandingArrearsOnLoan = None
           )
         )
@@ -243,7 +246,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val etmpLoans = EtmpLoans(
         recordVersion = Some("001"),
-        schemeHadLoans = Yes,
+        schemeHadLoans = Some(Yes),
         noOfLoans = Some(1),
         loanTransactions = Some(
           List(
@@ -278,7 +281,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
 
       val expected: Loans = Loans(
         recordVersion = Some("001"),
-        schemeHadLoans = true,
+        optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
             recipientIdentityType = RecipientIdentityType(
@@ -295,6 +298,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
             equalInstallments = false,
             loanInterestDetails = LoanInterestDetails(Double.MaxValue, Double.MaxValue, Some(Double.MaxValue)),
             optSecurityGivenDetails = Some("SecurityGivenDetails"),
+            optArrearsPrevYears = Some(false),
             optOutstandingArrearsOnLoan = None
           )
         )

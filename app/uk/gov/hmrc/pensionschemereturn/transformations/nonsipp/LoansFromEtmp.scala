@@ -28,7 +28,7 @@ class LoansFromEtmp @Inject() extends Transformer {
   def transform(loans: EtmpLoans): Loans =
     Loans(
       recordVersion = loans.recordVersion,
-      schemeHadLoans = fromYesNo(loans.schemeHadLoans),
+      optSchemeHadLoans = loans.schemeHadLoans.map(fromYesNo),
       loanTransactions = loans.loanTransactions
         .getOrElse(Seq.empty)
         .map { loanTransaction =>
@@ -66,6 +66,7 @@ class LoansFromEtmp @Inject() extends Transformer {
               optIntReceivedCY = loanTransaction.intReceivedCY
             ),
             optSecurityGivenDetails = loanTransaction.securityDetails,
+            optArrearsPrevYears = loanTransaction.arrearsPrevYears.map(fromYesNo),
             optOutstandingArrearsOnLoan = loanTransaction.amountOfArrears
           )
         }

@@ -27,9 +27,11 @@ class LoansToEtmp @Inject() extends Transformer {
   def transform(loans: Loans): EtmpLoans =
     EtmpLoans(
       recordVersion = loans.recordVersion,
-      schemeHadLoans = toYesNo(loans.schemeHadLoans),
-      noOfLoans = Option.when(loans.schemeHadLoans)(loans.loanTransactions.size),
-      loanTransactions = Option.when(loans.schemeHadLoans)(loans.loanTransactions.map { loanTransaction =>
+      schemeHadLoans = loans.optSchemeHadLoans.map(toYesNo),
+      noOfLoans = Option.when(loans.optSchemeHadLoans.getOrElse(false))(loans.loanTransactions.size),
+      loanTransactions = Option.when(
+        loans.loanTransactions.nonEmpty || (loans.optSchemeHadLoans.nonEmpty && loans.optSchemeHadLoans.get)
+      )(loans.loanTransactions.map { loanTransaction =>
         EtmpLoanTransactions(
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
@@ -51,7 +53,7 @@ class LoansToEtmp @Inject() extends Transformer {
           securityDetails = loanTransaction.optSecurityGivenDetails,
           capRepaymentCY = loanTransaction.loanAmountDetails.optCapRepaymentCY,
           intReceivedCY = loanTransaction.loanInterestDetails.optIntReceivedCY,
-          arrearsPrevYears = optToOptYesNo(loanTransaction.optOutstandingArrearsOnLoan),
+          arrearsPrevYears = loanTransaction.optArrearsPrevYears.map(toYesNo),
           amountOfArrears = loanTransaction.optOutstandingArrearsOnLoan,
           amountOutstanding = loanTransaction.loanAmountDetails.optAmountOutstanding
         )
