@@ -22,8 +22,8 @@ import java.time.LocalDate
 
 case class EtmpBonds(
   recordVersion: Option[String],
-  bondsWereAdded: String,
-  bondsWereDisposed: String,
+  bondsWereAdded: Option[String],
+  bondsWereDisposed: Option[String],
   noOfTransactions: Option[Int],
   bondTransactions: Option[Seq[EtmpBondTransactions]]
 )
@@ -35,7 +35,7 @@ case class EtmpBondTransactions(
   costOfBonds: Double,
   connectedPartyStatus: Option[String],
   bondsUnregulated: String,
-  totalIncomeOrReceipts: Double,
+  totalIncomeOrReceipts: Option[Double],
   bondsDisposed: Option[Seq[EtmpBondsDisposed]]
 )
 

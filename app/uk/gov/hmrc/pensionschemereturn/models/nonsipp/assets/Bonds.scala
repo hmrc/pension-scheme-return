@@ -22,8 +22,8 @@ import java.time.LocalDate
 
 case class Bonds(
   recordVersion: Option[String],
-  bondsWereAdded: Boolean,
-  bondsWereDisposed: Boolean,
+  optBondsWereAdded: Option[Boolean],
+  optBondsWereDisposed: Option[Boolean],
   bondTransactions: Seq[BondTransactions]
 )
 
@@ -34,7 +34,7 @@ case class BondTransactions(
   costOfBonds: Double,
   optConnectedPartyStatus: Option[Boolean],
   bondsUnregulated: Boolean,
-  totalIncomeOrReceipts: Double,
+  optTotalIncomeOrReceipts: Option[Double],
   optBondsDisposed: Option[Seq[BondDisposed]]
 )
 
