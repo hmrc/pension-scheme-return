@@ -151,5 +151,12 @@ class JSONSchemaValidatorSpec extends AnyWordSpec with Matchers with JsonFileRea
       val result = jsonPayloadSchemaValidator.validatePayload(API_1999_optional, json)
       result.hasErrors mustBe false
     }
+
+    "Behaviour for valid payload bonds only" in {
+      val json = readJsonFromFile("/api-1999-bonds-only-valid-example-optional-fields.json")
+      val result = jsonPayloadSchemaValidator.validatePayload(API_1999_optional, json)
+      result.hasErrors mustBe false
+    }
+
   }
 }

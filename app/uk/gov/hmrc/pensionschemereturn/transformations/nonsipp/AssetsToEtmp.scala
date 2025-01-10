@@ -152,10 +152,13 @@ class AssetsToEtmp @Inject() extends Transformer {
       bonds = assets.optBonds.map(bonds =>
         EtmpBonds(
           recordVersion = bonds.recordVersion,
-          bondsWereAdded = toYesNo(bonds.bondsWereAdded),
-          bondsWereDisposed = toYesNo(bonds.bondsWereDisposed),
-          noOfTransactions = Option.when(bonds.bondsWereAdded)(bonds.bondTransactions.size),
-          bondTransactions = Option.when(bonds.bondsWereAdded)(
+          bondsWereAdded = bonds.optBondsWereAdded.map(toYesNo),
+          bondsWereDisposed = bonds.optBondsWereDisposed.map(toYesNo),
+          noOfTransactions = Option.when(bonds.optBondsWereAdded.getOrElse(false))(bonds.bondTransactions.size),
+          bondTransactions = Option.when(
+            bonds.bondTransactions.nonEmpty ||
+              (bonds.optBondsWereAdded.nonEmpty && bonds.optBondsWereAdded.get)
+          )(
             bonds.bondTransactions.map(bondTransaction =>
               EtmpBondTransactions(
                 nameOfBonds = bondTransaction.nameOfBonds,
@@ -164,7 +167,7 @@ class AssetsToEtmp @Inject() extends Transformer {
                 costOfBonds = bondTransaction.costOfBonds,
                 connectedPartyStatus = bondTransaction.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
                 bondsUnregulated = toYesNo(bondTransaction.bondsUnregulated),
-                totalIncomeOrReceipts = bondTransaction.totalIncomeOrReceipts,
+                totalIncomeOrReceipts = bondTransaction.optTotalIncomeOrReceipts,
                 bondsDisposed = bondTransaction.optBondsDisposed
                   .map(
                     _.map(bondsDisposed =>

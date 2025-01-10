@@ -229,8 +229,8 @@ trait TestValues {
     optBonds = Some(
       Bonds(
         recordVersion = Some("001"),
-        bondsWereAdded = true,
-        bondsWereDisposed = false,
+        optBondsWereAdded = Some(true),
+        optBondsWereDisposed = Some(false),
         bondTransactions = Seq(
           BondTransactions(
             nameOfBonds = "nameOfBonds",
@@ -239,7 +239,7 @@ trait TestValues {
             costOfBonds = Double.MaxValue,
             optConnectedPartyStatus = Some(false),
             bondsUnregulated = false,
-            totalIncomeOrReceipts = Double.MaxValue,
+            optTotalIncomeOrReceipts = Some(Double.MaxValue),
             optBondsDisposed = Some(
               Seq(
                 BondDisposed(
@@ -628,8 +628,8 @@ trait TestValues {
     bonds = Some(
       EtmpBonds(
         recordVersion = None,
-        bondsWereAdded = "bondsWereAdded",
-        bondsWereDisposed = "bondsWereDisposed",
+        bondsWereAdded = Some("bondsWereAdded"),
+        bondsWereDisposed = Some("bondsWereDisposed"),
         noOfTransactions = None,
         bondTransactions = None
       )
@@ -989,8 +989,8 @@ trait TestValues {
         bonds = Some(
           EtmpBonds(
             recordVersion = Some("528"),
-            bondsWereAdded = "Yes",
-            bondsWereDisposed = "Yes",
+            bondsWereAdded = Some("Yes"),
+            bondsWereDisposed = Some("Yes"),
             noOfTransactions = Some(2),
             bondTransactions = Some(
               Seq(
@@ -1001,7 +1001,7 @@ trait TestValues {
                   costOfBonds = 10234.56,
                   connectedPartyStatus = Some("02"),
                   bondsUnregulated = "No",
-                  totalIncomeOrReceipts = 50.0,
+                  totalIncomeOrReceipts = Some(50.0),
                   bondsDisposed = Some(
                     Seq(
                       EtmpBondsDisposed(
@@ -1023,7 +1023,7 @@ trait TestValues {
                   costOfBonds = 2000.5,
                   connectedPartyStatus = Some("02"),
                   bondsUnregulated = "No",
-                  totalIncomeOrReceipts = 300,
+                  totalIncomeOrReceipts = Some(300),
                   bondsDisposed = Some(
                     Seq(
                       EtmpBondsDisposed(

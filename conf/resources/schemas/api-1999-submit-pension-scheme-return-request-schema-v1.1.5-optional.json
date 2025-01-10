@@ -240,8 +240,7 @@
         "nameOfBonds",
         "methodOfHolding",
         "costOfBonds",
-        "bondsUnregulated",
-        "totalIncomeOrReceipts"
+        "bondsUnregulated"
       ]
     },
     "bondsDisposedType": {

@@ -1,0 +1,54 @@
+{
+  "reportDetails": {
+    "psrStatus": "Compiled",
+    "periodStart": "2022-04-06",
+    "periodEnd": "2023-04-05"
+  },
+  "accountingPeriodDetails": {
+    "recordVersion": "002",
+    "accountingPeriods": [
+      {
+        "accPeriodStart": "2022-04-06",
+        "accPeriodEnd": "2022-12-31"
+      },
+      {
+        "accPeriodStart": "2023-01-01",
+        "accPeriodEnd": "2023-04-05"
+      }
+    ]
+  },
+  "schemeDesignatory": {
+    "recordVersion": "002",
+    "openBankAccount": "Yes",
+    "noOfActiveMembers": 5,
+    "noOfDeferredMembers": 2,
+    "noOfPensionerMembers": 10,
+    "totalAssetValueStart": 10000000,
+    "totalAssetValueEnd": 11000000,
+    "totalCashStart": 2500000,
+    "totalCashEnd": 2800000,
+    "totalPayments": 2000000
+  },
+  "bonds": {
+    "recordVersion": "528",
+    "noOfTransactions": 2,
+    "bondTransactions": [
+      {
+        "nameOfBonds": "Xenex Bonds",
+        "methodOfHolding": "01",
+        "dateOfAcqOrContrib": "2023-10-19",
+        "costOfBonds": 10234.56,
+        "connectedPartyStatus": "02",
+        "bondsUnregulated": "No"
+      },
+      {
+        "nameOfBonds": "Really Goods Bonds ABC",
+        "methodOfHolding": "03",
+        "dateOfAcqOrContrib": "2023-10-19",
+        "costOfBonds": 2000.5,
+        "connectedPartyStatus": "02",
+        "bondsUnregulated": "No"
+      }
+    ]
+  }
+}
