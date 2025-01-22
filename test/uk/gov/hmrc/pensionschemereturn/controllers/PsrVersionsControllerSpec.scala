@@ -24,8 +24,9 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import play.api.test.Helpers._
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import org.mockito.Mockito._
 import utils.{BaseSpec, TestValues}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -41,18 +42,21 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
   private val mockPsrVersionsService = mock[PsrVersionsService]
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
   private val mockSchemeDetailsConnector: SchemeDetailsConnector = mock[SchemeDetailsConnector]
+  private val mockConfig: AppConfig = mock[AppConfig]
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockPsrVersionsService)
     reset(mockSchemeDetailsConnector)
+    reset(mockConfig)
   }
 
   val modules: Seq[GuiceableModule] =
     Seq(
       bind[PsrVersionsService].toInstance(mockPsrVersionsService),
       bind[AuthConnector].toInstance(mockAuthConnector),
-      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector)
+      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+      bind[AppConfig].toInstance(mockConfig)
     )
 
   val application: Application = new GuiceApplicationBuilder()
@@ -181,6 +185,7 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
   "getVersionsForYears" must {
     "return success" in {
       val responseJson: JsObject = Json.obj("mock" -> "pass")
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2021-04-06")
 
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
@@ -189,9 +194,34 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
       when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(true))
 
-      val result = controller.getVersionsForYears("testPstr", List("2020-04-06"))(fakeRequest.withHeaders("srn" -> srn))
+      val result = controller.getVersionsForYears("testPstr", List("2022-04-06", "2023-04-06"))(fakeRequest.withHeaders("srn" -> srn))
       status(result) mustBe Status.OK
-      verify(mockPsrVersionsService, times(1)).getVersions(any(), any())(any(), any())
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2022-04-06"))(any(), any())
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2023-04-06"))(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "filter out dates before the earliest date in config" in {
+      val responseJson: JsObject = Json.obj("mock" -> "pass")
+
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2021-04-06")
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(Some(externalId), enrolments)))
+      when(mockPsrVersionsService.getVersions(any(), any())(any(), any()))
+        .thenReturn(Future.successful(responseJson))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      val result =
+        controller.getVersionsForYears("testPstr", List("2019-04-06", "2020-04-06", "2021-04-06", "2022-04-06"))(
+          fakeRequest.withHeaders("srn" -> srn)
+        )
+      status(result) mustBe Status.OK
+      verify(mockPsrVersionsService, never).getVersions(any(), eqTo("2019-04-06"))(any(), any())
+      verify(mockPsrVersionsService, never).getVersions(any(), eqTo("2020-04-06"))(any(), any())
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2021-04-06"))(any(), any())
+      verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2022-04-06"))(any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
       verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }

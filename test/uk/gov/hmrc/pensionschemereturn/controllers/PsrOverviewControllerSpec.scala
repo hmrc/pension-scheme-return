@@ -24,8 +24,9 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.pensionschemereturn.connectors.SchemeDetailsConnector
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import play.api.test.Helpers._
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import org.mockito.Mockito._
 import utils.{BaseSpec, TestValues}
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -41,19 +42,22 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
 
   private val mockPsrOverviewService = mock[PsrOverviewService]
   private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  private val mockConfig: AppConfig = mock[AppConfig]
   private val mockSchemeDetailsConnector: SchemeDetailsConnector = mock[SchemeDetailsConnector]
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockPsrOverviewService)
     reset(mockSchemeDetailsConnector)
+    reset(mockConfig)
   }
 
   val modules: Seq[GuiceableModule] =
     Seq(
       bind[PsrOverviewService].toInstance(mockPsrOverviewService),
       bind[AuthConnector].toInstance(mockAuthConnector),
-      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector)
+      bind[SchemeDetailsConnector].toInstance(mockSchemeDetailsConnector),
+      bind[AppConfig].toInstance(mockConfig)
     )
 
   val application: Application = new GuiceApplicationBuilder()
@@ -66,7 +70,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
   "Get Overview" must {
 
     "return 400 - Bad Request with missing parameter: srn" in {
-
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
       val thrown = intercept[BadRequestException] {
         await(controller.getOverview("testPstr", "2020-04-06", "2024-04-05")(fakeRequest))
       }
@@ -79,6 +83,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
     }
 
     "return 400 - Bad Request with Invalid scheme reference number" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
 
       val result =
         controller.getOverview("testPstr", "2020-04-06", "2024-04-05")(fakeRequest.withHeaders("srn" -> "INVALID_SRN"))
@@ -91,6 +96,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
     }
 
     "return 401 - Bearer token expired" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
 
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
@@ -109,6 +115,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
     }
 
     "return 401 - Bearer token not supplied" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
 
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
@@ -126,6 +133,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
     }
 
     "return 401 - Scheme is not associated with the user" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.successful(new ~(Some(externalId), enrolments))
@@ -145,6 +153,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
 
     "return success" in {
       val responseJson: JsObject = Json.obj("mock" -> "pass")
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2022-04-06")
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.successful(new ~(Some(externalId), enrolments))
@@ -162,6 +171,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
     }
 
     "return success when empty" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2021-04-06")
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
           Future.successful(new ~(Some(externalId), enrolments))
@@ -171,9 +181,27 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
       when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(true))
 
-      val result = controller.getOverview("testPstr", "2020-04-06", "2024-04-05")(fakeRequest.withHeaders("srn" -> srn))
+      val result = controller.getOverview("testPstr", "2022-04-06", "2024-04-05")(fakeRequest.withHeaders("srn" -> srn))
       status(result) mustBe Status.OK
-      verify(mockPsrOverviewService, times(1)).getOverview(any(), any(), any())(any(), any())
+      verify(mockPsrOverviewService, times(1)).getOverview(any(), eqTo("2022-04-06"), eqTo("2024-04-05"))(any(), any())
+      verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
+      verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
+    }
+
+    "limit calls to service by configured minimum date" in {
+      when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2021-04-06")
+      when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(
+          Future.successful(new~(Some(externalId), enrolments))
+        )
+      when(mockPsrOverviewService.getOverview(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(Json.arr()))
+      when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      val result = controller.getOverview("testPstr", "2018-04-06", "2024-04-05")(fakeRequest.withHeaders("srn" -> srn))
+      status(result) mustBe Status.OK
+      verify(mockPsrOverviewService, times(1)).getOverview(any(), eqTo("2021-04-06"), eqTo("2024-04-05"))(any(), any())
       verify(mockAuthConnector, times(1)).authorise(any(), any())(any(), any())
       verify(mockSchemeDetailsConnector, times(1)).checkAssociation(any(), any(), any())(any(), any())
     }
