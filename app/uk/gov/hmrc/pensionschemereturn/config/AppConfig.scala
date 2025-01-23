@@ -39,5 +39,5 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val submitStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.submit-standard-psr")}"
   val getStandardPsrUrl: String = s"$ifURL${config.get[String](path = "serviceUrls.get-standard-psr")}"
   val isPsaAssociatedUrl: String = s"$pensionsSchemeURL${config.get[String](path = "serviceUrls.is-psa-associated")}"
-
+  val earliestPsrPeriodStartDate: String = config.get[String]("earliestPsrPeriodStartDate")
 }

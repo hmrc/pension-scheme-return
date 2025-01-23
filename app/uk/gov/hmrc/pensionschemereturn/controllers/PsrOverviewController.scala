@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers
 
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.services.PsrOverviewService
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -33,6 +34,7 @@ import javax.inject.{Inject, Singleton}
 class PsrOverviewController @Inject() (
   cc: ControllerComponents,
   psrOverviewService: PsrOverviewService,
+  config: AppConfig,
   override val authConnector: AuthConnector,
   override protected val schemeDetailsConnector: SchemeDetailsConnector
 )(implicit
@@ -49,12 +51,14 @@ class PsrOverviewController @Inject() (
     fromDate: String,
     toDate: String
   ): Action[AnyContent] = Action.async { implicit request =>
+    val effectiveFromDate = Seq(fromDate, config.earliestPsrPeriodStartDate).max
+
     val Seq(srnS) = requiredHeaders("srn")
     authorisedAsPsrUser(srnS) { _ =>
       logger.debug(
-        s"Retrieving overview - with pstr: $pstr, fromDate: $fromDate, toDate: $toDate"
+        s"Retrieving overview - with pstr: $pstr, fromDate: $fromDate (effective: $effectiveFromDate), toDate: $toDate"
       )
-      psrOverviewService.getOverview(pstr, fromDate, toDate).map { data =>
+      psrOverviewService.getOverview(pstr, effectiveFromDate, toDate).map { data =>
         Ok(data)
       }
     }

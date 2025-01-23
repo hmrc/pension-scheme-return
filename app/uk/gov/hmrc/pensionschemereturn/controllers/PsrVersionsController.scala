@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.controllers
 
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import uk.gov.hmrc.pensionschemereturn.services.PsrVersionsService
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -34,6 +35,7 @@ import javax.inject.{Inject, Singleton}
 class PsrVersionsController @Inject() (
   cc: ControllerComponents,
   psrVersionsService: PsrVersionsService,
+  config: AppConfig,
   override val authConnector: AuthConnector,
   override protected val schemeDetailsConnector: SchemeDetailsConnector
 )(implicit
@@ -49,12 +51,14 @@ class PsrVersionsController @Inject() (
     pstr: String,
     startDates: Seq[String]
   ): Action[AnyContent] = Action.async { implicit request =>
+    val effectiveStartDates = startDates.filter(_ >= config.earliestPsrPeriodStartDate)
+
     val Seq(srnS) = requiredHeaders("srn")
     authorisedAsPsrUser(srnS) { _ =>
-      logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates")
+      logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates (effective: $effectiveStartDates)")
       Future
         .sequence(
-          startDates.map { startDate =>
+          effectiveStartDates.map { startDate =>
             psrVersionsService.getVersions(pstr, startDate).map { data =>
               val props: List[(String, JsValue)] = List(
                 Some("startDate" -> JsString(startDate)),
