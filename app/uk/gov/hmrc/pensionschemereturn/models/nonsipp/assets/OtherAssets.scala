@@ -23,8 +23,8 @@ import java.time.LocalDate
 
 case class OtherAssets(
   recordVersion: Option[String],
-  otherAssetsWereHeld: Boolean,
-  otherAssetsWereDisposed: Boolean,
+  optOtherAssetsWereHeld: Option[Boolean],
+  optOtherAssetsWereDisposed: Option[Boolean],
   otherAssetTransactions: Seq[OtherAssetTransaction]
 )
 
@@ -37,8 +37,8 @@ case class OtherAssetTransaction(
   optPropertyAcquiredFrom: Option[PropertyAcquiredFrom],
   optConnectedStatus: Option[Boolean],
   optIndepValuationSupport: Option[Boolean],
-  movableSchedule29A: Boolean,
-  totalIncomeOrReceipts: Double,
+  optMovableSchedule29A: Option[Boolean],
+  optTotalIncomeOrReceipts: Option[Double],
   optOtherAssetDisposed: Option[Seq[OtherAssetDisposed]]
 )
 

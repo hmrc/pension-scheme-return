@@ -176,8 +176,8 @@ class AssetsFromEtmp @Inject() extends Transformer {
       optOtherAssets = assets.otherAssets.map(otherAssets =>
         OtherAssets(
           recordVersion = otherAssets.recordVersion,
-          otherAssetsWereHeld = fromYesNo(otherAssets.otherAssetsWereHeld),
-          otherAssetsWereDisposed = fromYesNo(otherAssets.otherAssetsWereDisposed),
+          optOtherAssetsWereHeld = otherAssets.otherAssetsWereHeld.map(fromYesNo),
+          optOtherAssetsWereDisposed = otherAssets.otherAssetsWereDisposed.map(fromYesNo),
           otherAssetTransactions = otherAssets.otherAssetTransactions
             .getOrElse(Seq.empty)
             .map(oa =>
@@ -198,8 +198,8 @@ class AssetsFromEtmp @Inject() extends Transformer {
                 },
                 optConnectedStatus = oa.connectedStatus.map(_ == Connected),
                 optIndepValuationSupport = oa.supportedByIndepValuation.map(fromYesNo),
-                movableSchedule29A = fromYesNo(oa.movableSchedule29A),
-                totalIncomeOrReceipts = oa.totalIncomeOrReceipts,
+                optMovableSchedule29A = oa.movableSchedule29A.map(fromYesNo),
+                optTotalIncomeOrReceipts = oa.totalIncomeOrReceipts,
                 optOtherAssetDisposed = oa.assetsDisposed.map(
                   _.map(oad =>
                     OtherAssetDisposed(

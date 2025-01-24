@@ -461,8 +461,6 @@
     },
     "otherAssets": {
       "recordVersion": "002",
-      "otherAssetsWereHeld": "Yes",
-      "otherAssetsWereDisposed": "No",
       "noOfTransactions": 2,
       "otherAssetTransactions": [
         {
@@ -476,24 +474,7 @@
             "idNumber": "TS315528"
           },
           "connectedStatus": "01",
-          "supportedByIndepValuation": "No",
-          "movableSchedule29A": "No",
-          "totalIncomeOrReceipts": 0,
-          "assetsDisposed": [
-            {
-              "methodOfDisposal": "01",
-              "dateSold": "2022-12-30",
-              "purchaserName": "Acme Express Ltd.",
-              "purchaserType": {
-                "indivOrOrgType": "04",
-                "otherDescription": "Foreign purchaser"
-              },
-              "totalAmountReceived": 150000,
-              "connectedStatus": "02",
-              "supportedByIndepValuation": "Yes",
-              "fullyDisposedOf": "Yes"
-            }
-          ]
+          "supportedByIndepValuation": "No"
         },
         {
           "assetDescription": "10kg Gold bars",
@@ -506,9 +487,7 @@
             "idNumber": "SC123456"
           },
           "connectedStatus": "02",
-          "supportedByIndepValuation": "No",
-          "movableSchedule29A": "No",
-          "totalIncomeOrReceipts": 0
+          "supportedByIndepValuation": "No"
         }
       ]
     }
