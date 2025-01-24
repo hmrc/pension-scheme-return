@@ -192,7 +192,7 @@ class PsrOverviewControllerSpec extends BaseSpec with TestValues {
       when(mockConfig.earliestPsrPeriodStartDate).thenReturn("2021-04-06")
       when(mockAuthConnector.authorise[Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(
-          Future.successful(new~(Some(externalId), enrolments))
+          Future.successful(new ~(Some(externalId), enrolments))
         )
       when(mockPsrOverviewService.getOverview(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Json.arr()))

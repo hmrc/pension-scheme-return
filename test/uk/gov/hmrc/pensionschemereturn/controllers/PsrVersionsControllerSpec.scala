@@ -194,7 +194,9 @@ class PsrVersionsControllerSpec extends BaseSpec with TestValues {
       when(mockSchemeDetailsConnector.checkAssociation(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(true))
 
-      val result = controller.getVersionsForYears("testPstr", List("2022-04-06", "2023-04-06"))(fakeRequest.withHeaders("srn" -> srn))
+      val result = controller.getVersionsForYears("testPstr", List("2022-04-06", "2023-04-06"))(
+        fakeRequest.withHeaders("srn" -> srn)
+      )
       status(result) mustBe Status.OK
       verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2022-04-06"))(any(), any())
       verify(mockPsrVersionsService, times(1)).getVersions(any(), eqTo("2023-04-06"))(any(), any())

@@ -55,7 +55,9 @@ class PsrVersionsController @Inject() (
 
     val Seq(srnS) = requiredHeaders("srn")
     authorisedAsPsrUser(srnS) { _ =>
-      logger.debug(s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates (effective: $effectiveStartDates)")
+      logger.debug(
+        s"Retrieving reporting versions for years- with pstr: $pstr, startDates: $startDates (effective: $effectiveStartDates)"
+      )
       Future
         .sequence(
           effectiveStartDates.map { startDate =>
