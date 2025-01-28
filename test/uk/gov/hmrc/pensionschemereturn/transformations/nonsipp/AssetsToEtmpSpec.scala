@@ -76,6 +76,101 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     )
   )
+
+  private val otherAssetTransactions = Seq(
+    OtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = SchemeHoldAsset.Acquisition,
+      optDateOfAcqOrContrib = Some(today),
+      costOfAsset = Double.MaxValue,
+      optPropertyAcquiredFromName = Some("PropertyAcquiredFromName"),
+      optPropertyAcquiredFrom = Some(
+        PropertyAcquiredFrom(
+          identityType = IdentityType.Other,
+          idNumber = None,
+          reasonNoIdNumber = None,
+          otherDescription = Some("otherDescription")
+        )
+      ),
+      optConnectedStatus = Some(false),
+      optIndepValuationSupport = Some(false),
+      optMovableSchedule29A = Some(true),
+      optTotalIncomeOrReceipts = Some(Double.MaxValue),
+      Some(
+        Seq(
+          OtherAssetDisposed(
+            methodOfDisposal = Sold,
+            optOtherMethod = None,
+            optDateSold = Some(today),
+            optPurchaserName = Some("PurchaserName"),
+            optPropertyAcquiredFrom = Some(
+              PropertyAcquiredFrom(
+                IdentityType.Other,
+                None,
+                None,
+                Some("otherDescription")
+              )
+            ),
+            optTotalAmountReceived = Some(Double.MaxValue),
+            optConnectedStatus = Some(false),
+            optSupportedByIndepValuation = Some(false),
+            anyPartAssetStillHeld = false
+          ),
+          OtherAssetDisposed(
+            methodOfDisposal = Transferred,
+            optOtherMethod = None,
+            optDateSold = None,
+            optPurchaserName = None,
+            optPropertyAcquiredFrom = None,
+            optTotalAmountReceived = None,
+            optConnectedStatus = None,
+            optSupportedByIndepValuation = None,
+            anyPartAssetStillHeld = true
+          )
+        )
+      )
+    ),
+    OtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = SchemeHoldAsset.Contribution,
+      optDateOfAcqOrContrib = Some(today),
+      costOfAsset = Double.MaxValue,
+      optPropertyAcquiredFromName = None,
+      optPropertyAcquiredFrom = None,
+      optConnectedStatus = None,
+      optIndepValuationSupport = Some(true),
+      optMovableSchedule29A = Some(false),
+      optTotalIncomeOrReceipts = Some(Double.MaxValue),
+      optOtherAssetDisposed = None
+    ),
+    OtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = SchemeHoldAsset.Transfer,
+      optDateOfAcqOrContrib = None,
+      costOfAsset = Double.MaxValue,
+      optPropertyAcquiredFromName = None,
+      optPropertyAcquiredFrom = None,
+      optConnectedStatus = None,
+      optIndepValuationSupport = None,
+      optMovableSchedule29A = Some(true),
+      optTotalIncomeOrReceipts = Some(Double.MaxValue),
+      optOtherAssetDisposed = Some(
+        Seq(
+          OtherAssetDisposed(
+            methodOfDisposal = Other,
+            optOtherMethod = Some("OtherMethod"),
+            optDateSold = None,
+            optPurchaserName = None,
+            optPropertyAcquiredFrom = None,
+            optTotalAmountReceived = None,
+            optConnectedStatus = None,
+            optSupportedByIndepValuation = None,
+            anyPartAssetStillHeld = true
+          )
+        )
+      )
+    )
+  )
   private def fullAssets(inUK: Boolean, address: Address): Assets = Assets(
     optLandOrProperty = Some(
       LandOrProperty(
@@ -193,102 +288,9 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     optOtherAssets = Some(
       OtherAssets(
         recordVersion = Some("001"),
-        otherAssetsWereHeld = true,
-        otherAssetsWereDisposed = false,
-        otherAssetTransactions = Seq(
-          OtherAssetTransaction(
-            assetDescription = "assetDescription",
-            methodOfHolding = SchemeHoldAsset.Acquisition,
-            optDateOfAcqOrContrib = Some(today),
-            costOfAsset = Double.MaxValue,
-            optPropertyAcquiredFromName = Some("PropertyAcquiredFromName"),
-            optPropertyAcquiredFrom = Some(
-              PropertyAcquiredFrom(
-                identityType = IdentityType.Other,
-                idNumber = None,
-                reasonNoIdNumber = None,
-                otherDescription = Some("otherDescription")
-              )
-            ),
-            optConnectedStatus = Some(false),
-            optIndepValuationSupport = Some(false),
-            movableSchedule29A = true,
-            totalIncomeOrReceipts = Double.MaxValue,
-            Some(
-              Seq(
-                OtherAssetDisposed(
-                  methodOfDisposal = Sold,
-                  optOtherMethod = None,
-                  optDateSold = Some(today),
-                  optPurchaserName = Some("PurchaserName"),
-                  optPropertyAcquiredFrom = Some(
-                    PropertyAcquiredFrom(
-                      IdentityType.Other,
-                      None,
-                      None,
-                      Some("otherDescription")
-                    )
-                  ),
-                  optTotalAmountReceived = Some(Double.MaxValue),
-                  optConnectedStatus = Some(false),
-                  optSupportedByIndepValuation = Some(false),
-                  anyPartAssetStillHeld = false
-                ),
-                OtherAssetDisposed(
-                  methodOfDisposal = Transferred,
-                  optOtherMethod = None,
-                  optDateSold = None,
-                  optPurchaserName = None,
-                  optPropertyAcquiredFrom = None,
-                  optTotalAmountReceived = None,
-                  optConnectedStatus = None,
-                  optSupportedByIndepValuation = None,
-                  anyPartAssetStillHeld = true
-                )
-              )
-            )
-          ),
-          OtherAssetTransaction(
-            assetDescription = "assetDescription",
-            methodOfHolding = SchemeHoldAsset.Contribution,
-            optDateOfAcqOrContrib = Some(today),
-            costOfAsset = Double.MaxValue,
-            optPropertyAcquiredFromName = None,
-            optPropertyAcquiredFrom = None,
-            optConnectedStatus = None,
-            optIndepValuationSupport = Some(true),
-            movableSchedule29A = false,
-            totalIncomeOrReceipts = Double.MaxValue,
-            optOtherAssetDisposed = None
-          ),
-          OtherAssetTransaction(
-            assetDescription = "assetDescription",
-            methodOfHolding = SchemeHoldAsset.Transfer,
-            optDateOfAcqOrContrib = None,
-            costOfAsset = Double.MaxValue,
-            optPropertyAcquiredFromName = None,
-            optPropertyAcquiredFrom = None,
-            optConnectedStatus = None,
-            optIndepValuationSupport = None,
-            movableSchedule29A = true,
-            totalIncomeOrReceipts = Double.MaxValue,
-            optOtherAssetDisposed = Some(
-              Seq(
-                OtherAssetDisposed(
-                  methodOfDisposal = Other,
-                  optOtherMethod = Some("OtherMethod"),
-                  optDateSold = None,
-                  optPurchaserName = None,
-                  optPropertyAcquiredFrom = None,
-                  optTotalAmountReceived = None,
-                  optConnectedStatus = None,
-                  optSupportedByIndepValuation = None,
-                  anyPartAssetStillHeld = true
-                )
-              )
-            )
-          )
-        )
+        optOtherAssetsWereHeld = Some(true),
+        optOtherAssetsWereDisposed = Some(false),
+        otherAssetTransactions = otherAssetTransactions
       )
     )
   )
@@ -330,6 +332,101 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             bondsPurchaserName = None,
             connectedPartyStatus = None,
             totalNowHeld = Int.MaxValue
+          )
+        )
+      )
+    )
+  )
+
+  private val etmpOtherAssetsTransaction = Seq(
+    EtmpOtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = "01",
+      dateOfAcqOrContrib = Some(today),
+      costOfAsset = Double.MaxValue,
+      acquiredFromName = Some("PropertyAcquiredFromName"),
+      acquiredFromType = Some(
+        EtmpIdentityType(
+          indivOrOrgType = "04",
+          idNumber = None,
+          reasonNoIdNumber = None,
+          otherDescription = Some("otherDescription")
+        )
+      ),
+      connectedStatus = Some(Unconnected),
+      supportedByIndepValuation = Some(No),
+      movableSchedule29A = Some(Yes),
+      totalIncomeOrReceipts = Some(Double.MaxValue),
+      assetsDisposed = Some(
+        Seq(
+          EtmpAssetsDisposed(
+            methodOfDisposal = "01",
+            otherMethod = None,
+            dateSold = Some(today),
+            purchaserName = Some("PurchaserName"),
+            purchaserType = Some(
+              EtmpIdentityType(
+                indivOrOrgType = "04",
+                idNumber = None,
+                reasonNoIdNumber = None,
+                otherDescription = Some("otherDescription")
+              )
+            ),
+            totalAmountReceived = Some(Double.MaxValue),
+            connectedStatus = Some(Unconnected),
+            supportedByIndepValuation = Some(No),
+            fullyDisposedOf = "Yes"
+          ),
+          EtmpAssetsDisposed(
+            methodOfDisposal = "02",
+            otherMethod = None,
+            dateSold = None,
+            purchaserName = None,
+            purchaserType = None,
+            totalAmountReceived = None,
+            connectedStatus = None,
+            supportedByIndepValuation = None,
+            fullyDisposedOf = "No"
+          )
+        )
+      )
+    ),
+    EtmpOtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = "02",
+      dateOfAcqOrContrib = Some(today),
+      costOfAsset = Double.MaxValue,
+      acquiredFromName = None,
+      acquiredFromType = None,
+      connectedStatus = None,
+      supportedByIndepValuation = Some(Yes),
+      movableSchedule29A = Some(No),
+      totalIncomeOrReceipts = Some(Double.MaxValue),
+      assetsDisposed = None
+    ),
+    EtmpOtherAssetTransaction(
+      assetDescription = "assetDescription",
+      methodOfHolding = "03",
+      dateOfAcqOrContrib = None,
+      costOfAsset = Double.MaxValue,
+      acquiredFromName = None,
+      acquiredFromType = None,
+      connectedStatus = None,
+      supportedByIndepValuation = None,
+      movableSchedule29A = Some(Yes),
+      totalIncomeOrReceipts = Some(Double.MaxValue),
+      assetsDisposed = Some(
+        Seq(
+          EtmpAssetsDisposed(
+            methodOfDisposal = "03",
+            otherMethod = Some("OtherMethod"),
+            dateSold = None,
+            purchaserName = None,
+            purchaserType = None,
+            totalAmountReceived = None,
+            connectedStatus = None,
+            supportedByIndepValuation = None,
+            fullyDisposedOf = "No"
           )
         )
       )
@@ -463,105 +560,10 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     otherAssets = Some(
       EtmpOtherAssets(
         recordVersion = Some("001"),
-        otherAssetsWereHeld = Yes,
-        otherAssetsWereDisposed = No,
+        otherAssetsWereHeld = Some(Yes),
+        otherAssetsWereDisposed = Some(No),
         noOfTransactions = Some(3),
-        otherAssetTransactions = Some(
-          Seq(
-            EtmpOtherAssetTransaction(
-              assetDescription = "assetDescription",
-              methodOfHolding = "01",
-              dateOfAcqOrContrib = Some(today),
-              costOfAsset = Double.MaxValue,
-              acquiredFromName = Some("PropertyAcquiredFromName"),
-              acquiredFromType = Some(
-                EtmpIdentityType(
-                  indivOrOrgType = "04",
-                  idNumber = None,
-                  reasonNoIdNumber = None,
-                  otherDescription = Some("otherDescription")
-                )
-              ),
-              connectedStatus = Some(Unconnected),
-              supportedByIndepValuation = Some(No),
-              movableSchedule29A = Yes,
-              totalIncomeOrReceipts = Double.MaxValue,
-              assetsDisposed = Some(
-                Seq(
-                  EtmpAssetsDisposed(
-                    methodOfDisposal = "01",
-                    otherMethod = None,
-                    dateSold = Some(today),
-                    purchaserName = Some("PurchaserName"),
-                    purchaserType = Some(
-                      EtmpIdentityType(
-                        indivOrOrgType = "04",
-                        idNumber = None,
-                        reasonNoIdNumber = None,
-                        otherDescription = Some("otherDescription")
-                      )
-                    ),
-                    totalAmountReceived = Some(Double.MaxValue),
-                    connectedStatus = Some(Unconnected),
-                    supportedByIndepValuation = Some(No),
-                    fullyDisposedOf = "Yes"
-                  ),
-                  EtmpAssetsDisposed(
-                    methodOfDisposal = "02",
-                    otherMethod = None,
-                    dateSold = None,
-                    purchaserName = None,
-                    purchaserType = None,
-                    totalAmountReceived = None,
-                    connectedStatus = None,
-                    supportedByIndepValuation = None,
-                    fullyDisposedOf = "No"
-                  )
-                )
-              )
-            ),
-            EtmpOtherAssetTransaction(
-              assetDescription = "assetDescription",
-              methodOfHolding = "02",
-              dateOfAcqOrContrib = Some(today),
-              costOfAsset = Double.MaxValue,
-              acquiredFromName = None,
-              acquiredFromType = None,
-              connectedStatus = None,
-              supportedByIndepValuation = Some(Yes),
-              movableSchedule29A = No,
-              totalIncomeOrReceipts = Double.MaxValue,
-              assetsDisposed = None
-            ),
-            EtmpOtherAssetTransaction(
-              assetDescription = "assetDescription",
-              methodOfHolding = "03",
-              dateOfAcqOrContrib = None,
-              costOfAsset = Double.MaxValue,
-              acquiredFromName = None,
-              acquiredFromType = None,
-              connectedStatus = None,
-              supportedByIndepValuation = None,
-              movableSchedule29A = Yes,
-              totalIncomeOrReceipts = Double.MaxValue,
-              assetsDisposed = Some(
-                Seq(
-                  EtmpAssetsDisposed(
-                    methodOfDisposal = "03",
-                    otherMethod = Some("OtherMethod"),
-                    dateSold = None,
-                    purchaserName = None,
-                    purchaserType = None,
-                    totalAmountReceived = None,
-                    connectedStatus = None,
-                    supportedByIndepValuation = None,
-                    fullyDisposedOf = "No"
-                  )
-                )
-              )
-            )
-          )
-        )
+        otherAssetTransactions = Some(etmpOtherAssetsTransaction)
       )
     )
   )
@@ -728,8 +730,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         optOtherAssets = Some(
           OtherAssets(
             recordVersion = None,
-            otherAssetsWereHeld = true,
-            otherAssetsWereDisposed = false,
+            optOtherAssetsWereHeld = Some(true),
+            optOtherAssetsWereDisposed = Some(false),
             otherAssetTransactions = Seq(
               OtherAssetTransaction(
                 assetDescription = "assetDescription",
@@ -747,8 +749,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 ),
                 optConnectedStatus = Some(false),
                 optIndepValuationSupport = Some(false),
-                movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue,
+                optMovableSchedule29A = Some(true),
+                optTotalIncomeOrReceipts = Some(Double.MaxValue),
                 optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
@@ -760,8 +762,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optPropertyAcquiredFrom = None,
                 optConnectedStatus = None,
                 optIndepValuationSupport = Some(true),
-                movableSchedule29A = false,
-                totalIncomeOrReceipts = Double.MaxValue,
+                optMovableSchedule29A = Some(false),
+                optTotalIncomeOrReceipts = Some(Double.MaxValue),
                 optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
@@ -773,8 +775,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optPropertyAcquiredFrom = None,
                 optConnectedStatus = None,
                 optIndepValuationSupport = None,
-                movableSchedule29A = true,
-                totalIncomeOrReceipts = Double.MaxValue,
+                optMovableSchedule29A = Some(true),
+                optTotalIncomeOrReceipts = Some(Double.MaxValue),
                 optOtherAssetDisposed = Some(Seq.empty)
               )
             )
@@ -880,8 +882,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         otherAssets = Some(
           EtmpOtherAssets(
             recordVersion = None,
-            otherAssetsWereHeld = Yes,
-            otherAssetsWereDisposed = No,
+            otherAssetsWereHeld = Some(Yes),
+            otherAssetsWereDisposed = Some(No),
             noOfTransactions = Some(3),
             otherAssetTransactions = Some(
               Seq(
@@ -901,8 +903,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   ),
                   connectedStatus = Some(Unconnected),
                   supportedByIndepValuation = Some(No),
-                  movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue,
+                  movableSchedule29A = Some(Yes),
+                  totalIncomeOrReceipts = Some(Double.MaxValue),
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
@@ -914,8 +916,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   acquiredFromType = None,
                   connectedStatus = None,
                   supportedByIndepValuation = Some(Yes),
-                  movableSchedule29A = No,
-                  totalIncomeOrReceipts = Double.MaxValue,
+                  movableSchedule29A = Some(No),
+                  totalIncomeOrReceipts = Some(Double.MaxValue),
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
@@ -927,8 +929,8 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   acquiredFromType = None,
                   connectedStatus = None,
                   supportedByIndepValuation = None,
-                  movableSchedule29A = Yes,
-                  totalIncomeOrReceipts = Double.MaxValue,
+                  movableSchedule29A = Some(Yes),
+                  totalIncomeOrReceipts = Some(Double.MaxValue),
                   assetsDisposed = None
                 )
               )
@@ -967,6 +969,34 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       borrowing = None,
       bonds = Some(etmpBonds),
       otherAssets = None
+    )
+  }
+  "Other assets in pre-population" in {
+    val otherAssets = OtherAssets(
+      recordVersion = None,
+      optOtherAssetsWereHeld = None,
+      optOtherAssetsWereDisposed = None,
+      otherAssetTransactions = otherAssetTransactions
+    )
+    val etmpOtherAssets = EtmpOtherAssets(
+      recordVersion = None,
+      otherAssetsWereHeld = None,
+      otherAssetsWereDisposed = None,
+      otherAssetTransactions = Some(etmpOtherAssetsTransaction),
+      noOfTransactions = None
+    )
+    transformation.transform(
+      Assets(
+        optLandOrProperty = None,
+        optBorrowing = None,
+        optOtherAssets = Some(otherAssets),
+        optBonds = None
+      )
+    ) shouldMatchTo EtmpAssets(
+      landOrProperty = None,
+      borrowing = None,
+      bonds = None,
+      otherAssets = Some(etmpOtherAssets)
     )
   }
 }

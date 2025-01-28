@@ -192,10 +192,14 @@ class AssetsToEtmp @Inject() extends Transformer {
       otherAssets = assets.optOtherAssets.map(otherAssets =>
         EtmpOtherAssets(
           recordVersion = otherAssets.recordVersion,
-          otherAssetsWereHeld = toYesNo(otherAssets.otherAssetsWereHeld),
-          otherAssetsWereDisposed = toYesNo(otherAssets.otherAssetsWereDisposed),
-          noOfTransactions = Option.when(otherAssets.otherAssetsWereHeld)(otherAssets.otherAssetTransactions.size),
-          otherAssetTransactions = Option.when(otherAssets.otherAssetsWereHeld)(
+          otherAssetsWereHeld = otherAssets.optOtherAssetsWereHeld.map(toYesNo),
+          otherAssetsWereDisposed = otherAssets.optOtherAssetsWereDisposed.map(toYesNo),
+          noOfTransactions =
+            Option.when(otherAssets.optOtherAssetsWereHeld.getOrElse(false))(otherAssets.otherAssetTransactions.size),
+          otherAssetTransactions = Option.when(
+            otherAssets.otherAssetTransactions.nonEmpty ||
+              (otherAssets.optOtherAssetsWereHeld.nonEmpty && otherAssets.optOtherAssetsWereHeld.get)
+          )(
             otherAssets.otherAssetTransactions.map(otherAssetTransaction =>
               EtmpOtherAssetTransaction(
                 assetDescription = otherAssetTransaction.assetDescription,
@@ -213,8 +217,8 @@ class AssetsToEtmp @Inject() extends Transformer {
                 ),
                 connectedStatus = otherAssetTransaction.optConnectedStatus.map(transformToEtmpConnectedPartyStatus),
                 supportedByIndepValuation = otherAssetTransaction.optIndepValuationSupport.map(toYesNo),
-                movableSchedule29A = toYesNo(otherAssetTransaction.movableSchedule29A),
-                totalIncomeOrReceipts = otherAssetTransaction.totalIncomeOrReceipts,
+                movableSchedule29A = otherAssetTransaction.optMovableSchedule29A.map(toYesNo),
+                totalIncomeOrReceipts = otherAssetTransaction.optTotalIncomeOrReceipts,
                 assetsDisposed = otherAssetTransaction.optOtherAssetDisposed
                   .map(
                     _.map(otherAssetDisposed =>

@@ -260,8 +260,8 @@ trait TestValues {
     optOtherAssets = Some(
       OtherAssets(
         recordVersion = Some("001"),
-        otherAssetsWereHeld = true,
-        otherAssetsWereDisposed = true,
+        optOtherAssetsWereHeld = Some(true),
+        optOtherAssetsWereDisposed = Some(true),
         otherAssetTransactions = Seq(
           OtherAssetTransaction(
             assetDescription = "assetDescription",
@@ -272,8 +272,8 @@ trait TestValues {
             optPropertyAcquiredFrom = None,
             optConnectedStatus = None,
             optIndepValuationSupport = None,
-            movableSchedule29A = true,
-            totalIncomeOrReceipts = Double.MaxValue,
+            optMovableSchedule29A = Some(true),
+            optTotalIncomeOrReceipts = Some(Double.MaxValue),
             optOtherAssetDisposed = Some(
               Seq(
                 OtherAssetDisposed(
@@ -637,8 +637,8 @@ trait TestValues {
     otherAssets = Some(
       EtmpOtherAssets(
         recordVersion = None,
-        otherAssetsWereHeld = "otherAssetsWereHeld",
-        otherAssetsWereDisposed = "otherAssetsWereDisposed",
+        otherAssetsWereHeld = Some("otherAssetsWereHeld"),
+        otherAssetsWereDisposed = Some("otherAssetsWereDisposed"),
         noOfTransactions = None,
         otherAssetTransactions = None
       )
@@ -1045,8 +1045,8 @@ trait TestValues {
         otherAssets = Some(
           EtmpOtherAssets(
             recordVersion = Some("002"),
-            otherAssetsWereHeld = "Yes",
-            otherAssetsWereDisposed = "No",
+            otherAssetsWereHeld = Some("Yes"),
+            otherAssetsWereDisposed = Some("No"),
             noOfTransactions = Some(1),
             otherAssetTransactions = Some(
               Seq(
@@ -1066,8 +1066,8 @@ trait TestValues {
                   ),
                   connectedStatus = Some("01"),
                   supportedByIndepValuation = Some("No"),
-                  movableSchedule29A = "No",
-                  totalIncomeOrReceipts = Double.MaxValue,
+                  movableSchedule29A = Some("No"),
+                  totalIncomeOrReceipts = Some(Double.MaxValue),
                   assetsDisposed = Some(
                     Seq(
                       EtmpAssetsDisposed(

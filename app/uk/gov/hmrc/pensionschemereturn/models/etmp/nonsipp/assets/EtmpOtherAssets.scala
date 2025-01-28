@@ -23,8 +23,8 @@ import java.time.LocalDate
 
 case class EtmpOtherAssets(
   recordVersion: Option[String],
-  otherAssetsWereHeld: String,
-  otherAssetsWereDisposed: String,
+  otherAssetsWereHeld: Option[String],
+  otherAssetsWereDisposed: Option[String],
   noOfTransactions: Option[Int],
   otherAssetTransactions: Option[Seq[EtmpOtherAssetTransaction]]
 )
@@ -38,8 +38,8 @@ case class EtmpOtherAssetTransaction(
   acquiredFromType: Option[EtmpIdentityType],
   connectedStatus: Option[String],
   supportedByIndepValuation: Option[String],
-  movableSchedule29A: String,
-  totalIncomeOrReceipts: Double,
+  movableSchedule29A: Option[String],
+  totalIncomeOrReceipts: Option[Double],
   assetsDisposed: Option[Seq[EtmpAssetsDisposed]]
 )
 
