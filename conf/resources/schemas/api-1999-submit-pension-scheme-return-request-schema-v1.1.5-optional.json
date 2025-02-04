@@ -1301,7 +1301,7 @@
         }
       },
       "required": [
-        "pstr", "psrStatus", "periodStart", "periodEnd"
+        "psrStatus", "periodStart", "periodEnd"
       ],
       "additionalProperties": false
     },
