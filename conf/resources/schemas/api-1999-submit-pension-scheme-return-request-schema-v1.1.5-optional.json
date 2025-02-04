@@ -186,6 +186,10 @@
     "bondTransactionDetailsType": {
       "type": "object",
       "properties": {
+        "prePopulated": {
+          "description": "Has this section been checked by the customer after being pre-populated?",
+          "$ref": "#/definitions/booleanType"
+        },
         "nameOfBonds": {
           "description": "Q27d: What is the full name of the bonds held?",
           "$ref": "#/definitions/string160Type"
@@ -549,6 +553,10 @@
           "description": "Identity of the property",
           "type": "object",
           "properties": {
+            "prePopulated": {
+              "description": "Has this section been checked by the customer after being pre-populated?",
+              "$ref": "#/definitions/booleanType"
+            },
             "landOrPropertyInUK": {
               "description": "Q24d: Is the land or property in the UK?",
               "$ref": "#/definitions/booleanType"
@@ -758,6 +766,10 @@
     "loanTransactionDetailType": {
       "type": "object",
       "properties": {
+        "prePopulated": {
+          "description": "Has this section been checked by the customer after being pre-populated?",
+          "$ref": "#/definitions/booleanType"
+        },
         "dateOfLoan": {
           "description": "Q16b: What was the date of loan?",
           "type": "string",
@@ -875,6 +887,10 @@
         "memberPSRVersion": {
           "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
           "$ref": "#/definitions/versionType"
+        },
+        "prePopulated": {
+          "description": "Has this section been checked by the customer after being pre-populated?",
+          "$ref": "#/definitions/booleanType"
         },
         "personalDetails": {
           "description": "Q7: Member details",
@@ -1014,6 +1030,10 @@
           "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
+        "checked": {
+          "description": "String with minLength 1 and maxLength 3",
+          "$ref": "#/definitions/booleanType"
+        },
         "employerContributionMade": {
           "description": "Q8: Have Employer contributions been made for any member, during the tax year?",
           "$ref": "#/definitions/booleanType"
@@ -1100,6 +1120,10 @@
     "otherAssetTransactionDetailsType": {
       "type": "object",
       "properties": {
+        "prePopulated": {
+          "description": "Has this section been checked by the customer after being pre-populated?",
+          "$ref": "#/definitions/booleanType"
+        },
         "assetDescription": {
           "description": "Q29c: Description of Asset",
           "$ref": "#/definitions/string160Type"
@@ -1398,6 +1422,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "prePopulated": {
+                "description": "Has this section been checked by the customer after being pre-populated?",
+                "$ref": "#/definitions/booleanType"
+              },
               "typeOfSharesHeld": {
                 "description": "Type of shares held:\n01 - Sponsoring employer\n02 - Unquoted shares\n03 - Connected Party",
                 "$ref": "#/definitions/shareTypeType"
