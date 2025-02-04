@@ -1,6 +1,6 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Submit Pension Schema Return",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Submit standard PSR",
   "type": "object",
   "properties": {
     "reportDetails": {
@@ -9,10 +9,9 @@
     },
     "accountingPeriodDetails": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "If the PSR is being compiled for the first time for a reporting period, then MDTP will NOT provide the Version Number. After the initial compilation/submission i.e. version 001 onwards, MDTP is expected to provide the version number played back by ETMP. ETMP will determine the version number based on the logic built in ETMP for all those records for which the version number is not provided in the request.",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
           "$ref": "#/definitions/versionType"
         },
         "accountingPeriods": {
@@ -24,7 +23,8 @@
             "$ref": "#/definitions/accountingPeriodsType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "schemeDesignatory": {
       "description": "Questions 3 to 6, 31, 32, 33",
@@ -45,7 +45,6 @@
     "assets": {
       "description": "Questions 24 to 30\n\nMandatory if number of members is less than 100",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "landOrProperty": {
           "description": "Questions 24 and 25",
@@ -63,7 +62,8 @@
           "description": "Questions 29 and 30",
           "$ref": "#/definitions/otherAssetsType"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "psrDeclaration": {
       "description": "Mandatory if PSR status is 'Submitted'",
@@ -71,33 +71,31 @@
     }
   },
   "required": [
-    "reportDetails",
-    "schemeDesignatory"
+    "reportDetails", "schemeDesignatory"
   ],
+  "additionalProperties": false,
   "definitions": {
     "accountingPeriodsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "accPeriodStart": {
           "description": "Q2: If PSR is for the whole year, then accounting period start and end dates will match the period of the PSR return as a whole.",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "accPeriodEnd": {
           "description": "Q2: If PSR is for the whole year, then accounting period start and end dates will match the period of the PSR return as a whole.",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         }
       },
       "required": [
-        "accPeriodStart",
-        "accPeriodEnd"
-      ]
+        "accPeriodStart", "accPeriodEnd"
+      ],
+      "additionalProperties": false
     },
-    "addressType": {
+    "address_Type": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "addressLine1": {
           "description": "String with minLength 1 and maxLength 35",
@@ -124,7 +122,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 10,
-          "pattern": "^([A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$|BFPO\\s?[0-9]{1,3})$"
+          "pattern": "^([A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}|BFPO\\s?[0-9]{1,3})$"
         },
         "countryCode": {
           "description": "2-Character ISO Country Ciode",
@@ -132,22 +130,18 @@
         }
       },
       "required": [
-        "addressLine1",
-        "addressLine2",
-        "countryCode"
-      ]
+        "addressLine1", "addressLine2", "countryCode"
+      ],
+      "additionalProperties": false
     },
     "assetsDisposedType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "methodOfDisposal": {
           "description": "Q30a: Were the assets: 01 = Sold, 02 = Transferred Out, 03 = Other",
           "type": "string",
           "enum": [
-            "01",
-            "02",
-            "03"
+            "01", "02", "03"
           ]
         },
         "otherMethod": {
@@ -157,7 +151,7 @@
         "dateSold": {
           "description": "Q30b: What was the date of sale?\n\nMandatory if Sold",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "purchaserName": {
           "description": "Q30c: What was the name of purchaser?\n\nMandatory if Sold",
@@ -185,13 +179,12 @@
         }
       },
       "required": [
-        "methodOfDisposal",
-        "fullyDisposedOf"
-      ]
+        "methodOfDisposal", "fullyDisposedOf"
+      ],
+      "additionalProperties": false
     },
     "bondTransactionDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "nameOfBonds": {
           "description": "Q27d: What is the full name of the bonds held?",
@@ -201,15 +194,13 @@
           "description": "Q27b: Are the bonds held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
           "type": "string",
           "enum": [
-            "01",
-            "02",
-            "03"
+            "01", "02", "03"
           ]
         },
         "dateOfAcqOrContrib": {
           "description": "Q27c: What was the date of acquisition or contribution of the bonds?\n\nMandatory if bonds held through Acquisition or Contribution. Not required for Transfer",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "costOfBonds": {
           "description": "Q27e: What was the Total cost of the bonds acquired, or if held for any other reason total value of bonds",
@@ -237,23 +228,18 @@
         }
       },
       "required": [
-        "nameOfBonds",
-        "methodOfHolding",
-        "costOfBonds",
-        "bondsUnregulated"
-      ]
+        "nameOfBonds", "methodOfHolding", "costOfBonds", "bondsUnregulated"
+      ],
+      "additionalProperties": false
     },
     "bondsDisposedType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "methodOfDisposal": {
           "description": "Q28a: Were the bonds : 01 = Sold, 02 = Transferred Out, 03 = Other",
           "type": "string",
           "enum": [
-            "01",
-            "02",
-            "03"
+            "01", "02", "03"
           ]
         },
         "otherMethod": {
@@ -263,7 +249,7 @@
         "dateSold": {
           "description": "Q28b: What was the date the bonds were sold?\n\nMandatory when Sold",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "amountReceived": {
           "description": "Q28c: What is the total amount of consideration received from the sale or disposal of the bonds?\n\nMandatory when Sold",
@@ -283,16 +269,15 @@
         }
       },
       "required": [
-        "methodOfDisposal",
-        "totalNowHeld"
-      ]
+        "methodOfDisposal", "totalNowHeld"
+      ],
+      "additionalProperties": false
     },
     "bondsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "bondsWereAdded": {
@@ -315,24 +300,23 @@
             "$ref": "#/definitions/bondTransactionDetailsType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "booleanType": {
       "description": "Boolean type - options are 'Yes' or 'No'",
       "type": "string",
       "enum": [
-        "No",
-        "Yes"
+        "No", "Yes"
       ]
     },
     "borrowingDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "dateOfBorrow": {
           "description": "Q26b: What was the date the borrowing?",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "amountBorrowed": {
           "description": "Q26c: What was the amount borrowed?",
@@ -360,21 +344,15 @@
         }
       },
       "required": [
-        "dateOfBorrow",
-        "amountBorrowed",
-        "schemeAssetsValue",
-        "interestRate",
-        "borrowingFromName",
-        "connectedPartyStatus",
-        "reasonForBorrow"
-      ]
+        "dateOfBorrow", "amountBorrowed", "schemeAssetsValue", "interestRate", "borrowingFromName", "connectedPartyStatus", "reasonForBorrow"
+      ],
+      "additionalProperties": false
     },
     "borrowingType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "moneyWasBorrowed": {
@@ -396,19 +374,18 @@
       },
       "required": [
         "moneyWasBorrowed"
-      ]
+      ],
+      "additionalProperties": false
     },
     "connectionStatusType": {
       "description": "01 = Connected, 02 = Unconnected",
       "type": "string",
       "enum": [
-        "01",
-        "02"
+        "01", "02"
       ]
     },
     "contributingEmployerDetails": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "orgName": {
           "description": "String with minLength 1 and maxLength 160",
@@ -424,274 +401,16 @@
         }
       },
       "required": [
-        "orgName",
-        "organisationType",
-        "totalContribution"
-      ]
+        "orgName", "organisationType", "totalContribution"
+      ],
+      "additionalProperties": false
     },
     "countryCodeType": {
       "type": "string",
       "minLength": 2,
       "maxLength": 2,
       "enum": [
-        "AD",
-        "AE",
-        "AF",
-        "AG",
-        "AI",
-        "AL",
-        "AM",
-        "AN",
-        "AO",
-        "AQ",
-        "AR",
-        "AS",
-        "AT",
-        "AU",
-        "AW",
-        "AX",
-        "AZ",
-        "BA",
-        "BB",
-        "BD",
-        "BE",
-        "BF",
-        "BG",
-        "BH",
-        "BI",
-        "BJ",
-        "BL",
-        "BM",
-        "BN",
-        "BO",
-        "BQ",
-        "BR",
-        "BS",
-        "BT",
-        "BV",
-        "BW",
-        "BY",
-        "BZ",
-        "CA",
-        "CC",
-        "CD",
-        "CF",
-        "CG",
-        "CH",
-        "CI",
-        "CK",
-        "CL",
-        "CM",
-        "CN",
-        "CO",
-        "CR",
-        "CS",
-        "CU",
-        "CV",
-        "CW",
-        "CX",
-        "CY",
-        "CZ",
-        "DE",
-        "DJ",
-        "DK",
-        "DM",
-        "DO",
-        "DZ",
-        "EC",
-        "EE",
-        "EG",
-        "EH",
-        "ER",
-        "ES",
-        "ET",
-        "EU",
-        "FC",
-        "FI",
-        "FJ",
-        "FK",
-        "FM",
-        "FO",
-        "FR",
-        "GA",
-        "GB",
-        "GD",
-        "GE",
-        "GF",
-        "GG",
-        "GH",
-        "GI",
-        "GL",
-        "GM",
-        "GN",
-        "GP",
-        "GQ",
-        "GR",
-        "GS",
-        "GT",
-        "GU",
-        "GW",
-        "GY",
-        "HK",
-        "HM",
-        "HN",
-        "HR",
-        "HT",
-        "HU",
-        "ID",
-        "IE",
-        "IL",
-        "IM",
-        "IN",
-        "IO",
-        "IQ",
-        "IR",
-        "IS",
-        "IT",
-        "JE",
-        "JM",
-        "JO",
-        "JP",
-        "KE",
-        "KG",
-        "KH",
-        "KI",
-        "KM",
-        "KN",
-        "KP",
-        "KR",
-        "KW",
-        "KY",
-        "KZ",
-        "LA",
-        "LB",
-        "LC",
-        "LI",
-        "LK",
-        "LR",
-        "LS",
-        "LT",
-        "LU",
-        "LV",
-        "LY",
-        "MA",
-        "MC",
-        "MD",
-        "ME",
-        "MF",
-        "MG",
-        "MH",
-        "MK",
-        "ML",
-        "MM",
-        "MN",
-        "MO",
-        "MP",
-        "MQ",
-        "MR",
-        "MS",
-        "MT",
-        "MU",
-        "MV",
-        "MW",
-        "MX",
-        "MY",
-        "MZ",
-        "NA",
-        "NC",
-        "NE",
-        "NF",
-        "NG",
-        "NI",
-        "NL",
-        "NO",
-        "NP",
-        "NR",
-        "NT",
-        "NU",
-        "NZ",
-        "OM",
-        "OR",
-        "PA",
-        "PE",
-        "PF",
-        "PG",
-        "PH",
-        "PK",
-        "PL",
-        "PM",
-        "PN",
-        "PR",
-        "PS",
-        "PT",
-        "PW",
-        "PY",
-        "QA",
-        "RE",
-        "RO",
-        "RS",
-        "RU",
-        "RW",
-        "SA",
-        "SB",
-        "SC",
-        "SD",
-        "SE",
-        "SG",
-        "SH",
-        "SI",
-        "SJ",
-        "SK",
-        "SL",
-        "SM",
-        "SN",
-        "SO",
-        "SR",
-        "SS",
-        "ST",
-        "SV",
-        "SX",
-        "SY",
-        "SZ",
-        "TC",
-        "TD",
-        "TF",
-        "TG",
-        "TH",
-        "TJ",
-        "TK",
-        "TL",
-        "TM",
-        "TN",
-        "TO",
-        "TP",
-        "TR",
-        "TT",
-        "TV",
-        "TW",
-        "TZ",
-        "UA",
-        "UG",
-        "UM",
-        "UN",
-        "US",
-        "UY",
-        "UZ",
-        "VA",
-        "VC",
-        "VE",
-        "VG",
-        "VI",
-        "VN",
-        "VU",
-        "WF",
-        "WS",
-        "YE",
-        "YT",
-        "ZA",
-        "ZM",
-        "ZW",
-        "ZZ"
+        "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AN", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BL", "BM", "BN", "BO", "BQ", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC", "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CS", "CU", "CV", "CW", "CX", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "EU", "FC", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB", "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IM", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NT", "NU", "NZ", "OM", "OR", "PA", "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW", "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "SS", "ST", "SV", "SX", "SY", "SZ", "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TP", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM", "UN", "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "YE", "YT", "ZA", "ZM", "ZW", "ZZ"
       ]
     },
     "crnNumberType": {
@@ -701,13 +420,12 @@
     "currencyType": {
       "description": "decimal between 0.00 and 999,999,999.99",
       "type": "number",
-      "multipleOf": 0.01,
+      "minimum": -999999999.99,
       "maximum": 999999999.99,
-      "minimum": -999999999.99
+      "multipleOf": 0.01
     },
     "declarationType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "submittedBy": {
           "description": "Possible values: PSA, PSP",
@@ -715,9 +433,9 @@
         },
         "submitterId": {
           "type": "string",
-          "pattern": "^([A|0|1|2]{1}[0-9]{7})$",
           "minLength": 1,
-          "maxLength": 8
+          "maxLength": 8,
+          "pattern": "^([A|0|1|2]{1}[0-9]{7})$"
         },
         "psaId": {
           "description": "PSAID Reference number is mandatory if the declaration is submitted by PSP.",
@@ -729,7 +447,6 @@
         "psaDeclaration": {
           "description": "PSA Declaration",
           "type": "object",
-          "additionalProperties": false,
           "properties": {
             "psaDeclaration1": {
               "description": "To the best of my knowledge and belief, the information given in this return is correct and complete",
@@ -741,14 +458,13 @@
             }
           },
           "required": [
-            "psaDeclaration1",
-            "psaDeclaration2"
-          ]
+            "psaDeclaration1", "psaDeclaration2"
+          ],
+          "additionalProperties": false
         },
         "pspDeclaration": {
           "description": "PSP Declaration",
           "type": "object",
-          "additionalProperties": false,
           "properties": {
             "pspDeclaration1": {
               "description": "The content of this report has been approved by the Scheme Administrator",
@@ -760,19 +476,18 @@
             }
           },
           "required": [
-            "pspDeclaration1",
-            "pspDeclaration2"
-          ]
+            "pspDeclaration1", "pspDeclaration2"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
-        "submittedBy",
-        "submitterId"
-      ]
+        "submittedBy", "submitterId"
+      ],
+      "additionalProperties": false
     },
     "indivOrOrgIdentityDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "indivOrOrgType": {
           "description": "Type of 'organisation'. Possible values 01 = Individual, 02 = Company, 03 = Partnership, 04 = Other",
@@ -788,21 +503,19 @@
           "$ref": "#/definitions/string160Type"
         },
         "otherDescription": {
-          "description": "If 'Other' selected, or reason if no ID Number provided (for Individual, Company or Partnership)",
+          "description": "If 'Other' selected...",
           "$ref": "#/definitions/string35Type"
         }
       },
       "required": [
         "indivOrOrgType"
-      ]
+      ],
+      "additionalProperties": false
     },
     "indivOrOrgTypeType": {
       "type": "string",
       "enum": [
-        "01",
-        "02",
-        "03",
-        "04"
+        "01", "02", "03", "04"
       ]
     },
     "integer6DigitsMinimum0Type": {
@@ -831,27 +544,22 @@
     },
     "landOrPropertyTransactionDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "propertyDetails": {
           "description": "Identity of the property",
           "type": "object",
-          "additionalProperties": false,
           "properties": {
             "landOrPropertyInUK": {
               "description": "Q24d: Is the land or property in the UK?",
               "$ref": "#/definitions/booleanType"
             },
             "addressDetails": {
-              "description": "choice",
-              "type": "object",
-              "additionalProperties": false,
-              "$ref": "#/definitions/addressType"
+              "description": "Q24d - Details of property",
+              "$ref": "#/definitions/address_Type"
             },
             "landRegistryDetails": {
               "description": "Q24e",
               "type": "object",
-              "additionalProperties": false,
               "properties": {
                 "landRegistryReferenceExists": {
                   "description": "Q24e: Is there a land registry reference in respect of the land or property acquired?",
@@ -868,32 +576,29 @@
               },
               "required": [
                 "landRegistryReferenceExists"
-              ]
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
-            "landOrPropertyInUK",
-            "addressDetails",
-            "landRegistryDetails"
-          ]
+            "landOrPropertyInUK", "addressDetails", "landRegistryDetails"
+          ],
+          "additionalProperties": false
         },
         "heldPropertyTransaction": {
           "type": "object",
-          "additionalProperties": false,
           "properties": {
             "methodOfHolding": {
               "description": "Q24b: Is the land or property held as a result of: 01 = Acquisition, 02 = Contribution, or 03 = Transfer",
               "type": "string",
               "enum": [
-                "01",
-                "02",
-                "03"
+                "01", "02", "03"
               ]
             },
             "dateOfAcquisitionOrContribution": {
               "description": "Q24c: What was the date of acquisition or contribution of the land or property?",
               "type": "string",
-              "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+              "format": "date"
             },
             "propertyAcquiredFromName": {
               "description": "Q24f: Who was the land or property acquired from?",
@@ -933,9 +638,9 @@
             }
           },
           "required": [
-            "methodOfHolding",
-            "totalCostOfLandOrProperty"
-          ]
+            "methodOfHolding", "totalCostOfLandOrProperty"
+          ],
+          "additionalProperties": false
         },
         "disposedPropertyTransaction": {
           "description": "Mandatory if Q25 is true",
@@ -943,15 +648,12 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
               "methodOfDisposal": {
                 "description": "Q25a: Was the land or property 01 = Sold, 02 = Transferred out, or 03 = Other?",
                 "type": "string",
                 "enum": [
-                  "01",
-                  "02",
-                  "03"
+                  "01", "02", "03"
                 ]
               },
               "otherMethod": {
@@ -961,7 +663,7 @@
               "dateOfSale": {
                 "description": "Q25b: What was the date of Sale?\n\nOnly required if Sold",
                 "type": "string",
-                "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+                "format": "date"
               },
               "nameOfPurchaser": {
                 "description": "Q25c: What is the name of the purchaser?\n\nOnly required if Sold",
@@ -989,23 +691,22 @@
               }
             },
             "required": [
-              "methodOfDisposal",
-              "portionStillHeld"
-            ]
+              "methodOfDisposal", "portionStillHeld"
+            ],
+            "additionalProperties": false
           }
         }
       },
       "required": [
-        "propertyDetails",
-        "heldPropertyTransaction"
-      ]
+        "propertyDetails", "heldPropertyTransaction"
+      ],
+      "additionalProperties": false
     },
     "landOrPropertyType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "heldAnyLandOrProperty": {
@@ -1028,11 +729,11 @@
             "$ref": "#/definitions/landOrPropertyTransactionDetailsType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "leaseDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "lesseeName": {
           "description": "Q24m: What is the name of lessee?",
@@ -1045,22 +746,22 @@
         "leaseGrantDate": {
           "description": "Q24o: In relation to land or property, what date was the lease was granted?",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "annualLeaseAmount": {
           "description": "Q24p: What is the annual lease amount?",
           "$ref": "#/definitions/currencyType"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "loanTransactionDetailType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "dateOfLoan": {
           "description": "Q16b: What was the date of loan?",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "loanRecipientName": {
           "description": "Q16c: What is the name of the recipient of loan?",
@@ -1134,26 +835,15 @@
         }
       },
       "required": [
-        "dateOfLoan",
-        "loanRecipientName",
-        "recipientIdentityType",
-        "recipientSponsoringEmployer",
-        "connectedPartyStatus",
-        "loanAmount",
-        "loanInterestAmount",
-        "loanTotalSchemeAssets",
-        "loanPeriodInMonths",
-        "equalInstallments",
-        "loanInterestRate",
-        "securityGiven"
-      ]
+        "dateOfLoan", "loanRecipientName", "recipientIdentityType", "recipientSponsoringEmployer", "connectedPartyStatus", "loanAmount", "loanInterestAmount", "loanTotalSchemeAssets", "loanPeriodInMonths", "equalInstallments", "loanInterestRate", "securityGiven"
+      ],
+      "additionalProperties": false
     },
     "loansType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "schemeHadLoans": {
@@ -1161,7 +851,7 @@
           "$ref": "#/definitions/booleanType"
         },
         "noOfLoans": {
-          "description": "Q16a: How many separate loans were made or outstanding during the tax year and not reported in a previous return?\nMandatory if previous answer is 'true'",
+          "description": "Q16a: How many separate loans were made or outstanding during the tax year and not reported in a previous return?\n\nMandatory if previous answer is 'true'",
           "$ref": "#/definitions/integer7DigitsMinimum0Type"
         },
         "loanTransactions": {
@@ -1172,18 +862,18 @@
             "$ref": "#/definitions/loanTransactionDetailType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "memberDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "memberStatus": {
           "description": "Member status. Possible values: New, Changed, Deleted",
           "$ref": "#/definitions/memberStatusType"
         },
         "memberPSRVersion": {
-          "description": "If the Return is being compiled/submitted for the first time for a reporting period, then MDTP will NOT provide the Version Number. After the initial compilation/submission i.e. version 001 onwards, MDTP is expected to provide the version number played back by ETMP unless  specific member's details are newly added/deleted or amended by the customer. ETMP will determine the version number based on the logic built in ETMP for all those charge details for which version number is not provided in the request.",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle.",
           "$ref": "#/definitions/versionType"
         },
         "personalDetails": {
@@ -1249,13 +939,12 @@
         }
       },
       "required": [
-        "memberStatus",
-        "personalDetails"
-      ]
+        "memberStatus", "personalDetails"
+      ],
+      "additionalProperties": false
     },
     "memberEmpContributionType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "orgName": {
           "description": "Q8b: Provide the name of the entity that made the employer contribution",
@@ -1271,14 +960,12 @@
         }
       },
       "required": [
-        "orgName",
-        "organisationIdentity",
-        "totalContribution"
-      ]
+        "orgName", "organisationIdentity", "totalContribution"
+      ],
+      "additionalProperties": false
     },
     "memberPensionReceivedType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "lumpSumAmount": {
           "description": "Lump Sum Amount",
@@ -1288,20 +975,18 @@
           "description": "Designated pension amount in respect of lump sum",
           "$ref": "#/definitions/currencyType"
         }
-      }
+      },
+      "additionalProperties": false
     },
     "memberStatusType": {
       "description": "Member Status. Possible values: New, Changed, Deleted",
       "type": "string",
       "enum": [
-        "New",
-        "Changed",
-        "Deleted"
+        "New", "Changed", "Deleted"
       ]
     },
     "memberSurrenderType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "totalSurrendered": {
           "description": "Q15a: What was the total amount surrendered by the member?",
@@ -1310,7 +995,7 @@
         "dateOfSurrender": {
           "description": "Q15b: What was the date the member surrendered their benefits?",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "surrenderReason": {
           "description": "Q15c: What was the reason for the  surrender of benefits?",
@@ -1318,17 +1003,15 @@
         }
       },
       "required": [
-        "totalSurrendered",
-        "dateOfSurrender",
-        "surrenderReason"
-      ]
+        "totalSurrendered", "dateOfSurrender", "surrenderReason"
+      ],
+      "additionalProperties": false
     },
     "membersPaymentsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "employerContributionMade": {
@@ -1375,7 +1058,8 @@
             "$ref": "#/definitions/memberDetailsType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "ninoType": {
       "type": "string",
@@ -1383,7 +1067,6 @@
     },
     "orgIdentityDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "orgType": {
           "description": "Type of entity. Possible values 01 = UK Company, 02 = UK Partnership, 03 = Others",
@@ -1399,25 +1082,23 @@
           "$ref": "#/definitions/string160Type"
         },
         "otherDescription": {
-          "description": "If 'Other' selected, or either CRN or UTR are not provided.",
+          "description": "If 'Other' selected...",
           "$ref": "#/definitions/string35Type"
         }
       },
       "required": [
         "orgType"
-      ]
+      ],
+      "additionalProperties": false
     },
     "orgTypeType": {
       "type": "string",
       "enum": [
-        "01",
-        "02",
-        "03"
+        "01", "02", "03"
       ]
     },
     "otherAssetTransactionDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "assetDescription": {
           "description": "Q29c: Description of Asset",
@@ -1427,15 +1108,13 @@
           "description": "Q29b: Is the asset held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
           "type": "string",
           "enum": [
-            "01",
-            "02",
-            "03"
+            "01", "02", "03"
           ]
         },
         "dateOfAcqOrContrib": {
           "description": "Q29d: What was the date of acquisition or contribution of the bonds?\n\nMandatory for Acquisition or Contribution",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "costOfAsset": {
           "description": "Q29e: What is the total cost of asset acquired, or if held for another reason the total value of the asset?",
@@ -1475,18 +1154,16 @@
         }
       },
       "required": [
-        "assetDescription",
-        "methodOfHolding",
-        "costOfAsset"
-      ]
+        "assetDescription", "methodOfHolding", "costOfAsset"
+      ],
+      "additionalProperties": false
     },
     "otherAssetsType": {
       "description": "Details regarding assets",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "otherAssetsWereHeld": {
@@ -1509,36 +1186,35 @@
             "$ref": "#/definitions/otherAssetTransactionDetailsType"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
     "percentage2DecType": {
       "type": "number",
-      "multipleOf": 0.01,
+      "minimum": -999.99,
       "maximum": 999.99,
-      "minimum": -999.99
+      "multipleOf": 0.01
     },
     "periodType": {
       "description": "Type representing a tax period",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "periodFrom": {
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "periodTo": {
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         }
       },
       "required": [
-        "periodFrom",
-        "periodTo"
-      ]
+        "periodFrom", "periodTo"
+      ],
+      "additionalProperties": false
     },
     "personalDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "foreName": {
           "description": "String with minLength 1 and maxLength 35",
@@ -1562,51 +1238,55 @@
         },
         "dateOfBirth": {
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         }
       },
       "required": [
-        "foreName",
-        "lastName",
-        "dateOfBirth"
-      ]
+        "foreName", "lastName", "dateOfBirth"
+      ],
+      "additionalProperties": false
+    },
+    "pstrType": {
+      "description": "Pension Scheme Tax Reference",
+      "type": "string",
+      "pattern": "^([0-9]{8}[A-Z]{2})$"
     },
     "reportDetailsType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
+        "pstr": {
+          "description": "Pension Scheme Tax Reference\n\nPattern [0-9]{8}[A-Z]{2}",
+          "$ref": "#/definitions/pstrType"
+        },
         "psrStatus": {
           "description": "Possible values : Compiled, Submitted",
           "type": "string",
           "enum": [
-            "Compiled",
-            "Submitted"
+            "Compiled", "Submitted"
           ]
         },
         "periodStart": {
           "description": "Derived from Q1",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "periodEnd": {
           "description": "Derived from Q1",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         }
       },
       "required": [
-        "psrStatus",
-        "periodStart",
-        "periodEnd"
-      ]
+        "pstr", "psrStatus", "periodStart", "periodEnd"
+      ],
+      "additionalProperties": false
     },
     "schemeDesignatoryType": {
       "description": "Scheme Details",
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "openBankAccount": {
@@ -1651,35 +1331,29 @@
         }
       },
       "required": [
-        "openBankAccount",
-        "noOfActiveMembers",
-        "noOfDeferredMembers",
-        "noOfPensionerMembers"
-      ]
+        "openBankAccount", "noOfActiveMembers", "noOfDeferredMembers", "noOfPensionerMembers"
+      ],
+      "additionalProperties": false
     },
     "schemeTypeType": {
       "description": "Scheme Type. Options are Occupational or SIPP",
       "type": "string",
       "enum": [
-        "Occupational",
-        "SIPP"
+        "Occupational", "SIPP"
       ]
     },
     "shareTypeType": {
       "description": "Type of shares held: 01 - Sponsoring employer, 02 - Unquoted shares, 03 - Connected Party",
       "type": "string",
       "enum": [
-        "01",
-        "02",
-        "03"
+        "01", "02", "03"
       ]
     },
     "sharesType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "recordVersion": {
-          "description": "Report version. Pattern: [0-9]{3}",
+          "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
           "$ref": "#/definitions/versionType"
         },
         "sponsorEmployerSharesWereHeld": {
@@ -1707,7 +1381,7 @@
           "$ref": "#/definitions/integer7DigitsMinimum0Type"
         },
         "sponsorEmployerSharesWereDisposed": {
-          "description": "Q20: At any point during the tax year, did the pension scheme dispose of any shares in   a sponsoring employer?",
+          "description": "Q20: At any point during the tax year, did the pension scheme dispose of any shares in a sponsoring employer?",
           "$ref": "#/definitions/booleanType"
         },
         "unquotedSharesWereDisposed": {
@@ -1723,7 +1397,6 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
               "typeOfSharesHeld": {
                 "description": "Type of shares held:\n01 - Sponsoring employer\n02 - Unquoted shares\n03 - Connected Party",
@@ -1731,7 +1404,6 @@
               },
               "shareIdentification": {
                 "type": "object",
-                "additionalProperties": false,
                 "properties": {
                   "nameOfSharesCompany": {
                     "description": "Q17d/18d/19d: What is the name of the company to which the shares relate?",
@@ -1752,25 +1424,23 @@
                 },
                 "required": [
                   "nameOfSharesCompany"
-                ]
+                ],
+                "additionalProperties": false
               },
               "heldSharesTransaction": {
                 "type": "object",
-                "additionalProperties": false,
                 "properties": {
                   "methodOfHolding": {
                     "description": "Q17b/18b/19b: Are the Shares held as a result of: 01 = Acquisition, 02 = Contribution or 03 = Transfer",
                     "type": "string",
                     "enum": [
-                      "01",
-                      "02",
-                      "03"
+                      "01", "02", "03"
                     ]
                   },
                   "dateOfAcqOrContrib": {
                     "description": "Q17c/18c/19c: What was the date of acquisition or contribution of the shares?\nMandatory for Acquisition or Contribution",
                     "type": "string",
-                    "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+                    "format": "date"
                   },
                   "totalShares": {
                     "description": "Q17g/18g/19g: What are the total number of shares acquired, received or held, in respect of this transaction?",
@@ -1806,13 +1476,9 @@
                   }
                 },
                 "required": [
-                  "methodOfHolding",
-                  "totalShares",
-                  "acquiredFromName",
-                  "acquiredFromType",
-                  "costOfShares",
-                  "supportedByIndepValuation"
-                ]
+                  "methodOfHolding", "totalShares", "acquiredFromName", "acquiredFromType", "costOfShares", "supportedByIndepValuation"
+                ],
+                "additionalProperties": false
               },
               "disposedSharesTransaction": {
                 "description": "Only required if the Shares were also disposed in the specified Tax Year",
@@ -1820,16 +1486,12 @@
                 "minItems": 1,
                 "items": {
                   "type": "object",
-                  "additionalProperties": false,
                   "properties": {
                     "methodOfDisposal": {
                       "description": "Q20a/21a/22a: Were the bonds : 01 = Sold, 02 = Redeemed, 03 = Transferred Out, 04 = Other",
                       "type": "string",
                       "enum": [
-                        "01",
-                        "02",
-                        "03",
-                        "04"
+                        "01", "02", "03", "04"
                       ]
                     },
                     "otherMethod": {
@@ -1839,12 +1501,11 @@
                     "salesQuestions": {
                       "description": "Mandatory if Shares were Sold",
                       "type": "object",
-                      "additionalProperties": false,
                       "properties": {
                         "dateOfSale": {
                           "description": "Q20b/21b/22b: In respect of the shares, what was the date of sale?",
                           "type": "string",
-                          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+                          "format": "date"
                         },
                         "noOfSharesSold": {
                           "description": "Q20c/21c/22c: What was the number of shares sold?",
@@ -1872,24 +1533,18 @@
                         }
                       },
                       "required": [
-                        "dateOfSale",
-                        "noOfSharesSold",
-                        "amountReceived",
-                        "nameOfPurchaser",
-                        "purchaserType",
-                        "connectedPartyStatus",
-                        "supportedByIndepValuation"
-                      ]
+                        "dateOfSale", "noOfSharesSold", "amountReceived", "nameOfPurchaser", "purchaserType", "connectedPartyStatus", "supportedByIndepValuation"
+                      ],
+                      "additionalProperties": false
                     },
                     "redemptionQuestions": {
                       "description": "Mandatory if Shares were Redeemed",
                       "type": "object",
-                      "additionalProperties": false,
                       "properties": {
                         "dateOfRedemption": {
                           "description": "Q20j/21j/22j: In respect of the shares, what was the date of redemption",
                           "type": "string",
-                          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+                          "format": "date"
                         },
                         "noOfSharesRedeemed": {
                           "description": "Q20k/21k/22k: What was the number of shares redeemed?",
@@ -1901,10 +1556,9 @@
                         }
                       },
                       "required": [
-                        "dateOfRedemption",
-                        "noOfSharesRedeemed",
-                        "amountReceived"
-                      ]
+                        "dateOfRedemption", "noOfSharesRedeemed", "amountReceived"
+                      ],
+                      "additionalProperties": false
                     },
                     "totalSharesNowHeld": {
                       "description": "Q20i/20m/21i/21m/22i/22m: What is the total number of shares now held?",
@@ -1912,17 +1566,16 @@
                     }
                   },
                   "required": [
-                    "methodOfDisposal",
-                    "totalSharesNowHeld"
-                  ]
+                    "methodOfDisposal", "totalSharesNowHeld"
+                  ],
+                  "additionalProperties": false
                 }
               }
             },
             "required": [
-              "typeOfSharesHeld",
-              "shareIdentification",
-              "heldSharesTransaction"
-            ]
+              "typeOfSharesHeld", "shareIdentification", "heldSharesTransaction"
+            ],
+            "additionalProperties": false
           }
         },
         "totalValueQuotedShares": {
@@ -1932,7 +1585,8 @@
       },
       "required": [
         "totalValueQuotedShares"
-      ]
+      ],
+      "additionalProperties": false
     },
     "string160Type": {
       "description": "String with minLength 1 and maxLength 160",
@@ -1951,18 +1605,16 @@
     "submittedByType": {
       "type": "string",
       "enum": [
-        "PSA",
-        "PSP"
+        "PSA", "PSP"
       ]
     },
     "transferInDetailType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "dateOfTransfer": {
           "description": "Q11b: Date of Transfer",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "schemeName": {
           "description": "Q11c: What was the name of the Transferring scheme?",
@@ -1982,21 +1634,17 @@
         }
       },
       "required": [
-        "dateOfTransfer",
-        "schemeName",
-        "transferSchemeType",
-        "transferValue",
-        "transferIncludedAsset"
-      ]
+        "dateOfTransfer", "schemeName", "transferSchemeType", "transferValue", "transferIncludedAsset"
+      ],
+      "additionalProperties": false
     },
     "transferOutDetailType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "dateOfTransfer": {
           "description": "Q12b: Date of Transfer",
           "type": "string",
-          "pattern": "^(((19|20)([2468][048]|[13579][26]|0[48])|2000)[-]02[-]29|((19|20)[0-9]{2}[-](0[469]|11)[-](0[1-9]|1[0-9]|2[0-9]|30)|(19|20)[0-9]{2}[-](0[13578]|1[02])[-](0[1-9]|[12][0-9]|3[01])|(19|20)[0-9]{2}[-]02[-](0[1-9]|1[0-9]|2[0-8])))$"
+          "format": "date"
         },
         "schemeName": {
           "description": "Q12c: What is the name of the receiving scheme?",
@@ -2008,28 +1656,24 @@
         }
       },
       "required": [
-        "dateOfTransfer",
-        "schemeName",
-        "transferSchemeType"
-      ]
+        "dateOfTransfer", "schemeName", "transferSchemeType"
+      ],
+      "additionalProperties": false
     },
     "transferringSchemeType": {
       "type": "object",
-      "additionalProperties": false,
       "properties": {
         "schemeType": {
           "description": "Type of transfering scheme. Options: 01 = RegisteredScheme, 02 = QROPS, 03 = Other",
           "type": "string",
           "enum": [
-            "01",
-            "02",
-            "03"
+            "01", "02", "03"
           ]
         },
         "refNumber": {
           "description": "PSTR or QROPS Reference",
           "type": "string",
-          "pattern": "^(Q[0-9]{6}|[0-9]{8}[A-Z]{2})$"
+          "pattern": "^((Q[0-9]{6})|([0-9]{8}[A-Z]{2}))$"
         },
         "otherDescription": {
           "description": "Description if Other selected",
@@ -2038,12 +1682,14 @@
       },
       "required": [
         "schemeType"
-      ]
+      ],
+      "additionalProperties": false
     },
     "versionType": {
-      "description": "Report version. Pattern: [0-9]{3}",
+      "description": "MDTP is expected to provide the version number that ETMP played back except when the information in the section has been changed, in which case they are expected to NOT provide the version number field.  ETMP will spot the missing version number field and stamp the section with the version number of the current PSR form bundle. Pattern: [0-9]{3}",
       "type": "string",
       "pattern": "^([0-9]{3})$"
     }
-  }
+  },
+  "version": "0.0.7"
 }
