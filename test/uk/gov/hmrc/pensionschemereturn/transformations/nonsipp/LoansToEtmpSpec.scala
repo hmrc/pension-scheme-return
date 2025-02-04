@@ -18,6 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -71,6 +72,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
           loanTransactions = Some(
             List(
               EtmpLoanTransactions(
+                prePopulated = Some(YesNo.Yes),
                 dateOfLoan = today,
                 loanRecipientName = "IndividualName",
                 recipientIdentityType = EtmpIdentityType(

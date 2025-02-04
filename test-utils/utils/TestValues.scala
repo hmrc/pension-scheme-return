@@ -518,6 +518,7 @@ trait TestValues {
       List(
         EtmpLandOrPropertyTransactions(
           propertyDetails = EtmpPropertyDetails(
+            prePopulated = None,
             landOrPropertyInUK = "Yes",
             addressDetails = etmpAddress,
             landRegistryDetails = EtmpLandRegistryDetails(
@@ -587,6 +588,7 @@ trait TestValues {
     loanTransactions = Some(
       List(
         EtmpLoanTransactions(
+          prePopulated = None,
           dateOfLoan = sampleToday,
           loanRecipientName = "UKPartnershipName",
           recipientIdentityType = EtmpIdentityType(
@@ -646,6 +648,7 @@ trait TestValues {
   )
 
   val sampleEtmpMemberDetail1: EtmpMemberDetails = EtmpMemberDetails(
+    prePopulated = None,
     memberStatus = SectionStatus.New,
     memberPSRVersion = Some("001"),
     noOfContributions = Some(2),
@@ -718,6 +721,7 @@ trait TestValues {
   )
 
   val sampleEtmpMemberPayments: EtmpMemberPayments = EtmpMemberPayments(
+    checked = None,
     recordVersion = Some("001"),
     employerContributionMade = Some(Yes),
     unallocatedContribsMade = Some(Yes),
@@ -731,6 +735,7 @@ trait TestValues {
     memberDetails = List(
       sampleEtmpMemberDetail1,
       EtmpMemberDetails(
+        prePopulated = None,
         memberStatus = SectionStatus.New,
         memberPSRVersion = None,
         noOfContributions = Some(2),
@@ -854,6 +859,7 @@ trait TestValues {
     shareTransactions = Some(
       List(
         EtmpShareTransaction(
+          prePopulated = None,
           typeOfSharesHeld = "01",
           shareIdentification = EtmpShareIdentification(
             nameOfSharesCompany = "AppleSauce Inc.",
@@ -935,6 +941,7 @@ trait TestValues {
         loanTransactions = Some(
           Seq(
             EtmpLoanTransactions(
+              prePopulated = None,
               dateOfLoan = LocalDate.parse("2023-03-30"),
               loanRecipientName = "Electric Car Co.",
               recipientIdentityType = EtmpIdentityType(
@@ -995,6 +1002,7 @@ trait TestValues {
             bondTransactions = Some(
               Seq(
                 EtmpBondTransactions(
+                  prePopulated = None,
                   nameOfBonds = "Xenex Bonds",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(sampleToday),
@@ -1017,6 +1025,7 @@ trait TestValues {
                   )
                 ),
                 EtmpBondTransactions(
+                  prePopulated = None,
                   nameOfBonds = "Really Goods Bonds ABC",
                   methodOfHolding = "03",
                   dateOfAcqOrContrib = Some(sampleToday),
@@ -1051,6 +1060,7 @@ trait TestValues {
             otherAssetTransactions = Some(
               Seq(
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "Box of matches",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(sampleToday),
@@ -1099,6 +1109,7 @@ trait TestValues {
     ),
     membersPayments = Some(
       EtmpMemberPayments(
+        checked = None,
         recordVersion = Some("002"),
         employerContributionMade = Some(Yes),
         unallocatedContribsMade = Some(No),
@@ -1111,6 +1122,7 @@ trait TestValues {
         surrenderMade = Some(Yes),
         memberDetails = List(
           EtmpMemberDetails(
+            prePopulated = None,
             memberStatus = SectionStatus.Changed,
             memberPSRVersion = Some("001"),
             noOfContributions = Some(2),
@@ -1199,6 +1211,7 @@ trait TestValues {
             )
           ),
           EtmpMemberDetails(
+            prePopulated = None,
             memberStatus = SectionStatus.Changed,
             memberPSRVersion = None,
             noOfContributions = Some(2),
@@ -1291,6 +1304,7 @@ trait TestValues {
         shareTransactions = Some(
           List(
             EtmpShareTransaction(
+              prePopulated = None,
               typeOfSharesHeld = "01",
               shareIdentification = EtmpShareIdentification(
                 nameOfSharesCompany = "AppleSauce Inc.",
@@ -1356,6 +1370,7 @@ trait TestValues {
               )
             ),
             EtmpShareTransaction(
+              prePopulated = None,
               typeOfSharesHeld = "03",
               shareIdentification = EtmpShareIdentification(
                 nameOfSharesCompany = "Pear Computers Inc.",
@@ -1421,6 +1436,7 @@ trait TestValues {
               )
             ),
             EtmpShareTransaction(
+              prePopulated = None,
               typeOfSharesHeld = "03",
               shareIdentification = EtmpShareIdentification(
                 nameOfSharesCompany = "Connected Party Inc.",

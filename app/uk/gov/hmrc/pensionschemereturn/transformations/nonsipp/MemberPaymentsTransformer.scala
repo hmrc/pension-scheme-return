@@ -34,6 +34,7 @@ class MemberPaymentsTransformer @Inject() (
 
   override def toEtmp(memberPayments: MemberPayments): EtmpMemberPayments =
     EtmpMemberPayments(
+      checked = None,
       recordVersion = memberPayments.recordVersion,
       employerContributionMade = memberPayments.employerContributionMade,
       unallocatedContribsMade = memberPayments.unallocatedContribsMade,
@@ -46,6 +47,7 @@ class MemberPaymentsTransformer @Inject() (
       surrenderMade = memberPayments.surrenderMade,
       memberDetails = memberPayments.memberDetails.map { memberDetails =>
         EtmpMemberDetails(
+          prePopulated = None,
           memberStatus = memberDetails.state match {
             case MemberState.New => SectionStatus.New
             case MemberState.Changed => SectionStatus.Changed

@@ -58,6 +58,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         loanTransactions = Some(
           List(
             EtmpLoanTransactions(
+              prePopulated = None,
               dateOfLoan = sampleToday,
               loanRecipientName = "IndividualName",
               recipientIdentityType = EtmpIdentityType(
@@ -121,6 +122,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         loanTransactions = Some(
           List(
             EtmpLoanTransactions(
+              prePopulated = None,
               dateOfLoan = sampleToday,
               loanRecipientName = "UKCompanyName",
               recipientIdentityType = EtmpIdentityType(
@@ -186,6 +188,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         loanTransactions = Some(
           List(
             EtmpLoanTransactions(
+              prePopulated = None,
               dateOfLoan = sampleToday,
               loanRecipientName = "UKPartnershipName",
               recipientIdentityType = EtmpIdentityType(
@@ -251,6 +254,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         loanTransactions = Some(
           List(
             EtmpLoanTransactions(
+              prePopulated = None,
               dateOfLoan = sampleToday,
               loanRecipientName = "OtherName",
               recipientIdentityType = EtmpIdentityType(

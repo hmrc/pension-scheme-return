@@ -297,6 +297,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val etmpBondTransactions = Seq(
     EtmpBondTransactions(
+      prePopulated = None,
       nameOfBonds = "nameOfBonds",
       methodOfHolding = "02",
       dateOfAcqOrContrib = Some(today),
@@ -340,6 +341,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val etmpOtherAssetsTransaction = Seq(
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "01",
       dateOfAcqOrContrib = Some(today),
@@ -392,6 +394,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "02",
       dateOfAcqOrContrib = Some(today),
@@ -405,6 +408,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       assetsDisposed = None
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "03",
       dateOfAcqOrContrib = None,
@@ -444,6 +448,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           Seq(
             EtmpLandOrPropertyTransactions(
               propertyDetails = EtmpPropertyDetails(
+                prePopulated = None,
                 landOrPropertyInUK = inUK,
                 addressDetails = etmpAddress,
                 landRegistryDetails = EtmpLandRegistryDetails(
@@ -795,6 +800,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
               Seq(
                 EtmpLandOrPropertyTransactions(
                   propertyDetails = EtmpPropertyDetails(
+                    prePopulated = None,
                     landOrPropertyInUK = Yes,
                     addressDetails = EtmpAddress(
                       addressLine1 = "testAddressLine1",
@@ -866,6 +872,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             bondTransactions = Some(
               Seq(
                 EtmpBondTransactions(
+                  prePopulated = None,
                   nameOfBonds = "nameOfBonds",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(today),
@@ -888,6 +895,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             otherAssetTransactions = Some(
               Seq(
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(today),
@@ -908,6 +916,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "02",
                   dateOfAcqOrContrib = Some(today),
@@ -921,6 +930,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "03",
                   dateOfAcqOrContrib = None,

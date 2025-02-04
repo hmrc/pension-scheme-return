@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
@@ -30,6 +31,7 @@ case class EtmpOtherAssets(
 )
 
 case class EtmpOtherAssetTransaction(
+  prePopulated: Option[YesNo],
   assetDescription: String,
   methodOfHolding: String,
   dateOfAcqOrContrib: Option[LocalDate],

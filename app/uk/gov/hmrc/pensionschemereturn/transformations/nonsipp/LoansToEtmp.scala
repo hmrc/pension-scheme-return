@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 
 import com.google.inject.{Inject, Singleton}
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.Loans
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.{EtmpLoanTransactions, EtmpLoans}
 import uk.gov.hmrc.pensionschemereturn.transformations.Transformer
@@ -33,6 +34,7 @@ class LoansToEtmp @Inject() extends Transformer {
         loans.loanTransactions.nonEmpty || (loans.optSchemeHadLoans.nonEmpty && loans.optSchemeHadLoans.get)
       )(loans.loanTransactions.map { loanTransaction =>
         EtmpLoanTransactions(
+          prePopulated = Some(YesNo.Yes), // TODO just to check
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
           recipientIdentityType = toEtmpIdentityType(

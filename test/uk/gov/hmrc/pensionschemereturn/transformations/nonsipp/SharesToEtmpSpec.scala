@@ -169,6 +169,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     val etmpShareTransactions = List(
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "01",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -228,6 +229,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "02",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -278,6 +280,7 @@ class SharesToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "03",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",

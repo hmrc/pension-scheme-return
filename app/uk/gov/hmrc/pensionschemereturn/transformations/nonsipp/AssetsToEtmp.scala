@@ -53,6 +53,7 @@ class AssetsToEtmp @Inject() extends Transformer {
 
               EtmpLandOrPropertyTransactions(
                 propertyDetails = EtmpPropertyDetails(
+                  prePopulated = None,
                   landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                   addressDetails = EtmpAddress(
                     addressLine1 = addressDetails.addressLine1,
@@ -161,6 +162,7 @@ class AssetsToEtmp @Inject() extends Transformer {
           )(
             bonds.bondTransactions.map(bondTransaction =>
               EtmpBondTransactions(
+                prePopulated = None,
                 nameOfBonds = bondTransaction.nameOfBonds,
                 methodOfHolding = schemeHoldBondToString(bondTransaction.methodOfHolding),
                 dateOfAcqOrContrib = bondTransaction.optDateOfAcqOrContrib,
@@ -202,6 +204,7 @@ class AssetsToEtmp @Inject() extends Transformer {
           )(
             otherAssets.otherAssetTransactions.map(otherAssetTransaction =>
               EtmpOtherAssetTransaction(
+                prePopulated = None,
                 assetDescription = otherAssetTransaction.assetDescription,
                 methodOfHolding = schemeHoldAssetToString(otherAssetTransaction.methodOfHolding),
                 dateOfAcqOrContrib = otherAssetTransaction.optDateOfAcqOrContrib,

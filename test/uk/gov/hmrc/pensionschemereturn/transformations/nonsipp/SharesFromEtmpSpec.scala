@@ -38,6 +38,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
   "SharesFromEtmp - PSR Shares should successfully transform from etmp format " should {
     val etmpShareTransactions = List(
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "01",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -97,6 +98,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "02",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -147,6 +149,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "03",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",

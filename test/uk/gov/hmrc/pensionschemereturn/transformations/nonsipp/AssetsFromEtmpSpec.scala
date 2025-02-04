@@ -37,6 +37,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
   private val today: LocalDate = LocalDate.now
   private val etmpBondTransactions = List(
     EtmpBondTransactions(
+      prePopulated = None,
       nameOfBonds = "nameOfBonds",
       methodOfHolding = "03",
       dateOfAcqOrContrib = Some(today),
@@ -79,6 +80,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
   )
   private val etmpOtherAssetTransactions = List(
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "01",
       dateOfAcqOrContrib = Some(today),
@@ -99,6 +101,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       assetsDisposed = None
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "02",
       dateOfAcqOrContrib = Some(today),
@@ -144,6 +147,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
       )
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "03",
       dateOfAcqOrContrib = None,
@@ -182,6 +186,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
           Seq(
             EtmpLandOrPropertyTransactions(
               propertyDetails = EtmpPropertyDetails(
+                prePopulated = None,
                 landOrPropertyInUK = landOrPropertyInUK,
                 addressDetails = etmpAddress,
                 landRegistryDetails = EtmpLandRegistryDetails(
