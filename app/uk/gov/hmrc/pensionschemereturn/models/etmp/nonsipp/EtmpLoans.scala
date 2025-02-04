@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
@@ -29,6 +30,7 @@ case class EtmpLoans(
 )
 
 case class EtmpLoanTransactions(
+  prePopulated: Option[YesNo],
   dateOfLoan: LocalDate,
   loanRecipientName: String,
   recipientIdentityType: EtmpIdentityType,

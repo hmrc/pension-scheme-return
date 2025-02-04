@@ -55,6 +55,7 @@ class SharesFromEtmp @Inject() extends Transformer {
     val acquiredFromType = heldSharesTransaction.acquiredFromType
 
     ShareTransaction(
+      prePopulated = shareTransactions.prePopulated,
       typeOfSharesHeld = stringToTypeOfShares(shareTransactions.typeOfSharesHeld),
       shareIdentification = ShareIdentification(
         nameOfSharesCompany = shareIdentification.nameOfSharesCompany,

@@ -33,6 +33,7 @@ class LoansToEtmp @Inject() extends Transformer {
         loans.loanTransactions.nonEmpty || (loans.optSchemeHadLoans.nonEmpty && loans.optSchemeHadLoans.get)
       )(loans.loanTransactions.map { loanTransaction =>
         EtmpLoanTransactions(
+          prePopulated = loanTransaction.prePopulated,
           dateOfLoan = loanTransaction.datePeriodLoanDetails.dateOfLoan,
           loanRecipientName = loanTransaction.loanRecipientName,
           recipientIdentityType = toEtmpIdentityType(

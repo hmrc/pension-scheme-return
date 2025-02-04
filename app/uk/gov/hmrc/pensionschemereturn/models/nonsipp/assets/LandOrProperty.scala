@@ -29,6 +29,7 @@ case class LandOrProperty(
 )
 
 case class LandOrPropertyTransactions(
+  prePopulated: Option[Boolean],
   propertyDetails: PropertyDetails,
   heldPropertyTransaction: HeldPropertyTransaction,
   optDisposedPropertyTransaction: Option[Seq[DisposedPropertyTransaction]]

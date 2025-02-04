@@ -50,6 +50,7 @@ body:json {
     "loans": {
       "loanTransactions": [
         {
+          "prePopulated": true,
           "recipientIdentityType": {
             "identityType": "individual",
             "reasonNoIdNumber": "sdfsdf"
@@ -78,7 +79,8 @@ body:json {
         "recordVersion": "001",
         "landOrPropertyTransactions": [
           {
-            "propertyDetails": {
+              "prePopulated": true,
+              "propertyDetails": {
               "landOrPropertyInUK": false,
               "addressDetails": {
                 "addressLine1": "Fenerbahce",
@@ -160,6 +162,7 @@ body:json {
         "bondsWereDisposed": false,
         "bondTransactions": [
           {
+            "prePopulated": true,
             "nameOfBonds": "Xenex Bonds",
             "methodOfHolding": "01",
             "optDateOfAcqOrContrib": "2022-10-06",
@@ -168,6 +171,7 @@ body:json {
             "bondsUnregulated": false
           },
           {
+            "prePopulated": false,
             "nameOfBonds": "Really Goods Bonds ABC",
             "methodOfHolding": "02",
             "optDateOfAcqOrContrib": "2022-07-30",
@@ -180,6 +184,7 @@ body:json {
       "optOtherAssets": {
         "otherAssetTransactions": [
           {
+            "prePopulated": true,
             "assetDescription": "Test asset",
             "methodOfHolding": "01",
             "optDateOfAcqOrContrib": "2023-03-05",
@@ -196,8 +201,10 @@ body:json {
       }
     },
     "membersPayments": {
+      "checked": true,
       "memberDetails": [
         {
+          "prePopulated": true,
           "personalDetails": {
             "firstName": "John",
             "lastName": "Doe",
@@ -319,6 +326,7 @@ body:json {
       "recordVersion": "001",
       "optShareTransactions": [
         {
+          "prePopulated": true,
           "typeOfSharesHeld": "01",
           "shareIdentification": {
             "nameOfSharesCompany": "AppleSauce Inc.",

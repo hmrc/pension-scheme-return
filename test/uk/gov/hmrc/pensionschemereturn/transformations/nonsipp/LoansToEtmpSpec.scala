@@ -44,6 +44,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
           optSchemeHadLoans = Some(true),
           loanTransactions = List(
             LoanTransactions(
+              prePopulated = None,
               recipientIdentityType = RecipientIdentityType(
                 IdentityType.Individual,
                 None,
@@ -71,6 +72,7 @@ class LoansToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with D
           loanTransactions = Some(
             List(
               EtmpLoanTransactions(
+                prePopulated = None,
                 dateOfLoan = today,
                 loanRecipientName = "IndividualName",
                 recipientIdentityType = EtmpIdentityType(

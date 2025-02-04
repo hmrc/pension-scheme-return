@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.models.nonsipp.memberpayments
 import play.api.libs.json.{Format, Json}
 
 case class MemberPayments(
+  checked: Option[Boolean],
   recordVersion: Option[String],
   memberDetails: List[MemberDetails],
   employerContributionMade: Option[Boolean],
@@ -33,6 +34,7 @@ case class MemberPayments(
 )
 
 case class MemberDetails(
+  prePopulated: Option[Boolean],
   state: MemberState,
   memberPSRVersion: Option[String],
   personalDetails: MemberPersonalDetails,

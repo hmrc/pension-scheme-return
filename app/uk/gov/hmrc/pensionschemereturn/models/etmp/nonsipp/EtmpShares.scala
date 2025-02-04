@@ -38,6 +38,7 @@ case class EtmpShares(
 )
 
 case class EtmpShareTransaction(
+  prePopulated: Option[YesNo],
   typeOfSharesHeld: String,
   shareIdentification: EtmpShareIdentification,
   heldSharesTransaction: EtmpHeldSharesTransaction,

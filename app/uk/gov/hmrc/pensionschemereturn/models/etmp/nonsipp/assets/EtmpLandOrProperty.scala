@@ -17,6 +17,7 @@
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
@@ -36,6 +37,7 @@ case class EtmpLandOrPropertyTransactions(
 )
 
 case class EtmpPropertyDetails(
+  prePopulated: Option[YesNo], // TODO check if this stays here in the final schema
   landOrPropertyInUK: String,
   addressDetails: EtmpAddress,
   landRegistryDetails: EtmpLandRegistryDetails

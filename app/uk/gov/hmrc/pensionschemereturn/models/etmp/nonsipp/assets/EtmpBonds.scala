@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets
 
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
@@ -29,6 +30,7 @@ case class EtmpBonds(
 )
 
 case class EtmpBondTransactions(
+  prePopulated: Option[YesNo],
   nameOfBonds: String,
   methodOfHolding: String,
   dateOfAcqOrContrib: Option[LocalDate],
