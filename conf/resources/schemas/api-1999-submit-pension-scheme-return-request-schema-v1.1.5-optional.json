@@ -1929,7 +1929,10 @@
           "description": "Q23: What is the total value of quoted shares held?",
           "$ref": "#/definitions/currencyType"
         }
-      }
+      },
+      "required": [
+        "totalValueQuotedShares"
+      ]
     },
     "string160Type": {
       "description": "String with minLength 1 and maxLength 160",
