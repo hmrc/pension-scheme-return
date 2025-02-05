@@ -92,6 +92,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
+            prePopulated = None,
             recipientIdentityType = RecipientIdentityType(
               IdentityType.Individual,
               None,
@@ -156,6 +157,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
+            prePopulated = None,
             recipientIdentityType = RecipientIdentityType(
               IdentityType.UKCompany,
               None,
@@ -222,6 +224,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
+            prePopulated = None,
             recipientIdentityType = RecipientIdentityType(
               IdentityType.UKPartnership,
               Some("1234567890"),
@@ -288,6 +291,7 @@ class LoansFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer with
         optSchemeHadLoans = Some(true),
         loanTransactions = List(
           LoanTransactions(
+            prePopulated = None,
             recipientIdentityType = RecipientIdentityType(
               IdentityType.Other,
               None,

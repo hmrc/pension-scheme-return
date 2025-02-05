@@ -113,6 +113,7 @@ trait TestValues {
     optSchemeHadLoans = Some(true),
     loanTransactions = List(
       LoanTransactions(
+        prePopulated = None,
         recipientIdentityType = RecipientIdentityType(
           IdentityType.Individual,
           None,

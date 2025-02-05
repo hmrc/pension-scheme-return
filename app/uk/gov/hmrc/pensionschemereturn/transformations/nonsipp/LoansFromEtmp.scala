@@ -35,6 +35,7 @@ class LoansFromEtmp @Inject() extends Transformer {
           val connectedPartyStatus = loanTransaction.connectedPartyStatus == Connected
           val identityType = stringToIdentityType(loanTransaction.recipientIdentityType.indivOrOrgType)
           LoanTransactions(
+            prePopulated = loanTransaction.prePopulated,
             recipientIdentityType = RecipientIdentityType(
               identityType = identityType,
               idNumber = loanTransaction.recipientIdentityType.idNumber,
