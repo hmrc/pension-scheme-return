@@ -28,6 +28,7 @@ case class Bonds(
 )
 
 case class BondTransactions(
+  prePopulated: Option[Boolean],
   nameOfBonds: String,
   methodOfHolding: SchemeHoldBond,
   optDateOfAcqOrContrib: Option[LocalDate],

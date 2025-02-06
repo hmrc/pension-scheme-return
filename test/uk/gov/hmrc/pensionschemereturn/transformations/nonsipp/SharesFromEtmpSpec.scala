@@ -38,6 +38,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
   "SharesFromEtmp - PSR Shares should successfully transform from etmp format " should {
     val etmpShareTransactions = List(
       EtmpShareTransaction(
+        prePopulated = Some(YesNo.Yes),
         typeOfSharesHeld = "01",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -97,6 +98,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "02",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -147,6 +149,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       EtmpShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = "03",
         shareIdentification = EtmpShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -176,6 +179,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
     )
     val shareTransactions = List(
       ShareTransaction(
+        prePopulated = Some(true),
         typeOfSharesHeld = TypeOfShares.SponsoringEmployer,
         shareIdentification = ShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -237,6 +241,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       ShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = TypeOfShares.Unquoted,
         shareIdentification = ShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",
@@ -289,6 +294,7 @@ class SharesFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
         )
       ),
       ShareTransaction(
+        prePopulated = None,
         typeOfSharesHeld = TypeOfShares.ConnectedParty,
         shareIdentification = ShareIdentification(
           nameOfSharesCompany = "nameOfSharesCompany",

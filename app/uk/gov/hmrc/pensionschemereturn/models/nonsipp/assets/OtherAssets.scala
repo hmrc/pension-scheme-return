@@ -29,6 +29,7 @@ case class OtherAssets(
 )
 
 case class OtherAssetTransaction(
+  prePopulated: Option[Boolean],
   assetDescription: String,
   methodOfHolding: SchemeHoldAsset,
   optDateOfAcqOrContrib: Option[LocalDate],

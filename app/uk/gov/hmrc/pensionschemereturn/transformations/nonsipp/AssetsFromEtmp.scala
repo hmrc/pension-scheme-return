@@ -47,6 +47,8 @@ class AssetsFromEtmp @Inject() extends Transformer {
               val addressDetails = propertyDetails.addressDetails
 
               LandOrPropertyTransactions(
+                prePopulated =
+                  propertyDetails.prePopulated, // TODO change this if ETMP prePopulated is moving to landOrPropertyTransaction
                 propertyDetails = PropertyDetails(
                   landOrPropertyInUK = fromYesNo(propertyDetails.landOrPropertyInUK),
                   addressDetails = Address(
@@ -149,6 +151,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
             .getOrElse(Seq.empty)
             .map(bondTransaction =>
               BondTransactions(
+                prePopulated = bondTransaction.prePopulated,
                 nameOfBonds = bondTransaction.nameOfBonds,
                 methodOfHolding = stringToSchemeHoldBond(bondTransaction.methodOfHolding),
                 optDateOfAcqOrContrib = bondTransaction.dateOfAcqOrContrib,
@@ -182,6 +185,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
             .getOrElse(Seq.empty)
             .map(oa =>
               OtherAssetTransaction(
+                prePopulated = oa.prePopulated,
                 assetDescription = oa.assetDescription,
                 methodOfHolding = stringToSchemeHoldAsset(oa.methodOfHolding),
                 optDateOfAcqOrContrib = oa.dateOfAcqOrContrib,

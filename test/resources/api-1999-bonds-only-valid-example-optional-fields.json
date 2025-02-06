@@ -29,26 +29,28 @@
     "totalCashEnd": 2800000,
     "totalPayments": 2000000
   },
-  "bonds": {
-    "recordVersion": "528",
-    "noOfTransactions": 2,
-    "bondTransactions": [
-      {
-        "nameOfBonds": "Xenex Bonds",
-        "methodOfHolding": "01",
-        "dateOfAcqOrContrib": "2023-10-19",
-        "costOfBonds": 10234.56,
-        "connectedPartyStatus": "02",
-        "bondsUnregulated": "No"
-      },
-      {
-        "nameOfBonds": "Really Goods Bonds ABC",
-        "methodOfHolding": "03",
-        "dateOfAcqOrContrib": "2023-10-19",
-        "costOfBonds": 2000.5,
-        "connectedPartyStatus": "02",
-        "bondsUnregulated": "No"
-      }
-    ]
+  "assets": {
+    "bonds": {
+      "recordVersion": "528",
+      "noOfTransactions": 2,
+      "bondTransactions": [
+        {
+          "nameOfBonds": "Xenex Bonds",
+          "methodOfHolding": "01",
+          "dateOfAcqOrContrib": "2023-10-19",
+          "costOfBonds": 10234.56,
+          "connectedPartyStatus": "02",
+          "bondsUnregulated": "No"
+        },
+        {
+          "nameOfBonds": "Really Goods Bonds ABC",
+          "methodOfHolding": "03",
+          "dateOfAcqOrContrib": "2023-10-19",
+          "costOfBonds": 2000.5,
+          "connectedPartyStatus": "02",
+          "bondsUnregulated": "No"
+        }
+      ]
+    }
   }
 }

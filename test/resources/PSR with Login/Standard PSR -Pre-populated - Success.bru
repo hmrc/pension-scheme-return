@@ -50,6 +50,7 @@ body:json {
     "loans": {
       "loanTransactions": [
         {
+          "prePopulated": false,
           "recipientIdentityType": {
             "identityType": "individual",
             "reasonNoIdNumber": "sdfsdf"
@@ -78,7 +79,8 @@ body:json {
         "recordVersion": "001",
         "landOrPropertyTransactions": [
           {
-            "propertyDetails": {
+              "prePopulated": false,
+              "propertyDetails": {
               "landOrPropertyInUK": false,
               "addressDetails": {
                 "addressLine1": "Fenerbahce",
@@ -104,6 +106,7 @@ body:json {
           },
           {
             "propertyDetails": {
+              "prePopulated": false,
               "landOrPropertyInUK": true,
               "addressDetails": {
                 "addressLine1": "Beyoglu",
@@ -131,6 +134,7 @@ body:json {
           },
           {
             "propertyDetails": {
+              "prePopulated": false,
               "landOrPropertyInUK": false,
               "addressDetails": {
                 "addressLine1": "1 Hacienda Way",
@@ -160,6 +164,7 @@ body:json {
         "bondsWereDisposed": false,
         "bondTransactions": [
           {
+            "prePopulated": false,
             "nameOfBonds": "Xenex Bonds",
             "methodOfHolding": "01",
             "optDateOfAcqOrContrib": "2022-10-06",
@@ -168,6 +173,7 @@ body:json {
             "bondsUnregulated": false
           },
           {
+            "prePopulated": false,
             "nameOfBonds": "Really Goods Bonds ABC",
             "methodOfHolding": "02",
             "optDateOfAcqOrContrib": "2022-07-30",
@@ -180,6 +186,7 @@ body:json {
       "optOtherAssets": {
         "otherAssetTransactions": [
           {
+            "prePopulated": false,
             "assetDescription": "Test asset",
             "methodOfHolding": "01",
             "optDateOfAcqOrContrib": "2023-03-05",
@@ -196,8 +203,10 @@ body:json {
       }
     },
     "membersPayments": {
+      "checked": false,
       "memberDetails": [
         {
+          "prePopulated": false,
           "personalDetails": {
             "firstName": "John",
             "lastName": "Doe",
@@ -247,6 +256,7 @@ body:json {
           ]
         },
         {
+          "prePopulated": false,
           "personalDetails": {
             "firstName": "Jane",
             "lastName": "Dean",
@@ -319,6 +329,7 @@ body:json {
       "recordVersion": "001",
       "optShareTransactions": [
         {
+          "prePopulated": false,
           "typeOfSharesHeld": "01",
           "shareIdentification": {
             "nameOfSharesCompany": "AppleSauce Inc.",
@@ -341,6 +352,7 @@ body:json {
           }
         },
         {
+          "prePopulated": false,
           "typeOfSharesHeld": "03",
           "shareIdentification": {
             "nameOfSharesCompany": "Pear Computers Inc.",
@@ -363,6 +375,7 @@ body:json {
           }
         },
         {
+          "prePopulated": false,
           "typeOfSharesHeld": "03",
           "shareIdentification": {
             "nameOfSharesCompany": "Connected Party Inc.",

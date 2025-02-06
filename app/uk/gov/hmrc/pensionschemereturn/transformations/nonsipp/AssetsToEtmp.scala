@@ -53,6 +53,8 @@ class AssetsToEtmp @Inject() extends Transformer {
 
               EtmpLandOrPropertyTransactions(
                 propertyDetails = EtmpPropertyDetails(
+                  prePopulated =
+                    landOrPropertyTransaction.prePopulated, // TODO check this path after the final schema change
                   landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                   addressDetails = EtmpAddress(
                     addressLine1 = addressDetails.addressLine1,
@@ -161,6 +163,7 @@ class AssetsToEtmp @Inject() extends Transformer {
           )(
             bonds.bondTransactions.map(bondTransaction =>
               EtmpBondTransactions(
+                prePopulated = bondTransaction.prePopulated,
                 nameOfBonds = bondTransaction.nameOfBonds,
                 methodOfHolding = schemeHoldBondToString(bondTransaction.methodOfHolding),
                 dateOfAcqOrContrib = bondTransaction.optDateOfAcqOrContrib,
@@ -202,6 +205,7 @@ class AssetsToEtmp @Inject() extends Transformer {
           )(
             otherAssets.otherAssetTransactions.map(otherAssetTransaction =>
               EtmpOtherAssetTransaction(
+                prePopulated = otherAssetTransaction.prePopulated,
                 assetDescription = otherAssetTransaction.assetDescription,
                 methodOfHolding = schemeHoldAssetToString(otherAssetTransaction.methodOfHolding),
                 dateOfAcqOrContrib = otherAssetTransaction.optDateOfAcqOrContrib,

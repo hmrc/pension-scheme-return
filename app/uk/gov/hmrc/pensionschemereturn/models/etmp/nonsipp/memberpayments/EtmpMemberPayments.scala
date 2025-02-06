@@ -22,6 +22,7 @@ import play.api.libs.json.{Format, Json}
 import java.time.LocalDate
 
 case class EtmpMemberPayments(
+  checked: Option[YesNo],
   recordVersion: Option[String],
   employerContributionMade: Option[YesNo],
   unallocatedContribsMade: Option[YesNo],
@@ -40,6 +41,7 @@ case class EtmpMemberPayments(
 // Note: For the 'noOf...' fields, ETMP will ignore any value of 0 we try to POST, so Some(0) and None are effectively
 // identical for these fields, so POSTing them will have the same result: ETMP storing no value for that field.
 case class EtmpMemberDetails(
+  prePopulated: Option[YesNo],
   memberStatus: SectionStatus,
   memberPSRVersion: Option[String],
   noOfContributions: Option[Int],

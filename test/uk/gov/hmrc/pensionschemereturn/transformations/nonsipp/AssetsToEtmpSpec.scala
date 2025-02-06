@@ -19,6 +19,7 @@ package uk.gov.hmrc.pensionschemereturn.transformations.nonsipp
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.common.EtmpIdentityType
+import uk.gov.hmrc.pensionschemereturn.models.etmp.YesNo
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.assets.HowDisposed.{Other, Sold, Transferred}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp._
 import uk.gov.hmrc.pensionschemereturn.models.etmp.nonsipp.assets._
@@ -36,6 +37,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val bondTransactions = Seq(
     BondTransactions(
+      prePopulated = None,
       nameOfBonds = "nameOfBonds",
       methodOfHolding = SchemeHoldBond.Contribution,
       optDateOfAcqOrContrib = Some(today),
@@ -79,6 +81,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val otherAssetTransactions = Seq(
     OtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = SchemeHoldAsset.Acquisition,
       optDateOfAcqOrContrib = Some(today),
@@ -131,6 +134,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     ),
     OtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = SchemeHoldAsset.Contribution,
       optDateOfAcqOrContrib = Some(today),
@@ -144,6 +148,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       optOtherAssetDisposed = None
     ),
     OtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = SchemeHoldAsset.Transfer,
       optDateOfAcqOrContrib = None,
@@ -179,6 +184,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
         optDisposeAnyLandOrProperty = Some(true),
         landOrPropertyTransactions = List(
           LandOrPropertyTransactions(
+            prePopulated = None,
             propertyDetails = PropertyDetails(
               landOrPropertyInUK = inUK,
               addressDetails = address,
@@ -297,6 +303,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val etmpBondTransactions = Seq(
     EtmpBondTransactions(
+      prePopulated = None,
       nameOfBonds = "nameOfBonds",
       methodOfHolding = "02",
       dateOfAcqOrContrib = Some(today),
@@ -340,6 +347,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
 
   private val etmpOtherAssetsTransaction = Seq(
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "01",
       dateOfAcqOrContrib = Some(today),
@@ -392,6 +400,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "02",
       dateOfAcqOrContrib = Some(today),
@@ -405,6 +414,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       assetsDisposed = None
     ),
     EtmpOtherAssetTransaction(
+      prePopulated = None,
       assetDescription = "assetDescription",
       methodOfHolding = "03",
       dateOfAcqOrContrib = None,
@@ -444,6 +454,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
           Seq(
             EtmpLandOrPropertyTransactions(
               propertyDetails = EtmpPropertyDetails(
+                prePopulated = None,
                 landOrPropertyInUK = inUK,
                 addressDetails = etmpAddress,
                 landRegistryDetails = EtmpLandRegistryDetails(
@@ -651,6 +662,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             optDisposeAnyLandOrProperty = Some(false),
             landOrPropertyTransactions = List(
               LandOrPropertyTransactions(
+                prePopulated = None,
                 propertyDetails = PropertyDetails(
                   landOrPropertyInUK = true,
                   addressDetails = Address(
@@ -715,6 +727,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             optBondsWereDisposed = Some(false),
             bondTransactions = Seq(
               BondTransactions(
+                prePopulated = None,
                 nameOfBonds = "nameOfBonds",
                 methodOfHolding = SchemeHoldBond.Acquisition,
                 optDateOfAcqOrContrib = Some(today),
@@ -734,6 +747,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             optOtherAssetsWereDisposed = Some(false),
             otherAssetTransactions = Seq(
               OtherAssetTransaction(
+                prePopulated = None,
                 assetDescription = "assetDescription",
                 methodOfHolding = SchemeHoldAsset.Acquisition,
                 optDateOfAcqOrContrib = Some(today),
@@ -754,6 +768,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
+                prePopulated = None,
                 assetDescription = "assetDescription",
                 methodOfHolding = SchemeHoldAsset.Contribution,
                 optDateOfAcqOrContrib = Some(today),
@@ -767,6 +782,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                 optOtherAssetDisposed = Some(Seq.empty)
               ),
               OtherAssetTransaction(
+                prePopulated = None,
                 assetDescription = "assetDescription",
                 methodOfHolding = SchemeHoldAsset.Transfer,
                 optDateOfAcqOrContrib = None,
@@ -795,6 +811,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
               Seq(
                 EtmpLandOrPropertyTransactions(
                   propertyDetails = EtmpPropertyDetails(
+                    prePopulated = None,
                     landOrPropertyInUK = Yes,
                     addressDetails = EtmpAddress(
                       addressLine1 = "testAddressLine1",
@@ -866,6 +883,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             bondTransactions = Some(
               Seq(
                 EtmpBondTransactions(
+                  prePopulated = None,
                   nameOfBonds = "nameOfBonds",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(today),
@@ -888,6 +906,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
             otherAssetTransactions = Some(
               Seq(
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "01",
                   dateOfAcqOrContrib = Some(today),
@@ -908,6 +927,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "02",
                   dateOfAcqOrContrib = Some(today),
@@ -921,6 +941,7 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
                   assetsDisposed = None
                 ),
                 EtmpOtherAssetTransaction(
+                  prePopulated = None,
                   assetDescription = "assetDescription",
                   methodOfHolding = "03",
                   dateOfAcqOrContrib = None,
@@ -948,13 +969,13 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       recordVersion = None,
       optBondsWereAdded = None,
       optBondsWereDisposed = None,
-      bondTransactions = bondTransactions
+      bondTransactions = bondTransactions.map(_.copy(prePopulated = Some(true)))
     )
     val etmpBonds = EtmpBonds(
       recordVersion = None,
       bondsWereAdded = None,
       bondsWereDisposed = None,
-      bondTransactions = Some(etmpBondTransactions),
+      bondTransactions = Some(etmpBondTransactions.map(_.copy(prePopulated = Some(YesNo.Yes)))),
       noOfTransactions = None
     )
     transformation.transform(
@@ -976,13 +997,13 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       recordVersion = None,
       optOtherAssetsWereHeld = None,
       optOtherAssetsWereDisposed = None,
-      otherAssetTransactions = otherAssetTransactions
+      otherAssetTransactions = otherAssetTransactions.map(_.copy(prePopulated = Some(true)))
     )
     val etmpOtherAssets = EtmpOtherAssets(
       recordVersion = None,
       otherAssetsWereHeld = None,
       otherAssetsWereDisposed = None,
-      otherAssetTransactions = Some(etmpOtherAssetsTransaction),
+      otherAssetTransactions = Some(etmpOtherAssetsTransaction.map(_.copy(prePopulated = Some(YesNo.Yes)))),
       noOfTransactions = None
     )
     transformation.transform(
