@@ -53,8 +53,7 @@ class AssetsToEtmp @Inject() extends Transformer {
 
               EtmpLandOrPropertyTransactions(
                 propertyDetails = EtmpPropertyDetails(
-                  prePopulated =
-                    landOrPropertyTransaction.prePopulated, // TODO check this path after the final schema change
+                  prePopulated = landOrPropertyTransaction.prePopulated,
                   landOrPropertyInUK = toYesNo(propertyDetails.landOrPropertyInUK),
                   addressDetails = EtmpAddress(
                     addressLine1 = addressDetails.addressLine1,

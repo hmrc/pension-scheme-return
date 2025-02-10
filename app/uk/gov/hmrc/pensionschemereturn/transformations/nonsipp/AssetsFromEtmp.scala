@@ -47,8 +47,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
               val addressDetails = propertyDetails.addressDetails
 
               LandOrPropertyTransactions(
-                prePopulated =
-                  propertyDetails.prePopulated, // TODO change this if ETMP prePopulated is moving to landOrPropertyTransaction
+                prePopulated = propertyDetails.prePopulated,
                 propertyDetails = PropertyDetails(
                   landOrPropertyInUK = fromYesNo(propertyDetails.landOrPropertyInUK),
                   addressDetails = Address(
