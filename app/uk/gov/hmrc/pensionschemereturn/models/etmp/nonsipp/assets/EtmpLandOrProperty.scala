@@ -37,7 +37,7 @@ case class EtmpLandOrPropertyTransactions(
 )
 
 case class EtmpPropertyDetails(
-  prePopulated: Option[YesNo], // TODO check if this stays here in the final schema
+  prePopulated: Option[YesNo],
   landOrPropertyInUK: String,
   addressDetails: EtmpAddress,
   landRegistryDetails: EtmpLandRegistryDetails
