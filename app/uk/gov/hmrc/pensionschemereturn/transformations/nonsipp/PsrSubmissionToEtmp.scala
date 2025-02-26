@@ -43,7 +43,7 @@ class PsrSubmissionToEtmp @Inject() (
       loans = psrSubmission.loans.map(loansToEtmp.transform),
       assets = psrSubmission.assets.map(assetsToEtmp.transform),
       membersPayments = psrSubmission.membersPayments.map(memberPaymentsTransformer.toEtmp),
-      shares = psrSubmission.shares.map(sharesToEtmp.transform),
+      shares = psrSubmission.shares.filter(!_.isEmpty).map(sharesToEtmp.transform),
       psrDeclaration = psrSubmission.psrDeclaration.map(psrDeclarationToEtmp.transform)
     )
   }

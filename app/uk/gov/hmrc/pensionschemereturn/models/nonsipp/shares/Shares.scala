@@ -26,7 +26,9 @@ case class Shares(
   optDidSchemeHoldAnyShares: Option[Boolean],
   optShareTransactions: Option[List[ShareTransaction]],
   optTotalValueQuotedShares: Option[Double]
-)
+) {
+  def isEmpty: Boolean = this == Shares.emptyShares
+}
 
 case class ShareTransaction(
   prePopulated: Option[Boolean],
@@ -91,4 +93,6 @@ object Shares {
   private implicit val formatShareIdentification: Format[ShareIdentification] = Json.format[ShareIdentification]
   private implicit val formatShareTransaction: Format[ShareTransaction] = Json.format[ShareTransaction]
   implicit val format: Format[Shares] = Json.format[Shares]
+
+  private val emptyShares = Shares(None, None, None, None)
 }
