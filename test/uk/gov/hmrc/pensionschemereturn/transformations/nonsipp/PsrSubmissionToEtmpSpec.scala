@@ -91,6 +91,41 @@ class PsrSubmissionToEtmpSpec extends EtmpTransformerSpec {
       verify(mockPsrDeclarationToEtmp, never).transform(any())
     }
 
+    "PSR submission should not set set etmpShares if shares are 'empty'" in {
+
+      when(mockMinimalRequiredDetailsToEtmp.transform(any(), any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
+
+      val psrSubmission: PsrSubmission = PsrSubmission(
+        minimalRequiredSubmission = mock[MinimalRequiredSubmission],
+        checkReturnDates = false,
+        loans = None,
+        assets = None,
+        membersPayments = None,
+        shares = Some(Shares(None, None, None, None)),
+        psrDeclaration = None
+      )
+
+      val expected = PsrSubmissionEtmpRequest(
+        sampleEtmpMinimalRequiredSubmission.reportDetails,
+        sampleEtmpMinimalRequiredSubmission.accountingPeriodDetails,
+        sampleEtmpMinimalRequiredSubmission.schemeDesignatory,
+        loans = None,
+        assets = None,
+        membersPayments = None,
+        shares = None,
+        psrDeclaration = None
+      )
+
+      transformation.transform(psrSubmission) shouldMatchTo expected
+      verify(mockMinimalRequiredDetailsToEtmp, times(1)).transform(any(), any())
+      verify(mockLoansToEtmp, never).transform(any())
+      verify(mockAssetsToEtmp, never).transform(any())
+      verify(mockAssetsToEtmp, never).transform(any())
+      verify(mockMemberPaymentsTransformer, never).toEtmp(any())
+      verify(mockSharesToEtmp, never).transform(any())
+      verify(mockPsrDeclarationToEtmp, never).transform(any())
+    }
+
     "PSR submission should successfully transform to etmp format" in {
 
       when(mockMinimalRequiredDetailsToEtmp.transform(any(), any())).thenReturn(sampleEtmpMinimalRequiredSubmission)
