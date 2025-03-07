@@ -27,6 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import utils.{BaseSpec, TestValues}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import org.mockito.Mockito._
 import play.api.mvc.AnyContentAsEmpty
 import com.softwaremill.diffx.scalatest.DiffShouldMatcher
@@ -56,12 +57,14 @@ class PsrSubmissionServiceSpec extends BaseSpec with MockitoSugar with TestValue
   private val mockJSONSchemaValidator = mock[JSONSchemaValidator]
   private val mockPsrSubmissionToEtmp = mock[PsrSubmissionToEtmp]
   private val mockStandardPsrFromEtmp = mock[StandardPsrFromEtmp]
+  private val mockConfig = mock[AppConfig]
 
   private val service: PsrSubmissionService = new PsrSubmissionService(
     mockPsrConnector,
     mockJSONSchemaValidator,
     mockPsrSubmissionToEtmp,
-    mockStandardPsrFromEtmp
+    mockStandardPsrFromEtmp,
+    mockConfig
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
