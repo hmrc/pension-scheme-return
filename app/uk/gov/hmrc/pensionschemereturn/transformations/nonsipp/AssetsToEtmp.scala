@@ -88,15 +88,20 @@ class AssetsToEtmp @Inject() extends Transformer {
                   indepValuationSupport = heldPropertyTransaction.optIndepValuationSupport.map(toYesNo),
                   residentialSchedule29A = heldPropertyTransaction.optIsLandOrPropertyResidential.map(toYesNo),
                   landOrPropertyLeased = heldPropertyTransaction.optLandOrPropertyLeased.map(toYesNo),
-                  leaseDetails = heldPropertyTransaction.optLeaseDetails.map(leaseDetails =>
-                    EtmpLeaseDetails(
-                      lesseeName = leaseDetails.optLesseeName,
-                      connectedPartyStatus =
-                        leaseDetails.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
-                      leaseGrantDate = leaseDetails.optLeaseGrantDate,
-                      annualLeaseAmount = leaseDetails.optAnnualLeaseAmount
-                    )
-                  ),
+                  leaseDetails = heldPropertyTransaction.optLeaseDetails
+                    .flatMap(leaseDetails =>
+                      if (heldPropertyTransaction.optLandOrPropertyLeased.contains(true))
+                        Some(
+                          EtmpLeaseDetails(
+                            lesseeName = leaseDetails.optLesseeName,
+                            connectedPartyStatus =
+                              leaseDetails.optConnectedPartyStatus.map(transformToEtmpConnectedPartyStatus),
+                            leaseGrantDate = leaseDetails.optLeaseGrantDate,
+                            annualLeaseAmount = leaseDetails.optAnnualLeaseAmount
+                          )
+                        )
+                      else None
+                    ),
                   totalIncomeOrReceipts = heldPropertyTransaction.optTotalIncomeOrReceipts
                 ),
                 disposedPropertyTransaction = optDisposedPropertyTransaction
