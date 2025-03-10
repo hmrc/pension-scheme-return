@@ -964,6 +964,90 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
     }
   }
 
+  "Land or property with no lessee details" in {
+    val landOrProperty = LandOrProperty(
+      recordVersion = None,
+      optLandOrPropertyHeld = Some(true),
+      optDisposeAnyLandOrProperty = Some(false),
+      landOrPropertyTransactions = List(
+        LandOrPropertyTransactions(
+          prePopulated = None,
+          propertyDetails = PropertyDetails(
+            true,
+            Address("some", Some("address"), None, "London", Some("ZZ1 1ZZ"), "GB"),
+            false,
+            "some reason"
+          ),
+          heldPropertyTransaction = HeldPropertyTransaction(
+            methodOfHolding = SchemeHoldLandProperty.Transfer,
+            dateOfAcquisitionOrContribution = None,
+            optLandOrPropertyLeased = Some(false),
+            optIsLandOrPropertyResidential = Some(true),
+            optLeaseDetails = None,
+            optPropertyAcquiredFromName = None,
+            optPropertyAcquiredFrom = None,
+            optConnectedPartyStatus = None,
+            totalCostOfLandOrProperty = 1000.0,
+            optIndepValuationSupport = None,
+            optTotalIncomeOrReceipts = None
+          ),
+          optDisposedPropertyTransaction = None
+        )
+      )
+    )
+
+    val etmpLandOrProperty = EtmpLandOrProperty(
+      recordVersion = None,
+      heldAnyLandOrProperty = Some("Yes"),
+      disposeAnyLandOrProperty = Some("No"),
+      noOfTransactions = Some(1),
+      landOrPropertyTransactions = Some(
+        List(
+          EtmpLandOrPropertyTransactions(
+            propertyDetails = EtmpPropertyDetails(
+              prePopulated = None,
+              landOrPropertyInUK = "Yes",
+              addressDetails = EtmpAddress("some", "address", None, Some("London"), None, Some("ZZ1 1ZZ"), "GB"),
+              landRegistryDetails = EtmpLandRegistryDetails(
+                landRegistryReferenceExists = "No",
+                landRegistryReference = None,
+                reasonNoReference = Some("some reason")
+              )
+            ),
+            disposedPropertyTransaction = None,
+            heldPropertyTransaction = EtmpHeldPropertyTransaction(
+              methodOfHolding = "03",
+              landOrPropertyLeased = Some("No"),
+              leaseDetails = None,
+              residentialSchedule29A = Some("Yes"),
+              dateOfAcquisitionOrContribution = None,
+              propertyAcquiredFromName = None,
+              propertyAcquiredFrom = None,
+              connectedPartyStatus = None,
+              totalCostOfLandOrProperty = 1000.0,
+              indepValuationSupport = None,
+              totalIncomeOrReceipts = None
+            )
+          )
+        )
+      )
+    )
+
+    transformation.transform(
+      Assets(
+        optLandOrProperty = Some(landOrProperty),
+        optBorrowing = None,
+        optOtherAssets = None,
+        optBonds = None
+      )
+    ) shouldMatchTo EtmpAssets(
+      landOrProperty = Some(etmpLandOrProperty),
+      borrowing = None,
+      bonds = None,
+      otherAssets = None
+    )
+  }
+
   "Bonds in pre-population" in {
     val bonds = Bonds(
       recordVersion = None,
