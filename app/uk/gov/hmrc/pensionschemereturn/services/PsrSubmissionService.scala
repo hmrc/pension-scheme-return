@@ -16,18 +16,20 @@
 
 package uk.gov.hmrc.pensionschemereturn.services
 
-import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.{API_1999, API_1999_optional}
+import uk.gov.hmrc.pensionschemereturn.validators.SchemaPaths.{API_1999, API_1999_optional, API_1999_v115}
+import uk.gov.hmrc.pensionschemereturn.config.AppConfig
 import play.api.mvc.RequestHeader
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.pensionschemereturn.auth.PsrAuthContext
 import uk.gov.hmrc.pensionschemereturn.models.etmp.{Compiled, Submitted}
 import uk.gov.hmrc.pensionschemereturn.transformations.nonsipp.{PsrSubmissionToEtmp, StandardPsrFromEtmp}
 import uk.gov.hmrc.pensionschemereturn.models.nonsipp.PsrSubmission
-import play.api.libs.json._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.pensionschemereturn.connectors.PsrConnector
 import uk.gov.hmrc.pensionschemereturn.models.enumeration.CipPsrStatus
 import uk.gov.hmrc.pensionschemereturn.models.PensionSchemeReturnValidationFailureException
+import play.api.Logging
+import play.api.libs.json._
 import uk.gov.hmrc.pensionschemereturn.validators.JSONSchemaValidator
 import uk.gov.hmrc.pensionschemereturn.transformations.TransformerError
 
@@ -38,8 +40,9 @@ class PsrSubmissionService @Inject() (
   psrConnector: PsrConnector,
   jsonPayloadSchemaValidator: JSONSchemaValidator,
   psrSubmissionToEtmp: PsrSubmissionToEtmp,
-  standardPsrFromEtmp: StandardPsrFromEtmp
-) {
+  standardPsrFromEtmp: StandardPsrFromEtmp,
+  config: AppConfig
+) extends Logging {
 
   def submitStandardPsr(
     psrSubmission: PsrSubmission,
@@ -48,7 +51,9 @@ class PsrSubmissionService @Inject() (
     schemeName: String
   )(implicit headerCarrier: HeaderCarrier, ec: ExecutionContext, request: RequestHeader): Future[HttpResponse] = {
     val payloadAsJson = Json.toJson(psrSubmissionToEtmp.transform(psrSubmission))
-    val validationResult = jsonPayloadSchemaValidator.validatePayload(API_1999, payloadAsJson)
+    val schema = if (config.submitPsrSchemaVersionV120) API_1999 else API_1999_v115
+    logger.info(s"Using schema version $schema for PSR Submission")
+    val validationResult = jsonPayloadSchemaValidator.validatePayload(schema, payloadAsJson)
     if (validationResult.hasErrors) {
       throw PensionSchemeReturnValidationFailureException(
         s"Invalid payload when submitStandardPsr :-\n${validationResult.toString}"
