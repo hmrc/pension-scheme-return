@@ -19,6 +19,8 @@ package uk.gov.hmrc.pensionschemereturn.config
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.Configuration
 
+import scala.concurrent.duration.Duration
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -41,4 +43,5 @@ class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig
   val isPsaAssociatedUrl: String = s"$pensionsSchemeURL${config.get[String](path = "serviceUrls.is-psa-associated")}"
   val earliestPsrPeriodStartDate: String = config.get[String]("earliestPsrPeriodStartDate")
   val submitPsrSchemaVersionV120: Boolean = config.get[Boolean]("submitPsrSchemaVersionV120")
+  val ifsTimeout: Duration = config.get[Duration]("ifs.timeout")
 }

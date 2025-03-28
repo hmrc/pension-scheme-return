@@ -58,6 +58,7 @@ class PsrConnector @Inject() (config: AppConfig, http: HttpClientV2, apiAuditUti
       .post(url"$url")
       .withBody(Json.toJson(data))
       .transform(integrationFrameworkHeader)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute[HttpResponse]
       .map { response =>
         response.status match {
@@ -95,6 +96,7 @@ class PsrConnector @Inject() (config: AppConfig, http: HttpClientV2, apiAuditUti
     http
       .get(url"$url")
       .transform(integrationFrameworkHeader)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute
       .map { response =>
         response.status match {
@@ -133,6 +135,7 @@ class PsrConnector @Inject() (config: AppConfig, http: HttpClientV2, apiAuditUti
     http
       .get(url"$url")
       .transform(integrationFrameworkHeader)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute
       .map { response =>
         response.status match {
@@ -158,6 +161,7 @@ class PsrConnector @Inject() (config: AppConfig, http: HttpClientV2, apiAuditUti
     http
       .get(url"$url")
       .transform(integrationFrameworkHeader)
+      .transform(_.withRequestTimeout(config.ifsTimeout))
       .execute
       .map { response =>
         response.status match {
