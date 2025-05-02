@@ -47,6 +47,7 @@ class SchemeDetailsConnector @Inject() (appConfig: AppConfig, http: HttpClientV2
           "Content-Type" -> "application/json"
         )
       )
+      .transform(_.withRequestTimeout(appConfig.ifsTimeout))
       .execute
       .map { response =>
         response.status match {
