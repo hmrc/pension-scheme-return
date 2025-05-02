@@ -20,6 +20,8 @@ import uk.gov.hmrc.pensionschemereturn.models.enumeration.{Enumerable, WithName}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import scala.util.{Success, Try}
+
 import java.time.LocalDateTime
 import java.util.Locale
 import java.time.format.DateTimeFormatter
@@ -51,6 +53,22 @@ object EmailEvent {
   private val isoZonedDateFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.UK)
 
+  // List of formatters to handle both with and without milliseconds
+  private val formatters = List(
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK),
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.UK)
+  )
+
+  protected def parseDateTime(dateStr: String): LocalDateTime =
+    formatters.view
+      .map { fmt =>
+        Try(LocalDateTime.parse(dateStr, fmt))
+      }
+      .collectFirst { case Success(dateTime) =>
+        dateTime
+      }
+      .getOrElse(throw new IllegalArgumentException(s"Unparseable date: $dateStr"))
+
   private val dateTimeWritesWithMilliseconds = Writes[LocalDateTime] { localDateTime =>
     JsString(isoZonedDateFormatter.format(localDateTime))
   }
@@ -58,7 +76,7 @@ object EmailEvent {
   implicit val read: Reads[EmailEvent] =
     (JsPath \ "event")
       .read[Event]
-      .and((JsPath \ "detected").read[String].map(detected => LocalDateTime.parse(detected, isoZonedDateFormatter)))(
+      .and((JsPath \ "detected").read[String].map(detected => parseDateTime(detected)))(
         EmailEvent.apply
       )
   implicit val write: Writes[EmailEvent] =
