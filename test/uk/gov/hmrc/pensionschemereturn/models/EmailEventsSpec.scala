@@ -22,7 +22,6 @@ import play.api.libs.json.{JsSuccess, Json}
 
 import java.time.LocalDateTime
 
-
 class EmailEventsSpec extends AnyWordSpec with Matchers {
 
   private val jsonWithoutMilliseconds: String =
