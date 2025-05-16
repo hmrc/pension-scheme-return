@@ -216,7 +216,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                 leaseDetails = Some(
                   EtmpLeaseDetails(
                     lesseeName = Some("lesseeName"),
-                    connectedPartyStatus = Some(Unconnected),
+                    connectedPartyStatus = Some(Connected),
                     leaseGrantDate = Some(today),
                     annualLeaseAmount = Some(Double.MaxValue)
                   )
@@ -490,7 +490,7 @@ class AssetsFromEtmpSpec extends PlaySpec with MockitoSugar with Transformer wit
                   optLesseeName = Some("lesseeName"),
                   optLeaseGrantDate = Some(today),
                   optAnnualLeaseAmount = Some(Double.MaxValue),
-                  optConnectedPartyStatus = Some(false)
+                  optConnectedPartyStatus = Some(true)
                 )
               ),
               optLandOrPropertyLeased = Some(true),

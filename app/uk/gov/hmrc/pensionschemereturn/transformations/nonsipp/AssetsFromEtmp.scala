@@ -89,7 +89,7 @@ class AssetsFromEtmp @Inject() extends Transformer {
                       optLesseeName = leaseDetail.lesseeName,
                       optLeaseGrantDate = leaseDetail.leaseGrantDate,
                       optAnnualLeaseAmount = leaseDetail.annualLeaseAmount,
-                      optConnectedPartyStatus = leaseDetail.connectedPartyStatus.map(fromYesNo)
+                      optConnectedPartyStatus = leaseDetail.connectedPartyStatus.map(_ == Connected)
                     )
                   ),
                   optLandOrPropertyLeased = heldPropertyTransaction.landOrPropertyLeased.map(fromYesNo),
