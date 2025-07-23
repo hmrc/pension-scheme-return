@@ -668,8 +668,8 @@ object PsrSubmitControllerSpec {
       |      ]
       |    },
       |    "optBonds": {
-      |      "bondsWereAdded": true,
-      |      "bondsWereDisposed": false,
+      |      "optBondsWereAdded": true,
+      |      "optBondsWereDisposed": false,
       |      "bondTransactions": [
       |        {
       |          "nameOfBonds": "Xenex Bonds",
@@ -678,7 +678,7 @@ object PsrSubmitControllerSpec {
       |          "costOfBonds": 10234.56,
       |          "optConnectedPartyStatus": false,
       |          "bondsUnregulated": false,
-      |          "totalIncomeOrReceipts": 50,
+      |          "optTotalIncomeOrReceipts": 50,
       |          "optBondsDisposed": [
       |            {
       |              "methodOfDisposal": "Sold",
@@ -706,13 +706,13 @@ object PsrSubmitControllerSpec {
       |          "costOfBonds": 2000.5,
       |          "optConnectedPartyStatus": false,
       |          "bondsUnregulated": false,
-      |          "totalIncomeOrReceipts": 300
+      |          "optTotalIncomeOrReceipts": 300
       |        }
       |      ]
       |    },
       |    "optOtherAssets": {
-      |      "otherAssetsWereHeld": true,
-      |      "otherAssetsWereDisposed": false,
+      |      "optOtherAssetsWereHeld": true,
+      |      "optOtherAssetsWereDisposed": false,
       |      "otherAssetTransactions": [
       |        {
       |          "assetDescription": "Test asset",
@@ -726,8 +726,8 @@ object PsrSubmitControllerSpec {
       |          },
       |          "optConnectedStatus": false,
       |          "optIndepValuationSupport": false,
-      |          "movableSchedule29A": false,
-      |          "totalIncomeOrReceipts": 34.56,
+      |          "optMovableSchedule29A": false,
+      |          "optTotalIncomeOrReceipts": 34.56,
       |          "optOtherAssetDisposed": [
       |            {
       |              "methodOfDisposal": "Sold",
