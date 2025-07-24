@@ -28,7 +28,6 @@ lazy val microservice = Project(appName, file("."))
     "-Wconf:src=routes/.*:s")
   )
   .settings(inConfig(Test)(testSettings) *)
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings *)
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
