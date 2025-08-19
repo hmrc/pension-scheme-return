@@ -18,7 +18,7 @@ package uk.gov.hmrc.pensionschemereturn.controllers
 
 import play.api.test.FakeRequest
 import uk.gov.hmrc.pensionschemereturn.services.AuditService
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
 import play.api.inject.bind
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.pensionschemereturn.models._
@@ -55,7 +55,7 @@ class EmailResponseControllerSpec extends BaseSpec { // scalastyle:off magic.num
 
   private val injector = application.injector
   private val controller = injector.instanceOf[EmailResponseController]
-  private val crypto = injector.instanceOf[ApplicationCrypto].QueryParameterCrypto
+  private val crypto = controller.jsonCrypto
   private val encryptedPsaId = crypto.encrypt(PlainText(psaOrPspId)).value
   private val encryptedPstr = crypto.encrypt(PlainText(pstr)).value
   private val encryptedEmail = crypto.encrypt(PlainText(emailAddress)).value
