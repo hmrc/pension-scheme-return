@@ -58,7 +58,10 @@ class AssetsToEtmp @Inject() extends Transformer {
                   addressDetails = EtmpAddress(
                     addressLine1 = addressDetails.addressLine1,
                     addressLine2 = addressDetails.addressLine2.getOrElse(addressDetails.town),
-                    addressLine3 = addressDetails.addressLine3,
+                    addressLine3 = addressDetails.addressLine3 match {
+                      case Some(line3) if line3.isEmpty => None
+                      case _ => addressDetails.addressLine3
+                    },
                     addressLine4 = addressDetails.addressLine2.map(_ => addressDetails.town),
                     addressLine5 = if (!propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
                     ukPostCode = if (propertyDetails.landOrPropertyInUK) addressDetails.postCode else None,
