@@ -626,6 +626,33 @@ class AssetsToEtmpSpec extends PlaySpec with MockitoSugar with Transformer with 
       )
     }
 
+    "when address3 field is empty string" in {
+      transformation.transform(
+        fullAssets(
+          inUK = true,
+          address = Address(
+            "testAddressLine1",
+            None,
+            Some(""),
+            "town",
+            Some("GB135HG"),
+            "GB"
+          )
+        )
+      ) shouldMatchTo fullExpectedAssets(
+        inUK = Yes,
+        etmpAddress = EtmpAddress(
+          addressLine1 = "testAddressLine1",
+          addressLine2 = "town",
+          addressLine3 = None,
+          addressLine4 = None,
+          addressLine5 = None,
+          ukPostCode = Some("GB135HG"),
+          countryCode = "GB"
+        )
+      )
+    }
+
     "when non UK address" in {
       transformation.transform(
         fullAssets(
