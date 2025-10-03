@@ -20,7 +20,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.pensionschemereturn.services.AuditService
 import play.api.mvc.RequestHeader
 import play.api.http.Status
-import uk.gov.hmrc.pensionschemereturn.config.Constants.{PSA, PSP}
+import uk.gov.hmrc.pensionschemereturn.config.Constants.PSA
 import uk.gov.hmrc.http.{HttpException, HttpResponse, UpstreamErrorResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -125,113 +125,6 @@ class ApiAuditUtilSpec extends BaseSpec with BeforeAndAfterEach {
         response = None,
         errorMessage = Some(message),
         psrStatus = None
-      )
-      verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
-    }
-  }
-
-  "firePsrGetAuditEvent" must {
-
-    doNothing().when(mockAuditService).sendEvent(any())(any(), any())
-
-    "send the correct audit event for a successful response" in {
-      val psrGetEventPf = service.firePsrGetAuditEvent(pstr, None, None, None, PSP, psaPspId, userName, schemeName)
-      psrGetEventPf(Success(Some(samplePsrSubmissionEtmpResponse)))
-      val expectedAuditEvent = PsrGetAuditEvent(
-        pstr = pstr,
-        credentialRole = PSP,
-        psaPspId = psaPspId,
-        userName = userName,
-        schemeName = schemeName,
-        None,
-        None,
-        None,
-        status = Some(Status.OK),
-        response = Some(Json.toJson(samplePsrSubmissionEtmpResponse)),
-        errorMessage = None
-      )
-      verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
-    }
-
-    "send the audit event with the status code when an upstream error occurs" in {
-      val psrGetEventPf =
-        service.firePsrGetAuditEvent(pstr, Some("fbNumber"), None, None, PSP, psaPspId, userName, schemeName)
-      val reportAs = 202
-      val message = "The request was not found"
-      val status = Status.NOT_FOUND
-      psrGetEventPf(Failure(UpstreamErrorResponse.apply(message, status, reportAs, Map.empty)))
-      val expectedAuditEvent = PsrGetAuditEvent(
-        pstr = pstr,
-        credentialRole = PSP,
-        psaPspId = psaPspId,
-        userName = userName,
-        schemeName = schemeName,
-        Some("fbNumber"),
-        None,
-        None,
-        status = Some(status),
-        response = None,
-        errorMessage = Some(message)
-      )
-      verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
-    }
-
-    "send the audit event with the status code when an HttpException error occurs" in {
-      val psrGetEventPf = service.firePsrGetAuditEvent(
-        pstr,
-        None,
-        Some("periodStartDate"),
-        Some("psrVersion"),
-        PSP,
-        psaPspId,
-        userName,
-        schemeName
-      )
-      val message = "The request had a network error"
-      val status = Status.SERVICE_UNAVAILABLE
-      psrGetEventPf(Failure(new HttpException(message, status)))
-      val expectedAuditEvent = PsrGetAuditEvent(
-        pstr = pstr,
-        credentialRole = PSP,
-        psaPspId = psaPspId,
-        userName = userName,
-        schemeName = schemeName,
-        None,
-        Some("periodStartDate"),
-        Some("psrVersion"),
-        status = Some(status),
-        response = None,
-        errorMessage = Some(message)
-      )
-      verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
-    }
-
-    "send the audit event when a throwable is thrown" in {
-      val psrGetEventPf =
-        service.firePsrGetAuditEvent(
-          pstr,
-          Some("fbNumber"),
-          Some("periodStartDate"),
-          Some("psrVersion"),
-          PSP,
-          psaPspId,
-          userName,
-          schemeName
-        )
-      val message = "The request had a network error"
-      psrGetEventPf(Failure(new RuntimeException(message)))
-      val expectedAuditEvent = PsrGetAuditEvent(
-        pstr = pstr,
-        credentialRole = PSP,
-        psaPspId = psaPspId,
-        userName = userName,
-        schemeName = schemeName,
-        Some("fbNumber"),
-        Some("periodStartDate"),
-        Some("psrVersion"),
-        status = None,
-        response = None,
-        errorMessage = Some(message)
       )
       verify(mockAuditService, times(1)).sendEvent(ArgumentMatchers.eq(expectedAuditEvent))(any(), any())
     }

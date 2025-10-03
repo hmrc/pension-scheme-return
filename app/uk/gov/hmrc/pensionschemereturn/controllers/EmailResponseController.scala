@@ -23,7 +23,7 @@ import com.google.inject.Inject
 import uk.gov.hmrc.pensionschemereturn.config.Constants.emailRegex
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.pensionschemereturn.models.{EmailEvents, Opened}
-import uk.gov.hmrc.crypto.*
+import uk.gov.hmrc.crypto._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import play.api.{Configuration, Logging}
 import play.api.libs.json.JsValue

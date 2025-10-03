@@ -120,71 +120,11 @@ class ApiAuditUtil @Inject() (auditService: AuditService) extends Logging {
   ): PartialFunction[Try[Option[PsrSubmissionEtmpResponse]], Unit] = {
     case Success(optPsrSubmissionEtmpResponse) =>
       logger.info(s"PsrGetAuditEvent ->> Status: ${Status.OK}")
-      auditService.sendEvent(
-        PsrGetAuditEvent(
-          pstr = pstr,
-          credentialRole = credentialRole,
-          psaPspId = psaPspId,
-          userName = userName,
-          schemeName = schemeName,
-          fbNumber = optFbNumber,
-          periodStartDate = optPeriodStartDate,
-          psrVersion = optPsrVersion,
-          status = Some(Status.OK),
-          response = optPsrSubmissionEtmpResponse.map(Json.toJson(_)),
-          errorMessage = None
-        )
-      )
     case Failure(error: UpstreamErrorResponse) =>
       logger.info(s"PsrGetAuditEvent ->> Status: ${error.statusCode}, ErrorMessage: ${Json.toJson(error.message)}")
-      auditService.sendEvent(
-        PsrGetAuditEvent(
-          pstr = pstr,
-          credentialRole = credentialRole,
-          psaPspId = psaPspId,
-          userName = userName,
-          schemeName = schemeName,
-          fbNumber = optFbNumber,
-          periodStartDate = optPeriodStartDate,
-          psrVersion = optPsrVersion,
-          status = Some(error.statusCode),
-          response = None,
-          errorMessage = Some(error.message)
-        )
-      )
     case Failure(error: HttpException) =>
       logger.info(s"PsrGetAuditEvent ->> Status: ${error.responseCode}, ErrorMessage: ${Json.toJson(error.message)}")
-      auditService.sendEvent(
-        PsrGetAuditEvent(
-          pstr = pstr,
-          credentialRole = credentialRole,
-          psaPspId = psaPspId,
-          userName = userName,
-          schemeName = schemeName,
-          fbNumber = optFbNumber,
-          periodStartDate = optPeriodStartDate,
-          psrVersion = optPsrVersion,
-          status = Some(error.responseCode),
-          response = None,
-          errorMessage = Some(error.message)
-        )
-      )
     case Failure(error: Throwable) =>
       logger.info(s"PsrGetAuditEvent ->> ErrorMessage: ${Json.toJson(error.getMessage)}")
-      auditService.sendEvent(
-        PsrGetAuditEvent(
-          pstr = pstr,
-          credentialRole = credentialRole,
-          psaPspId = psaPspId,
-          userName = userName,
-          schemeName = schemeName,
-          fbNumber = optFbNumber,
-          periodStartDate = optPeriodStartDate,
-          psrVersion = optPsrVersion,
-          status = None,
-          response = None,
-          errorMessage = Some(error.getMessage)
-        )
-      )
   }
 }
